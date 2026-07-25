@@ -125,12 +125,17 @@
   --spc-indigo-800: #1f2b55;
   --spc-indigo-900: #0a1433;
 
-  /* Neutral ramp */
+  /* Neutral ramp. 200 and 400 were settled by D6: challenge.scss carried its
+     own near-miss neutrals, and since those are what render on the busiest
+     pages, they took the ramp slot rather than being bent to a value almost
+     nothing used. The old --spc-gray-200 was also conspicuously blue for a
+     neutral. Note the two literal #8e98a8 in the sidebar block below are NOT
+     consumers of the ramp and deliberately kept their value. */
   --spc-gray-50: #f8f8f8;
   --spc-gray-100: #f1f1f1;
-  --spc-gray-200: #e9ebf8;
+  --spc-gray-200: #e2e4e9; /* D6: was #e9ebf8 */
   --spc-gray-300: #d1d5db;
-  --spc-gray-400: #8e98a8;
+  --spc-gray-400: #8a909e; /* D6: was #8e98a8 */
   --spc-gray-500: #6b7280;
   --spc-gray-600: #4b5563;
   --spc-gray-700: #374151;

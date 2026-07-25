@@ -4,21 +4,16 @@
    (#7f8592 vs #8a909e) and rule (#e3e5e9 vs #e2e4e9); the values that
    actually rendered on the category pages won.
 
-   The five pure pass-throughs (navy, coral, gold, ink, surface) are
-   gone — the rules below name the SPC token directly. Only these two
-   are left, because they are NOT aliases: they are neutral values the
-   ramp does not currently carry. --spc-challenge-muted (#8a909e) is
-   close to --spc-gray-400 (#8e98a8) and --spc-challenge-rule (#e2e4e9)
-   is close to --spc-gray-200 (#e9ebf8), but "close" is a site-wide
-   visual change, so folding them into the ramp is its own step.
+   This partial no longer declares tokens of its own. The five pure
+   pass-throughs went in D5. The last two — muted and rule — went in D6,
+   which resolved them by moving the ramp to THEIR values rather than the
+   other way round, so the rules below name --spc-gray-400 / --spc-gray-200
+   directly and nothing on the challenge pages moved a pixel. The cost of
+   that direction is paid on the homepage and the sidebar border instead.
 
    Not listed here and not ours to define: --spc-challenge-cover, which
    spc-monthly-challenge.js sets inline on the hero and the homepage
    card. It has a gradient fallback at its use site. */
-:root {
-  --spc-challenge-muted: #8a909e;
-  --spc-challenge-rule: #e2e4e9;
-}
 
 /* Eyebrow / section kicker — shared by the hero, brief, composer callout
    and voting dialog. (The homepage card's copy is styled by SPC Homepage
@@ -191,7 +186,7 @@ body.category-monthly-challenge .list-controls {
 .spc-challenge-brief {
   width: 100%;
   padding: 2.5rem 3rem 3rem;
-  border-bottom: 1px solid var(--spc-challenge-rule);
+  border-bottom: 1px solid var(--spc-gray-200);
   background: #ffffff;
   color: var(--spc-charcoal);
   box-sizing: border-box;
@@ -205,7 +200,7 @@ body.category-monthly-challenge .list-controls {
   max-width: 1000px;
   margin: 0 auto 1.75rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--spc-challenge-rule);
+  border-bottom: 1px solid var(--spc-gray-200);
 }
 
 .spc-challenge-brief__header h2 {
@@ -292,7 +287,7 @@ body.category-monthly-challenge .list-controls {
 
 .spc-challenge-archive__header p {
   margin: 0;
-  color: var(--spc-challenge-muted);
+  color: var(--spc-gray-400);
   line-height: 1.6;
 }
 
@@ -437,7 +432,7 @@ body.category-monthly-challenge .list-controls {
   grid-template-columns: 42px 1fr;
   gap: 1rem;
   padding: 1.15rem 0;
-  border-top: 1px solid var(--spc-challenge-rule);
+  border-top: 1px solid var(--spc-gray-200);
 }
 
 .spc-voting-dialog__steps li > span {
@@ -745,7 +740,7 @@ body.category-monthly-challenge #navigation-bar > li > a {
   padding: 0.75rem 0.8rem;
   border-bottom: 3px solid transparent;
   background: transparent;
-  color: var(--spc-challenge-muted);
+  color: var(--spc-gray-400);
   font-size: 0.98rem;
   font-weight: 700;
 }
@@ -917,7 +912,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .posters .avatar {
 body.category-monthly-challenge .topic-thumbnails-masonry .posters a::after {
   margin-left: 0.4rem;
   content: attr(data-user-card);
-  color: var(--spc-challenge-muted);
+  color: var(--spc-gray-400);
   font-size: 0.75rem;
 }
 
@@ -930,7 +925,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .activity {
   width: auto;
   height: auto;
   padding: 0;
-  color: var(--spc-challenge-muted);
+  color: var(--spc-gray-400);
   font-size: 0.75rem;
   opacity: 1 !important;
   visibility: visible !important;
@@ -1119,7 +1114,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   body.category-monthly-challenge.archetype-regular #topic-title .discourse-tag {
     padding: 0.55rem 0.75rem;
     background: #f4f4f4;
-    color: var(--spc-challenge-muted);
+    color: var(--spc-gray-400);
     font-size: 0.82rem;
   }
 
@@ -1287,7 +1282,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   body.category-monthly-challenge.archetype-regular #post_1 .post-controls .reaction-button {
     width: 48px;
     height: 54px;
-    color: var(--spc-challenge-muted);
+    color: var(--spc-gray-400);
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .post-action-menu__reply,

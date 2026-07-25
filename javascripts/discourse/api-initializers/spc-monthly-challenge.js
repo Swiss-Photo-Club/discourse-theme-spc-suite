@@ -4,6 +4,8 @@ import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 
 const COMPONENT_SELECTOR = "[data-spc-monthly-challenge]";
+const RENDER_THROTTLE_MS = 200;
+const CACHE_TTL_MS = 5 * 60 * 1000;
 const topicCache = new Map();
 
 function translate(key, options = {}) {
@@ -157,7 +159,12 @@ async function loadTopicContent(challenge) {
           };
         })
         .catch((error) => {
-          topicCache.delete(cacheKey);
+          // The failure is deliberately left in the cache. Deleting the entry
+          // here re-armed the fetch, and since renders are driven by a
+          // MutationObserver on document.body, the next frame asked for the
+          // topic again - a rate-limited response therefore produced a burst of
+          // retries that kept the limiter tripped. The entry is cleared on page
+          // change, so caching the fallback costs one stale render at worst.
           // eslint-disable-next-line no-console
           console.error("SPC Monthly Challenge: unable to load official topic", error);
           return legacyTopicContent(challenge);
@@ -949,8 +956,41 @@ const spcRun = (api) => {
   let renderRequest = 0;
   let currentActive = null;
 
+  // Every page that does not show challenge content anywhere. render() used to
+  // await the pinned brief and the challenge topic before it checked, so simply
+  // reading Meetups or Announcements fetched two challenge endpoints it had no
+  // use for - and when those were the requests that tripped the rate limiter,
+  // the unrelated category the reader was actually on failed to load with it.
+  function needsChallengeData() {
+    return (
+      isChallengePage() ||
+      // Matches ensureHomeCard(): the homepage slot only exists here.
+      document.body.classList.contains("navigation-topics") ||
+      // renderComposer() prefills the round tag, but only while it is open.
+      Boolean(document.querySelector("#reply-control.open"))
+    );
+  }
+
+  function clearChallengeSections() {
+    clearHero();
+    document
+      .querySelectorAll(
+        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive"
+      )
+      .forEach((element) => element.remove());
+  }
+
   async function render() {
     const request = ++renderRequest;
+
+    // Needs no challenge data, so it runs before the gate below.
+    repairLegacyCategoryLinks();
+
+    if (!needsChallengeData()) {
+      clearChallengeSections();
+      return;
+    }
+
     const challenges = parseChallenges();
     const activeRecord = await resolveActiveChallenge(challenges);
     if (request !== renderRequest || !activeRecord) {
@@ -967,16 +1007,12 @@ const spcRun = (api) => {
     }
     currentActive = active;
 
-    repairLegacyCategoryLinks();
     renderHomeCard(active);
     renderComposer(active, composerService);
     ensureVotingDialog();
 
     if (!isChallengePage()) {
-      clearHero();
-      document.querySelectorAll(
-        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive"
-      ).forEach((element) => element.remove());
+      clearChallengeSections();
       return;
     }
 
@@ -995,18 +1031,24 @@ const spcRun = (api) => {
     hideOfficialTopicRow(active);
   }
 
+  // Throttled on a timer rather than requestAnimationFrame. The observer at the
+  // bottom of this file watches all of document.body and every render mutates
+  // the DOM, so a frame's worth of debouncing allowed up to sixty renders a
+  // second, each one feeding the observer that scheduled the next. Leading-edge
+  // scheduling (rather than extending the wait on each mutation) means a page
+  // that never stops mutating still gets rendered.
   function scheduleRender() {
     if (renderQueued) {
       return;
     }
     renderQueued = true;
-    window.requestAnimationFrame(() => {
+    setTimeout(() => {
       renderQueued = false;
       render().catch((error) => {
         // eslint-disable-next-line no-console
         console.error("SPC Monthly Challenge: rendering failed", error);
       });
-    });
+    }, RENDER_THROTTLE_MS);
   }
 
   document.addEventListener("click", async (event) => {
@@ -1046,9 +1088,24 @@ const spcRun = (api) => {
     }
   });
 
-  api.onPageChange(() => {
+  // The brief and the challenge topic change about once a month, so the caches
+  // are dropped when they go stale rather than on every navigation. Clearing
+  // them per page change meant a fresh /c/<id>/l/latest.json and /t/<id>.json
+  // for every click anywhere in the forum, which is most of the traffic this
+  // component was generating.
+  let cachesFilledAt = Date.now();
+
+  function expireStaleCaches() {
+    if (Date.now() - cachesFilledAt < CACHE_TTL_MS) {
+      return;
+    }
+    cachesFilledAt = Date.now();
     topicCache.clear();
     clearPinnedBriefCache();
+  }
+
+  api.onPageChange(() => {
+    expireStaleCaches();
     scheduleRender();
   });
   new MutationObserver(scheduleRender).observe(document.body, {

@@ -5,6 +5,8 @@ import Category from "discourse/models/category";
 const ACTIVE_CLASS = "spc-leaderboard-strip-active";
 const STRIP_SELECTOR = "[data-spc-leaderboard-strip]";
 const MAX_LEADERS = 5;
+const RENDER_THROTTLE_MS = 200;
+const FAILURE_COOL_OFF_MS = 60000;
 
 function escapeHtml(value) {
   const element = document.createElement("span");
@@ -112,16 +114,42 @@ export default apiInitializer("1.8.0", (api) => {
   let renderQueued = false;
   let requestNumber = 0;
   let cachedLeaderboardId;
-  let cachedData;
+  let cachedRequest;
+  let coolOffUntil = 0;
   const renderedMarkup = new WeakMap();
 
-  async function leaderboardData() {
+  // Cache the *promise*, not the value it resolves to. Assigning after the
+  // await meant that every render starting while a request was still in flight
+  // saw an empty cache and fired its own /leaderboard/<id>.json. Renders are
+  // driven by a MutationObserver on document.body, so that was easily enough to
+  // trip Discourse's rate limiter - and a 429 comes back with a plain-text body
+  // that the ajax error handler tries to JSON.parse, which is why the symptom
+  // was a bare "429 error" dialog with no message in it.
+  function leaderboardData() {
     const id = Number(settings.leaderboard_id) || 1;
-    if (cachedLeaderboardId !== id || !cachedData) {
+
+    if (cachedLeaderboardId !== id) {
       cachedLeaderboardId = id;
-      cachedData = await ajax(`/leaderboard/${id}.json`);
+      cachedRequest = null;
     }
-    return cachedData;
+
+    if (!cachedRequest) {
+      if (Date.now() < coolOffUntil) {
+        return Promise.reject(new Error("leaderboard fetch is cooling off"));
+      }
+
+      cachedRequest = ajax(`/leaderboard/${id}.json`).catch((error) => {
+        // Clear the cache so a later render can try again, but not before the
+        // cool-off expires. Re-arming immediately is what turned a single
+        // rate-limited response into a retry on the very next frame, which kept
+        // the limiter tripped and the storm alive.
+        cachedRequest = null;
+        coolOffUntil = Date.now() + FAILURE_COOL_OFF_MS;
+        throw error;
+      });
+    }
+
+    return cachedRequest;
   }
 
   function removeStrip() {
@@ -171,21 +199,35 @@ export default apiInitializer("1.8.0", (api) => {
         return;
       }
       const id = Number(settings.leaderboard_id) || 1;
-      strip.innerHTML = `<a class="spc-leaderboard-strip__fallback" href="/leaderboard/${id}">Leaderboard →</a>`;
+      const markup = `<a class="spc-leaderboard-strip__fallback" href="/leaderboard/${id}">Leaderboard →</a>`;
+      if (renderedMarkup.get(strip) === markup) {
+        return;
+      }
+      strip.innerHTML = markup;
+      renderedMarkup.set(strip, markup);
+      // Logged only when the fallback actually goes in, so a strip that stays
+      // failed does not fill the console with one line per render.
       // eslint-disable-next-line no-console
       console.error("SPC Leaderboard Strip: unable to load leaderboard", error);
     }
   }
 
+  // Throttled on a timer rather than requestAnimationFrame. The observer below
+  // watches all of document.body and every render mutates the DOM, so a frame's
+  // worth of debouncing allowed up to sixty renders a second, each one feeding
+  // the observer that scheduled the next. Collapsing a burst into one render
+  // every RENDER_THROTTLE_MS is what keeps the request count sane; leading-edge
+  // scheduling (rather than extending the wait on each mutation) means a page
+  // that never stops mutating still gets rendered.
   function scheduleRender() {
     if (renderQueued) {
       return;
     }
     renderQueued = true;
-    window.requestAnimationFrame(() => {
+    setTimeout(() => {
       renderQueued = false;
       render();
-    });
+    }, RENDER_THROTTLE_MS);
   }
 
   api.onPageChange((url) => {

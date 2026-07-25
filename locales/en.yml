@@ -1,0 +1,123 @@
+en:
+  theme_metadata:
+    description: SPC homepage using native categories, filters, and a three-column topic-card feed.
+    settings:
+      monthly_category_slug: Slug of the Discourse category used for monthly challenges.
+      monthly_category_id: Numeric ID of the monthly challenge category.
+      challenge_timezone: Timezone used for challenge dates and deadlines.
+      guide_topic_url: Link to the complete entry and voting guide.
+      show_education: Show the challenge-specific shooting guide.
+      show_archive: Show the winner-led past challenge archive.
+      challenges:
+        description: One row per official challenge topic. Keep exactly one row active; archive it after recording the winner.
+        schema:
+          properties:
+            topic_id:
+              label: Official challenge topic ID
+              description: Numeric ID of the official Discourse topic. Its localized title, first paragraph, full post, and first image supply the challenge content.
+            tag:
+              label: Challenge tag
+              description: Internal tag used to filter and automatically tag submissions, for example 2026-07-cityscapes.
+            status:
+              label: Status
+            start_at:
+              label: Start date
+              description: ISO date with timezone, for example 2026-07-01T00:00:00+02:00.
+            submission_deadline:
+              label: Submission deadline
+            voting_deadline:
+              label: Voting deadline
+            gallery_url:
+              label: Entry gallery URL
+              description: Optional stable URL for this month’s entry gallery. Archived cards fall back to the official topic.
+            cover_image:
+              label: Challenge cover image override
+              description: Optional. When empty, the first non-emoji image in the official topic is used.
+            winner_title:
+              label: Winning photo title
+            winner_author:
+              label: Winner name
+            winner_topic_url:
+              label: Winning entry URL
+            winner_image:
+              label: Winning image
+            entry_count:
+              label: Final entry count
+      webinars_url: Destination for the Monthly Live Webinars card.
+  banner:
+    title: Monthly photo challenge
+    subtitle: Share your best shot for this month's theme and vote for your favorites.
+    button: Submit a photo
+  form:
+    heading: Submit a photo
+    round_label: Challenge round
+    title_label: Title
+    title_placeholder: Give your photograph a clear title
+    photo_label: Your photograph
+    photo_hint: Upload one JPG, PNG or WebP. One photograph per entry.
+    description_label: About this photo (optional)
+    description_placeholder: Where was it taken? What was the idea? Camera, lens, settings…
+    submit: Submit photo
+    cancel: Cancel
+    submitting: Submitting…
+    login_required: Please log in to submit a photo.
+    login_button: Log in
+    error_no_title: Please give your photo a title.
+    error_no_photo: Please upload a photograph.
+    discard_confirm: Discard this submission?
+    tag_warning: Your photo was posted, but the round tag could not be applied. Please let an admin know.
+  monthly_challenge:
+    label: Monthly challenge
+    current: Challenge of the month
+    submit_photo: SUBMIT A PHOTO
+    view_entries: VIEW ENTRIES
+    closed: CHALLENGE CLOSED
+    how_voting_works: How voting works
+    official_brief: Official challenge brief
+    read_full_challenge: Read the full challenge
+    your_photo: Your photograph
+    upload_hint: Upload one JPG, PNG, or WebP. One photograph per entry works best.
+    photo_title: Photo title
+    photo_title_placeholder: Give your photograph a clear title
+    shooting_guide: Shooting guide
+    tips_heading: Ideas to try
+    extra_heading: Extra challenge
+    past_challenges: Past challenges
+    past_challenges_intro: Explore previous themes through their winning photographs.
+    winner: Winner
+    winning_photo: Winning photo
+    entries: '%{count} entries'
+    by_author: by %{author}
+    submissions_close: Submissions close %{date}
+    voting_closes: Voting closes %{date}
+    active_deadlines: Submit by %{submission_date} · Vote by %{voting_date}
+    submissions_closed_voting_open: Submissions closed · Voting closes %{date}
+    vote_modal_title: How voting works
+    vote_step_one_title: Browse entries as they arrive
+    vote_step_one_body: New photographs appear throughout the submission period and can be voted on immediately.
+    vote_step_two_title: Vote for your favourites
+    vote_step_two_body: Open an entry and use the vote button. Votes can be changed until voting closes.
+    vote_step_three_title: The community chooses
+    vote_step_three_body: The photograph with the most valid votes is featured as the monthly winner.
+    full_rules: Read the full entry and voting guide
+    close: Close
+  homepage:
+    popular_categories: Popular Categories
+    all_categories: All categories
+    highlight: Highlight
+    view_category: View category →
+    latest: Latest
+    login_to_post: Log in to post
+    monthly_prompt: This month's prompt
+    pinned: Pinned
+    open_current_challenge: Open current challenge
+    actions:
+      challenge: Submit your photo
+      critique: Get a critique
+    webinars:
+      title: Monthly Live Webinars
+      description: Admin sessions, one or two each month.
+      meta: Watch & ask →
+    site_feedback:
+      title: Site Feedback
+      description: Help shape the community.

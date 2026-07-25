@@ -1,0 +1,82 @@
+de:
+  theme_metadata:
+    description: SPC-Homepage mit nativen Kategorien, Filtern und einer dreispaltigen Themen-Kartenansicht.
+    settings:
+      webinars_url: Ziel der Karte «Monatliche Live-Webinare».
+  banner:
+    title: Monatliche Foto-Challenge
+    subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.
+    button: Foto einreichen
+  form:
+    heading: Foto einreichen
+    round_label: Challenge-Runde
+    title_label: Titel
+    title_placeholder: Gib deinem Foto einen aussagekräftigen Titel
+    photo_label: Dein Foto
+    photo_hint: Lade ein JPG, PNG oder WebP hoch. Ein Foto pro Beitrag.
+    description_label: Über dieses Foto (optional)
+    description_placeholder: Wo wurde es aufgenommen? Was war die Idee? Kamera, Objektiv, Einstellungen…
+    submit: Foto einreichen
+    cancel: Abbrechen
+    submitting: Wird eingereicht…
+    login_required: Bitte melde dich an, um ein Foto einzureichen.
+    login_button: Anmelden
+    error_no_title: Bitte gib deinem Foto einen Titel.
+    error_no_photo: Bitte lade ein Foto hoch.
+    discard_confirm: Einreichung verwerfen?
+    tag_warning: Dein Foto wurde veröffentlicht, aber der Runden-Tag konnte nicht gesetzt werden. Bitte informiere einen Admin.
+  monthly_challenge:
+    label: Monatliche Challenge
+    current: Challenge des Monats
+    submit_photo: FOTO EINREICHEN
+    view_entries: BEITRÄGE ANSEHEN
+    closed: CHALLENGE BEENDET
+    how_voting_works: So funktioniert die Abstimmung
+    official_brief: Offizielle Challenge-Beschreibung
+    read_full_challenge: Vollständige Challenge lesen
+    your_photo: Dein Foto
+    upload_hint: Lade ein JPG-, PNG- oder WebP-Bild hoch. Pro Einreichung funktioniert ein Foto am besten.
+    photo_title: Fototitel
+    photo_title_placeholder: Gib deinem Foto einen aussagekräftigen Titel
+    shooting_guide: Fotografie-Guide
+    tips_heading: Ideen zum Ausprobieren
+    extra_heading: Zusatz-Challenge
+    past_challenges: Vergangene Challenges
+    past_challenges_intro: Entdecke frühere Themen anhand ihrer Gewinnerfotos.
+    winner: Gewinnerfoto
+    winning_photo: Gewinnerfoto
+    entries: '%{count} Beiträge'
+    by_author: von %{author}
+    submissions_close: Einreichungen bis %{date}
+    voting_closes: Abstimmung bis %{date}
+    active_deadlines: Einreichen bis %{submission_date} · Abstimmen bis %{voting_date}
+    submissions_closed_voting_open: Einreichungen beendet · Abstimmung bis %{date}
+    vote_modal_title: So funktioniert die Abstimmung
+    vote_step_one_title: Neue Beiträge entdecken
+    vote_step_one_body: Neue Fotos erscheinen während der Einreichungszeit und können sofort Stimmen erhalten.
+    vote_step_two_title: Favoriten wählen
+    vote_step_two_body: Öffne einen Beitrag und nutze den Abstimmungsbutton. Deine Wahl kannst du bis zum Ende ändern.
+    vote_step_three_title: Die Community entscheidet
+    vote_step_three_body: Das Foto mit den meisten gültigen Stimmen wird als Monatsgewinner präsentiert.
+    full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen
+    close: Schliessen
+  homepage:
+    popular_categories: Beliebte Kategorien
+    all_categories: Alle Kategorien
+    highlight: Highlight
+    view_category: Kategorie ansehen →
+    latest: Neueste Beiträge
+    login_to_post: Zum Posten anmelden
+    monthly_prompt: Das Thema dieses Monats
+    pinned: Angeheftet
+    open_current_challenge: Aktuelle Challenge öffnen
+    actions:
+      challenge: Foto einreichen
+      critique: Kritik erhalten
+    webinars:
+      title: Monatliche Live-Webinare
+      description: Admin-Sessions ein- bis zweimal pro Monat.
+      meta: Zuschauen & fragen →
+    site_feedback:
+      title: Website-Feedback
+      description: Hilf mit, die Community weiterzuentwickeln.

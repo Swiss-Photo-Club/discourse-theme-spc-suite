@@ -1,0 +1,114 @@
+challenge_category_id:
+  type: integer
+  default: 6
+  description: "ID of the Monthly Challenge category (Admin > Categories, the number in the URL)"
+
+challenge_category_slug:
+  type: string
+  default: monthly-challenge
+  description: "Slug of the Monthly Challenge category, used to catch New Topic links"
+
+round_tag_mode:
+  type: enum
+  default: auto
+  choices:
+    - auto
+    - fixed
+  description: "How the challenge round tag is chosen. auto = find the category tag starting with the current month (e.g. 2026-07-cityscapes). fixed = always use the round_tag setting below."
+
+round_tag:
+  type: string
+  default: ""
+  description: "Round tag applied to submissions when round_tag_mode is 'fixed' (e.g. 2026-07)"
+
+show_banner:
+  type: bool
+  default: false
+  description: "Show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)"
+
+replace_new_topic_button:
+  type: bool
+  default: true
+  description: "In the challenge category, the New Topic button opens the photo submission page instead of the composer"
+
+monthly_category_slug:
+  type: string
+  default: monthly-challenge
+
+monthly_category_id:
+  type: integer
+  default: 6
+
+challenge_timezone:
+  type: string
+  default: Europe/Zurich
+
+guide_topic_url:
+  type: string
+  default: /t/monatliche-foto-challenge-so-funktioniert-es/8
+
+show_education:
+  type: bool
+  default: true
+
+show_archive:
+  type: bool
+  default: true
+
+challenges:
+  type: objects
+  default:
+    - topic_id: 37
+      tag: 2026-07-cityscapes
+      status: active
+      start_at: "2026-07-01T00:00:00+02:00"
+      submission_deadline: "2026-07-31T23:59:00+02:00"
+      voting_deadline: "2026-08-03T23:59:00+02:00"
+      gallery_url: ""
+      winner_title: ""
+      winner_author: ""
+      winner_topic_url: ""
+      entry_count: 0
+  schema:
+    name: challenge
+    identifier: tag
+    properties:
+      topic_id:
+        type: integer
+        required: true
+      tag:
+        type: string
+        required: true
+      status:
+        type: enum
+        required: true
+        choices:
+          - draft
+          - active
+          - archived
+      start_at:
+        type: string
+        required: true
+      submission_deadline:
+        type: string
+        required: true
+      voting_deadline:
+        type: string
+      gallery_url:
+        type: string
+      cover_image:
+        type: upload
+      winner_title:
+        type: string
+      winner_author:
+        type: string
+      winner_topic_url:
+        type: string
+      winner_image:
+        type: upload
+      entry_count:
+        type: integer
+
+webinars_url:
+  type: string
+  default: "/upcoming-events"

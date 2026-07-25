@@ -1,0 +1,60 @@
+fr:
+  monthly_challenge:
+    label: Challenge du mois
+    current: Challenge du mois
+    submit_photo: ENVOYER UNE PHOTO
+    view_entries: VOIR LES PHOTOS
+    closed: CHALLENGE TERMINÉ
+    how_voting_works: Comment fonctionne le vote
+    official_brief: Présentation officielle du challenge
+    read_full_challenge: Lire le challenge complet
+    your_photo: Votre photo
+    upload_hint: Ajoutez un fichier JPG, PNG ou WebP. Une photo par participation fonctionne le mieux.
+    photo_title: Titre de la photo
+    photo_title_placeholder: Donnez un titre clair à votre photo
+    shooting_guide: Guide photo
+    tips_heading: Idées à essayer
+    extra_heading: Défi supplémentaire
+    past_challenges: Challenges précédents
+    past_challenges_intro: Explorez les thèmes précédents à travers leurs photos gagnantes.
+    winner: Photo gagnante
+    winning_photo: Photo gagnante
+    entries: '%{count} participations'
+    by_author: par %{author}
+    submissions_close: Envois jusqu’au %{date}
+    voting_closes: Vote jusqu’au %{date}
+    active_deadlines: Envoyer avant le %{submission_date} · Voter avant le %{voting_date}
+    submissions_closed_voting_open: Envois terminés · Vote jusqu’au %{date}
+    vote_modal_title: Comment fonctionne le vote
+    vote_step_one_title: Découvrez les nouvelles participations
+    vote_step_one_body: Les nouvelles photos apparaissent pendant la période d’envoi et peuvent recevoir des votes immédiatement.
+    vote_step_two_title: Votez pour vos préférées
+    vote_step_two_body: Ouvrez une participation et utilisez le bouton de vote. Vous pouvez modifier votre choix jusqu’à la clôture.
+    vote_step_three_title: La communauté choisit
+    vote_step_three_body: La photographie qui obtient le plus de votes valides devient la gagnante du mois.
+    full_rules: Lire le guide complet de participation et de vote
+    close: Fermer
+  theme_metadata:
+    description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
+    settings:
+      webinars_url: Destination de la carte Webinaires mensuels en direct.
+  homepage:
+    popular_categories: Catégories populaires
+    all_categories: Toutes les catégories
+    highlight: À la une
+    view_category: Voir la catégorie →
+    latest: Derniers sujets
+    login_to_post: Se connecter pour publier
+    monthly_prompt: Le thème du mois
+    pinned: Épinglé
+    open_current_challenge: Ouvrir le défi en cours
+    actions:
+      challenge: Soumettre une photo
+      critique: Demander une critique
+    webinars:
+      title: Webinaires mensuels en direct
+      description: Sessions avec les administrateurs, une à deux fois par mois.
+      meta: Regarder et poser des questions →
+    site_feedback:
+      title: Avis sur le site
+      description: Aidez-nous à façonner la communauté.

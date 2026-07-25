@@ -1,0 +1,14 @@
+# Build artefacts — Discourse installs from the repo, not from a zip
+*.zip
+
+# macOS
+.DS_Store
+._*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Node, if tooling is ever added
+node_modules/

@@ -1,16 +1,22 @@
 /* ===== SPC Monthly Challenge ===== */
-/* Challenge tokens — aliases into the SPC design system (single source
-   in SPC Branding). Consolidated in phase 5; the former :root and
+/* Challenge tokens. Consolidated in phase 5; the former :root and
    body-scoped duplicates disagreed on gold (#d4af37 vs #e9a13e), muted
    (#7f8592 vs #8a909e) and rule (#e3e5e9 vs #e2e4e9); the values that
-   actually rendered on the category pages won. */
+   actually rendered on the category pages won.
+
+   The five pure pass-throughs (navy, coral, gold, ink, surface) are
+   gone — the rules below name the SPC token directly. Only these two
+   are left, because they are NOT aliases: they are neutral values the
+   ramp does not currently carry. --spc-challenge-muted (#8a909e) is
+   close to --spc-gray-400 (#8e98a8) and --spc-challenge-rule (#e2e4e9)
+   is close to --spc-gray-200 (#e9ebf8), but "close" is a site-wide
+   visual change, so folding them into the ramp is its own step.
+
+   Not listed here and not ours to define: --spc-challenge-cover, which
+   spc-monthly-challenge.js sets inline on the hero and the homepage
+   card. It has a gradient fallback at its use site. */
 :root {
-  --spc-challenge-navy: var(--spc-indigo);
-  --spc-challenge-coral: var(--spc-coral);
-  --spc-challenge-gold: var(--spc-casablanca);
-  --spc-challenge-ink: var(--spc-charcoal);
   --spc-challenge-muted: #8a909e;
-  --spc-challenge-surface: var(--spc-wild-sand);
   --spc-challenge-rule: #e2e4e9;
 }
 
@@ -50,8 +56,8 @@ body.category-monthly-challenge .category-title-header {
   padding: 3.5rem;
   overflow: hidden;
   border: 0;
-  border-bottom: 6px solid var(--spc-challenge-coral);
-  background-color: var(--spc-challenge-navy);
+  border-bottom: 6px solid var(--spc-coral);
+  background-color: var(--spc-indigo);
   background-image: var(--spc-challenge-cover, linear-gradient(135deg, #1a2744, #28395e));
   background-position: center;
   background-size: cover;
@@ -122,7 +128,7 @@ body.category-monthly-challenge .category-title-header {
 }
 
 .spc-challenge-button--primary {
-  background: var(--spc-challenge-coral);
+  background: var(--spc-coral);
   color: #ffffff !important;
 }
 
@@ -147,14 +153,14 @@ body.category-monthly-challenge .category-title-header {
   gap: 0.15rem;
   margin-top: 1.1rem;
   padding: 0.8rem 1rem;
-  border-left: 4px solid var(--spc-challenge-gold);
+  border-left: 4px solid var(--spc-casablanca);
   background: rgba(12, 20, 37, 0.64);
   color: #ffffff !important;
   text-decoration: none;
 }
 
 .spc-challenge-hero__winner > span {
-  color: var(--spc-challenge-gold);
+  color: var(--spc-casablanca);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -187,7 +193,7 @@ body.category-monthly-challenge .list-controls {
   padding: 2.5rem 3rem 3rem;
   border-bottom: 1px solid var(--spc-challenge-rule);
   background: #ffffff;
-  color: var(--spc-challenge-ink);
+  color: var(--spc-charcoal);
   box-sizing: border-box;
 }
 
@@ -204,12 +210,12 @@ body.category-monthly-challenge .list-controls {
 
 .spc-challenge-brief__header h2 {
   margin: 0.35rem 0 0;
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-size: clamp(1.7rem, 3vw, 2.6rem);
 }
 
 .spc-challenge-brief__header > a {
-  color: var(--spc-challenge-coral) !important;
+  color: var(--spc-coral) !important;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -217,7 +223,7 @@ body.category-monthly-challenge .list-controls {
 .spc-challenge-brief .spc-challenge-section-kicker,
 .spc-challenge-archive .spc-challenge-section-kicker,
 .spc-voting-dialog .spc-challenge-section-kicker {
-  color: var(--spc-challenge-coral);
+  color: var(--spc-coral);
 }
 
 .spc-challenge-brief__content {
@@ -243,7 +249,7 @@ body.category-monthly-challenge .list-controls {
 .spc-challenge-brief__content h2,
 .spc-challenge-brief__content h3 {
   margin-top: 2rem;
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
 }
 
 .spc-challenge-brief__content img:not(.emoji) {
@@ -256,7 +262,7 @@ body.category-monthly-challenge .list-controls {
 .spc-challenge-brief__content blockquote {
   margin: 1.5rem 0;
   padding: 0.85rem 1.1rem;
-  border-left-color: var(--spc-challenge-coral);
+  border-left-color: var(--spc-coral);
   background: #fff4f2;
 }
 
@@ -280,7 +286,7 @@ body.category-monthly-challenge .list-controls {
 
 .spc-challenge-archive__header h2 {
   margin: 0.35rem 0 0;
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-size: clamp(1.9rem, 3vw, 3rem);
 }
 
@@ -303,7 +309,7 @@ body.category-monthly-challenge .list-controls {
   isolation: isolate;
   min-height: 310px;
   overflow: hidden;
-  background-color: var(--spc-challenge-navy);
+  background-color: var(--spc-indigo);
   background-image: var(--spc-archive-image, linear-gradient(135deg, #1a2744, #344974));
   background-position: center;
   background-size: cover;
@@ -385,7 +391,7 @@ body.category-monthly-challenge .list-controls {
   overflow: auto;
   border: 0;
   background: #ffffff;
-  color: var(--spc-challenge-ink);
+  color: var(--spc-charcoal);
   box-shadow: 0 28px 80px rgba(7, 14, 30, 0.32);
 }
 
@@ -401,7 +407,7 @@ body.category-monthly-challenge .list-controls {
 
 .spc-voting-dialog__panel h2 {
   margin: 0.45rem 0 1.5rem;
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-size: clamp(1.8rem, 4vw, 2.7rem);
 }
 
@@ -412,8 +418,8 @@ body.category-monthly-challenge .list-controls {
   width: 42px;
   height: 42px;
   border: 0;
-  background: var(--spc-challenge-surface);
-  color: var(--spc-challenge-navy);
+  background: var(--spc-wild-sand);
+  color: var(--spc-indigo);
   font-size: 1.6rem;
   cursor: pointer;
 }
@@ -440,13 +446,13 @@ body.category-monthly-challenge .list-controls {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: var(--spc-challenge-coral);
+  background: var(--spc-coral);
   color: #ffffff;
   font-weight: 800;
 }
 
 .spc-voting-dialog__steps strong {
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
 }
 
 .spc-voting-dialog__steps p {
@@ -458,13 +464,13 @@ body.category-monthly-challenge .list-controls {
 .spc-voting-dialog__guide {
   display: inline-block;
   margin-top: 1rem;
-  color: var(--spc-challenge-coral) !important;
+  color: var(--spc-coral) !important;
   font-weight: 700;
 }
 
 /* Submission composer ------------------------------------------------ */
 #reply-control.spc-monthly-composer .reply-area {
-  border-top: 5px solid var(--spc-challenge-coral);
+  border-top: 5px solid var(--spc-coral);
   background: #ffffff;
 }
 
@@ -493,16 +499,16 @@ body.category-monthly-challenge .list-controls {
   gap: 0.45rem;
   margin-bottom: 0.85rem;
   padding: 1rem 1.15rem;
-  border-top: 4px solid var(--spc-challenge-coral);
+  border-top: 4px solid var(--spc-coral);
   background: #f3f5f8;
 }
 
 .spc-composer-challenge .spc-challenge-section-kicker {
-  color: var(--spc-challenge-coral);
+  color: var(--spc-coral);
 }
 
 .spc-composer-challenge strong {
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-size: 1.2rem;
 }
 
@@ -516,7 +522,7 @@ body.category-monthly-challenge .list-controls {
 .spc-composer-challenge a {
   width: fit-content;
   margin-top: 0.2rem;
-  color: var(--spc-challenge-coral) !important;
+  color: var(--spc-coral) !important;
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -525,7 +531,7 @@ body.category-monthly-challenge .list-controls {
   margin-top: 0.85rem;
   padding: 1.25rem;
   border: 1px dashed #c8ccd4;
-  background: var(--spc-challenge-surface);
+  background: var(--spc-wild-sand);
 }
 
 .spc-composer-photo-intro {
@@ -535,7 +541,7 @@ body.category-monthly-challenge .list-controls {
 }
 
 .spc-composer-photo-intro strong {
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-size: 1.05rem;
 }
 
@@ -547,22 +553,22 @@ body.category-monthly-challenge .list-controls {
 }
 
 #reply-control.spc-monthly-composer .form-template-field__label {
-  color: var(--spc-challenge-navy);
+  color: var(--spc-indigo);
   font-weight: 700;
 }
 
 #reply-control.spc-monthly-composer .pick-files-button .btn {
   min-height: 48px;
   margin-top: 0.65rem;
-  border-color: var(--spc-challenge-coral);
+  border-color: var(--spc-coral);
   background: #ffffff;
-  color: var(--spc-challenge-coral);
+  color: var(--spc-coral);
   font-weight: 700;
 }
 
 #reply-control.spc-monthly-composer .save-or-cancel .create {
   min-height: 50px;
-  background: var(--spc-challenge-coral);
+  background: var(--spc-coral);
   color: #ffffff;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -695,7 +701,7 @@ body.category-monthly-challenge #main-outlet {
   width: 100% !important;
   max-width: none !important;
   padding-top: 0;
-  background: var(--spc-challenge-surface);
+  background: var(--spc-wild-sand);
 }
 
 /* The native category heading duplicates the component-rendered hero. */
@@ -707,7 +713,7 @@ body.category-monthly-challenge .list-controls .category-heading {
 body.category-monthly-challenge .list-controls {
   margin: 0;
   padding: 1.75rem 2rem 0;
-  background: var(--spc-challenge-surface);
+  background: var(--spc-wild-sand);
 }
 
 body.category-monthly-challenge .list-controls > .container {
@@ -746,8 +752,8 @@ body.category-monthly-challenge #navigation-bar > li > a {
 
 body.category-monthly-challenge #navigation-bar > li.active > a,
 body.category-monthly-challenge #navigation-bar > li > a.active {
-  border-bottom-color: var(--spc-challenge-coral);
-  color: var(--spc-challenge-navy);
+  border-bottom-color: var(--spc-coral);
+  color: var(--spc-indigo);
 }
 
 /* List container */
@@ -756,7 +762,7 @@ body.category-monthly-challenge .container.list-container.--topic-list {
   max-width: none;
   margin: 0;
   padding: 1.5rem 2rem 3rem;
-  background: var(--spc-challenge-surface);
+  background: var(--spc-wild-sand);
   box-sizing: border-box;
 }
 
@@ -852,7 +858,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
 }
 
 body.category-monthly-challenge .topic-thumbnails-masonry .link-top-line .title {
-  color: var(--spc-challenge-ink);
+  color: var(--spc-charcoal);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
@@ -876,8 +882,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .list-vote-count {
   min-width: 54px;
   min-height: 46px;
   padding: 0.25rem 0.45rem;
-  border: 1px solid var(--spc-challenge-coral);
-  color: var(--spc-challenge-coral) !important;
+  border: 1px solid var(--spc-coral);
+  color: var(--spc-coral) !important;
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -953,7 +959,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   min-height: 0;
   margin-top: 0 !important;
   padding: 1.4rem !important;
-  background: var(--spc-challenge-navy);
+  background: var(--spc-indigo);
 }
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .link-top-line .title {
@@ -1048,7 +1054,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
 @media (min-width: 601px) {
   body.category-monthly-challenge.archetype-regular {
-    background: var(--spc-challenge-surface);
+    background: var(--spc-wild-sand);
   }
 
   body.category-monthly-challenge.archetype-regular #main-outlet-wrapper {
@@ -1059,7 +1065,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   body.category-monthly-challenge.archetype-regular #main-outlet {
     width: 100% !important;
     padding: 0 !important;
-    background: var(--spc-challenge-surface);
+    background: var(--spc-wild-sand);
   }
 
   body.category-monthly-challenge.archetype-regular #topic-title {
@@ -1067,7 +1073,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     width: 100%;
     margin: 0;
     padding: 2.25rem 3rem 2rem;
-    border-bottom: 4px solid var(--spc-challenge-coral);
+    border-bottom: 4px solid var(--spc-coral);
     background: #ffffff;
     box-sizing: border-box;
   }
@@ -1079,7 +1085,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
   body.category-monthly-challenge.archetype-regular #topic-title h1 {
     margin: 0 0 0.85rem;
-    color: var(--spc-challenge-navy);
+    color: var(--spc-indigo);
     font-size: clamp(2.1rem, 3vw, 3rem);
     font-weight: 800;
     line-height: 1.08;
@@ -1172,7 +1178,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .names .username a {
-    color: var(--spc-challenge-ink);
+    color: var(--spc-charcoal);
     font-size: 1rem;
     font-weight: 700;
   }
@@ -1188,7 +1194,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     max-width: none !important;
     margin: 1.1rem 0 0;
     padding: 0;
-    color: var(--spc-challenge-ink);
+    color: var(--spc-charcoal);
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .cooked > h3:first-child,
@@ -1230,8 +1236,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     align-items: stretch;
     height: 54px;
     margin-right: auto;
-    border: 1px solid var(--spc-challenge-coral);
-    background: var(--spc-challenge-coral);
+    border: 1px solid var(--spc-coral);
+    background: var(--spc-coral);
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button,
@@ -1304,8 +1310,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     min-width: 180px;
     min-height: 54px;
     margin: 0;
-    border: 1px solid var(--spc-challenge-coral);
-    background: var(--spc-challenge-coral);
+    border: 1px solid var(--spc-coral);
+    background: var(--spc-coral);
     color: #ffffff;
   }
 
@@ -1314,7 +1320,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     max-width: none;
     margin: 0;
     padding: 2rem 3rem 3rem;
-    background: var(--spc-challenge-surface);
+    background: var(--spc-wild-sand);
     box-sizing: border-box;
   }
 }
@@ -1353,7 +1359,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
   body.category-monthly-challenge.archetype-regular #topic-title h1 {
     margin: 0 0 0.75rem;
-    color: var(--spc-challenge-navy);
+    color: var(--spc-indigo);
     font-size: 1.75rem;
     font-weight: 800;
     line-height: 1.15;
@@ -1435,7 +1441,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .names .username a {
-    color: var(--spc-challenge-ink);
+    color: var(--spc-charcoal);
     font-size: 1rem;
     font-weight: 700;
   }
@@ -1452,7 +1458,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
   body.category-monthly-challenge.archetype-regular #post_1 .cooked {
     margin-top: 1rem;
-    color: var(--spc-challenge-ink);
+    color: var(--spc-charcoal);
     font-size: 1rem;
     line-height: 1.55;
   }
@@ -1495,8 +1501,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     align-items: stretch;
     height: 52px;
     margin-right: auto;
-    border: 1px solid var(--spc-challenge-coral);
-    background: var(--spc-challenge-coral);
+    border: 1px solid var(--spc-coral);
+    background: var(--spc-coral);
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button {
@@ -1570,8 +1576,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     min-width: 112px;
     min-height: 52px;
     margin-left: auto;
-    border: 1px solid var(--spc-challenge-coral);
-    background: var(--spc-challenge-coral);
+    border: 1px solid var(--spc-coral);
+    background: var(--spc-coral);
     color: #ffffff;
   }
 }

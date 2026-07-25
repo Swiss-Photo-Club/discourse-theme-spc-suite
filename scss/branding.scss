@@ -1,0 +1,518 @@
+/* ==================================================================
+   SPC Branding CSS & Assets — site-wide brand layer ONLY.
+
+   Owns: Open Sans extra weights, brand tokens, sharp corners, buttons,
+   heading scale, category badge titles, site header links, list-heading
+   type, masonry card background, post CTA buttons ([data-wrap]), and
+   the sidebar visual treatment.
+
+   Page-specific styling lives elsewhere by design:
+   - Homepage       -> SPC Homepage Design
+   - Challenge      -> SPC Monthly Challenge (category, topics, composer)
+   - Critique       -> SPC Critique Submit / Workspace
+   Refactor history: phase 1 (dead CSS removed), phase 3 (challenge
+   category consolidated), phase 4 (challenge + homepage code moved out;
+   2026-07-22). Backups: components id 40-42.
+   ================================================================== */
+
+
+/* ===================================================================
+   Swiss Photo Club — Discourse Theme Component (v2, minimal)
+
+   Most brand coloring is now handled by Admin → Customize → Colors →
+   "SPC color palette" (primary=#333333, tertiary=#FF5B5D coral,
+   quaternary=#1A2744 indigo, etc.) — Discourse derives its internal
+   --d-* link/sidebar/badge tokens from those automatically, so this
+   file only covers what the palette genuinely cannot: shape, button
+   typography, heading scale, and one deliberate style choice on
+   muted topic titles.
+
+   HOW TO USE:
+   Discourse Admin → Customize → Themes → (your theme) → Edit CSS/HTML
+   → paste into the "Common" > CSS tab, or add as a separate Theme
+   Component.
+   =================================================================== */
+
+/* -------------------------------------------------
+   0. Extra Open Sans weights — Discourse's native Fonts
+   setting only serves Regular (400) and Bold (700), so
+   font-weight values in between or above render as one
+   of those two with no visible difference. These four
+   @font-face rules add the missing weights under the
+   same "Open Sans" family name; the browser picks the
+   matching weight automatically alongside Discourse's
+   built-in Regular/Bold faces.
+   ------------------------------------------------- */
+@font-face {
+  font-family: 'Open Sans';
+  src: url($OpenSans-Light) format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url($OpenSans-Medium) format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url($OpenSans-SemiBold) format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url($OpenSans-ExtraBold) format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -------------------------------------------------
+   SPC DESIGN SYSTEM — single source of truth (phase 5).
+   Moved here from SPC Homepage Design; every SPC component
+   consumes these. Do not re-declare tokens elsewhere.
+   Note: the live brand navy is #1a2744 (= palette tertiary /
+   header background). Headings intentionally use the darker
+   --spc-indigo-800 (#1f2b55), the value once noted as the
+   "corrected" indigo.
+   ------------------------------------------------- */
+:root {
+  /* Brand */
+  --spc-coral: #ff5b5d;
+  --spc-coral-hover: #cd3234; /* settled phase 5: "Hover: Coral 6",
+                                 cross-confirmed against two reference
+                                 screenshots; was #e6474a here and #e94e50 /
+                                 #d63f42 in other components */
+  --spc-tidal: #3a7d7b;
+  --spc-tile-dark: #2c5f5e;
+  --spc-tiber: #0a3039;
+  --spc-indigo: #1a2744;
+  --spc-charcoal: #333333;
+  --spc-wild-sand: #f4f4f4; /* settled phase 5: was #f5f5f5 here, #F4F4F4 in branding */
+  --spc-casablanca: #e9a13e;
+  --spc-footer: #1e2425;
+  --spc-copyright: #2f3537;
+
+  /* Primary ramp */
+  --spc-primary-50: #ffefef;
+  --spc-primary-100: #ffcece;
+  --spc-primary-200: #ffadae;
+  --spc-primary-300: #ff8c8e;
+  --spc-primary-400: #ff6b6d;
+  --spc-primary-500: #ff5b5d;
+  --spc-primary-600: #cc494a;
+  --spc-primary-700: #993738;
+  --spc-primary-800: #662425;
+  --spc-primary-900: #331213;
+
+  /* Indigo ramp */
+  --spc-indigo-50: #ebefff;
+  --spc-indigo-100: #c4d1fd;
+  --spc-indigo-200: #9fb4fb;
+  --spc-indigo-300: #819cf7;
+  --spc-indigo-400: #6b8af0;
+  --spc-indigo-500: #5a79e3;
+  --spc-indigo-600: #4864c3;
+  --spc-indigo-700: #22367a;
+  --spc-indigo-800: #1f2b55;
+  --spc-indigo-900: #0a1433;
+
+  /* Neutral ramp */
+  --spc-gray-50: #f8f8f8;
+  --spc-gray-100: #f1f1f1;
+  --spc-gray-200: #e9ebf8;
+  --spc-gray-300: #d1d5db;
+  --spc-gray-400: #8e98a8;
+  --spc-gray-500: #6b7280;
+  --spc-gray-600: #4b5563;
+  --spc-gray-700: #374151;
+  --spc-gray-800: #1f2937;
+  --spc-gray-900: #111827;
+
+  /* Semantic */
+  --spc-success-50: #e6f9e6;
+  --spc-success-500: #2e8b3e;
+  --spc-success-700: #0a4d0a;
+  --spc-error-50: #fdeaea;
+  --spc-error-500: #cd3234;
+  --spc-error-700: #6b0f0f;
+  --spc-warn-50: #fff7eb;
+  --spc-warn-500: #e9a13e;
+  --spc-warn-700: #6b4a0e;
+
+  /* Semantic aliases */
+  --fg-1: var(--spc-charcoal);
+  --fg-2: var(--spc-gray-500);
+  --fg-3: var(--spc-gray-400);
+  --fg-invert: #ffffff;
+  --fg-action: var(--spc-coral);
+  --fg-structure: var(--spc-indigo);
+  --bg-page: #ffffff;
+  --bg-alt: var(--spc-wild-sand);
+  --bg-dark: var(--spc-indigo);
+  --stroke-1: var(--spc-gray-200);
+  --stroke-2: var(--spc-gray-300);
+  --stroke-action: var(--spc-coral);
+
+  /* Elevation and overlays */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+  --shadow-overlap: 0 2px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.2);
+  --shadow-subtle: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-filters: 0 2px 20px rgba(0, 0, 0, 0.14);
+  --overlay-hero: linear-gradient(
+    to bottom,
+    rgba(26, 39, 68, 0.65),
+    rgba(26, 39, 68, 0.3)
+  );
+  --overlay-card: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.68),
+    rgba(0, 0, 0, 0.02)
+  );
+
+  /* Spacing and layout */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --container-max: 1170px;
+  --container-pad: 20px;
+  --nav-height: 60px;
+  --radius: 0;
+
+  /* Type */
+  --font-sans: "Open Sans", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-sans);
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-bold: 700;
+  --fw-xbold: 800;
+  --fs-h1-44: 44px;
+  --fs-h1-36: 36px;
+  --fs-h2: 40px;
+  --fs-h3: 33px;
+  --fs-h4: 28px;
+  --fs-title: 24px;
+  --fs-sub: 19px;
+  --fs-body-lg: 18px;
+  --fs-body: 16px;
+  --fs-body-sm: 14px;
+  --fs-detail: 12px;
+  --lh-tight: 117%;
+  --lh-body: 150%;
+  --lh-open: 175%;
+  --lh-airy: 200%;
+
+  /* Motion */
+  --easing-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+}
+
+/* -------------------------------------------------
+   Sharp corners — non-negotiable per design system.
+   Discourse defaults to rounded corners on buttons,
+   inputs, and cards; this flattens all of it.
+   ------------------------------------------------- */
+* {
+  border-radius: 0 !important;
+}
+
+/* -------------------------------------------------
+   Buttons — bold uppercase, coral fill
+   (matches "COURSES" / "GIFT VOUCHERS" / "ORDER" buttons
+   on the website)
+   ------------------------------------------------- */
+.btn-primary,
+#topic-footer-buttons .btn.create,
+.new-topic,
+button.btn-primary {
+  background: var(--spc-coral);
+  border-color: var(--spc-coral);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.65em 1.4em;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover {
+  background: var(--spc-coral-hover);
+  border-color: var(--spc-coral-hover);
+}
+
+.btn-primary:active,
+button.btn-primary:active {
+  background: var(--spc-coral-hover);
+  border-color: var(--spc-coral-hover);
+}
+
+.btn-default:hover {
+  background: var(--spc-indigo-800);
+  color: #FFFFFF;
+  border-color: var(--spc-indigo-800);
+}
+
+/* -------------------------------------------------
+   Heading type scale — from the SPC design system
+   specimen sheet. Headlines use the design system's
+   --fg-structure (indigo) which is intentionally
+   different from body text color (charcoal, handled
+   by the palette's "primary" already) — Discourse has
+   no separate token for this distinction, so it's set
+   directly here.
+   ------------------------------------------------- */
+h1, h2, h3, h4 {
+  color: var(--spc-indigo-800); /* darker heading navy — see design-system note */
+}
+
+/* -------------------------------------------------
+   Category badge titles (e.g. "Monthly Challenge"
+   in the category list) — confirmed via devtools: driven
+   by a dedicated token, --category-badge-title-color,
+   separate from the generic h1-h4 rule above (which only
+   reached it via inheritance and lost anyway). No token
+   covers font-weight, so that needs its own selector.
+   ------------------------------------------------- */
+:root {
+  --category-badge-title-color: var(--spc-tiber);
+}
+
+.badge-category__wrapper .badge-category__name {
+  font-weight: 700;
+}
+
+/* -------------------------------------------------
+   Site header (all routes) — navy bar, white links.
+   Hover keeps the same weight, so no jitter guard is
+   needed. (Replaced two older anti-jitter approaches,
+   phase 4.)
+   ------------------------------------------------- */
+.d-header {
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.d-header .custom-header-links .headerLink {
+  min-width: auto;
+  margin-inline: 0.35rem;
+}
+
+.d-header .custom-header-links .headerLink a {
+  padding: 0.75rem 0.55rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.d-header .custom-header-links .headerLink a:hover {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* List headings — H1 44 Regular (not bold, per request).
+   (Was also applied to the welcome-banner heading; those selectors were
+   removed 2026-07-22 because the welcome banner is disabled.) */
+#list-area h2 {
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 175%;
+}
+
+/* -------------------------------------------------
+   Masonry/thumbnail grid background — lighter gray
+   Confirmed via devtools: this specific selector
+   (common.scss:101) wins over the global --primary-low
+   variable, so overriding it here rather than changing
+   --primary-low globally, which is used elsewhere too.
+   ------------------------------------------------- */
+.topic-thumbnails-grid .topic-list-item,
+.topic-thumbnails-masonry .topic-list-item {
+  background-color: var(--spc-wild-sand);
+}
+
+/* Enable buttons in posts */
+[data-wrap="primary-button"] a {
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  background: #FF5B5D;
+  color: #fff;
+  border-radius: 0px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-right: 0.5em;
+}
+
+[data-wrap="secondary-button"] a {
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  background: transparent;
+  color: #FF5B5D;
+  border: 1px solid #FF5B5D;
+  border-radius: 0px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+/* Native Discourse sidebar — SPC visual treatment
+   Width, hamburger toggle, responsive drawer, links, and permissions remain native.
+   The admin interface is intentionally excluded. */
+body:not(.admin-interface) .sidebar-wrapper,
+body:not(.admin-interface) #d-sidebar {
+  background: #ffffff;
+}
+
+body:not(.admin-interface) #d-sidebar {
+  border-right-color: var(--stroke-1);
+}
+
+body:not(.admin-interface) .sidebar-sections {
+  padding: 16px 12px 40px;
+}
+
+body:not(.admin-interface) .sidebar-section {
+  padding-bottom: 0;
+}
+
+body:not(.admin-interface) .sidebar-section + .sidebar-section {
+  margin-top: 14px;
+}
+
+body:not(.admin-interface) .sidebar-section-header-wrapper {
+  min-height: 0;
+  margin: 0 0 6px;
+  padding-inline: 10px;
+}
+
+body:not(.admin-interface) .sidebar-section-header {
+  min-height: 0;
+  color: #8e98a8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+body:not(.admin-interface) .sidebar-section-link {
+  min-height: 0;
+  height: auto;
+  margin-bottom: 1px;
+  padding: 7px 10px;
+  gap: 10px;
+  border-radius: 0;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+body:not(.admin-interface) .sidebar-section-link:hover,
+body:not(.admin-interface) .sidebar-section-link:focus-visible {
+  background: #f8f8f8;
+  color: var(--spc-indigo);
+}
+
+body:not(.admin-interface) .sidebar-section-link.active {
+  background: #f1f1f1;
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+body:not(.admin-interface) .sidebar-section-link-content-text {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+body:not(.admin-interface) .sidebar-section-link-prefix {
+  width: 14px;
+  min-width: 14px;
+  height: 14px;
+  color: #8e98a8;
+}
+
+body:not(.admin-interface) .sidebar-section-link-prefix .d-icon {
+  width: 14px;
+  height: 14px;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link:not([href="/categories"])
+  .sidebar-section-link-prefix {
+  display: block;
+  width: 11px;
+  min-width: 11px;
+  height: 11px;
+  background: currentColor;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link:not([href="/categories"])
+  .sidebar-section-link-prefix
+  > * {
+  display: none;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link[href="/categories"]
+  .sidebar-section-link-prefix {
+  width: 11px;
+  min-width: 11px;
+  height: 11px;
+  border: 1.4px solid #d1d5db;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link[href="/categories"]
+  .sidebar-section-link-prefix
+  > * {
+  display: none;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link[href^="/c/monthly-challenge/"],
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link[href^="/c/critique-portfolio-reviews/"] {
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="tags"]
+  .sidebar-section-link-prefix {
+  display: none;
+}
+
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="tags"]
+  .sidebar-section-link {
+  gap: 0;
+  color: #6b7280;
+  font-size: 13px;
+}

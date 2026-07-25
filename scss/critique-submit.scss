@@ -1,0 +1,50 @@
+// Softened category banner for the critique category
+body.category-#{$critique_category_slug} {
+  .category-title-header,
+  .category-banner {
+    background: #{$critique_banner_background} !important;
+
+    .category-title,
+    h1,
+    .category-title-description,
+    .category-title-description p,
+    .cooked {
+      color: #{$critique_banner_text_color} !important;
+    }
+  }
+}
+
+// Introductions banner in the teal accent
+body.category-#{$critique_intro_category_slug} {
+  .category-title-header,
+  .category-banner {
+    background: #{$critique_intro_banner_background} !important;
+
+    .category-title,
+    h1,
+    .category-title-description,
+    .category-title-description p,
+    .cooked {
+      color: #{$critique_banner_text_color} !important;
+    }
+  }
+}
+
+// Hide the default New Topic button in the managed categories
+@if $critique_hide_new_topic_button {
+  body.category-#{$critique_category_slug},
+  body.category-#{$critique_intro_category_slug} {
+    #create-topic,
+    .topic-list-header-buttons #create-topic {
+      display: none;
+    }
+  }
+}
+
+// Submit buttons
+.spc-critique-submit {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5em;
+  margin: 0 0 0.75em 0;
+}

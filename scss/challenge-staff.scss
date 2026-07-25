@@ -1,0 +1,17 @@
+/* Staff need the topic admin wrench in the challenge category to pin the
+   monthly brief, but the member-facing footer actions stay hidden. The
+   earlier rules blanket-hide `__actions`; this later block re-shows only
+   the wrench (Discourse renders it for staff only). */
+body.category-monthly-challenge.archetype-regular
+  .topic-footer-main-buttons__actions {
+  display: flex !important;
+  align-items: center;
+  margin-right: auto;
+  gap: 0.5rem;
+}
+
+body.category-monthly-challenge.archetype-regular
+  .topic-footer-main-buttons__actions
+  > *:not(.topic-admin-menu-trigger) {
+  display: none !important;
+}

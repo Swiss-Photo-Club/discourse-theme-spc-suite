@@ -1,13 +1,13 @@
 # SPC Suite — Discourse theme component
 
-Customisations for [community.swissphotoclub.com](https://community.swissphotoclub.com): the
-homepage layout, the Monthly Challenge category (hero, brief, voting, archive) and the
-full-page photo submission form at `/submit`.
+Everything custom on [community.swissphotoclub.com](https://community.swissphotoclub.com) in
+one component: the homepage layout, the Monthly Challenge category, the full-page photo
+submission form at `/submit`, the critique tooling, the leaderboard strip, the onboarding
+and join banners, the site fonts, and the locale cookie shared with the main site.
 
 This is a single theme **component**, meant to be attached to the Foundation and Horizon
-themes. It replaces three earlier components (SPC Monthly Challenge, SPC Homepage Design,
-SPC Photo Challenge Submit), which were merged so that one install covers everything and
-the shared SCSS lives in one place.
+themes. It replaces ten earlier components, merged so that one install covers everything,
+the SCSS cascade lives in one place, and there is only one thing to update.
 
 ## Installing and updating
 
@@ -22,8 +22,59 @@ gets new commits, so changes ship by pushing to `main` and clicking Update. Edit
 component in the admin UI still works but gets overwritten on the next update — treat this
 repository as the source of truth.
 
-Note that a fresh install starts from the defaults in `settings.yml`. If you ever delete
-and reinstall rather than update, check the settings page afterwards.
+Note that a fresh install starts from the defaults in `settings.yml`. If you ever delete and
+reinstall rather than update, check the settings page afterwards. Setting *values* live in
+the Discourse database, not in git; an Update preserves the value of any setting whose name
+is unchanged, and resets renamed ones to their new default. Every default in `settings.yml`
+is the value that was live in production when the seven components were merged in, so a
+fresh install reproduces the site as it stood at merge time.
+
+## Feature map
+
+Each feature is self-contained: one SCSS partial, its own JS entry point, its own locale
+namespace, and its own setting prefix. To find everything belonging to a feature, grep for
+its prefix.
+
+| Feature | Toggle | SCSS | JS | Locale namespace | Setting prefix |
+| --- | --- | --- | --- | --- | --- |
+| Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
+| Homepage design | — | `scss/homepage.scss` | `api-initializers/spc-homepage.js` | `homepage.*` | — |
+| Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
+| `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
+| Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
+| Critique Submit buttons | `enable_critique_submit` | `scss/critique-submit.scss` | `connectors/discovery-list-container-top/spc-critique-submit.gjs` | `critique_submit.*` | `critique_*` |
+| Leaderboard strip | `enable_leaderboard` | `scss/leaderboard.scss` | `api-initializers/spc-leaderboard-strip.js` | — | `leaderboard_*` |
+| Member onboarding panel | `enable_onboarding` | `scss/onboarding.scss` | `api-initializers/spc-member-onboarding.js`, `components/spc-member-onboarding.gjs` | `onboarding.*` | `onboarding_*` |
+| Non-member join banner | `enable_nonmember_banner` | `scss/non-member-banner.scss` | `api-initializers/spc-non-member-banner.js`, `components/spc-non-member-banner.gjs` | `nonmember_banner.*` | `nonmember_*` |
+| Locale cookie | `enable_locale_cookie` | — | `api-initializers/spc-locale-cookie.js` | — | — |
+
+**Four features have no toggle, deliberately.** Branding is pure CSS with no JS entry point
+to gate. The homepage, monthly challenge and `/submit` features are one interlinked stack —
+the route map, the `submit` permalink and the `route:new-topic` override depend on each
+other — so a half-enabled state would break `/submit` rather than degrade gracefully. If you
+need one of them off, detach the whole component.
+
+Other top-level files:
+
+| Path | Purpose |
+| --- | --- |
+| `about.json` | Component manifest, including the five branding assets. Must stay at the repository root. |
+| `settings.yml` | All 50 admin settings, grouped by feature. |
+| `common/common.scss` | Import list only. See below. |
+| `locales/{en,de,fr}.yml` | Interface strings in all three site languages. |
+| `assets/` | Open Sans (4 weights) and the branding image. These exist nowhere else — do not delete them. |
+
+## The stylesheet is order-dependent
+
+`common/common.scss` contains nothing but `@import` lines. Their order is load-bearing: it
+reproduces the cascade the separate components used to produce, where Discourse emitted
+their CSS in component-id order (3 Branding, 19 Critique Workspace, 20 Critique Submit,
+23 Leaderboard, 36 Onboarding, 37 Non-Member Banner, 61 SPC Suite). Reordering the imports
+changes which rule wins.
+
+`scss/challenge-staff.scss` must stay **last**. The challenge rules blanket-hide the topic
+footer's `__actions`; that final block re-shows only the wrench so staff can pin the brief,
+and it works purely by being later in the cascade.
 
 ## The monthly challenge workflow
 
@@ -46,23 +97,18 @@ hero and `/submit` form pick up the round tag on their own.
 The `challenges` setting is an **archive and override**, not the source of truth for which
 round is current. Use it to record past rounds, deadline text for the hero, and winners.
 
-## What's in here
+## Rolling back
 
-| Path | Purpose |
-| --- | --- |
-| `about.json` | Component manifest. Must stay at the repository root for Discourse. |
-| `settings.yml` | The 14 admin settings, including the `challenges` objects setting. |
-| `common/common.scss` | All styling: homepage, challenge category, submit page. |
-| `locales/{en,de,fr}.yml` | Interface strings in all three site languages. |
-| `javascripts/discourse/api-initializers/spc-homepage.js` | Homepage category cards, webinar card, prompt badge on the pinned brief. |
-| `javascripts/discourse/api-initializers/spc-monthly-challenge.js` | Category hero, official brief block, archive, voting dialog. |
-| `javascripts/discourse/api-initializers/spc-challenge-vote-mover.js` | Repositions the Topic Voting button on challenge topics. |
-| `javascripts/discourse/api-initializers/spc-photo-submit.js` | Routes submit buttons and `/new-topic` in the challenge category to `/submit`. |
-| `javascripts/discourse/spc-submit-route-map.js` | Registers the real `/submit` route. |
-| `javascripts/discourse/{routes,controllers,templates}/spc-submit.*` | The `/submit` page. |
-| `javascripts/discourse/components/spc-submit-form.gjs` | The form: title, image uploader with preview, description, round tag. |
-| `javascripts/discourse/components/spc-submit-banner.gjs` | Optional submit banner (off by default). |
-| `javascripts/discourse/lib/spc-submit-helpers.js` | Tag resolution and shared helpers. |
+The seven components this replaced were **detached, not deleted**. If something is missing
+after the switchover:
+
+1. Detach **SPC Suite** from Foundation and Horizon.
+2. Re-attach the old components (SPC Branding CSS & Assets, SPC Community Locale, SPC
+   Critique Workspace, SPC Critique Submit, SPC Leaderboard Strip, SPC Member Onboarding
+   Progress, SPC Non-Member Homepage Banner) plus the pre-merge SPC Suite.
+
+Their settings values are untouched in the database, so they come back configured. Once the
+merged component has run cleanly for a while, the old ones can be deleted — but not before.
 
 ## Notes for whoever edits this next
 
@@ -85,9 +131,23 @@ That error is harmless: each initializer also kicks itself off at module scope a
 the `plugin-api:main` lookup, so the work happens regardless. Don't "fix" it by removing
 the top-level call.
 
+**Renaming a setting has three edit sites, not one.** Discourse exposes settings to SCSS as
+`$setting_name` as well as to JS as `settings.setting_name`, so a rename has to touch
+`settings.yml`, the JS, *and* the SCSS. `scss/critique-submit.scss` is the one partial that
+interpolates settings (`body.category-#{$critique_category_slug}`, `@if
+$critique_hide_new_topic_button`).
+
+**`resolve_group_membership: true`** on `onboarding_member_groups` and
+`nonmember_member_groups` makes Discourse expose derived booleans
+`settings.user_in_onboarding_member_groups` and `settings.user_in_nonmember_member_groups`.
+Both components check `Object.hasOwn` first and fall back to comparing
+`currentUser.groups` by hand, so they still work if the derived key is missing — but the
+derived key name follows the setting name, so a rename breaks the fast path silently.
+
 **Tag lookups**: `/tags/filter/search.json?q=YYYY-MM&categoryId=6` — do not pass a `limit`
 parameter, it returns a 400.
 
-**Category 6 hides the member-facing topic footer buttons**, but a block at the end of
-`common.scss` deliberately re-shows the topic admin wrench so staff can pin the brief.
-Don't collapse those rules together.
+**The critique submit buttons and `/submit` overlap.** Both are "start a submission" entry
+points, and the critique buttons should eventually fold into the `/submit` route as
+`?type=critique`. That refactor was deliberately kept out of the merge so that a regression
+could be traced to one change or the other.

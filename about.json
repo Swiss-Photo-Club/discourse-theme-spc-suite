@@ -4,6 +4,12 @@
   "authors": "Swiss Photo Club",
   "about_url": "https://community.swissphotoclub.com",
   "license_url": "",
-  "assets": {},
+  "assets": {
+    "JWIM4133": "assets/JWIM4133.jpg",
+    "OpenSans-ExtraBold": "assets/OpenSans-ExtraBold.ttf",
+    "OpenSans-Light": "assets/OpenSans-Light.ttf",
+    "OpenSans-Medium": "assets/OpenSans-Medium.ttf",
+    "OpenSans-SemiBold": "assets/OpenSans-SemiBold.ttf"
+  },
   "color_schemes": {}
 }

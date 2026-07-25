@@ -1,4 +1,24 @@
 fr:
+  theme_metadata:
+    description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
+    settings:
+      webinars_url: Destination de la carte Webinaires mensuels en direct.
+      onboarding_member_groups: Groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members ».
+      onboarding_profile_url: Destination de l’étape Profil.
+      onboarding_introduce_url_de: Destination allemande de l’étape Présentez-vous.
+      onboarding_introduce_url_en: Destination anglaise de l’étape Présentez-vous.
+      onboarding_introduce_url_fr: Destination française de l’étape Présentez-vous.
+      onboarding_first_photo_url_de: Destination allemande de l’étape Première photo.
+      onboarding_first_photo_url_en: Destination anglaise de l’étape Première photo.
+      onboarding_first_photo_url_fr: Destination française de l’étape Première photo.
+      onboarding_show_on_mobile: Afficher le panneau d’onboarding sur les appareils mobiles.
+      onboarding_dismissal_version: Modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres.
+      nonmember_member_groups: Groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut.
+      nonmember_join_url_de: Destination du bouton d’adhésion pour l’interface allemande.
+      nonmember_join_url_en: Destination du bouton d’adhésion pour l’interface anglaise.
+      nonmember_join_url_fr: Destination du bouton d’adhésion pour l’interface française.
+      nonmember_categories_url: Destination du bouton permettant de parcourir les catégories.
+      nonmember_show_categories_button: Afficher le bouton permettant de parcourir les catégories.
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois
@@ -34,10 +54,6 @@ fr:
     vote_step_three_body: La photographie qui obtient le plus de votes valides devient la gagnante du mois.
     full_rules: Lire le guide complet de participation et de vote
     close: Fermer
-  theme_metadata:
-    description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
-    settings:
-      webinars_url: Destination de la carte Webinaires mensuels en direct.
   homepage:
     popular_categories: Catégories populaires
     all_categories: Toutes les catégories
@@ -58,3 +74,56 @@ fr:
     site_feedback:
       title: Avis sur le site
       description: Aidez-nous à façonner la communauté.
+  critique_workspace:
+    banner_title: Espace de critique
+    banner_text: Ouvre un espace dédié à ta critique – avec l'image, la demande et les notes du photographe juste à côté.
+    start: Rédiger une critique
+    modal_title: Espace de critique
+    reference_image: Image de référence
+    view_full_size: Voir en taille réelle
+    request_of: Demande de %{name}
+    feedback_requested: Feedback demandé
+    about_image: À propos de cette image
+    technical: Détails techniques
+    your_critique: Ta critique
+    placeholder: Écris ta critique ici, avec tes propres mots.
+    questions: Questions à considérer
+    preview: Aperçu
+    edit: Continuer à écrire
+    post: Publier la critique
+    cancel: Annuler
+    posting: Publication …
+    empty_error: Merci d'écrire d'abord ta critique.
+    q_artistic_1: Qu'est-ce qui te semble le plus fort dans cette image ?
+    q_artistic_2: Quelle ambiance ou quel message te parvient ?
+    q_artistic_3: Qu'est-ce qui semble non résolu ou mérite d'être approfondi ?
+    q_technical_1: Comment perçois-tu la netteté, l'exposition et la mise au point ?
+    q_technical_2: Remarques-tu des artefacts de retouche – bruit, halos, dominantes ?
+    q_technical_3: Qu'aborderais-tu différemment techniquement, et pourquoi ?
+    q_general_1: Qu'est-ce qui fonctionne pour toi, avant d'aborder les points à améliorer ?
+    q_general_2: Comment la composition guide-t-elle ton regard dans l'image ?
+    q_general_3: Qu'essaierais-tu toi-même – et pourquoi ?
+  critique_submit:
+    image_button: Soumettre une image
+    project_button: Soumettre un projet
+    intro_button: Présente-toi
+  onboarding:
+    title: Bon retour, %{name} — terminez votre configuration
+    subtitle: Un profil complet donne plus de visibilité à vos photos.
+    progress: '%{completed} étape(s) sur %{total} terminée(s)'
+    completed: Terminé
+    dismiss: Masquer l’onboarding
+    steps:
+      profile: Configurez votre profil
+      introduce: Présentez-vous
+      first_photo: Publiez votre première photo pour obtenir des avis
+    actions:
+      profile: Configurer le profil
+      introduce: Se présenter
+      first_photo: Publier une photo
+  nonmember_banner:
+    eyebrow: Swiss Photo Club · Community
+    title: Échangez, partagez, progressez
+    description: Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous.
+    join: Rejoindre la communauté
+    browse_categories: Parcourir les catégories

@@ -3,6 +3,22 @@ de:
     description: SPC-Homepage mit nativen Kategorien, Filtern und einer dreispaltigen Themen-Kartenansicht.
     settings:
       webinars_url: Ziel der Karte «Monatliche Live-Webinare».
+      onboarding_member_groups: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.
+      onboarding_profile_url: Ziel des Schritts ‚Profil‘.
+      onboarding_introduce_url_de: Deutsches Ziel des Schritts ‚Stell dich vor‘.
+      onboarding_introduce_url_en: Englisches Ziel des Schritts ‚Stell dich vor‘.
+      onboarding_introduce_url_fr: Französisches Ziel des Schritts ‚Stell dich vor‘.
+      onboarding_first_photo_url_de: Deutsches Ziel des Schritts ‚Erstes Foto‘.
+      onboarding_first_photo_url_en: Englisches Ziel des Schritts ‚Erstes Foto‘.
+      onboarding_first_photo_url_fr: Französisches Ziel des Schritts ‚Erstes Foto‘.
+      onboarding_show_on_mobile: Das Onboarding auch auf Mobilgeräten anzeigen.
+      onboarding_dismissal_version: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen.
+      nonmember_member_groups: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.
+      nonmember_join_url_de: Ziel des Mitgliedschafts-Buttons für die deutsche Oberfläche.
+      nonmember_join_url_en: Ziel des Mitgliedschafts-Buttons für die englische Oberfläche.
+      nonmember_join_url_fr: Ziel des Mitgliedschafts-Buttons für die französische Oberfläche.
+      nonmember_categories_url: Ziel des Buttons zum Durchsuchen der Kategorien.
+      nonmember_show_categories_button: Den Button zum Durchsuchen der Kategorien anzeigen.
   banner:
     title: Monatliche Foto-Challenge
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.
@@ -80,3 +96,56 @@ de:
     site_feedback:
       title: Website-Feedback
       description: Hilf mit, die Community weiterzuentwickeln.
+  critique_workspace:
+    banner_title: Kritik-Arbeitsplatz
+    banner_text: Öffne einen eigenen Arbeitsbereich für deine Kritik – mit Bild, Anfrage und den Notizen der fotografierenden Person direkt daneben.
+    start: Kritik verfassen
+    modal_title: Kritik-Arbeitsplatz
+    reference_image: Referenzbild
+    view_full_size: In voller Grösse ansehen
+    request_of: Anfrage von %{name}
+    feedback_requested: Gewünschtes Feedback
+    about_image: Über dieses Bild
+    technical: Technische Details
+    your_critique: Deine Kritik
+    placeholder: Schreibe deine Kritik hier in deinen eigenen Worten.
+    questions: Fragen zum Nachdenken
+    preview: Vorschau
+    edit: Weiter schreiben
+    post: Kritik posten
+    cancel: Abbrechen
+    posting: Wird gepostet …
+    empty_error: Bitte schreibe zuerst deine Kritik.
+    q_artistic_1: Was wirkt am stärksten in diesem Bild?
+    q_artistic_2: Welche Stimmung oder Aussage kommt bei dir an?
+    q_artistic_3: Was wirkt ungelöst oder liesse sich weiterentwickeln?
+    q_technical_1: Wie wirken Schärfe, Belichtung und Fokus auf dich?
+    q_technical_2: Fallen dir Bearbeitungsspuren auf – Rauschen, Halos, Farbstiche?
+    q_technical_3: Was würdest du technisch anders angehen und warum?
+    q_general_1: Was funktioniert für dich, bevor du auf Kritikpunkte eingehst?
+    q_general_2: Wie führt die Komposition deinen Blick durch das Bild?
+    q_general_3: Was würdest du selbst ausprobieren – und warum?
+  critique_submit:
+    image_button: Bild einreichen
+    project_button: Projekt einreichen
+    intro_button: Stell dich vor
+  onboarding:
+    title: Willkommen zurück, %{name} – vervollständige dein Profil
+    subtitle: Ein vollständiges Profil sorgt dafür, dass deine Fotos mehr Aufmerksamkeit erhalten.
+    progress: '%{completed} von %{total} erledigt'
+    completed: Erledigt
+    dismiss: Onboarding ausblenden
+    steps:
+      profile: Richte dein Profil ein
+      introduce: Stell dich vor
+      first_photo: Poste dein erstes Foto für Feedback
+    actions:
+      profile: Profil einrichten
+      introduce: Jetzt vorstellen
+      first_photo: Foto posten
+  nonmember_banner:
+    eyebrow: Swiss Photo Club · Community
+    title: Vernetzen, teilen, weiterentwickeln
+    description: Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst.
+    join: Community beitreten
+    browse_categories: Kategorien durchsuchen

@@ -1,0 +1,771 @@
+/* ===== SPC Homepage Design ===== */
+/* =====================================================================
+   Swiss Photo Club Community — Homepage design
+
+   This component keeps Discourse, Featured Categories, Topic List
+   Thumbnails, and SPC Monthly Challenge as the data/behaviour owners. It
+   only composes and styles their existing output on the topics homepage.
+   ===================================================================== */
+
+
+body.navigation-topics {
+  background: var(--spc-wild-sand);
+  color: var(--fg-1);
+  font-family: var(--font-body);
+}
+
+body.navigation-topics #main-outlet {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  padding-top: 0;
+  background: var(--spc-wild-sand);
+}
+
+body.navigation-topics #main-outlet :where(
+    .btn,
+    .select-kit-header,
+    .featured-categories__category-container,
+    .featured-categories__category-link,
+    .topic-list-item
+  ) {
+  border-radius: var(--radius) !important;
+}
+
+body.navigation-topics #main-outlet > .welcome-banner {
+  order: -30;
+}
+
+body.navigation-topics #main-outlet > .spc-member-onboarding {
+  order: -20;
+}
+
+body.navigation-topics #main-outlet > .featured-categories {
+  order: -10;
+}
+
+/* Popular categories ------------------------------------------------- */
+body.navigation-topics .featured-categories {
+  width: calc(100% - 64px);
+  max-width: 1120px;
+  margin: 26px auto 30px;
+}
+
+body.navigation-topics .featured-categories__container {
+  max-width: none;
+  padding: 0;
+}
+
+body.navigation-topics .featured-categories__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: 0 0 18px;
+}
+
+body.navigation-topics .featured-categories__title {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-md);
+  margin: 0;
+  color: var(--fg-structure);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-xbold);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+body.navigation-topics .featured-categories__title::after {
+  height: 1px;
+  flex: 1 1 auto;
+  content: "";
+  background: var(--stroke-1);
+}
+
+body.navigation-topics .featured-categories__heading > a {
+  flex: 0 0 auto;
+  color: var(--fg-2);
+  font-size: var(--fs-detail);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.navigation-topics .featured-categories__heading > a:hover,
+body.navigation-topics .featured-categories__heading > a:focus-visible {
+  color: var(--spc-coral-hover);
+}
+
+body.navigation-topics .featured-categories__list-container {
+  display: grid !important;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 18px 14px;
+}
+
+body.navigation-topics .featured-categories__category-container {
+  display: block;
+  grid-column: span 2;
+  min-width: 0;
+  min-height: 154px;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 0 !important;
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--dur-base) var(--easing-standard),
+    transform var(--dur-base) var(--easing-standard);
+}
+
+body.navigation-topics .featured-categories__category-container:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+body.navigation-topics
+  .featured-categories__category-container:has(
+    > .featured-categories__category-link:not([href])
+  ) {
+  display: none !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-container:has(
+    > .spc-monthly-card
+  ),
+body.navigation-topics
+  .featured-categories__category-container:has(
+    > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  ) {
+  grid-column: span 5 !important;
+  min-height: 248px;
+  background: var(--spc-indigo);
+}
+
+
+body.navigation-topics .featured-categories__category-link {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 154px;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: var(--space-md);
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--fg-1);
+}
+
+/* Square bullet decoration on the compact category cards. */
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )::before {
+  position: static;
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  margin: 0 0 8px;
+  content: "";
+  background: var(--spc-gray-400);
+}
+
+body.navigation-topics
+  .featured-categories__list-container
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  ) {
+  min-height: 154px !important;
+  justify-content: flex-start !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: var(--fg-1) !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/vorstellungen/12"]::before {
+  background: var(--spc-casablanca) !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/meetups-photowalks/8"]::before {
+  background: var(--spc-indigo) !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/general/4"]::before {
+  background: var(--spc-gray-400) !important;
+}
+
+body.navigation-topics .spc-home-webinar-link::before {
+  background: var(--spc-indigo-700) !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/feedback/2"]::before {
+  background: var(--spc-gray-300) !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  > .category-logo {
+  display: none;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  .category-name {
+  position: static;
+  z-index: auto;
+  margin: 0;
+  color: var(--fg-structure);
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  .badge-category__name {
+  color: var(--fg-structure);
+  font-weight: var(--fw-bold);
+  white-space: normal !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  :is(.badge-category__wrapper, .badge-category) {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  .badge-category::before {
+  display: none !important;
+  content: none !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  .badge-category
+  :is(.emoji, .d-icon-lock) {
+  display: none;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:not(.spc-monthly-card):not(
+    [href="/c/critique-portfolio-reviews/7"]
+  )
+  .category-description {
+  position: static;
+  z-index: auto;
+  display: -webkit-box;
+  margin: 6px 0 0;
+  overflow: hidden;
+  color: var(--fg-2);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+body.navigation-topics .spc-home-category-meta {
+  display: block;
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--fg-3);
+  font-size: var(--fs-detail);
+  line-height: 1.35;
+}
+
+/* Two feature cards: current challenge and critique. */
+body.navigation-topics
+  .featured-categories__category-container
+  > .spc-monthly-card,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+  position: relative;
+  isolation: isolate;
+  display: flex !important;
+  width: 100% !important;
+  height: 248px !important;
+  min-height: 248px !important;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 18px !important;
+  overflow: hidden;
+  border: 0 !important;
+  background-color: var(--spc-indigo) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  color: #ffffff;
+}
+
+body.navigation-topics
+  .featured-categories__category-container
+  > .spc-monthly-card {
+  background-image:
+    var(--overlay-card),
+    var(
+      --spc-challenge-cover,
+      linear-gradient(135deg, var(--spc-indigo), var(--spc-indigo-600))
+    ) !important;
+}
+
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+  background-image:
+    var(--overlay-card),
+    url("/uploads/default/original/1X/8220fea23f9c1828678047c2fbdef88ee3680da0.jpeg") !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-container
+  > .spc-monthly-card::before,
+body.navigation-topics
+  .featured-categories__category-container
+  > .spc-monthly-card::after,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::before,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  > .category-logo {
+  display: none;
+}
+
+body.navigation-topics .spc-home-feature-badge {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 14px;
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--spc-coral);
+  color: #ffffff;
+  font-size: var(--fs-detail);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+body.navigation-topics .spc-monthly-card__content {
+  position: relative !important;
+  z-index: 2;
+  display: flex !important;
+  width: 100% !important;
+  max-width: none;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 !important;
+  grid-area: auto !important;
+}
+
+body.navigation-topics .spc-monthly-card__eyebrow {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: var(--fs-detail);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.navigation-topics .spc-monthly-card__title,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  .category-name {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: var(--fw-xbold);
+  letter-spacing: 0;
+  line-height: 1.05;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  text-transform: none;
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  .badge-category__name {
+  color: #ffffff;
+  font-weight: var(--fw-xbold);
+}
+
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  .badge-category
+  :is(.emoji, .d-icon-lock) {
+  display: none;
+}
+
+body.navigation-topics .spc-monthly-card__summary,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  .category-description {
+  position: relative;
+  z-index: 2;
+  display: -webkit-box;
+  max-width: 92%;
+  margin: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+body.navigation-topics .spc-monthly-card__cta {
+  display: none !important;
+}
+
+body.navigation-topics .spc-home-feature-cta {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  min-height: 40px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 10px 18px;
+  background: var(--spc-coral);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  transition: background var(--dur-base) ease;
+  align-self: flex-start !important;
+  grid-area: auto !important;
+}
+
+body.navigation-topics
+  .featured-categories__category-link:hover
+  .spc-home-feature-cta,
+body.navigation-topics
+  .featured-categories__category-link:focus-visible
+  .spc-home-feature-cta {
+  background: var(--spc-coral-hover);
+}
+
+/* Raised native topic toolbar --------------------------------------- */
+body.navigation-topics .list-controls {
+  width: calc(100% - 64px);
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+body.navigation-topics .list-controls > .container {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+body.navigation-topics .navigation-container {
+  display: flex;
+  min-height: 64px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  border: 0;
+  background: #ffffff;
+  box-shadow: var(--shadow-filters);
+}
+
+body.navigation-topics .category-breadcrumb {
+  display: flex;
+  flex: 0 1 auto;
+  gap: 8px;
+  margin: 0;
+}
+
+body.navigation-topics .category-breadcrumb > li {
+  margin: 0;
+}
+
+body.navigation-topics
+  .category-breadcrumb
+  .select-kit.single-select
+  .select-kit-header {
+  min-height: 34px;
+  padding: 5px 12px;
+  border: 1px solid var(--stroke-2);
+  background: #ffffff;
+  color: var(--spc-gray-600);
+  font-size: 13px;
+}
+
+body.navigation-topics #navigation-bar {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  align-self: stretch;
+  gap: 4px;
+  margin: 0;
+}
+
+body.navigation-topics #navigation-bar > li {
+  display: flex;
+  align-items: stretch;
+}
+
+body.navigation-topics #navigation-bar > li > a,
+body.navigation-topics #navigation-bar > li > button {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--fg-2);
+  font-size: 15px;
+  font-weight: var(--fw-regular);
+  line-height: 1.35;
+}
+
+body.navigation-topics #navigation-bar > li.active > a,
+body.navigation-topics #navigation-bar > li > a.active {
+  border-bottom-color: var(--spc-coral);
+  background: transparent;
+  color: var(--fg-structure);
+  font-weight: var(--fw-bold);
+}
+
+body.navigation-topics .navigation-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  margin-left: auto;
+}
+
+body.navigation-topics #create-topic,
+body.navigation-topics .spc-home-login-cta {
+  display: inline-flex;
+  min-height: 40px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border: 1px solid var(--spc-coral) !important;
+  background: var(--spc-coral) !important;
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+body.navigation-topics .spc-home-login-cta {
+  background: transparent !important;
+  color: var(--spc-coral) !important;
+}
+
+body.navigation-topics #create-topic:hover,
+body.navigation-topics #create-topic:focus-visible {
+  border-color: var(--spc-coral-hover) !important;
+  background: var(--spc-coral-hover) !important;
+}
+
+body.navigation-topics .spc-home-login-cta:hover,
+body.navigation-topics .spc-home-login-cta:focus-visible {
+  background: var(--spc-coral) !important;
+  color: #ffffff !important;
+}
+
+/* Topic list rendering is handled by Topic List Thumbnails native masonry mode. */
+
+/* Current monthly prompt: populated from the existing challenge card. */
+body.navigation-topics .topic-list .spc-home-monthly-prompt
+  .topic-list-thumbnail {
+  position: relative;
+}
+
+body.navigation-topics .spc-home-pinned-badge {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  min-height: 22px;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 3px 8px;
+  background: var(--spc-indigo);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Tablet ------------------------------------------------------------- */
+@media (max-width: 1050px) {
+  body.navigation-topics .featured-categories__list-container {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  body.navigation-topics .featured-categories__category-container {
+    grid-column: span 2;
+  }
+
+  body.navigation-topics
+    .featured-categories__category-container:has(
+      > .spc-monthly-card
+    ),
+  body.navigation-topics
+    .featured-categories__category-container:has(
+      > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+    ) {
+    grid-column: span 3 !important;
+  }
+
+  body.navigation-topics .navigation-container {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 850px) {
+  body.navigation-topics .navigation-container {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  body.navigation-topics .category-breadcrumb {
+    order: 1;
+  }
+
+  body.navigation-topics #navigation-bar {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  body.navigation-topics .navigation-controls {
+    order: 2;
+  }
+}
+
+/* Mobile ------------------------------------------------------------- */
+@media (max-width: 650px) {
+  body.navigation-topics .featured-categories,
+  body.navigation-topics .list-controls,
+  body.navigation-topics .container.list-container.--topic-list {
+    width: calc(100% - 32px);
+  }
+
+  body.navigation-topics .featured-categories {
+    margin-top: 18px;
+  }
+
+  body.navigation-topics .featured-categories__heading {
+    align-items: flex-start;
+  }
+
+  body.navigation-topics .featured-categories__title {
+    font-size: 20px;
+  }
+
+  body.navigation-topics .featured-categories__title::after {
+    display: none;
+  }
+
+  body.navigation-topics .featured-categories__list-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0;
+  }
+
+  body.navigation-topics .featured-categories__category-container,
+  body.navigation-topics
+    .featured-categories__category-container:has(
+      > .spc-monthly-card
+    ),
+  body.navigation-topics
+    .featured-categories__category-container:has(
+      > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+    ) {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.navigation-topics
+    .featured-categories__list-container
+    .featured-categories__category-container:has(> .spc-monthly-card) {
+    height: 224px !important;
+    min-height: 224px !important;
+    margin: 0 !important;
+  }
+
+  body.navigation-topics
+    .featured-categories__category-container
+    > .spc-monthly-card,
+  body.navigation-topics
+    .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+    height: 224px !important;
+    min-height: 224px !important;
+  }
+
+
+  body.navigation-topics .spc-monthly-card__title,
+  body.navigation-topics
+    .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+    .category-name {
+    font-size: 22px;
+  }
+
+  body.navigation-topics .navigation-container {
+    padding: 10px;
+  }
+
+  body.navigation-topics #navigation-bar > li > a,
+  body.navigation-topics #navigation-bar > li > button {
+    padding-inline: 8px;
+    white-space: nowrap;
+  }
+
+  body.navigation-topics .topic-list-thumbnail .main-thumbnail {
+    max-height: 380px;
+  }
+}
+
+
+

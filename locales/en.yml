@@ -44,6 +44,22 @@ en:
             entry_count:
               label: Final entry count
       webinars_url: Destination for the Monthly Live Webinars card.
+      onboarding_member_groups: Groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group.
+      onboarding_profile_url: Destination for the Profile step.
+      onboarding_introduce_url_de: German destination for the Introduce yourself step.
+      onboarding_introduce_url_en: English destination for the Introduce yourself step.
+      onboarding_introduce_url_fr: French destination for the Introduce yourself step.
+      onboarding_first_photo_url_de: German destination for the First photo step.
+      onboarding_first_photo_url_en: English destination for the First photo step.
+      onboarding_first_photo_url_fr: French destination for the First photo step.
+      onboarding_show_on_mobile: Show the onboarding panel on mobile devices.
+      onboarding_dismissal_version: Change this value to reset progress and dismissal for every member.
+      nonmember_member_groups: Groups whose members should not see the banner. This defaults to the SPC ‘members’ group.
+      nonmember_join_url_de: Membership-button destination for the German interface.
+      nonmember_join_url_en: Membership-button destination for the English interface.
+      nonmember_join_url_fr: Membership-button destination for the French interface.
+      nonmember_categories_url: Destination for the browse-categories button.
+      nonmember_show_categories_button: Show the browse-categories button.
   banner:
     title: Monthly photo challenge
     subtitle: Share your best shot for this month's theme and vote for your favorites.
@@ -121,3 +137,56 @@ en:
     site_feedback:
       title: Site Feedback
       description: Help shape the community.
+  critique_workspace:
+    banner_title: Critique Workspace
+    banner_text: Open a dedicated space for your critique — with the image, the request and the photographer's notes right beside you.
+    start: Start a critique
+    modal_title: Critique Workspace
+    reference_image: Reference image
+    view_full_size: View full size
+    request_of: '%{name}''s request'
+    feedback_requested: Feedback requested
+    about_image: About this image
+    technical: Technical details
+    your_critique: Your critique
+    placeholder: Write your critique here in your own voice.
+    questions: Questions to consider
+    preview: Preview
+    edit: Keep writing
+    post: Post critique
+    cancel: Cancel
+    posting: Posting …
+    empty_error: Please write your critique first.
+    q_artistic_1: What feels strongest in this image?
+    q_artistic_2: What mood or message comes through to you?
+    q_artistic_3: What feels unresolved or worth exploring further?
+    q_technical_1: How do sharpness, exposure and focus read to you?
+    q_technical_2: Do you notice processing artefacts — noise, halos, colour casts?
+    q_technical_3: What would you approach differently technically, and why?
+    q_general_1: What works for you, before you move on to critique points?
+    q_general_2: How does the composition lead your eye through the frame?
+    q_general_3: What would you try yourself — and why?
+  critique_submit:
+    image_button: Submit an image
+    project_button: Submit a project
+    intro_button: Introduce yourself
+  onboarding:
+    title: Welcome back, %{name} — finish setting up
+    subtitle: A complete profile gets more eyes on your photos.
+    progress: '%{completed} of %{total} done'
+    completed: Completed
+    dismiss: Dismiss onboarding
+    steps:
+      profile: Set Up Your Profile
+      introduce: Introduce Yourself
+      first_photo: Post Your First Photo for Feedback
+    actions:
+      profile: Set Up Profile
+      introduce: Introduce Yourself
+      first_photo: Post a Photo
+  nonmember_banner:
+    eyebrow: Swiss Photo Club · Community
+    title: Connect, Share, Improve
+    description: Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.
+    join: Join the community
+    browse_categories: Browse categories

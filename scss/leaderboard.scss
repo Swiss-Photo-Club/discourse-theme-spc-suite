@@ -26,7 +26,6 @@ body.spc-leaderboard-strip-active {
     align-items: stretch;
     overflow: hidden;
     border: 1px solid var(--primary-low);
-    border-radius: 6px;
     background: var(--secondary);
   }
 
@@ -98,7 +97,6 @@ body.spc-leaderboard-strip-active {
     width: 28px;
     height: 28px;
     flex: 0 0 28px;
-    border-radius: 50%;
   }
 
   &__name {
@@ -114,7 +112,6 @@ body.spc-leaderboard-strip-active {
   &__fallback {
     padding: 0.85rem 1rem;
     border: 1px solid var(--primary-low);
-    border-radius: 6px;
     background: var(--primary-very-low);
   }
 }

@@ -8,12 +8,7 @@
   width: 100%;
   margin: 0 0 1em;
   padding: 1.25em 1.5em;
-  border-radius: 10px;
-  background: linear-gradient(
-    135deg,
-    var(--tertiary-very-low),
-    var(--secondary)
-  );
+  background: var(--tertiary-very-low);
   border: 1px solid var(--primary-low);
 
   &__text {
@@ -64,7 +59,6 @@
     display: inline-block;
     background: var(--tertiary-low);
     color: var(--tertiary-hover);
-    border-radius: 6px;
     padding: 0.1em 0.6em;
     font-weight: 600;
   }
@@ -111,7 +105,6 @@
       height: auto;
       background-color: var(--secondary);
       border: 1px solid var(--primary-medium);
-      border-radius: var(--d-input-border-radius, 4px);
       color: var(--primary);
     }
   }
@@ -122,7 +115,6 @@
     padding: 1em 1.25em;
     border-left: 3px solid var(--tertiary);
     background: var(--tertiary-very-low);
-    border-radius: 0 8px 8px 0;
 
     h2 {
       margin: 0 0 0.4em;
@@ -160,7 +152,6 @@
       background-position: center;
       background-color: var(--primary-very-low);
       border: 1px dashed var(--primary-low-mid);
-      border-radius: 10px;
     }
 
     .image-upload-controls {

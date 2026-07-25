@@ -28,22 +28,34 @@
 }
 
 /* Current and archived challenge hero -------------------------------- */
-body.category-monthly-challenge .category-title-header.spc-challenge-hero {
+
+/* The hero replaces the core category header rather than overwriting it, so
+   the header is hidden from the first paint. Doing it in CSS rather than in
+   JS also removes the flash of the stock red category banner that used to
+   show while the challenge topic was still being fetched. */
+body.category-monthly-challenge .category-title-header {
+  display: none;
+}
+
+/* Not scoped to the challenge body class on purpose: these rules have to hold
+   wherever the element is, so a hero that outlives its page degrades to a
+   correct-looking block rather than dark text on a pale slab. */
+.spc-challenge-hero {
   position: relative;
   isolation: isolate;
   display: flex;
   width: 100%;
   min-height: 360px;
   margin: 0;
-  padding: 3.5rem !important;
+  padding: 3.5rem;
   overflow: hidden;
   border: 0;
   border-bottom: 6px solid var(--spc-challenge-coral);
-  background-color: var(--spc-challenge-navy) !important;
-  background-image: var(--spc-challenge-cover, linear-gradient(135deg, #1a2744, #28395e)) !important;
+  background-color: var(--spc-challenge-navy);
+  background-image: var(--spc-challenge-cover, linear-gradient(135deg, #1a2744, #28395e));
   background-position: center;
   background-size: cover;
-  color: #ffffff !important;
+  color: #ffffff;
   box-sizing: border-box;
 }
 
@@ -566,9 +578,9 @@ body.category-monthly-challenge .list-controls {
 @media (max-width: 600px) {
 
 
-  body.category-monthly-challenge .category-title-header.spc-challenge-hero {
+  .spc-challenge-hero {
     min-height: 440px;
-    padding: 2rem 1.25rem !important;
+    padding: 2rem 1.25rem;
     background-position: 64% center;
   }
 

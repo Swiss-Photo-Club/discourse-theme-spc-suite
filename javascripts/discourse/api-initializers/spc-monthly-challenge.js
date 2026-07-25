@@ -511,8 +511,38 @@ function deadlineText(challenge, state) {
   return "";
 }
 
+// The hero is our own element, inserted before the core category header,
+// which CSS hides on this category. It used to be built by overwriting
+// `.category-title-header` itself, and that was wrong twice over: Ember keeps
+// that node across category navigations, so the challenge hero stayed on
+// screen after switching to Critique, and it only reserved its dark styling
+// under `body.category-monthly-challenge`, so the leftover markup rendered as
+// dark text on a pale block over the category nav. Owning the node means
+// clearHero() can simply delete it — see findHomeCard() for the same lesson.
+function clearHero() {
+  document.querySelector('[data-spc-monthly-challenge="hero"]')?.remove();
+}
+
+function ensureHero() {
+  const existing = document.querySelector('[data-spc-monthly-challenge="hero"]');
+  if (existing) {
+    return existing;
+  }
+
+  const anchor = document.querySelector(".category-title-header");
+  if (!anchor) {
+    return null;
+  }
+
+  const hero = document.createElement("section");
+  hero.className = "spc-challenge-hero";
+  hero.dataset.spcMonthlyChallenge = "hero";
+  anchor.insertAdjacentElement("beforebegin", hero);
+  return hero;
+}
+
 function renderHero(challenge) {
-  const header = document.querySelector(".category-title-header");
+  const header = ensureHero();
   if (!header) {
     return;
   }
@@ -552,8 +582,6 @@ function renderHero(challenge) {
       : "";
 
   header.dataset.spcChallengeSignature = signature;
-  header.dataset.spcMonthlyChallenge = "hero";
-  header.classList.add("spc-challenge-hero");
   header.innerHTML = `
     <div class="spc-challenge-hero__shade"></div>
     <div class="spc-challenge-hero__content">
@@ -945,6 +973,7 @@ const spcRun = (api) => {
     ensureVotingDialog();
 
     if (!isChallengePage()) {
+      clearHero();
       document.querySelectorAll(
         ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive"
       ).forEach((element) => element.remove());

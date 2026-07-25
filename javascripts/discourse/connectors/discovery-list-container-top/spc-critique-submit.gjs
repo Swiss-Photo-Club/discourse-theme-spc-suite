@@ -29,7 +29,15 @@ export default class SpcCritiqueSubmit extends Component {
     return "";
   }
 
+  // The single-image flow has moved off the Custom Wizard and onto the theme's
+  // own /submit route. The wizard is still installed and still works, so
+  // critique_image_use_form is the rollback: flip it off in settings and the
+  // button points back at the wizard immediately, with no theme update.
+  // The project and introduction buttons below are still wizard-only.
   get imageUrl() {
+    if (settings.critique_image_use_form) {
+      return "/submit?type=critique";
+    }
     return settings.critique_image_wizard_url + this.localeSuffix;
   }
 

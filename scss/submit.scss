@@ -86,7 +86,8 @@
     }
 
     input[type="text"],
-    textarea {
+    textarea,
+    select {
       width: 100%;
       box-sizing: border-box;
       font-size: var(--font-up-1);
@@ -96,6 +97,45 @@
     textarea {
       resize: vertical;
       min-height: 8em;
+    }
+
+    // The critique mode's optional context boxes are short by design — a
+    // three-row textarea should not inherit the challenge form's 8em floor.
+    textarea[rows="3"],
+    textarea[rows="4"],
+    textarea[rows="5"] {
+      min-height: 0;
+    }
+
+    select {
+      height: auto;
+      background-color: var(--secondary);
+      border: 1px solid var(--primary-medium);
+      border-radius: var(--d-input-border-radius, 4px);
+      color: var(--primary);
+    }
+  }
+
+  // ---------- Critique mode (?type=critique) ----------
+  &__intro {
+    margin: 0 0 2em;
+    padding: 1em 1.25em;
+    border-left: 3px solid var(--tertiary);
+    background: var(--tertiary-very-low);
+    border-radius: 0 8px 8px 0;
+
+    h2 {
+      margin: 0 0 0.4em;
+      font-size: var(--font-up-1);
+    }
+
+    p {
+      margin: 0 0 0.4em;
+      color: var(--primary-high);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 

@@ -19,6 +19,65 @@ fr:
       nonmember_join_url_fr: Destination du bouton d’adhésion pour l’interface française.
       nonmember_categories_url: Destination du bouton permettant de parcourir les catégories.
       nonmember_show_categories_button: Afficher le bouton permettant de parcourir les catégories.
+  form:
+    heading: Envoyer une photo
+    round_label: Manche du challenge
+    title_label: Titre
+    title_placeholder: Donne à ta photo un titre clair
+    photo_label: Ta photo
+    photo_hint: Téléverse un JPG, PNG ou WebP. Une photo par participation.
+    description_label: À propos de cette photo (optionnel)
+    description_placeholder: Où a-t-elle été prise ? Quelle était l’idée ? Boîtier, objectif, réglages…
+    submit: Envoyer la photo
+    cancel: Annuler
+    submitting: Envoi en cours…
+    login_required: Connecte-toi pour envoyer une photo.
+    login_button: Se connecter
+    error_no_title: Merci de donner un titre à ta photo.
+    error_no_photo: Merci de téléverser une photo.
+    discard_confirm: Abandonner cette participation ?
+    tag_warning: Ta photo a été publiée, mais le tag de la manche n’a pas pu être appliqué. Merci de prévenir un administrateur.
+  critique_form:
+    heading: Soumettre une image pour critique
+    intro_title: Avant de soumettre
+    intro_exchange: "La critique vit de l’échange : pour chaque image que tu soumets, donne toi-même un retour réfléchi sur deux images d’autres membres."
+    intro_limit: Merci de soumettre au maximum une image par jour.
+    title_label: Titre de l’image
+    photo_label: Image
+    photo_hint: Téléverse un JPG, PNG ou WebP.
+    subject_label: Sujet
+    subject_placeholder: Choisis un sujet…
+    style_label: Style de critique
+    focus_label: Focus du feedback
+    examples_label: Autoriser des exemples de retouche ?
+    about_label: À propos de cette image (optionnel)
+    feedback_label: Où souhaites-tu du feedback ?
+    feedback_placeholder: Qu’est-ce qui te laisse hésitant ? Que voulais-tu obtenir ?
+    technical_label: Détails techniques (optionnel)
+    technical_placeholder: Boîtier, objectif, réglages, retouche…
+    submit: Soumettre pour critique
+    error_no_subject: Merci de choisir un sujet.
+    error_no_feedback: Merci d’indiquer où tu souhaites du feedback.
+    styles:
+      standard: Standard – retour sur l’image dans son ensemble
+      in_depth: Approfondie – retour approfondi sur ton intention et tes questions
+      initial_reaction: Première impression – réactions spontanées avant la lecture de tes notes
+    focus:
+      artistic: Artistique / Expressif – composition, ambiance, impact, retouche
+      technical: Technique – netteté, exposition, mise au point, réglages, problèmes de retouche
+      both: Artistique + Technique – les deux, en équilibre
+    examples:
+      allowed: Oui – les versions retouchées de mon image sont bienvenues
+      denied: Non – uniquement du feedback écrit
+    subjects:
+      animal: Animaux
+      landscape: Paysage
+      portrait: Portrait
+      street: Street
+      macro: Macro
+      architecture: Architecture
+      travel: Voyage
+      abstract: Abstrait
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois

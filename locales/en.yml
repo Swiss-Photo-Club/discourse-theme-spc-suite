@@ -82,6 +82,47 @@ en:
     error_no_photo: Please upload a photograph.
     discard_confirm: Discard this submission?
     tag_warning: Your photo was posted, but the round tag could not be applied. Please let an admin know.
+  critique_form:
+    heading: Submit an image for critique
+    intro_title: Before you submit
+    intro_exchange: "Critique thrives on exchange: for every image you submit, give thoughtful feedback on two other members’ images."
+    intro_limit: Please submit at most one image per day.
+    title_label: Image title
+    photo_label: Image
+    photo_hint: Upload one JPG, PNG or WebP.
+    subject_label: Subject
+    subject_placeholder: Choose a subject…
+    style_label: Critique style
+    focus_label: Feedback focus
+    examples_label: Allow processing examples?
+    about_label: About this image (optional)
+    feedback_label: Where would feedback help most?
+    feedback_placeholder: What are you unsure about? What were you trying to achieve?
+    technical_label: Technical details (optional)
+    technical_placeholder: Camera, lens, settings, processing…
+    submit: Submit for critique
+    error_no_subject: Please choose a subject.
+    error_no_feedback: Please say where you would like feedback.
+    styles:
+      standard: Standard — feedback on the image as a whole
+      in_depth: In-Depth — deeper feedback on your intent and your questions
+      initial_reaction: Initial Reaction — unbiased reactions before your notes are read
+    focus:
+      artistic: Artistic / Expressive — composition, mood, impact, processing
+      technical: Technical — sharpness, exposure, focus, settings, processing issues
+      both: Artistic + Technical — both in balance
+    examples:
+      allowed: Yes — edited versions of my image are welcome
+      denied: No — written feedback only
+    subjects:
+      animal: Animals
+      landscape: Landscape
+      portrait: Portrait
+      street: Street
+      macro: Macro
+      architecture: Architecture
+      travel: Travel
+      abstract: Abstract
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month

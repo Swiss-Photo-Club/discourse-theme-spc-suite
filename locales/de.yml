@@ -41,6 +41,47 @@ de:
     error_no_photo: Bitte lade ein Foto hoch.
     discard_confirm: Einreichung verwerfen?
     tag_warning: Dein Foto wurde veröffentlicht, aber der Runden-Tag konnte nicht gesetzt werden. Bitte informiere einen Admin.
+  critique_form:
+    heading: Bild zur Kritik einreichen
+    intro_title: Bevor du einreichst
+    intro_exchange: "Kritik lebt vom Austausch: Gib für jedes Bild, das du einreichst, selbst durchdachtes Feedback zu zwei Bildern anderer Mitglieder."
+    intro_limit: Bitte reiche höchstens ein Bild pro Tag ein.
+    title_label: Bildtitel
+    photo_label: Bild
+    photo_hint: Lade ein JPG, PNG oder WebP hoch.
+    subject_label: Thema
+    subject_placeholder: Thema wählen…
+    style_label: Kritik-Stil
+    focus_label: Feedback-Fokus
+    examples_label: Bearbeitungsbeispiele erlauben?
+    about_label: Über dieses Bild (optional)
+    feedback_label: Wo wünschst du dir Feedback?
+    feedback_placeholder: Worüber bist du dir unsicher? Was wolltest du erreichen?
+    technical_label: Technische Details (optional)
+    technical_placeholder: Kamera, Objektiv, Einstellungen, Bearbeitung…
+    submit: Zur Kritik einreichen
+    error_no_subject: Bitte wähle ein Thema.
+    error_no_feedback: Bitte beschreibe, wo du dir Feedback wünschst.
+    styles:
+      standard: Standard – Feedback zum Bild als Ganzem
+      in_depth: Ausführlich – vertieftes Feedback zu deiner Absicht und deinen Fragen
+      initial_reaction: Erster Eindruck – unvoreingenommene Reaktionen, bevor deine Notizen gelesen werden
+    focus:
+      artistic: Künstlerisch / Expressiv – Komposition, Stimmung, Wirkung, Bearbeitung
+      technical: Technik – Schärfe, Belichtung, Fokus, Einstellungen, Bearbeitungsprobleme
+      both: Künstlerisch + Technik – beides in Balance
+    examples:
+      allowed: Ja – bearbeitete Versionen meines Bildes sind willkommen
+      denied: Nein – nur schriftliches Feedback
+    subjects:
+      animal: Tiere
+      landscape: Landschaft
+      portrait: Porträt
+      street: Street
+      macro: Makro
+      architecture: Architektur
+      travel: Reise
+      abstract: Abstrakt
   monthly_challenge:
     label: Monatliche Challenge
     current: Challenge des Monats

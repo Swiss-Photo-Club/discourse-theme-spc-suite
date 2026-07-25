@@ -40,7 +40,7 @@ its prefix.
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
 | Homepage design | — | `scss/homepage.scss` | `api-initializers/spc-homepage.js` | `homepage.*` | — |
 | Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
-| `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
+| `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
 | Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
 | Critique Submit buttons | `enable_critique_submit` | `scss/critique-submit.scss` | `connectors/discovery-list-container-top/spc-critique-submit.gjs` | `critique_submit.*` | `critique_*` |
 | Leaderboard strip | `enable_leaderboard` | `scss/leaderboard.scss` | `api-initializers/spc-leaderboard-strip.js` | — | `leaderboard_*` |
@@ -155,7 +155,39 @@ derived key name follows the setting name, so a rename breaks the fast path sile
 **Tag lookups**: `/tags/filter/search.json?q=YYYY-MM&categoryId=6` — do not pass a `limit`
 parameter, it returns a 400.
 
-**The critique submit buttons and `/submit` overlap.** Both are "start a submission" entry
-points, and the critique buttons should eventually fold into the `/submit` route as
-`?type=critique`. That refactor was deliberately kept out of the merge so that a regression
-could be traced to one change or the other.
+## `/submit` has two modes
+
+The route takes a `type` query param, read by `controllers/spc-submit.js` and passed
+straight through to `SpcSubmitForm`:
+
+| URL | Mode | Posts to |
+| --- | --- | --- |
+| `/submit` | Monthly challenge entry | Monthly Challenge, tagged with the resolved round tag |
+| `/submit?type=critique` | Single image for critique | the critique category, tagged with the chosen subject |
+
+Critique mode replaces the Custom Wizard `bild-zur-kritik-einreichen`. The **project** and
+**introduction** wizards are untouched and still live — only the single-image flow moved.
+
+**Critique posts must stay byte-compatible with the wizard.** The Critique Workspace modal
+does not read structured data; `lib/spc-parse-request.js` parses the post *markdown*, looking
+for `**Kritik-Stil:**`, `## Über dieses Bild`, `## Wo ich mir Feedback wünsche` and
+`## Technische Details` in all three languages. `lib/spc-critique.js` reproduces the wizard's
+Liquid `post_template` exactly, including the French space before the colon (`Style de
+critique :`) and the omission of empty optional sections. Those strings deliberately live in
+JS rather than in `locales/*.yml`, so that translating the UI cannot silently break the
+parser — only the dropdown *descriptions* are translatable. If you change a heading, change
+it in `spc-critique.js`, in `spc-parse-request.js`, **and** in the three wizard definitions.
+
+**The subject dropdown is fetched, not hard-coded.** The critique category requires at least
+one tag from the **Critique Subjects** tag group and `/posts.json` enforces that server-side,
+so the form asks `/tags/filter/search.json?categoryId=…&filterForInput=true` which tags
+Discourse will accept and offers only those. Note that the wizard's own dropdown offers
+`architecture`, `travel` and `abstract`, which are **not** in the tag group — the wizard
+creates topics through its own action and bypasses the validation, which is why topics tagged
+`architecture` exist in a category that should not allow them. Add those three tags to the
+Critique Subjects group if you want them offered; `critique_form.subjects.*` already has
+translations waiting for them.
+
+**Rollback is a setting, not a revert.** `critique_image_use_form` off sends the "Submit an
+image" button back to `critique_image_wizard_url`. That takes effect immediately, without
+pushing a commit and clicking Update.

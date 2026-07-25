@@ -1,0 +1,164 @@
+# Change history
+
+Why things are the way they are. Current-state documentation lives in `README.md` and in the
+Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
+re-introduces a fixed bug. Newest first.
+
+## 7215dd1 — Stop the leaderboard and challenge renderers from storming the rate limiter
+
+**Symptom.** A bare "429 error" dialog on reloading `/c/critique-portfolio-reviews/7`, and
+later a full-page Ember error screen on `/c/meetups-photowalks/8` reading "while trying to
+load `/c/monthly-challenge/6/l/latest.json?filter=default`". The user's console held 769
+errors.
+
+Two red herrings worth naming. First, the dialog is empty because Discourse's rate limiter
+returns a **plain-text** body (`"Slow down, too many requests…"`) with HTTP 429, and the ajax
+error handler `JSON.parse`s it — so the console shows `SyntaxError: Unexpected token 'S',
+"Slow down,"… is not valid JSON`, which reads like a parsing bug and is not. Second, the
+Meetups error names a challenge URL, which looks like our code failing on an unrelated page;
+`?filter=default` is actually the signature of a **core** TopicList request. Our theme never
+adds that param. Core was being refused because we had tripped the limiter.
+
+**One root cause, five mechanisms.** Both `spc-leaderboard-strip.js` and
+`spc-monthly-challenge.js` drove renders from a `MutationObserver` on `document.body`
+debounced only by `requestAnimationFrame` — up to 60 renders/second, each mutating the DOM
+and thereby re-triggering the observer. On top of that loop:
+
+1. the leaderboard cached its data **after** the `await`, so every render that began while a
+   request was in flight saw an empty cache and fired its own `/leaderboard/<id>.json`;
+2. the challenge renderer did `topicCache.delete(cacheKey)` in its failure handler, re-arming
+   the fetch on the very next frame — a rate-limited response therefore produced a burst of
+   retries that kept the limiter tripped;
+3. `render()` awaited the pinned brief and the challenge topic **before** checking whether the
+   page shows challenge content, so simply reading Meetups or Announcements fetched two
+   challenge endpoints for nothing;
+4. `api.onPageChange` cleared both caches on every navigation.
+
+Measured on one Meetups page load, a page that displays none of this data:
+`/leaderboard/1.json` x4, `/c/6/l/latest.json` x4, `/t/37.json` x3, plus core's own
+`?filter=default` request x2.
+
+**Fix.** Promise-caching instead of value-caching; a 60s cool-off before a failed fetch may be
+retried; leading-edge `setTimeout(200)` throttling in place of rAF in both files; a
+`needsChallengeData()` gate that runs before any await; and a 5-minute cache TTL replacing the
+per-navigation clear. `spc-homepage.js` and `spc-challenge-vote-mover.js` use the same
+observer pattern but make no network calls, so they were deliberately left untouched.
+
+**Regression baselines.** A Meetups or Announcements page must make **zero** challenge
+requests. The critique page must request `/leaderboard/1.json` exactly **once**.
+
+## 185808a — Give the challenge hero its own element instead of overwriting the category header
+
+Symptom: the category page looked right on first paint, flashed a broken layout during
+reload, and looked "totally broken" on the critique category. Cause: the hero was rendered
+*into* the category header element, which core owns and re-renders on navigation, so the two
+fought. Fix: the hero gets its own element that the theme creates and removes. General rule
+that came out of it — never decorate a DOM node core owns.
+
+## 21285f2 — Rename the critique select block params so `<option>` stays an element
+
+Symptom: the critique form rendered itself twice, with `manager` errors in the console. The
+first theory — a query-string/routing artefact — was **wrong**. Real cause: in a `.gjs`
+strict-mode template a block param named `option` shadows the `<option>` HTML element, so
+each `<option>` was resolved as a component invocation. Renaming the block params fixed it.
+Lowercase element names at risk: `option`, `input`, `label`, `output`, `select`, `form`,
+`data`, `time`, `slot`.
+
+## ee2c432 — Give the critique form its own path (`/submit/critique`)
+
+`?type=critique` worked when clicked but 404'd on a hard refresh, because Discourse matches
+permalinks against the **full** request path including the query string, so the `submit`
+permalink matched `/submit` and nothing else. That was first patched by adding a
+`submit?type=critique` permalink row (see `3c1d107` below); this commit moved critique to a
+real path instead, which sidesteps the trap entirely. `?type=critique` still redirects, for
+links shared before the change.
+
+## 3c1d107 — Fix `submit?type=critique`
+
+`api.modifyClass("route:new-topic")` generalised from `isChallengeCategoryParam` to
+`isCategoryParam(params, id, slug)` so it decodes either category. **The code half alone did
+not fix the 404** — the permalink row was the missing piece. Worth remembering: a theme-owned
+route needs both the client-side interception *and* a permalink to boot the app.
+
+## 993112e — Combine the critique submit form into the monthly challenge submit form
+
+Moved the single-image critique flow off the Custom Wizard. Scope was deliberately limited to
+that one flow; the project and introduction wizards are untouched and still live.
+
+`javascripts/discourse/lib/spc-critique.js` holds every load-bearing string. They are
+load-bearing in two directions: `lib/spc-parse-request.js` matches them literally to rebuild
+a request for the Critique Workspace modal, and they reproduce the wizard's Liquid
+`post_template` exactly so wizard-made and form-made posts stay interchangeable. They live in
+JS rather than `locales/*.yml` **so a translator cannot silently break the parser**.
+
+Verified twice before shipping. (1) Round trip: `buildCritiqueRaw()` output fed through
+`parseRequest()` and `questionKeysFor()` for all three locales x {all sections, required
+only} → 48/48 assertions pass. (2) Byte-compatibility: a minimal Liquid renderer ran the
+three real `post_template`s and diffed them against the form's output over 6 cases → all 6
+byte-identical, including the French pre-colon space (`Style de critique :`).
+
+Side fix: `locales/fr.yml` had no `form:` block at all, so French users saw English strings
+on `/submit`.
+
+## e98ce1c — Fix scss (site-wide breakage, ~10 minutes)
+
+Immediately after the merge went live the whole site rendered unstyled. Cause:
+`@import "scss/branding"` in `common/common.scss`. Discourse keys `extra_scss` theme fields by
+**basename**, so the path form doesn't resolve, and the stylesheet compiled to a 303-byte
+error comment — with no error surfaced anywhere in the admin UI. Fixed by dropping the `scss/`
+prefix from all ten imports.
+
+## 55fbddb — Combine all customizations into a single repo
+
+Ten separate theme components became one. Three (38 Monthly Challenge, 39 Homepage Design, 48
+Photo Challenge Submit) were merged and removed; seven more (3 Branding, 12 Locale, 19
+Critique Workspace, 20 Critique Submit, 23 Leaderboard, 36 Onboarding, 37 Non-Member Banner)
+were merged and left **disabled but present** as a rollback — their setting values are
+untouched in the database, so re-enabling restores them fully configured.
+
+The merge was a **pure move**: same code, only three classes of change — setting renames (to
+give each feature a prefix), locale-key namespacing, and one `enable_*` guard per feature.
+Every merged file was diffed against its admin export to prove nothing else changed.
+Concatenating the four original SCSS partials was byte-identical to the old 66,894-byte
+`common.scss`. Every `settings.yml` default was set to the value live in production at merge
+time, so that even renamed settings — which Discourse resets to their new default on update —
+landed on the correct value. Repo went 19 → 44 files.
+
+The SCSS import order in `common/common.scss` reproduces the cascade Discourse used to
+produce by emitting component CSS in component-id order (3, 19, 20, 23, 36, 37, 61). That is
+why the order is load-bearing and why `challenge-staff` must stay last.
+
+## Earlier fixes (pre-repo, 2026-07-23/24)
+
+- **Original submit failures:** form template #1 attached to category 6, plus a tag mismatch
+  (`2026-07` vs the only allowed `2026-07-cityscapes`). The form template is now detached and
+  must stay detached — `/submit` posts via `/posts.json`, and a form template on the category
+  breaks that path.
+- **Overlay → real route:** the first implementation was a JS overlay. Replaced with a real
+  Ember route after the user's feedback: "I want a similar execution, not a javascript hack."
+- **"Join the community" banner showed for admins:** `member_groups` held only group 40.
+  `currentUser.groups` includes automatic groups, so 1 (Administratoren) and 2 (Moderatoren)
+  had to be added → `40|1|2`.
+- **Homepage masonry overlap:** the homepage was on Topic List Thumbnails *list* mode
+  restyled into a fake masonry (`column-count` + fixed card heights). Fixed by switching
+  `default_thumbnail_mode` to masonry and deleting the fake-masonry SCSS. The prompt tile was
+  re-implemented masonry-safely as an absolutely-positioned badge, because any DOM change
+  that alters a topic row's height desynchronises masonry's measured layout.
+- **Could not pin the challenge brief:** our own SCSS hid
+  `.topic-footer-main-buttons__actions` in category 6 in three places, which also hid the
+  topic admin wrench. Fixed by `scss/challenge-staff.scss` re-showing only
+  `.topic-admin-menu-trigger` — which works purely by being last in the cascade.
+
+## Investigated and dismissed
+
+- **Wizard pages hide the header and sidebar** (`/w/<slug>/steps/step_1`). This is the Custom
+  Wizard plugin's intended full-page treatment, not ours. Its stylesheet carries
+  `body.custom-wizard .sidebar-wrapper { display: none }` and a zero-width sidebar grid
+  column, among 350 `body.custom-wizard` rules. Proven with `?safe_mode=no_custom` (all themes
+  and components off, `themeSheets: 0`): both still hidden. SPC Suite injects nothing on
+  wizard pages, and our only sidebar rule sets a background colour.
+- **`[THEME NN 'SPC Suite'] TypeError: Cannot read properties of undefined (reading
+  '__container__')`.** Discourse's own theme api-initializer wrapper calls
+  `initialize(e){ r.call(n, e.__container__) }` with `e === undefined`. Harmless, not ours,
+  and the reason every initializer uses the top-level-kick + retrying-lookup shape. Do not
+  "fix" it by removing the top-level call. It sometimes cites theme 58 rather than 61.

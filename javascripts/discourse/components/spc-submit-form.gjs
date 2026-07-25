@@ -29,7 +29,11 @@ function withSelection(choices, current) {
 // One component, two modes, selected by the `type` query param on /submit:
 //
 //   /submit                  -> challenge (monthly photo challenge entry)
-//   /submit?type=critique    -> critique  (single image submitted for critique)
+//   /submit/critique         -> critique  (single image submitted for critique)
+//
+// /submit?type=critique still resolves to critique mode for links shared before
+// the dedicated path existed, which is what the `type` query param on
+// controller:spc-submit is for.
 //
 // The two share everything structural — login gate, uploader, title, cancel
 // confirmation, error handling — and differ only in the extra fields and in

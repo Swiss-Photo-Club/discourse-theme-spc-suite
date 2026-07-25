@@ -36,7 +36,7 @@ export default class SpcCritiqueSubmit extends Component {
   // The project and introduction buttons below are still wizard-only.
   get imageUrl() {
     if (settings.critique_image_use_form) {
-      return "/submit?type=critique";
+      return "/submit/critique";
     }
     return settings.critique_image_wizard_url + this.localeSuffix;
   }

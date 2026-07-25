@@ -192,12 +192,12 @@ critique_category_slug:
 critique_category_id:
   type: integer
   default: 7
-  description: "ID of the critique category. Used by /submit?type=critique to post the request and to ask Discourse which subject tags that category accepts."
+  description: "ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
 
 critique_image_use_form:
   type: bool
   default: true
-  description: "Send 'Submit an image' to the built-in /submit?type=critique form. Turn this off to fall back to the Custom Wizard at critique_image_wizard_url - a rollback that takes effect immediately, without a theme update."
+  description: "Send 'Submit an image' to the built-in /submit/critique form. Turn this off to fall back to the Custom Wizard at critique_image_wizard_url - a rollback that takes effect immediately, without a theme update."
 
 critique_image_wizard_url:
   type: string

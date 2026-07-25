@@ -3,7 +3,8 @@ import DiscourseURL from "discourse/lib/url";
 import SpcSubmitBanner from "../components/spc-submit-banner";
 
 const SUBMIT_PATH = "/submit";
-const CRITIQUE_PATH = "/submit?type=critique";
+// A plain path, not /submit?type=critique - see the route map for why.
+const CRITIQUE_PATH = "/submit/critique";
 
 function isCategoryParam(params, id, slug) {
   const categoryId = String(parseInt(id, 10));
@@ -76,7 +77,7 @@ const spcRun = (api) => {
   api.renderInOutlet("before-list-area", SpcSubmitBanner);
 
   // /new-topic?category=<challenge> → /submit
-  // /new-topic?category=<critique>  → /submit?type=critique
+  // /new-topic?category=<critique>  → /submit/critique
   //
   // This covers direct loads, shared links and any UI that links to the
   // composer for either category. Direct loads matter because the server 404s
@@ -85,14 +86,18 @@ const spcRun = (api) => {
   //
   // Discourse matches permalinks against the *full* path including the query
   // string (that is what `permalink_normalizations` exists to trim), so the
-  // permalink `submit` matches /submit and nothing else — /submit?type=critique
-  // 404s on a hard refresh unless it has a permalink of its own. Rather than
-  // smuggle the mode through an extra query param, the critique permalink
-  // points at the composer for the critique category and is decoded here, the
-  // same way the challenge one always has been. Required permalinks:
+  // permalink `submit` matches /submit and nothing else — every entry URL needs
+  // a permalink of its own. Required permalinks:
   //
   //   submit                 → /new-topic?category=monthly-challenge
+  //   submit/critique        → /new-topic?category=critique-portfolio-reviews
   //   submit?type=critique   → /new-topic?category=critique-portfolio-reviews
+  //
+  // The last one only keeps links shared before July 2026 alive; they land on
+  // /submit/critique like everything else. Both redirects below MUST target a
+  // query-string-free path: a boot-time replaceWith() to a URL carrying query
+  // params makes Ember append the top-level outlet view once per query-param
+  // pass, which rendered the entire app shell three times on /submit?type=critique.
   api.modifyClass(
     "route:new-topic",
     (Superclass) =>

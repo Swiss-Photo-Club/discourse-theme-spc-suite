@@ -123,9 +123,26 @@ merged component has run cleanly for a while, the old ones can be deleted — bu
 **`/submit` is a real route, not an overlay.** Discourse's `mapRoutes()` picks up any
 requirejs module whose name ends in `route-map`, including theme modules, which is how a
 component can own a URL. Because the server 404s unknown top-level paths, direct loads and
-refreshes rely on an admin **permalink** `submit` → `/new-topic?category=monthly-challenge`
-plus a `route:new-topic` override that redirects back to `/submit`. If `/submit` ever stops
-working on a hard refresh, check that the permalink still exists.
+refreshes rely on admin **permalinks** plus a `route:new-topic` override that decodes the
+category and redirects back to `/submit`. If `/submit` ever stops working on a hard refresh,
+check that the permalinks still exist.
+
+**Permalinks match the query string too, so each mode needs its own.** Discourse compares a
+permalink against the full request path *including* `?…` — that is what the
+`permalink_normalizations` site setting exists to trim. So `submit` matches `/submit` and
+nothing else, and `/submit?type=critique` 404s on a hard refresh without a second permalink.
+Both are required:
+
+| Permalink URL | Target |
+| --- | --- |
+| `submit` | `/new-topic?category=monthly-challenge` |
+| `submit?type=critique` | `/new-topic?category=critique-portfolio-reviews` |
+
+The mode is carried by the *category*, not by an extra query param, so `route:new-topic`
+decodes it with the same helper for both. A side effect worth knowing: any link to the
+composer for the critique category now lands on the critique form. That is intended — the
+New Topic button there is hidden by `critique_hide_new_topic_button` anyway — and it is
+guarded by `critique_image_use_form`, so the rollback switch restores the plain composer.
 
 **The masonry grid is fragile.** The Topic List Thumbnails component measures every topic
 row and positions it absolutely. Any DOM change that alters a row's height desynchronises

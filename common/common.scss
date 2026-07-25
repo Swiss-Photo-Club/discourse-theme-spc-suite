@@ -1,28 +1,30 @@
 // =============================================================================
 // SPC Suite - stylesheet entry point
 //
-// Every rule lives in scss/<feature>.scss. This file only decides the order
+// Every rule lives in scss/<feature>.scss. Discourse uploads that folder as
+// "extra_scss" fields keyed by BASENAME, so the imports must NOT carry the
+// scss/ prefix. This file only decides the order
 // they are concatenated in, and that order is load-bearing: it reproduces the
 // cascade the seven separate theme components used to produce, where Discourse
 // emitted their CSS in component-id order (3 Branding, 19 Critique Workspace,
 // 20 Critique Submit, 23 Leaderboard, 36 Onboarding, 37 Non-Member Banner,
 // 61 SPC Suite).
 //
-// Do not reorder these imports. In particular scss/challenge-staff.scss must
+// Do not reorder these imports. In particular challenge-staff must
 // stay last: it re-shows the topic admin wrench that the earlier challenge
 // rules blanket-hide, and it only works as an override.
 // =============================================================================
 
 // --- merged-in components, in their original component-id order --------------
-@import "scss/branding";
-@import "scss/critique-workspace";
-@import "scss/critique-submit";
-@import "scss/leaderboard";
-@import "scss/onboarding";
-@import "scss/non-member-banner";
+@import "branding";
+@import "critique-workspace";
+@import "critique-submit";
+@import "leaderboard";
+@import "onboarding";
+@import "non-member-banner";
 
 // --- the original Suite stack ------------------------------------------------
-@import "scss/submit";
-@import "scss/challenge";
-@import "scss/homepage";
-@import "scss/challenge-staff";
+@import "submit";
+@import "challenge";
+@import "homepage";
+@import "challenge-staff";

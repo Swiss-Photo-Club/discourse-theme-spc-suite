@@ -72,6 +72,14 @@ their CSS in component-id order (3 Branding, 19 Critique Workspace, 20 Critique 
 23 Leaderboard, 36 Onboarding, 37 Non-Member Banner, 61 SPC Suite). Reordering the imports
 changes which rule wins.
 
+**The imports use bare names, not paths.** Discourse uploads the `scss/` folder as
+`extra_scss` theme fields keyed by **basename**, so `scss/branding.scss` becomes the
+importable name `branding`. Writing `@import "scss/branding"` fails the whole stylesheet
+with *"Can't find stylesheet to import"* and the component then ships ~300 bytes of CSS
+comment instead of 67KB of rules — i.e. the entire site loses its styling, silently, with no
+admin-UI error. If the site ever goes unstyled after an update, fetch
+`common_theme_61_*.css` and look at the first line.
+
 `scss/challenge-staff.scss` must stay **last**. The challenge rules blanket-hide the topic
 footer's `__actions`; that final block re-shows only the wrench so staff can pin the brief,
 and it works purely by being later in the cascade.

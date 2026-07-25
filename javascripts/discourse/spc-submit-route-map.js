@@ -1,12 +1,10 @@
 export default function () {
   this.route("spc-submit", { path: "/submit" });
 
-  // Critique mode gets its own *path* rather than riding on ?type=critique.
-  // A boot-time `replaceWith()` to a URL that carries a query string makes
-  // Ember append the top-level outlet view once per query-param pass, so the
-  // whole app shell rendered three times over on a direct load of
-  // /submit?type=critique. Redirecting to a plain path is what the challenge
-  // flow has always done, and it renders exactly once. See
-  // api-initializers/spc-photo-submit.js for the redirect and the permalinks.
+  // Critique mode has its own path rather than riding on ?type=critique, so
+  // the URL says what it opens and the route can set its own title without
+  // reading a query param. /submit?type=critique still works for links shared
+  // before this existed; see api-initializers/spc-photo-submit.js for the
+  // redirects and the permalinks each entry URL needs.
   this.route("spc-submit-critique", { path: "/submit/critique" });
 }

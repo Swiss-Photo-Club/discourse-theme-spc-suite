@@ -3,7 +3,6 @@ import DiscourseURL from "discourse/lib/url";
 import SpcSubmitBanner from "../components/spc-submit-banner";
 
 const SUBMIT_PATH = "/submit";
-// A plain path, not /submit?type=critique - see the route map for why.
 const CRITIQUE_PATH = "/submit/critique";
 
 function isCategoryParam(params, id, slug) {
@@ -94,10 +93,7 @@ const spcRun = (api) => {
   //   submit?type=critique   → /new-topic?category=critique-portfolio-reviews
   //
   // The last one only keeps links shared before July 2026 alive; they land on
-  // /submit/critique like everything else. Both redirects below MUST target a
-  // query-string-free path: a boot-time replaceWith() to a URL carrying query
-  // params makes Ember append the top-level outlet view once per query-param
-  // pass, which rendered the entire app shell three times on /submit?type=critique.
+  // /submit/critique like everything else.
   api.modifyClass(
     "route:new-topic",
     (Superclass) =>

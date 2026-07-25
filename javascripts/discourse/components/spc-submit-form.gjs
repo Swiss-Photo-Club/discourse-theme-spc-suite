@@ -400,9 +400,18 @@ export default class SpcSubmitForm extends Component {
                 <option value="" selected={{this.noSubject}}>
                   {{i18n (themePrefix "critique_form.subject_placeholder")}}
                 </option>
-                {{#each this.subjectOptions as |option|}}
-                  <option value={{option.value}} selected={{option.selected}}>
-                    {{option.label}}
+                {{! The block param must not be called `option`. These are
+                    strict-mode templates, so a tag that matches an in-scope
+                    variable is compiled as a component invocation rather than
+                    an HTML element - `<option>` inside `as |option|` resolved
+                    to a plain object, Glimmer read `.manager` off a null
+                    definition and the whole render threw. On a direct load
+                    that killed the root render, and Ember re-appended the
+                    top-level outlet, which is why the entire app shell used to
+                    appear three times over on the critique form. }}
+                {{#each this.subjectOptions as |choice|}}
+                  <option value={{choice.value}} selected={{choice.selected}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>
@@ -413,9 +422,9 @@ export default class SpcSubmitForm extends Component {
                 {{i18n (themePrefix "critique_form.style_label")}}
               </label>
               <select id="spc-critique-style" {{on "change" this.updateStyle}}>
-                {{#each this.styleOptions as |option|}}
-                  <option value={{option.value}} selected={{option.selected}}>
-                    {{option.label}}
+                {{#each this.styleOptions as |choice|}}
+                  <option value={{choice.value}} selected={{choice.selected}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>
@@ -426,9 +435,9 @@ export default class SpcSubmitForm extends Component {
                 {{i18n (themePrefix "critique_form.focus_label")}}
               </label>
               <select id="spc-critique-focus" {{on "change" this.updateFocus}}>
-                {{#each this.focusOptions as |option|}}
-                  <option value={{option.value}} selected={{option.selected}}>
-                    {{option.label}}
+                {{#each this.focusOptions as |choice|}}
+                  <option value={{choice.value}} selected={{choice.selected}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>
@@ -442,9 +451,9 @@ export default class SpcSubmitForm extends Component {
                 id="spc-critique-examples"
                 {{on "change" this.updateExamples}}
               >
-                {{#each this.examplesOptions as |option|}}
-                  <option value={{option.value}} selected={{option.selected}}>
-                    {{option.label}}
+                {{#each this.examplesOptions as |choice|}}
+                  <option value={{choice.value}} selected={{choice.selected}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>

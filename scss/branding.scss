@@ -234,6 +234,25 @@
 }
 
 /* -------------------------------------------------
+   Deliberate exceptions to the reset above.
+
+   The reset uses !important on the universal selector,
+   so nothing overrides it by source order — only by
+   specificity. A class selector (0,1,0) beats * (0,0,0),
+   so each exception must be a class AND carry
+   !important. Keep them here rather than in the feature
+   partial: the reset is what they are arguing with, and
+   a rounded corner in a feature file reads as dead code.
+
+   Avatars are portraits of people, not UI chrome; the
+   circle is the one shape the flat-corner rule does not
+   want to win.
+   ------------------------------------------------- */
+.spc-leaderboard-strip__avatar {
+  border-radius: 50% !important;
+}
+
+/* -------------------------------------------------
    Buttons — bold uppercase, coral fill
    (matches "COURSES" / "GIFT VOUCHERS" / "ORDER" buttons
    on the website)

@@ -1,18 +1,11 @@
-// Softened category banner for the critique category
-body.category-#{$critique_category_slug} {
-  .category-title-header,
-  .category-banner {
-    background: #{$critique_banner_background} !important;
-
-    .category-title,
-    h1,
-    .category-title-description,
-    .category-title-description p,
-    .cooked {
-      color: #{$critique_banner_text_color} !important;
-    }
-  }
-}
+// The critique category's pink banner recolour is gone: category 7 now renders
+// the shared hero, which hides .category-title-header outright, so the recolour
+// had nothing left to tint. D10.
+//
+// $critique_banner_background is deliberately still declared in settings.yml
+// even though nothing reads it any more. Deleting the setting as well as the
+// rule is what removes the ability to put the pink banner back without a
+// commit, and R4 keeps that option open for one release.
 
 // Introductions banner in the teal accent
 body.category-#{$critique_intro_category_slug} {

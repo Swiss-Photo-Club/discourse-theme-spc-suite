@@ -1,6 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 import Category from "discourse/models/category";
-import { i18n } from "discourse-i18n";
+import I18n, { i18n } from "discourse-i18n";
 import { clearHero, renderHero, uploadUrl } from "../lib/spc-hero";
 
 const RENDER_THROTTLE_MS = 200;
@@ -13,7 +13,13 @@ const RENDER_THROTTLE_MS = 200;
  * on this site. (The one place slugs are unavoidable is category-hero.scss,
  * because the body class Discourse emits carries the slug.)
  *
- * `key` names the locale block — hero.<key>.eyebrow / .headline / .actions.*.
+ * `key` names the locale block — hero.<key>.eyebrow and, where the action
+ * labels are not already written down somewhere better, hero.<key>.actions.*.
+ *
+ * There is deliberately no headline key. Every category's headline turned out
+ * to be its own name, and Discourse already localises that — writing it out a
+ * second time only creates a string that can drift out of step with the
+ * sidebar and the breadcrumb.
  * `actions` is a function rather than data because the spec's `actions[].href`
  * schema does not survive contact with these categories: critique's primary
  * depends on critique_image_use_form AND the locale suffix, introductions'
@@ -62,7 +68,57 @@ const CATEGORY_HEROES = {
       },
     ],
   },
+
+  // 7 — Critique / Portfolio Reviews. Masonry with real rows, so this is the
+  // first hero that could desynchronise a layout if it ever grew a rule
+  // touching a topic row. It does not: it sits above the list and adds no
+  // height to any tr.topic-list-item.
+  //
+  // Also the first coverless hero — category 7 has no uploaded_background,
+  // which is what the --with-cover split exists for.
+  //
+  // Both actions are the ones the floating .spc-critique-submit row used to
+  // carry, with their URLs derived the same way, so critique_image_use_form
+  // still switches the primary between the built-in form and the Custom
+  // Wizard and remains the instant rollback it is documented to be. Their
+  // labels stay on critique_submit.* rather than moving into hero.*: they are
+  // the same two buttons in a new place, and re-keying them would have thrown
+  // away translations that already exist.
+  7: {
+    key: "critique",
+    variant: "category",
+    actions: () => [
+      {
+        label: i18n(themePrefix("critique_submit.image_button")),
+        href: settings.critique_image_use_form
+          ? "/submit/critique"
+          : settings.critique_image_wizard_url + localeSuffix(),
+        style: "primary",
+      },
+      {
+        label: i18n(themePrefix("critique_submit.project_button")),
+        href: settings.critique_project_wizard_url + localeSuffix(),
+        style: "secondary",
+      },
+    ],
+  },
 };
+
+/**
+ * The wizard URLs carry their locale in the path. Read from I18n.currentLocale()
+ * rather than document.documentElement.lang so this stays byte-identical to the
+ * connector these actions came from.
+ */
+function localeSuffix() {
+  const locale = I18n.currentLocale() || "";
+  if (locale.startsWith("en")) {
+    return "-en";
+  }
+  if (locale.startsWith("fr")) {
+    return "-fr";
+  }
+  return "";
+}
 
 function heroText(key, suffix) {
   return i18n(themePrefix(`hero.${key}.${suffix}`));
@@ -143,16 +199,26 @@ export default apiInitializer((api) => {
     const { id, entry, category } = active;
     const cover = uploadUrl(category.uploaded_background);
     const locale = document.documentElement.lang || "en";
+    const actions = entry.actions(category);
 
     renderHero({
       marker: String(id),
       variant: entry.variant,
-      signature: `${id}-${locale}-${cover}`,
+      // Destinations are part of the signature because some of them are
+      // derived from settings — critique_image_use_form retargets the critique
+      // primary — and a hero that only kept the category in its signature
+      // would go on showing the previous destination.
+      signature: [
+        id,
+        locale,
+        cover,
+        actions.map((action) => action.href || action.label).join("|"),
+      ].join("-"),
       eyebrow: heroText(entry.key, "eyebrow"),
-      title: heroText(entry.key, "headline") || category.name,
+      title: category.name,
       lead: categoryLead(category),
       cover,
-      actions: entry.actions(category),
+      actions,
     });
   }
 

@@ -104,6 +104,18 @@
   font-size: clamp(2rem, 3.5vw, 3.2rem);
 }
 
+/* Coverless — categories 7 and 12, which have no uploaded_background. Left as
+   a variant property rather than folded into the shared value, because 300px
+   of flat indigo under a two-line headline is a lot of empty ground.
+
+   In practice this rarely binds: eyebrow, headline, lead and a 54px button row
+   already come to roughly 290px at this padding, so the content sets the
+   height and this only stops a short headline from opening a gap. If a
+   coverless hero still reads as heavy, padding is the lever, not min-height. */
+.spc-hero--category:not(.spc-hero--with-cover) {
+  min-height: 220px;
+}
+
 .spc-hero__shade {
   position: absolute;
   z-index: -1;

@@ -189,12 +189,12 @@ fr:
   hero:
     post_processing:
       eyebrow: Technique & flux de travail
-      headline: Post-traitement
       actions:
         ask: Créer un sujet
     meetups:
       eyebrow: Se retrouver
-      headline: Meetups & Photowalks
       actions:
         upcoming: Événements à venir
         propose: Proposer une sortie
+    critique:
+      eyebrow: Retours & progression

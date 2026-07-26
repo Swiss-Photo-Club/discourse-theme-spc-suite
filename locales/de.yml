@@ -193,12 +193,12 @@ de:
   hero:
     post_processing:
       eyebrow: Technik & Workflow
-      headline: Bildbearbeitung
       actions:
         ask: Thema erstellen
     meetups:
       eyebrow: Gemeinsam fotografieren
-      headline: Meetups & Photowalks
       actions:
         upcoming: Kommende Events
         propose: Meetup vorschlagen
+    critique:
+      eyebrow: Feedback & Weiterentwicklung

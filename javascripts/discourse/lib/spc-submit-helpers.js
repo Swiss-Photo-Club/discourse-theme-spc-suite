@@ -1,4 +1,38 @@
 import { ajax } from "discourse/lib/ajax";
+import I18n from "discourse-i18n";
+
+// The subject tags the critique category will accept, fetched rather than
+// hard-coded on purpose. That category requires at least one tag from the
+// "Critique Subjects" tag group and /posts.json enforces it server-side, so
+// asking Discourse which tags it will take means a form can never offer one it
+// would then reject — add or remove a subject in admin and both forms follow
+// without a code change.
+export async function fetchSubjectTags(categoryId) {
+  try {
+    const result = await ajax("/tags/filter/search.json", {
+      data: { q: "", categoryId, filterForInput: true },
+    });
+    return (result?.results || []).map((tag) => tag.name).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+// Both critique forms offer the same tag group and therefore share one set of
+// translations. The key stays `critique_form.subjects.*` for the project form
+// too: re-keying it would have thrown away translations that already exist to
+// describe exactly these tags.
+export function subjectOptions(tags, selected) {
+  return tags.map((tag) => {
+    const key = themePrefix(`critique_form.subjects.${tag}`);
+    const label = I18n.t(key);
+    return {
+      value: tag,
+      label: label && label !== key ? label : tag,
+      selected: tag === selected,
+    };
+  });
+}
 
 // Where a form's cancel button goes. Discourse resolves /c/<id> on its own, so
 // the slug is decoration — but it is the URL every other link on the site uses,

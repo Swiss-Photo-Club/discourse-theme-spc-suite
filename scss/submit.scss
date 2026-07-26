@@ -159,6 +159,22 @@
     }
   }
 
+  // The project form stacks one uploader per image, with an empty one at the
+  // end to add the next. A dozen previews at the single-image form's 340px
+  // would be a page nobody can scroll, so the slots in a list are smaller.
+  &__uploads {
+    display: grid;
+    gap: 1em;
+    margin-bottom: 0.75em;
+
+    .spc-submit-page__uploader {
+      .uploaded-image-preview,
+      .file-uploader__preview {
+        min-height: 180px;
+      }
+    }
+  }
+
   &__error {
     margin-bottom: 1em;
   }

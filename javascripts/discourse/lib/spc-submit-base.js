@@ -54,9 +54,15 @@ export default class SpcSubmitBase extends Component {
     return this.upload?.url;
   }
 
+  // Overridable because the default names a photo, which is right for two of
+  // the forms and wrong for any that submits something else.
+  get titleError() {
+    return i18n(themePrefix("form.error_no_title"));
+  }
+
   validate() {
     if (!this.title?.trim()) {
-      return i18n(themePrefix("form.error_no_title"));
+      return this.titleError;
     }
     return null;
   }

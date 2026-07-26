@@ -2,9 +2,8 @@ import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
-import { ajax } from "discourse/lib/ajax";
 import { getUploadMarkdown } from "discourse/lib/uploads";
-import I18n, { i18n } from "discourse-i18n";
+import { i18n } from "discourse-i18n";
 import {
   buildCritiqueRaw,
   critiqueChoices,
@@ -15,7 +14,9 @@ import SpcSubmitBase from "../lib/spc-submit-base";
 import {
   categoryUrlFor,
   currentMonthYM,
+  fetchSubjectTags,
   resolveRoundTag,
+  subjectOptions,
 } from "../lib/spc-submit-helpers";
 import SpcSubmitShell from "./spc-submit-shell";
 
@@ -77,26 +78,10 @@ export default class SpcSubmitForm extends SpcSubmitBase {
     return parseInt(settings.critique_category_id, 10);
   }
 
-  // The subject list is fetched rather than hard-coded on purpose. The critique
-  // category requires at least one tag from the "Critique Subjects" tag group,
-  // and /posts.json enforces that server-side. Asking Discourse which tags it
-  // will accept means this form can never offer one it would then reject — if
-  // a subject is added to or removed from the tag group in admin, the dropdown
-  // follows without a code change.
   loadSubjects() {
-    ajax("/tags/filter/search.json", {
-      data: {
-        q: "",
-        categoryId: this.critiqueCategoryId,
-        filterForInput: true,
-      },
-    })
-      .then((result) => {
-        this.subjects = (result?.results || [])
-          .map((tag) => tag.name)
-          .filter(Boolean);
-      })
-      .catch(() => (this.subjects = []));
+    fetchSubjectTags(this.critiqueCategoryId).then(
+      (tags) => (this.subjects = tags)
+    );
   }
 
   get categoryId() {
@@ -150,15 +135,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
   }
 
   get subjectOptions() {
-    return this.subjects.map((tag) => {
-      const key = themePrefix(`critique_form.subjects.${tag}`);
-      const label = I18n.t(key);
-      return {
-        value: tag,
-        label: label && label !== key ? label : tag,
-        selected: tag === this.subject,
-      };
-    });
+    return subjectOptions(this.subjects, this.subject);
   }
 
   get noSubject() {

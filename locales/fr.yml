@@ -78,6 +78,43 @@ fr:
       architecture: Architecture
       travel: Voyage
       abstract: Abstrait
+  project_form:
+    heading: Soumettre un projet pour critique
+    intro_title: Avant d'envoyer
+    intro_body: Propose un travail cohérent – une série photo, un projet de livre ou un portfolio.
+    title_label: Titre du projet
+    title_placeholder: Donne un titre clair à ton projet
+    description_label: Brève description
+    description_hint: De quoi s'agit-il ? Le thème, l'idée, le fil conducteur.
+    content_label: Contenu du projet
+    content_hint: Téléverse tes images, une par une. Tu peux aussi simplement partager un lien vers ton projet.
+    content_placeholder: Un lien vers ton portfolio, ton projet de livre ou un PDF…
+    subject_label: Sujet
+    subject_placeholder: Choisis un sujet…
+    focus_label: Focus du feedback
+    focus_placeholder: Choisis un focus…
+    direction_label: Ta direction créative
+    direction_hint: Que veux-tu exprimer ou affiner ? Ambiance, approche visuelle, idées de séquence, questions ouvertes.
+    working_label: Qu'est-ce qui fonctionne, qu'est-ce qui ne fonctionne pas encore ?
+    working_hint: "Ton propre bilan : où es-tu satisfait, où ça coince ?"
+    help_label: Que veux-tu comprendre ou améliorer ?
+    help_hint: Plus tu es précis, plus la critique sera utile.
+    presentation_label: Comment le projet sera-t-il présenté ?
+    presentation_placeholder: Choisis un format…
+    details_label: Autres détails (optionnel)
+    submit: Envoyer le projet
+    error_missing: "Merci de remplir ce champ : %{field}"
+    error_no_content: Merci de téléverser au moins une image ou de partager un lien vers ton projet.
+    focus:
+      artistic: Artistique / Conceptuel – séquence, cohérence, langage visuel, ambiance, message
+      technical: Technique / Présentation – cohérence, retouche, qualité, mise en page
+      both: Les deux – artistique et technique
+    presentation:
+      print: Impression / Livre
+      exhibition: Exposition
+      web: Web / Portfolio
+      social: Réseaux sociaux
+      open: Encore ouvert
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois

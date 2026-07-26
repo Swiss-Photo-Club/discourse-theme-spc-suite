@@ -123,6 +123,43 @@ en:
       architecture: Architecture
       travel: Travel
       abstract: Abstract
+  project_form:
+    heading: Submit a project for critique
+    intro_title: Before you submit
+    intro_body: Submit a coherent body of work — a photo series, a book project or a portfolio.
+    title_label: Project title
+    title_placeholder: Give your project a clear title
+    description_label: Brief description
+    description_hint: What is it about? The theme, the idea, the thread running through it.
+    content_label: Project content
+    content_hint: Upload your images, one at a time. You can share a link to your project instead, or as well.
+    content_placeholder: A link to your portfolio, book project or a PDF…
+    subject_label: Subject
+    subject_placeholder: Choose a subject…
+    focus_label: Feedback focus
+    focus_placeholder: Choose a focus…
+    direction_label: Your creative direction
+    direction_hint: What are you trying to express or refine? Mood, visual approach, sequencing ideas, open questions.
+    working_label: What works, what doesn't yet?
+    working_hint: "Your own assessment: where are you happy, where are you stuck?"
+    help_label: What do you want to understand or improve?
+    help_hint: The more specific you are, the more useful the critique.
+    presentation_label: How will the project be presented?
+    presentation_placeholder: Choose a format…
+    details_label: Further details (optional)
+    submit: Submit project
+    error_missing: "Please fill this in: %{field}"
+    error_no_content: Please upload at least one image, or share a link to your project.
+    focus:
+      artistic: Artistic / Conceptual — sequence, coherence, visual language, mood, message
+      technical: Technical / Presentation — consistency, processing, quality, layout
+      both: Both — artistic and technical
+    presentation:
+      print: Print / Book
+      exhibition: Exhibition
+      web: Web / Portfolio
+      social: Social Media
+      open: Still open
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month

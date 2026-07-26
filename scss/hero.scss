@@ -168,6 +168,12 @@
   align-items: center;
   justify-content: center;
   min-height: 54px;
+  /* Without this, min-height sizes the CONTENT box and the button renders
+     76.8px — the 54px plus 0.65rem of padding top and bottom plus two 1px
+     borders. §6a fixed the hero action height at 54px and this is what makes
+     that true. The narrow-viewport block below used to be the only place it
+     was set, so the geometry was right on mobile and wrong everywhere else. */
+  box-sizing: border-box;
   padding: 0.65rem 1.35rem;
   border: 1px solid transparent;
   border-radius: 0;
@@ -189,10 +195,19 @@
   background: var(--spc-coral-hover);
 }
 
+/* The colour carries !important and a :visited twin for the same reason the
+   invitation banner's secondary button already did — a secondary action is an
+   <a>, and once it has been followed something outside this file recolours it.
+   The primary needed no :visited rule because its !important already covers
+   both states. */
 .spc-button--secondary {
   border-color: rgba(255, 255, 255, 0.48);
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: #ffffff !important;
+}
+
+.spc-button--secondary:visited {
+  color: #ffffff !important;
 }
 
 .spc-button--secondary:hover {
@@ -264,6 +279,5 @@
 
   .spc-button {
     width: 100%;
-    box-sizing: border-box;
   }
 }

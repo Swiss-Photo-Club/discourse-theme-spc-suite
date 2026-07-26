@@ -297,6 +297,15 @@ function activeChallenge(challenges) {
 // brief in the Monthly Challenge category, tag it with the round tag
 // (YYYY-MM-theme) and pin it. The settings registry remains as an optional
 // override (deadlines, winner, archive data), matched by tag.
+// A topic's tags arrive as objects from the category listing - {id, name, slug}
+// - and as bare strings elsewhere. Both shapes have to be read the same way,
+// because reading one of them wrong fails silently: the brief is still found,
+// its round tag comes back undefined, and everything quietly falls through to
+// the settings registry instead.
+function tagName(tag) {
+  return typeof tag === "string" ? tag : tag?.name || "";
+}
+
 let pinnedBriefPromise = null;
 
 function clearPinnedBriefCache() {
@@ -311,20 +320,29 @@ function fetchPinnedBrief() {
       const brief = topics.find(
         (topic) =>
           topic.pinned &&
-          (topic.tags || []).some((tag) => /^\d{4}-\d{2}/.test(typeof tag === "string" ? tag : tag?.name))
+          (topic.tags || []).some((tag) => /^\d{4}-\d{2}/.test(tagName(tag)))
       );
       if (!brief) {
         return null;
       }
       return {
         topic_id: brief.id,
-        tag: (brief.tags || []).find((tag) => /^\d{4}-\d{2}/.test(tag)),
+        tag: (brief.tags || [])
+          .map(tagName)
+          .find((tag) => /^\d{4}-\d{2}/.test(tag)),
         // The category listing is public even where the topics behind it are
         // not, and it already carries everything the hero needs. Taking it
         // here costs nothing: this response was fetched anyway.
+        // NOT fancy_title_localized - that is a boolean flag saying the title
+        // HAS been localized, not the localized title. Reading it as a string
+        // renders a hero headline of "true".
+        //
+        // The excerpt is trimmed to its first paragraph, which is what
+        // topicSummary() does to the cooked post on the signed-in path, so the
+        // two produce the same lead rather than merely similar ones.
         listing: {
-          title: brief.fancy_title_localized || brief.fancy_title || brief.title || "",
-          excerpt: brief.excerpt || "",
+          title: brief.fancy_title || brief.title || "",
+          excerpt: (brief.excerpt || "").split(/\r?\n/).map((line) => line.trim()).find(Boolean) || "",
           image: brief.image_url || "",
         },
       };

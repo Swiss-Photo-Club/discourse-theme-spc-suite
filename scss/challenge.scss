@@ -54,10 +54,20 @@ body.category-monthly-challenge .navigation-controls {
 
    Hiding it needs the row to be absent or collapsed BEFORE the component
    measures, which spc-monthly-challenge.js cannot guarantee: it marks the row
-   from a 200ms-throttled render, long after layout. Marking it is all that
-   still happens; the class is a hook, not a hiding mechanism. If the duplicate
-   card is worth removing, that is a separate change and it has to work from
-   first paint. */
+   from a 200ms-throttled render, long after layout. Neither mutating the DOM
+   nor dispatching a resize makes the component recompute — both tested on the
+   live category, positions byte-identical afterwards — so there is no
+   after-the-fact escape either.
+
+   What CAN be taken off that card is the vote control, because it is
+   absolutely positioned and therefore out of flow: removing it changes no
+   height and cannot open a hole. Verified live, every row's top and height
+   unchanged. That addresses the real problem, which was never that the brief
+   appears twice but that its card looked like a photo entry open for voting -
+   complete with a 0 VOTES button inviting people to vote for the brief. */
+body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-official-topic-row .list-vote-count {
+  display: none;
+}
 
 body.category-monthly-challenge .list-controls {
   padding-top: 1.25rem;

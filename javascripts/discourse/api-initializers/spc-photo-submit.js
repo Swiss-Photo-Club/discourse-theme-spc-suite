@@ -139,13 +139,13 @@ const spcRun = (api) => {
 
     const clickHandler = (e) => {
       const el = e.target.closest?.(
-        "#create-topic, .spc-challenge-hero__actions .spc-challenge-button--primary"
+        "#create-topic, .spc-hero__actions .spc-button--primary"
       );
       if (!el) {
         return;
       }
 
-      let isChallenge = el.matches(".spc-challenge-button--primary");
+      let isChallenge = el.matches(".spc-button--primary");
 
       if (!isChallenge) {
         const router = api.container.lookup("service:router");

@@ -434,7 +434,7 @@ function prepareHomeCard(challenge) {
   card.setAttribute("aria-label", `${translate("current")}: ${title}`);
   card.innerHTML = `
     <span class="spc-monthly-card__content">
-      <span class="spc-monthly-card__eyebrow">${escapeHtml(translate("current"))}${
+      <span class="spc-eyebrow">${escapeHtml(translate("current"))}${
         month ? ` · ${escapeHtml(month)}` : ""
       }</span>
       <strong class="spc-monthly-card__title">${escapeHtml(title)}</strong>
@@ -475,7 +475,7 @@ function renderHomeCard(challenge) {
   card.setAttribute("aria-label", `${translate("current")}: ${title}`);
   card.innerHTML = `
     <span class="spc-monthly-card__content">
-      <span class="spc-monthly-card__eyebrow">${escapeHtml(translate("current"))} · ${escapeHtml(
+      <span class="spc-eyebrow">${escapeHtml(translate("current"))} · ${escapeHtml(
         monthLabel(challenge)
       )}</span>
       <strong class="spc-monthly-card__title">${escapeHtml(title)}</strong>
@@ -542,7 +542,7 @@ function ensureHero() {
   }
 
   const hero = document.createElement("section");
-  hero.className = "spc-challenge-hero";
+  hero.className = "spc-hero";
   hero.dataset.spcMonthlyChallenge = "hero";
   anchor.insertAdjacentElement("beforebegin", hero);
   return hero;
@@ -567,15 +567,15 @@ function renderHero(challenge) {
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const primaryLabel = isOpen ? translate("submit_photo") : translate("view_entries");
   const primaryControl = isOpen
-    ? `<button class="spc-challenge-button spc-challenge-button--primary" type="button" data-spc-submit-photo>${escapeHtml(
+    ? `<button class="spc-button spc-button--primary" type="button" data-spc-submit-photo>${escapeHtml(
         primaryLabel
       )}</button>`
-    : `<a class="spc-challenge-button spc-challenge-button--primary" href="#list-area">${escapeHtml(
+    : `<a class="spc-button spc-button--primary" href="#list-area">${escapeHtml(
         primaryLabel
       )}</a>`;
   const winnerLine =
     challenge.status === "archived" && challenge.winner_title
-      ? `<a class="spc-challenge-hero__winner" href="${escapeHtml(
+      ? `<a class="spc-hero__winner" href="${escapeHtml(
           challenge.winner_topic_url || challenge.topic?.url || categoryRoute()
         )}">
           <span>${escapeHtml(translate("winner"))}</span>
@@ -590,18 +590,18 @@ function renderHero(challenge) {
 
   header.dataset.spcChallengeSignature = signature;
   header.innerHTML = `
-    <div class="spc-challenge-hero__shade"></div>
-    <div class="spc-challenge-hero__content">
-      <span class="spc-challenge-hero__eyebrow">${escapeHtml(translate("label"))} · ${escapeHtml(
+    <div class="spc-hero__shade"></div>
+    <div class="spc-hero__content">
+      <span class="spc-eyebrow">${escapeHtml(translate("label"))} · ${escapeHtml(
         monthLabel(challenge)
       )}</span>
       <h1>${escapeHtml(title)}</h1>
       <p>${escapeHtml(summary)}</p>
-      ${deadlineText(challenge, state) ? `<span class="spc-challenge-hero__date">${escapeHtml(deadlineText(challenge, state))}</span>` : ""}
+      ${deadlineText(challenge, state) ? `<span class="spc-hero__date">${escapeHtml(deadlineText(challenge, state))}</span>` : ""}
       ${winnerLine}
-      <div class="spc-challenge-hero__actions">
+      <div class="spc-hero__actions">
         ${primaryControl}
-        <button class="spc-challenge-button spc-challenge-button--secondary" type="button" data-spc-open-voting>
+        <button class="spc-button spc-button--secondary" type="button" data-spc-open-voting>
           ${escapeHtml(translate("how_voting_works"))}
         </button>
       </div>
@@ -610,10 +610,10 @@ function renderHero(challenge) {
 
   if (cover) {
     header.style.setProperty("--spc-challenge-cover", `url("${cover.replaceAll('"', "%22")}")`);
-    header.classList.add("spc-challenge-hero--with-cover");
+    header.classList.add("spc-hero--with-cover");
   } else {
     header.style.removeProperty("--spc-challenge-cover");
-    header.classList.remove("spc-challenge-hero--with-cover");
+    header.classList.remove("spc-hero--with-cover");
   }
 }
 
@@ -643,7 +643,7 @@ function renderEducation(challenge) {
   section.innerHTML = `
     <header class="spc-challenge-brief__header">
       <div>
-        <span class="spc-challenge-section-kicker">${escapeHtml(
+        <span class="spc-eyebrow">${escapeHtml(
           translate("official_brief")
         )}</span>
         <h2>${escapeHtml(challengeTitle(challenge))}</h2>
@@ -691,7 +691,7 @@ function renderArchive(challenges) {
   section.innerHTML = `
     <header class="spc-challenge-archive__header">
       <div>
-        <span class="spc-challenge-section-kicker">${escapeHtml(translate("past_challenges"))}</span>
+        <span class="spc-eyebrow">${escapeHtml(translate("past_challenges"))}</span>
         <h2>${escapeHtml(translate("past_challenges"))}</h2>
       </div>
       <p>${escapeHtml(translate("past_challenges_intro"))}</p>
@@ -787,7 +787,7 @@ function renderComposer(challenge, composerService) {
     callout.className = "spc-composer-challenge";
     callout.dataset.spcMonthlyChallenge = "composer";
     callout.innerHTML = `
-      <span class="spc-challenge-section-kicker">${escapeHtml(translate("current"))}</span>
+      <span class="spc-eyebrow">${escapeHtml(translate("current"))}</span>
       <strong>${escapeHtml(challengeTitle(challenge))}</strong>
       ${
         challengeSummary(challenge)
@@ -859,7 +859,7 @@ function ensureVotingDialog() {
       <button class="spc-voting-dialog__close" value="close" aria-label="${escapeHtml(
         translate("close")
       )}">×</button>
-      <span class="spc-challenge-section-kicker">${escapeHtml(translate("label"))}</span>
+      <span class="spc-eyebrow">${escapeHtml(translate("label"))}</span>
       <h2>${escapeHtml(translate("vote_modal_title"))}</h2>
       <ol class="spc-voting-dialog__steps">
         <li><span>1</span><div><strong>${escapeHtml(

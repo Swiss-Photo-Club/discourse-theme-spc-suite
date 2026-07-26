@@ -79,9 +79,9 @@ body.category-monthly-challenge .list-controls {
   white-space: nowrap;
 }
 
-.spc-challenge-brief .spc-challenge-section-kicker,
-.spc-challenge-archive .spc-challenge-section-kicker,
-.spc-voting-dialog .spc-challenge-section-kicker {
+.spc-challenge-brief .spc-eyebrow,
+.spc-challenge-archive .spc-eyebrow,
+.spc-voting-dialog .spc-eyebrow {
   color: var(--spc-coral);
 }
 
@@ -362,7 +362,7 @@ body.category-monthly-challenge .list-controls {
   background: #f3f5f8;
 }
 
-.spc-composer-challenge .spc-challenge-section-kicker {
+.spc-composer-challenge .spc-eyebrow {
   color: var(--spc-coral);
 }
 

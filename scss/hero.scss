@@ -3,7 +3,7 @@
 
    Extracted from challenge.scss, which is where they grew up. They were
    already written unscoped, deliberately (see the note above
-   .spc-challenge-hero), so pulling them out is a move and nothing more:
+   .spc-hero), so pulling them out is a move and nothing more:
    no rule in this file is conditioned on a category.
 
    Import position is load-bearing. This partial sits immediately after
@@ -14,20 +14,21 @@
    by path — Discourse keys extra_scss by BASENAME, so it is
    @import "hero", never @import "scss/hero".
 
-   The classes are still named .spc-challenge-* here. Renaming them to
-   .spc-hero / .spc-button / .spc-eyebrow is deliberately a separate
-   commit: it has to change two JS files as well, and one of those is a
-   selector in spc-photo-submit.js that routes the hero's submit button —
-   a match that fails silently and invisibly, so it must not ride along
-   with an import-order change that has to be verified by eye.
+   The names are deliberately not challenge-specific. These rules describe
+   a hero, a button and an eyebrow, not a category, and the invitation
+   banner is about to become the second caller. Anything that reads a class
+   name from outside this file is listed in the rename commit's message;
+   the one to remember is the selector in spc-photo-submit.js that routes
+   the hero's primary button to /submit, because it fails silently.
    =================================================================== */
 
-/* Eyebrow / section kicker — shared by the hero, brief, composer callout
-   and voting dialog. Contextual overrides live in the partial that owns
-   the context and win by importing later. */
-.spc-monthly-card__eyebrow,
-.spc-challenge-hero__eyebrow,
-.spc-challenge-section-kicker {
+/* Eyebrow — shared by the hero, the homepage monthly card, the brief, the
+   archive, the composer callout and the voting dialog. This one class
+   replaces the three that used to carry identical declarations
+   (.spc-monthly-card__eyebrow, .spc-challenge-hero__eyebrow,
+   .spc-challenge-section-kicker). Contextual overrides live in the partial
+   that owns the context and win by importing later. */
+.spc-eyebrow {
   color: rgba(255, 255, 255, 0.74);
   font-size: 0.75rem;
   font-weight: 800;
@@ -40,7 +41,7 @@
 /* Not scoped to the challenge body class on purpose: these rules have to hold
    wherever the element is, so a hero that outlives its page degrades to a
    correct-looking block rather than dark text on a pale slab. */
-.spc-challenge-hero {
+.spc-hero {
   position: relative;
   isolation: isolate;
   display: flex;
@@ -59,14 +60,14 @@
   box-sizing: border-box;
 }
 
-.spc-challenge-hero__shade {
+.spc-hero__shade {
   position: absolute;
   z-index: -1;
   inset: 0;
   background: linear-gradient(90deg, rgba(18, 29, 53, 0.98) 0%, rgba(18, 29, 53, 0.9) 50%, rgba(18, 29, 53, 0.36) 100%);
 }
 
-.spc-challenge-hero__content {
+.spc-hero__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,7 +75,7 @@
   text-align: left;
 }
 
-.spc-challenge-hero__content h1 {
+.spc-hero__content h1 {
   margin: 0.5rem 0 0.85rem;
   color: #ffffff;
   font-size: clamp(2.7rem, 5vw, 5rem);
@@ -83,7 +84,7 @@
   letter-spacing: -0.025em;
 }
 
-.spc-challenge-hero__content > p {
+.spc-hero__content > p {
   max-width: 680px;
   margin: 0;
   color: rgba(255, 255, 255, 0.82);
@@ -91,13 +92,13 @@
   line-height: 1.6;
 }
 
-.spc-challenge-hero__date {
+.spc-hero__date {
   margin-top: 1rem;
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.86rem;
 }
 
-.spc-challenge-hero__actions {
+.spc-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -106,7 +107,7 @@
 
 /* Button -------------------------------------------------------------- */
 
-.spc-challenge-button {
+.spc-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -123,29 +124,29 @@
   cursor: pointer;
 }
 
-.spc-challenge-button--primary {
+.spc-button--primary {
   background: var(--spc-coral);
   color: #ffffff !important;
 }
 
-.spc-challenge-button--primary:hover {
+.spc-button--primary:hover {
   background: var(--spc-coral-hover);
 }
 
-.spc-challenge-button--secondary {
+.spc-button--secondary {
   border-color: rgba(255, 255, 255, 0.48);
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
 }
 
-.spc-challenge-button--secondary:hover {
+.spc-button--secondary:hover {
   border-color: #ffffff;
   background: rgba(255, 255, 255, 0.15);
 }
 
 /* Winner callout ------------------------------------------------------ */
 
-.spc-challenge-hero__winner {
+.spc-hero__winner {
   display: grid;
   width: fit-content;
   gap: 0.15rem;
@@ -157,7 +158,7 @@
   text-decoration: none;
 }
 
-.spc-challenge-hero__winner > span {
+.spc-hero__winner > span {
   color: var(--spc-casablanca);
   font-size: 0.7rem;
   font-weight: 800;
@@ -165,38 +166,38 @@
   text-transform: uppercase;
 }
 
-.spc-challenge-hero__winner small {
+.spc-hero__winner small {
   color: rgba(255, 255, 255, 0.68);
 }
 
 /* Narrow viewports ----------------------------------------------------- */
 
 @media (max-width: 600px) {
-  .spc-challenge-hero {
+  .spc-hero {
     min-height: 440px;
     padding: 2rem 1.25rem;
     background-position: 64% center;
   }
 
-  .spc-challenge-hero__shade {
+  .spc-hero__shade {
     background: linear-gradient(180deg, rgba(18, 29, 53, 0.72) 0%, rgba(18, 29, 53, 0.98) 68%);
   }
 
-  .spc-challenge-hero__content {
+  .spc-hero__content {
     justify-content: flex-end;
     width: 100%;
   }
 
-  .spc-challenge-hero__content h1 {
+  .spc-hero__content h1 {
     font-size: clamp(2.5rem, 13vw, 4rem);
   }
 
-  .spc-challenge-hero__actions {
+  .spc-hero__actions {
     display: grid;
     grid-template-columns: 1fr;
   }
 
-  .spc-challenge-button {
+  .spc-button {
     width: 100%;
     box-sizing: border-box;
   }

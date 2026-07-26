@@ -616,35 +616,40 @@ body.category-monthly-challenge #list-area {
   margin: 0 auto;
 }
 
-/* Photo entry cards — real masonry, positioned by Topic List Thumbnails.
-
-   This category used to cancel that component and lay the rows out itself, in
-   a three-column CSS grid with every row the same height. That was not a
-   workaround for masonry being fragile; it was the consequence of one
-   declaration further down, `.topic-list-thumbnail { height: 245px }`. Fixing
-   every thumbnail to the same height makes every card the same height, and
-   once rows are uniform a grid is the honest layout — so the grid override and
-   the pile of `!important`s cancelling `position: absolute` followed from it.
-
-   The thumbnail now keeps its natural height, so cards vary and the component's
-   own positioning is what produces the stagger. Categories 7 and 12 have always
-   worked this way; this is category 6 stopping being the exception.
-
-   What is left below is presentation only. Nothing here sets position, inset,
-   width, height, margin or transform on a row, and nothing may: those are the
-   component's, it recomputes them on every measure, and overriding one is how
-   the layout desynchronises and photos land on top of text. Verified against
-   category 7 as the unmodified baseline — 3 columns, 10px gutter, row width
-   and thumbnail height both derived by the component. */
+/* Photo entry cards — deterministic responsive grid */
 body.category-monthly-challenge .topic-list-header {
   display: none;
 }
 
+body.category-monthly-challenge .topic-list.topic-thumbnails-masonry {
+  display: block !important;
+  width: 100%;
+}
+
+body.category-monthly-challenge .topic-list.topic-thumbnails-masonry > tbody {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
   overflow: hidden;
+  float: none !important;
+  clear: none !important;
   border: 0;
   background: #ffffff;
   box-shadow: 0 8px 22px rgba(26, 39, 68, 0.08);
+  transform: none !important;
+  translate: none !important;
 }
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item:hover {
@@ -655,31 +660,30 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item > td 
   box-sizing: border-box;
 }
 
-/* Thumbnails — height is the component's, and it is the whole mechanism.
-
-   `height: 245px !important` used to live here. It is what made every card
-   identical and therefore what forced the grid; removing it is the change that
-   turns this category back into masonry. The tint stays as the backdrop behind
-   a placeholder or a photo that does not fill its box.
-
-   .main-thumbnail is left entirely alone now. It carried
-   `height: 100% !important; object-fit: cover`, which cropped every entry to a
-   fixed frame; against an auto-height parent that percentage is circular
-   anyway. The component sizes it from the image's own aspect ratio, which is
-   what makes the columns stagger. */
+/* Thumbnails */
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail {
+  width: 100% !important;
+  height: 245px !important;
   background: #e9ebef;
 }
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail > a,
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .thumbnail-placeholder {
   display: flex;
+  width: 100%;
+  height: 100%;
   align-items: center;
   justify-content: center;
 }
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .background-thumbnail {
   display: none;
+}
+
+body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .main-thumbnail {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
 }
 
 /* Card body */
@@ -778,9 +782,10 @@ body.category-monthly-challenge .topic-thumbnails-masonry .views {
 /* Pinned rules/guide card
    TODO phase 4: hardcoded English string below moves to a translation
    when this block moves into the SPC Monthly Challenge component. */
-/* A pinned entry used to span the full width via grid-column. There are no
-   grid tracks to span once the component positions rows absolutely, so it is
-   a normal-width card now and keeps only its colour treatment below. */
+body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned {
+  grid-column: 1 / -1 !important;
+}
+
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .topic-list-thumbnail {
   display: none;
 }
@@ -812,8 +817,12 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   display: none !important;
 }
 
-/* No tablet block: the component decides how many columns fit, and it did so
-   on categories 7 and 12 long before this category stopped overriding it. */
+/* Tablet */
+@media (max-width: 1050px) {
+  body.category-monthly-challenge .topic-list.topic-thumbnails-masonry > tbody {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 /* Mobile */
 @media (max-width: 600px) {
@@ -844,8 +853,15 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     padding: 1rem 1rem 2rem;
   }
 
-  /* The 260px thumbnail height that used to live here was the mobile twin of
-     the 245px one, and had the same effect: uniform cards, no stagger. */
+  body.category-monthly-challenge .topic-list.topic-thumbnails-masonry > tbody {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail {
+    height: 260px !important;
+  }
+
   body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
     min-height: 104px;
   }

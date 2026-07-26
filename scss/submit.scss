@@ -306,32 +306,6 @@
   }
 }
 
-.spc-file-upload {
-  &__file {
-    display: flex;
-    align-items: center;
-    gap: 0.75em;
-    padding: 0.75em 1em;
-    border: 1px solid var(--primary-low);
-    background: var(--primary-very-low);
-  }
-
-  &__size {
-    color: var(--primary-medium);
-    font-size: var(--font-down-1);
-  }
-
-  &__remove {
-    margin-left: auto;
-  }
-
-  // The picker renders its own <input type="file"> next to the button; only the
-  // button should be visible.
-  &__input {
-    display: none;
-  }
-}
-
 @media (max-width: 600px) {
   .spc-submit-page__inner {
     padding: 1.25em 1em 3em;

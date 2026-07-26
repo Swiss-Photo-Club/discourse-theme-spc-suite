@@ -95,16 +95,10 @@ fr:
         title: Téléverser des images
         description: Téléverse les images qui composent ton projet.
         error: Merci de téléverser au moins une image.
-      pdf:
-        title: Téléverser un PDF
-        description: Partage ton projet sous forme d'un seul PDF.
-        error: Merci de téléverser un PDF.
       link:
         title: Partager un lien
         description: Mets un lien vers ton projet s'il est hébergé ailleurs.
         error: Merci de partager un lien vers ton projet.
-    pdf_button: Choisir un PDF
-    pdf_uploading: Téléversement…
     content_placeholder: Un lien vers ton portfolio ou ton projet de livre
     description_label: Brève description
     description_hint: De quoi s'agit-il ? Le thème, l'idée, le fil conducteur.

@@ -140,16 +140,10 @@ en:
         title: Upload images
         description: Upload the images that make up your project.
         error: Please upload at least one image.
-      pdf:
-        title: Upload a PDF
-        description: Share your project as a single PDF.
-        error: Please upload a PDF.
       link:
         title: Share a link
         description: Link to your project if it lives elsewhere.
         error: Please share a link to your project.
-    pdf_button: Choose a PDF
-    pdf_uploading: Uploading…
     content_placeholder: A link to your portfolio or book project
     description_label: Brief description
     description_hint: What is it about? The theme, the idea, the thread running through it.

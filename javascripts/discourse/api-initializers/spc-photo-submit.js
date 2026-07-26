@@ -4,6 +4,7 @@ import SpcSubmitBanner from "../components/spc-submit-banner";
 
 const SUBMIT_PATH = "/submit";
 const CRITIQUE_PATH = "/submit/critique";
+const PROJECT_PATH = "/submit/project";
 
 function isCategoryParam(params, id, slug) {
   const categoryId = String(parseInt(id, 10));
@@ -91,15 +92,34 @@ const spcRun = (api) => {
   //   submit                 → /new-topic?category=monthly-challenge
   //   submit/critique        → /new-topic?category=critique-portfolio-reviews
   //   submit?type=critique   → /new-topic?category=critique-portfolio-reviews
+  //   submit/project         → /new-topic?category=critique-portfolio-reviews&spc_form=project
   //
-  // The last one only keeps links shared before July 2026 alive; they land on
+  // The third only keeps links shared before July 2026 alive; they land on
   // /submit/critique like everything else.
+  //
+  // The fourth is where "the category carries the mode" runs out: an image
+  // critique and a project critique both post into category 7, so the category
+  // in the destination cannot tell them apart and the destination needs a mark
+  // of its own. `spc_form` is that mark. It exists only inside the permalink's
+  // destination — nobody ever sees or shares a URL carrying it — and route
+  // :new-topic declares no query params of its own, so Ember passes it through
+  // to transition.to.queryParams untouched. That was verified against the live
+  // router rather than assumed: router.recognize() on the URL above returns
+  // both `category` and `spc_form`.
   api.modifyClass(
     "route:new-topic",
     (Superclass) =>
       class extends Superclass {
         async beforeModel(transition) {
           const params = transition.to?.queryParams;
+
+          // Checked before the category tests, because it is the more specific
+          // claim: the project destination also names category 7, and the
+          // critique branch below would otherwise swallow it.
+          if (params?.spc_form === "project") {
+            this.router.replaceWith(PROJECT_PATH);
+            return;
+          }
 
           if (
             isCategoryParam(

@@ -2,7 +2,6 @@ import { tracked } from "@glimmer/tracking";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
-import { service } from "@ember/service";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import { i18n } from "discourse-i18n";
@@ -18,7 +17,6 @@ import {
   subjectOptions,
 } from "../lib/spc-submit-helpers";
 import SpcCardChoice from "./spc-card-choice";
-import SpcFileUpload from "./spc-file-upload";
 import SpcFormSection from "./spc-form-section";
 import SpcSubmitShell from "./spc-submit-shell";
 
@@ -28,20 +26,21 @@ import SpcSubmitShell from "./spc-submit-shell";
 // for why its output has to stay byte-compatible with that wizard.
 //
 // The wizard's `step_1_inhalt` was one composer field that was meant to accept
-// images, a PDF or a link interchangeably. Here those are three explicit modes,
-// chosen up front — which is both clearer and honest about the fact that they
-// are different things. d-editor was the obvious way to keep the composer and
-// turns out to carry no upload handling at all: the composer's uploads come from
-// wiring the wizard reproduces by subclassing ComposerEditor and reaching into
-// uppyComposerUpload's private internals, against a d-editor core has since
-// rewritten and moved to ui-kit.
+// images, a PDF or a link interchangeably. Here those are explicit modes chosen
+// up front — clearer, and honest about the fact that they are different things.
+// d-editor was the obvious way to keep the composer and turns out to carry no
+// upload handling at all: the composer's uploads come from wiring the wizard
+// reproduces by subclassing ComposerEditor and reaching into uppyComposerUpload's
+// private internals, against a d-editor core has since rewritten and moved to
+// ui-kit.
 //
-// The PDF mode is offered only when the site would actually accept one. It is
-// not in authorized_extensions today, which means the wizard's PDF path has
-// never worked on this install — the upload would have been rejected server
-// side. Offering a button that always fails is worse than not offering it.
+// There is no PDF mode. The site's authorized_extensions lists only image
+// formats, so a PDF upload has always been rejected server side — the wizard's
+// PDF path has never worked on this install. Adding one back means adding `pdf`
+// to that site setting first, and it is a site-wide change: it would let PDFs be
+// attached to any post anywhere, not only here.
 
-const SUBMISSION_TYPES = ["images", "pdf", "link"];
+const SUBMISSION_TYPES = ["images", "link"];
 
 function withSelection(choices, current) {
   return choices.map((choice) => ({
@@ -51,8 +50,6 @@ function withSelection(choices, current) {
 }
 
 export default class SpcProjectForm extends SpcSubmitBase {
-  @service siteSettings;
-
   // Every image is one entry with a stable key. Keys matter: the uploaders are
   // rendered from this list, and reusing one for a different image after a
   // delete would leave the previous preview on screen.
@@ -62,7 +59,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
   #nextBlank = 0;
 
   @tracked submissionType = "images";
-  @tracked pdf = null;
   @tracked contentText = "";
 
   @tracked subjects = [];
@@ -108,18 +104,8 @@ export default class SpcProjectForm extends SpcSubmitBase {
 
   // ---- submission type -----------------------------------------------------
 
-  // Only the modes the site can actually accept. PDF depends on a site setting
-  // this theme does not own, so it is read at render time rather than assumed.
-  get pdfAllowed() {
-    return (this.siteSettings.authorized_extensions || "")
-      .split("|")
-      .some((extension) => extension.trim().toLowerCase() === "pdf");
-  }
-
   get submissionTypeChoices() {
-    return SUBMISSION_TYPES.filter(
-      (type) => type !== "pdf" || this.pdfAllowed
-    ).map((type) => ({
+    return SUBMISSION_TYPES.map((type) => ({
       value: type,
       title: i18n(themePrefix(`project_form.types.${type}.title`)),
       description: i18n(themePrefix(`project_form.types.${type}.description`)),
@@ -129,10 +115,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
 
   get uploadingImages() {
     return this.submissionType === "images";
-  }
-
-  get uploadingPdf() {
-    return this.submissionType === "pdf";
   }
 
   get sharingLink() {
@@ -177,20 +159,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
     this.entries = this.entries.filter((entry) => entry.key !== key);
   }
 
-  @action
-  pdfUploaded(upload) {
-    this.pdf = upload;
-    this.error = null;
-  }
-
-  get pdfButtonLabel() {
-    return themePrefix("project_form.pdf_button");
-  }
-
-  get pdfBusyLabel() {
-    return themePrefix("project_form.pdf_uploading");
-  }
-
   // ---- the rest ------------------------------------------------------------
 
   get subjectChoices() {
@@ -225,7 +193,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
     return [
       this.title,
       this.contentText,
-      this.pdf,
       this.description,
       this.direction,
       this.working,
@@ -247,9 +214,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
   // Whichever mode is selected. The other modes keep their state, so switching
   // back and forth to compare does not throw away an upload.
   get content() {
-    if (this.uploadingPdf) {
-      return this.pdf ? getUploadMarkdown(this.pdf) : "";
-    }
     if (this.sharingLink) {
       return this.contentText.trim();
     }
@@ -375,14 +339,6 @@ export default class SpcProjectForm extends SpcSubmitBase {
                   />
                 {{/each}}
               </div>
-            {{else if this.uploadingPdf}}
-              <SpcFileUpload
-                @id="spc-project-pdf"
-                @accept=".pdf"
-                @label={{this.pdfButtonLabel}}
-                @busyLabel={{this.pdfBusyLabel}}
-                @onUploadDone={{this.pdfUploaded}}
-              />
             {{else}}
               <textarea
                 id="spc-project-content-text"

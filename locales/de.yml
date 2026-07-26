@@ -99,16 +99,10 @@ de:
         title: Bilder hochladen
         description: Lade die Bilder hoch, aus denen dein Projekt besteht.
         error: Bitte lade mindestens ein Bild hoch.
-      pdf:
-        title: PDF hochladen
-        description: Teile dein Projekt als einzelnes PDF.
-        error: Bitte lade ein PDF hoch.
       link:
         title: Link teilen
         description: Verlinke dein Projekt, wenn es anderswo liegt.
         error: Bitte gib einen Link zu deinem Projekt an.
-    pdf_button: PDF wählen
-    pdf_uploading: Wird hochgeladen …
     content_placeholder: Link zu deinem Portfolio oder Buchprojekt
     description_label: Kurzbeschreibung
     description_hint: Worum geht es? Thema, Idee oder roter Faden.

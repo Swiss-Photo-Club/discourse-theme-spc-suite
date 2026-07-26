@@ -8,9 +8,6 @@ export default function () {
   // redirects and the permalinks each entry URL needs.
   this.route("spc-submit-critique", { path: "/submit/critique" });
 
-  // Reachable by typing the path only, until the category 7 hero is switched
-  // over to it. There is no permalink for it yet either, so a direct load 404s
-  // at the server — see api-initializers/spc-photo-submit.js for why every one
-  // of these paths needs a permalink row of its own.
   this.route("spc-submit-project", { path: "/submit/project" });
+  this.route("spc-submit-introduction", { path: "/submit/introduction" });
 }

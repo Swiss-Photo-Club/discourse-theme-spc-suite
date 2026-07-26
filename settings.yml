@@ -199,6 +199,11 @@ critique_intro_category_slug:
   default: "vorstellungen"
   description: "Slug of the member introductions category."
 
+critique_intro_category_id:
+  type: integer
+  default: 12
+  description: "ID of the member introductions category. Used by /submit/introduction to post the introduction."
+
 critique_intro_wizard_url:
   type: string
   default: "/w/vorstellung-einreichen"

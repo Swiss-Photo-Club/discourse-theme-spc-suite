@@ -17,6 +17,7 @@ fr:
       nonmember_categories_url: Destination du bouton permettant de parcourir les catégories.
       nonmember_show_categories_button: Afficher le bouton permettant de parcourir les catégories.
   form:
+    optional: (optionnel)
     required: (obligatoire)
     heading: Envoyer une photo
     round_label: Manche du challenge
@@ -121,7 +122,7 @@ fr:
     help_hint: Plus tu es précis, plus la critique sera utile.
     presentation_label: Comment le projet sera-t-il présenté ?
     presentation_placeholder: Choisis un format…
-    details_label: Autres détails (optionnel)
+    details_label: Autres détails
     submit: Envoyer le projet
     error_missing: "Merci de remplir ce champ : %{field}"
     focus:
@@ -134,6 +135,22 @@ fr:
       web: Web / Portfolio
       social: Réseaux sociaux
       open: Encore ouvert
+  intro_form:
+    heading: Présente-toi
+    lead: Bienvenue au Swiss Photo Club. Ravis de t'accueillir – présente-toi pour que les autres membres puissent faire ta connaissance.
+    title_label: Titre
+    title_hint: Un titre simple suffit, par exemple « Bonjour de Zurich » ou « Nouveau ici ».
+    title_placeholder: Bonjour de Zurich
+    about_label: À propos de toi
+    about_hint: "Parle-nous un peu de toi : d'où tu viens, le type de photographie qui te passionne et ce qui t'a amené au Swiss Photo Club."
+    goals_label: Qu'aimerais-tu apprendre ou découvrir ici ?
+    goals_hint: Critique, développement créatif, technique, retouche, projets, inspiration – ou simplement l'échange avec d'autres photographes.
+    photo_label: Partager une image
+    photo_hint: Ajoute une image si tu le souhaites. Elle n'a pas besoin d'être ta meilleure – elle aide simplement les autres à cerner ta photographie.
+    outro: Ensuite, n'hésite pas à parcourir les autres présentations et à dire bonjour.
+    submit: Publier la présentation
+    error_no_title: Merci de donner un titre à ta présentation.
+    error_no_about: Merci de nous parler un peu de toi.
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois

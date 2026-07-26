@@ -498,6 +498,9 @@ export default class SpcProjectForm extends SpcSubmitBase {
           <div class="spc-submit-page__field">
             <label for="spc-project-details">
               {{i18n (themePrefix "project_form.details_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.optional")}}
+              </span>
             </label>
             <textarea
               id="spc-project-details"

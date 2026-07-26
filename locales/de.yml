@@ -21,6 +21,7 @@ de:
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.
     button: Foto einreichen
   form:
+    optional: (optional)
     required: (erforderlich)
     heading: Foto einreichen
     round_label: Challenge-Runde
@@ -125,7 +126,7 @@ de:
     help_hint: Je konkreter, desto nützlicher die Kritik.
     presentation_label: Wie soll das Projekt präsentiert werden?
     presentation_placeholder: Präsentationsform wählen …
-    details_label: Weitere Details (optional)
+    details_label: Weitere Details
     submit: Projekt einreichen
     error_missing: "Bitte fülle dieses Feld aus: %{field}"
     focus:
@@ -138,6 +139,22 @@ de:
       web: Web / Portfolio
       social: Social Media
       open: Noch offen
+  intro_form:
+    heading: Stell dich vor
+    lead: Willkommen beim Swiss Photo Club. Schön, dass du da bist – stell dich kurz vor, damit dich die anderen Mitglieder kennenlernen können.
+    title_label: Titel
+    title_hint: Ein einfacher Titel genügt, z. B. «Hallo aus Zürich» oder «Neu hier».
+    title_placeholder: Hallo aus Zürich
+    about_label: Über dich
+    about_hint: "Erzähl uns etwas über dich: Woher du kommst, welche Art von Fotografie dich begeistert und was dich zum Swiss Photo Club gebracht hat."
+    goals_label: Was möchtest du hier lernen oder entdecken?
+    goals_hint: Kritik, kreative Entwicklung, Technik, Bearbeitung, Projekte, Inspiration – oder einfach der Austausch mit anderen Fotografierenden.
+    photo_label: Ein Bild teilen
+    photo_hint: Füge ein Bild hinzu, wenn du magst. Es muss nicht dein bestes sein – es hilft den anderen einfach, ein Gefühl für deine Fotografie zu bekommen.
+    outro: Schau danach gerne bei den anderen Vorstellungen vorbei und sag Hallo.
+    submit: Vorstellung veröffentlichen
+    error_no_title: Bitte gib deiner Vorstellung einen Titel.
+    error_no_about: Bitte erzähl uns etwas über dich.
   monthly_challenge:
     label: Monatliche Challenge
     current: Challenge des Monats

@@ -62,6 +62,7 @@ en:
     subtitle: Share your best shot for this month's theme and vote for your favorites.
     button: Submit a photo
   form:
+    optional: (optional)
     required: (required)
     heading: Submit a photo
     round_label: Challenge round
@@ -166,7 +167,7 @@ en:
     help_hint: The more specific you are, the more useful the critique.
     presentation_label: How will the project be presented?
     presentation_placeholder: Choose a format…
-    details_label: Further details (optional)
+    details_label: Further details
     submit: Submit project
     error_missing: "Please fill this in: %{field}"
     focus:
@@ -179,6 +180,22 @@ en:
       web: Web / Portfolio
       social: Social Media
       open: Still open
+  intro_form:
+    heading: Introduce yourself
+    lead: Welcome to Swiss Photo Club. We're glad you're here — introduce yourself so other members can get to know you.
+    title_label: Title
+    title_hint: A simple title is fine, such as "Hello from Zurich" or "New here".
+    title_placeholder: Hello from Zurich
+    about_label: About you
+    about_hint: "Tell us a little about yourself: where you're from, the kind of photography you enjoy, and what brought you to Swiss Photo Club."
+    goals_label: What are you hoping to learn or explore?
+    goals_hint: Critique, creative growth, technique, processing, projects, inspiration — or simply connecting with other photographers.
+    photo_label: Share an image
+    photo_hint: Add an image if you'd like. It doesn't need to be your best work — it just helps others get a sense of your photography.
+    outro: Afterwards, feel free to browse the other introductions and say hello.
+    submit: Post introduction
+    error_no_title: Please give your introduction a title.
+    error_no_about: Please tell us a little about yourself.
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month

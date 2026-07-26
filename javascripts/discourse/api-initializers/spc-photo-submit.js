@@ -5,6 +5,7 @@ import SpcSubmitBanner from "../components/spc-submit-banner";
 const SUBMIT_PATH = "/submit";
 const CRITIQUE_PATH = "/submit/critique";
 const PROJECT_PATH = "/submit/project";
+const INTRODUCTION_PATH = "/submit/introduction";
 
 function isCategoryParam(params, id, slug) {
   const categoryId = String(parseInt(id, 10));
@@ -93,9 +94,12 @@ const spcRun = (api) => {
   //   submit/critique        → /new-topic?category=critique-portfolio-reviews
   //   submit?type=critique   → /new-topic?category=critique-portfolio-reviews
   //   submit/project         → /new-topic?category=critique-portfolio-reviews&spc_form=project
+  //   submit/introduction    → /new-topic?category=vorstellungen
   //
   // The third only keeps links shared before July 2026 alive; they land on
-  // /submit/critique like everything else.
+  // /submit/critique like everything else. The fifth needs no mark: category 12
+  // has exactly one form, so the category identifies it on its own — which is
+  // the normal case, and the reason the fourth stands out.
   //
   // The fourth is where "the category carries the mode" runs out: an image
   // critique and a project critique both post into category 7, so the category
@@ -144,6 +148,17 @@ const spcRun = (api) => {
             )
           ) {
             this.router.replaceWith(CRITIQUE_PATH);
+            return;
+          }
+
+          if (
+            isCategoryParam(
+              params,
+              settings.critique_intro_category_id,
+              settings.critique_intro_category_slug
+            )
+          ) {
+            this.router.replaceWith(INTRODUCTION_PATH);
             return;
           }
 

@@ -38,5 +38,10 @@
 // --- the original Suite stack ------------------------------------------------
 @import "submit";
 @import "challenge";
+
+// The card treatment for categories 7 and 12. After challenge so that a
+// category-6 rule still wins where the two ever meet, which today they do
+// not: this file names only the other two slugs.
+@import "topic-cards";
 @import "homepage";
 @import "challenge-staff";

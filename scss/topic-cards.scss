@@ -1,0 +1,81 @@
+/* ===================================================================
+   Card treatment for the photography categories.
+
+   Deliberately tiny. Everything a Discourse default already gets right
+   is left alone, and every rule below has a reason a default does not
+   cover. What was in the first draft of this file and got cut, after
+   measuring category 7 rather than assuming:
+
+     .thumbnail-placeholder centering  already flex, centred, both axes
+     > td { box-sizing: border-box }   only matters with td padding, and
+                                       nothing here adds any
+     .topic-list-thumbnail background  a tint behind a photo that does
+                                       not fill its box — but with
+                                       object-fit: cover one always does
+     .background-thumbnail hidden      the blurred backdrop, invisible
+                                       for the same reason
+     title colour / size / weight      see below
+
+   Match on SLUG, because the body class Discourse emits carries the
+   slug. That makes this the second place slugs must be right, after
+   category-hero.scss — get one wrong and the rules silently never apply.
+
+   THE TITLE IS NOT STYLED HERE, ON PURPOSE. Core sets it through
+   custom properties:
+
+     .topic-list .main-link a.title             color: var(--title-color)
+                                                font-weight: var(--topic-title-font-weight)
+     .topic-list-item.visited a.title:not(...)  color: var(--title-color--read)
+                                                font-weight: var(--topic-title-font-weight--visited)
+
+   so #333 against #999 is the read/unread cue, and on a critique
+   category "have I already given feedback on this one?" is exactly what
+   members are scanning for. Category 6 overrides that colour and loses
+   the cue; that is a bug to fix there, not a look to copy here. Note the
+   visited selector is (0,4,1) — the same specificity a body-scoped rule
+   reaches — so anything that did want to win here should set the
+   variables rather than out-specify, and never reach for !important.
+
+   MASONRY. These categories are JS-positioned by Topic List Thumbnails
+   (component 1), which measures every row. Nothing below sets position,
+   inset, width, height, margin or transform on a row, and nothing may.
+   Content height was measured, not assumed: applied to category 7 these
+   rules moved each footer from 78px to 66px, and the component
+   re-derived the thumbnail heights — rows kept their positions,
+   main-thumbnail stayed at offset 0 from its box, no two rows
+   overlapped. Tested the hard way, with the CSS injected after the
+   component had already measured and a re-layout forced, which is worse
+   than a page load where the CSS is there from first paint.
+   =================================================================== */
+
+$spc-card-slugs: "critique-portfolio-reviews", "vorstellungen";
+
+@each $slug in $spc-card-slugs {
+  /* A card rather than a list row: white, lifted, and clipping its photo
+     to its own corners. The border is the list divider, which a card has
+     no use for. */
+  body.category-#{$slug} .topic-thumbnails-masonry .topic-list-item {
+    overflow: hidden;
+    border: 0;
+    background: #ffffff;
+    box-shadow: 0 8px 22px rgba(26, 39, 68, 0.08);
+  }
+
+  body.category-#{$slug} .topic-thumbnails-masonry .topic-list-item:hover {
+    box-shadow: 0 12px 28px rgba(26, 39, 68, 0.14);
+  }
+
+  /* The component's default is `contain`, and it is right whenever the
+     box it computed matches the photo's aspect ratio exactly. The moment
+     it is off by a few pixels the two diverge completely: contain
+     letterboxes and opens a visible band across the card, cover crops by
+     the difference and nobody can see it. Category 6 filled with grey
+     gaps the one time this was dropped. Cheap insurance against a class
+     of mismatch rather than a taste preference. */
+  body.category-#{$slug}
+    .topic-thumbnails-masonry
+    .topic-list-thumbnail
+    .main-thumbnail {
+    object-fit: cover;
+  }
+}

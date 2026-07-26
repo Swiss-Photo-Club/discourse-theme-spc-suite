@@ -37,9 +37,12 @@ fetch([...document.querySelectorAll('link[rel=stylesheet]')]
 Healthy is ~75KB starting with `@font-face`.
 
 **The import order in `common/common.scss` is load-bearing** and reproduces the cascade the
-seven original components used to produce. **`challenge-staff` must stay last** — it re-shows
-the staff topic-admin wrench purely by being later in the cascade than the rules that hide the
-footer actions.
+seven original components used to produce. Two positions are load-bearing at the ends.
+**`challenge-staff` must stay last** — it re-shows the staff topic-admin wrench purely by being
+later in the cascade than the rules that hide the footer actions. **`hero` must stay second,
+right after `branding`** — it holds the shared primitives, and everything that overrides them
+(`challenge`'s contextual eyebrow rules, `non-member-banner`'s `--invitation` variant) does so
+by importing later rather than by out-specifying them.
 
 **`branding.scss` opens with `* { border-radius: 0 !important }`.** An `!important` declaration
 on the universal selector beats an unqualified one regardless of specificity or source order, so
@@ -48,6 +51,14 @@ class selector carrying `!important`, and they live in `branding.scss` next to t
 
 **Renaming a setting has THREE edit sites** — `settings.yml`, the JS (`settings.foo`) and the
 SCSS (`$foo`). `scss/critique-submit.scss` is the one partial that interpolates settings.
+
+**Renaming a CSS class can break behaviour with no visual symptom.**
+`spc-photo-submit.js` matches `.spc-hero__actions .spc-button--primary` to route the hero's
+primary button to `/submit`. Miss that selector in a rename and the page still looks perfect
+while the button silently does nothing — a pixel-for-pixel check of category 6 passes. Grep the
+JS for any class you rename, and verify renames by *clicking*, not by looking. This is also why
+a rename should never share a commit with an import-order change: the two failure modes are
+invisible and catastrophic respectively, and a bisect cannot tell them apart.
 
 **`resolve_group_membership` derives its key from the setting name**, so Discourse exposes
 `settings.user_in_<setting_name>`. Renaming `onboarding_member_groups` or
@@ -119,10 +130,28 @@ sass --quiet-deps --no-source-map --load-path=scss /tmp/entry.scss /tmp/out.css
 ```
 
 Compile before and after, diff the two CSS outputs, and confirm the delta is only what was
-intended. For a token rename, additionally expand every `--spc-*` to its literal hex in both
-outputs before diffing — that turns "should be identical" into a proof.
+intended. Keep the stub outside the repo (a second `--load-path`) so it can never be committed,
+and generate the entry file from the real `common/common.scss` each run so it tracks the live
+import order.
 
-This does **not** catch the basename-import trap. Only an Update does.
+**A raw diff is useless for a refactor** — moving or renaming a rule changes every byte offset.
+Two post-processing passes make "no visual change" a proof rather than a claim:
+
+1. **Expand tokens.** Resolve every custom property *this component defines* down to its literal
+   hex, recursively (`--fg-3` → `--spc-gray-400` → `#8a909e`). Leave core palette tokens
+   (`--primary`, `--tertiary`, `--d-input-*`) unresolved on purpose: those are exactly the ones
+   that must stay movable for a dark scheme, so seeing them survive as `var(...)` is the check.
+2. **Diff rule identity, not bytes.** Flatten each rule to (at-rule context, sorted selector
+   list, sorted declarations) and compare the two sets as multisets. Relocation then registers as
+   no change at all, and only real edits show up. For a **rename**, first apply the same class
+   mapping to the baseline — then identical output proves the rename was pure.
+
+Rule identity proves the same rules *exist*; it does not prove their **order** is harmless. Order
+only matters between equal-specificity rules touching the same property, so pair it with a grep
+showing that no partial between the old and new import positions mentions any moved selector.
+
+None of this catches the basename-import trap, and none of it covers JS. **A class rename must be
+verified by clicking, not by looking** — see the rename trap above.
 
 ## Assets, locales, colours
 
@@ -134,11 +163,16 @@ Locale namespaces are per feature: `critique_workspace.*`, `critique_submit.*`, 
 `onboarding.*`, `nonmember_banner.*`. Note `banner.*` is already taken by the submit banner,
 hence `nonmember_banner.*`.
 
-Two colour systems coexist **by design**. `branding`, `challenge`, `homepage`, `onboarding` and
-`non-member-banner` use hardcoded `--spc-*` tokens. `submit`, `leaderboard` and
+Two colour systems coexist **by design**. `branding`, `hero`, `challenge`, `homepage`,
+`onboarding` and `non-member-banner` use hardcoded `--spc-*` tokens. `submit`, `leaderboard` and
 `critique-workspace` use Discourse core palette tokens (`--primary`, `--tertiary`, …) and are the
 only files that would survive a dark colour scheme. A dark scheme **is** in scope, so keep
 hardcoded hex out of those three.
+
+This boundary outranks the consolidation plan where the two collide. D7 wanted one callout
+treatment across all three call sites; `.spc-cw-banner` was left on `--tertiary` /
+`--primary-very-low` instead, because the only thing D7 would have changed about it was colour,
+and it lives in `critique-workspace`. **Unify shape across the palette boundary, never colour.**
 
 ## Load-bearing strings
 

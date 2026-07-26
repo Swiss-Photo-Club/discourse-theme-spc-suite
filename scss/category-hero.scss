@@ -1,0 +1,73 @@
+/* ===================================================================
+   Per-category plumbing for the shared hero.
+
+   hero.scss holds the shell and interpolates no settings, deliberately —
+   that keeps a rename of a hero setting at two edit sites instead of
+   three. This partial is the opposite: it is nothing but body-class
+   plumbing, and it is the one file that has to change when a category
+   gains a hero.
+
+   Why the slug list rather than the hero's own presence. A rule keyed on
+   body:has(.spc-hero--category) would be self-synchronising and would
+   need no list at all — but the hero is inserted by a throttled
+   observer, so for the first ~200ms of every category page load the
+   stock header and the full-bleed background photo would still be on
+   screen, then collapse. That is a visible jump on the surface members
+   hit most. Keying on the body class hides them from first paint
+   instead, which is exactly why challenge.scss hides the challenge
+   header in CSS rather than in JS.
+
+   The cost of that choice: this list and the JS registry can disagree.
+   Removing a category from hero_enabled_categories stops its hero
+   rendering but leaves its native header hidden here, which is a page
+   with no header at all. enable_category_hero is the rollback that
+   cannot desynchronise, because it gates both sides — see the setting
+   descriptions.
+
+   Match on SLUG here, and only here: the body class Discourse emits
+   carries the slug. Everywhere else in this feature matches on id,
+   because category 10's slug is `support` while it displays as
+   "Post Processing".
+   =================================================================== */
+
+/* One line per category that has a hero. Grows with each step of the
+   rollout: 10, then 8, then 7, then 12. */
+$spc-hero-slugs: "support";
+
+@if $enable_category_hero {
+  @each $slug in $spc-hero-slugs {
+    body.category-#{$slug} {
+      /* Discourse paints the category background image full-bleed on
+         <body> from a rule it generates into #d-styles — which is
+         injected AFTER the theme stylesheet, so an unqualified
+         declaration here loses on source order. Without !important the
+         same photo renders twice: once behind the whole page, once
+         inside the hero. */
+      background-image: none !important;
+
+      /* Both headers, because a site-wide component toggles between
+         them rather than picking one:
+           body:not(.category-header) .category-title-header { display: none }
+           body.category-header       .category-heading      { display: none }
+         Which one is visible therefore depends on a per-category
+         setting this component does not own — today 7 and 8 show the
+         banner while 10 and 12 show the heading. Hiding both is stable
+         whichever way that toggle is set, and it is what challenge.scss
+         already does for category 6.
+
+         .category-title-header is only hidden, never removed: the hero
+         is inserted immediately before it and needs it as an anchor. */
+      .category-title-header,
+      .list-controls .category-heading {
+        display: none;
+      }
+
+      /* The hero owns the primary action, so the native New Topic
+         button would be a second copy of it. Same treatment categories
+         6, 7 and 12 already get. */
+      #create-topic {
+        display: none;
+      }
+    }
+  }
+}

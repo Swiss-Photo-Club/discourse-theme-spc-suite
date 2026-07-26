@@ -186,3 +186,9 @@ fr:
     description: Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous.
     join: Rejoindre la communauté
     browse_categories: Parcourir les catégories
+  hero:
+    post_processing:
+      eyebrow: Technique & flux de travail
+      headline: Post-traitement
+      actions:
+        ask: Créer un sujet

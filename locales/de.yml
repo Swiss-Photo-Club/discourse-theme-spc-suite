@@ -190,3 +190,9 @@ de:
     description: Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst.
     join: Community beitreten
     browse_categories: Kategorien durchsuchen
+  hero:
+    post_processing:
+      eyebrow: Technik & Workflow
+      headline: Bildbearbeitung
+      actions:
+        ask: Thema erstellen

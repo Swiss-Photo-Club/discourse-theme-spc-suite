@@ -137,15 +137,24 @@ const spcRun = (api) => {
   if (settings.replace_new_topic_button) {
     const categoryId = parseInt(settings.challenge_category_id, 10);
 
+    // Scoped to .spc-hero--challenge, and it has to stay that way. This
+    // selector used to be ".spc-hero__actions .spc-button--primary", which was
+    // correct only while the challenge was the sole hero on the site: the
+    // moment any other category grew one, its primary button was silently
+    // hijacked to the challenge photo-submission page. Nothing about the page
+    // would look wrong — the button renders, the label is right, the click
+    // just goes somewhere else. Verify this by clicking category 6's submit
+    // button, never by looking at it.
+    const CHALLENGE_PRIMARY =
+      ".spc-hero--challenge .spc-hero__actions .spc-button--primary";
+
     const clickHandler = (e) => {
-      const el = e.target.closest?.(
-        "#create-topic, .spc-hero__actions .spc-button--primary"
-      );
+      const el = e.target.closest?.(`#create-topic, ${CHALLENGE_PRIMARY}`);
       if (!el) {
         return;
       }
 
-      let isChallenge = el.matches(".spc-button--primary");
+      let isChallenge = el.matches(CHALLENGE_PRIMARY);
 
       if (!isChallenge) {
         const router = api.container.lookup("service:router");

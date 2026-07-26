@@ -46,6 +46,11 @@ enable_nonmember_banner:
   default: true
   description: "Non-Member Banner: join call-to-action on the homepage for visitors who are not members."
 
+enable_category_hero:
+  type: bool
+  default: true
+  description: "Category Hero: shared hero header on the categories listed in hero_enabled_categories. This is the rollback switch for the whole feature - turning it off restores every affected category's native header in the same change, which removing a single category from the list below does not."
+
 enable_locale_cookie:
   type: bool
   default: true
@@ -238,6 +243,16 @@ critique_intro_banner_background:
   type: string
   default: "#E8F0F0"
   description: "Background colour of the introductions category banner."
+
+# -----------------------------------------------------------------------------
+# Category heroes
+# -----------------------------------------------------------------------------
+
+hero_enabled_categories:
+  type: list
+  list_type: category
+  default: "10"
+  description: "Categories that render the shared hero. A category only renders one if the theme also has a registry entry and a locale block for it, so adding an arbitrary category here does nothing. Removing one stops its hero rendering but does NOT restore its native header, which is hidden in CSS keyed on the slug - use enable_category_hero to roll the feature back."
 
 # -----------------------------------------------------------------------------
 # Leaderboard strip

@@ -231,3 +231,9 @@ en:
     description: Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.
     join: Join the community
     browse_categories: Browse categories
+  hero:
+    post_processing:
+      eyebrow: Technique & workflow
+      headline: Post Processing
+      actions:
+        ask: Start a topic

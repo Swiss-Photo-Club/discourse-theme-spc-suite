@@ -73,6 +73,37 @@
   background-size: cover;
 }
 
+/* Category: the shared header for every category that is not the challenge.
+   Shorter than --challenge because it carries a name, a sentence and one or
+   two actions rather than a month of status, deadlines and a winner.
+
+   One variant, not three. The spec proposed --submission, --events and --plain;
+   --events lost its meta line to the no-fetch rule and --submission lost its
+   subject chips to the same rule, which left all three with identical
+   declarations. "Two actions instead of one" is not a CSS difference.
+
+   min-height is provisional at 300px and is the one number here settled by eye
+   rather than by argument. The coverless case is still open — no coverless
+   category hero exists until categories 7 and 12 land. */
+.spc-hero--category {
+  isolation: isolate;
+  min-height: 300px;
+  margin: 0;
+  padding: 3rem;
+  border: 0;
+  border-bottom: 6px solid var(--spc-coral);
+  background-color: var(--spc-indigo);
+  background-image: var(--spc-hero-cover, none);
+  background-position: center;
+  background-size: cover;
+}
+
+/* The core h1 is sized for the 360px challenge slab; at 300px with a one-line
+   category name it reads as shouting. */
+.spc-hero--category .spc-hero__content h1 {
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+}
+
 .spc-hero__shade {
   position: absolute;
   z-index: -1;
@@ -191,6 +222,12 @@
      would be something it has to undo. */
   .spc-hero--challenge {
     min-height: 440px;
+    padding: 2rem 1.25rem;
+    background-position: 64% center;
+  }
+
+  .spc-hero--category {
+    min-height: 320px;
     padding: 2rem 1.25rem;
     background-position: 64% center;
   }

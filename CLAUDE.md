@@ -291,6 +291,14 @@ form-made posts stay interchangeable. They live in JS rather than `locales/*.yml
 translator cannot silently break the parser.** Changing a heading means editing three places:
 `spc-critique.js`, `spc-parse-request.js`, and the three wizard definitions in the admin.
 
+**Read a wizard's `post_template` at `/admin/wizards/wizard/<id>.json`**, signed in as admin.
+The id is the slug with underscores — `bild_zur_kritik_einreichen`, and `_en` / `_fr` for the
+siblings. `/w/<slug>.json` is the tempting URL and answers 200, but it carries only steps and
+fields: the `actions[]` array, and with it `post_template`, `category` and `tags`, exists
+**only** on the admin path. Signed out, `/w/<slug>.json` still answers 200 with
+`permitted: false` and `steps: []`, so an unauthenticated check looks like an empty wizard
+rather than a permission error.
+
 ## Rollback
 
 `critique_image_use_form` off is the instant rollback for the critique form — no commit, no

@@ -8,19 +8,26 @@ body.navigation-topics:has(.spc-non-member-banner)
   display: none;
 }
 
-.spc-non-member-banner {
-  position: relative;
-  display: flex;
-  width: 100%;
+/* The invitation variant of .spc-hero. The shell — position, display, width,
+   overflow, colour, box-sizing — comes from the core in hero.scss; only the
+   three things that make this hero an invitation rather than a challenge are
+   left here. It lives in this file rather than in hero.scss because the
+   feature owns its own variant, and because importing later is what lets it
+   win without a specificity fight.
+
+   The element keeps .spc-non-member-banner alongside .spc-hero--invitation:
+   its children are still named for that block, and the two structural rules
+   above key off it. */
+.spc-hero--invitation {
   min-height: 380px;
-  box-sizing: border-box;
   align-items: center;
-  overflow: hidden;
   background: linear-gradient(105deg, #2d3d5b 0%, #536178 100%);
-  color: #ffffff;
 }
 
-.spc-non-member-banner::after {
+/* A 5px pseudo-element rather than the challenge variant's 6px border-bottom.
+   Deliberately not unified: they are different thicknesses, and matching them
+   would be a visual change dressed up as a refactor. */
+.spc-hero--invitation::after {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -38,14 +45,14 @@ body.navigation-topics:has(.spc-non-member-banner)
   box-sizing: border-box;
 }
 
+/* Joins the shared .spc-eyebrow. Only the pink and the spacing are left:
+   font-size, weight and uppercase were identical to the shared rule, and the
+   0.16em tracking went per D3 — this is the one deliberate visual change in
+   the fold, tightening to the shared 0.12em. */
 .spc-non-member-banner__eyebrow {
   margin: 0 0 20px;
   color: #ffadae;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
   line-height: 1.4;
-  text-transform: uppercase;
 }
 
 .spc-non-member-banner__title {
@@ -128,7 +135,7 @@ body.navigation-topics:has(.spc-non-member-banner)
 }
 
 @media (max-width: 600px) {
-  .spc-non-member-banner {
+  .spc-hero--invitation {
     min-height: 0;
   }
 

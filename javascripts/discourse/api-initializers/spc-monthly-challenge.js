@@ -542,7 +542,7 @@ function ensureHero() {
   }
 
   const hero = document.createElement("section");
-  hero.className = "spc-hero";
+  hero.className = "spc-hero spc-hero--challenge";
   hero.dataset.spcMonthlyChallenge = "hero";
   anchor.insertAdjacentElement("beforebegin", hero);
   return hero;

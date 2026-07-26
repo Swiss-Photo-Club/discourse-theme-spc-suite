@@ -51,11 +51,11 @@ export default class SpcNonMemberBanner extends Component {
   <template>
     {{#if this.shouldShow}}
       <section
-        class="spc-non-member-banner"
+        class="spc-hero spc-hero--invitation spc-non-member-banner"
         aria-labelledby="spc-non-member-banner-title"
       >
         <div class="spc-non-member-banner__content">
-          <p class="spc-non-member-banner__eyebrow">
+          <p class="spc-eyebrow spc-non-member-banner__eyebrow">
             {{i18n (themePrefix "nonmember_banner.eyebrow")}}
           </p>
 

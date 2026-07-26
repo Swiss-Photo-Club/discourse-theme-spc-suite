@@ -31,9 +31,22 @@ function escapeHtml(value) {
   return element.innerHTML;
 }
 
-/** Remove the hero, if one is on the page. Safe to call anywhere. */
-export function clearHero() {
-  document.querySelector(HERO_SELECTOR)?.remove();
+/**
+ * Remove the hero, but only if it is the one `marker` owns.
+ *
+ * Scoping matters because two initializers render heroes now — the category
+ * registry and the monthly challenge — and both run off their own observers in
+ * no fixed order. An unscoped clear meant whichever ran second deleted the
+ * other's work: arriving on category 6, the category initializer would see a
+ * category it does not own and wipe the challenge hero that had just rendered.
+ * Checking the marker makes the two orders equivalent, because the module that
+ * no longer owns the page finds a marker that is not its own and does nothing.
+ */
+export function clearHero(marker) {
+  const hero = document.querySelector(HERO_SELECTOR);
+  if (hero && hero.dataset.spcHero === String(marker)) {
+    hero.remove();
+  }
 }
 
 /**
@@ -55,13 +68,21 @@ function ensureHero(marker, variant) {
   const existing = document.querySelector(HERO_SELECTOR);
 
   if (existing) {
-    // Same element, different category: reset the variant rather than
-    // inserting a second hero.
+    // Same element, different category: re-marker it rather than inserting a
+    // second hero.
     if (existing.dataset.spcHero !== marker) {
       existing.dataset.spcHero = marker;
       delete existing.dataset.spcHeroSignature;
     }
-    existing.className = `spc-hero spc-hero--${variant}`;
+    // Only rewrite the class list when the variant actually changed. Doing it
+    // unconditionally stripped .spc-hero--with-cover on every re-render, and
+    // because the signature check below returns early when nothing else moved,
+    // the class never came back — a covered hero silently fell through to the
+    // coverless min-height.
+    if (!existing.classList.contains(`spc-hero--${variant}`)) {
+      existing.className = `spc-hero spc-hero--${variant}`;
+      delete existing.dataset.spcHeroSignature;
+    }
     return existing;
   }
 
@@ -97,16 +118,42 @@ function actionMarkup(action) {
 }
 
 /**
+ * The winner callout. Structured rather than an HTML string on purpose: taking
+ * markup would move escaping back out to every caller, which is how the one
+ * unescaped interpolation eventually gets written. Named for what it is rather
+ * than as a generic "aside" — it has exactly one caller and one shape, and a
+ * generic slot with one shape is an abstraction that has not earned itself.
+ */
+function winnerMarkup(winner) {
+  if (!winner?.title) {
+    return "";
+  }
+  return `<a class="spc-hero__winner" href="${escapeHtml(winner.href)}">
+      <span>${escapeHtml(winner.label)}</span>
+      <strong>${escapeHtml(winner.title)}</strong>
+      ${winner.note ? `<small>${escapeHtml(winner.note)}</small>` : ""}
+    </a>`;
+}
+
+/**
  * Build or update the hero.
  *
  * @param {object} config
- * @param {string} config.marker     identifies which hero this is (the category id)
+ * @param {string} config.marker     identifies which hero this is — a category
+ *                                   id, or "challenge"
  * @param {string} config.variant    modifier class suffix, e.g. "category"
  * @param {string} config.signature  re-render guard; equal signature = no work
  * @param {string} config.eyebrow    kicker — the category's role, not its name
  * @param {string} config.title      the headline
  * @param {string} [config.lead]     one sentence, from category.description_excerpt
+ * @param {string} [config.meta]     status line — the challenge's deadlines
+ * @param {object} [config.winner]   { href, label, title, note }, challenge only
  * @param {string} [config.cover]    background image URL
+ * @param {boolean} [config.shade]   render the scrim; defaults to "only with a
+ *                                   cover". The challenge passes true outright
+ *                                   because its variant falls back to a
+ *                                   gradient rather than to flat indigo, so it
+ *                                   has something to darken even coverless.
  * @param {Array}  [config.actions]  [{ label, href?, style?, attribute? }]
  * @returns {Element|null} the hero, or null if the anchor was not ready
  */
@@ -124,7 +171,7 @@ export function renderHero(config) {
   const actions = (config.actions || []).filter((action) => action?.label);
 
   hero.innerHTML = `
-    ${config.cover ? `<div class="spc-hero__shade"></div>` : ""}
+    ${(config.shade ?? Boolean(config.cover)) ? `<div class="spc-hero__shade"></div>` : ""}
     <div class="spc-hero__content">
       ${
         config.eyebrow
@@ -133,6 +180,12 @@ export function renderHero(config) {
       }
       <h1 id="spc-hero-title">${escapeHtml(config.title)}</h1>
       ${config.lead ? `<p>${escapeHtml(config.lead)}</p>` : ""}
+      ${
+        config.meta
+          ? `<span class="spc-hero__meta">${escapeHtml(config.meta)}</span>`
+          : ""
+      }
+      ${winnerMarkup(config.winner)}
       ${
         actions.length
           ? `<div class="spc-hero__actions">${actions

@@ -68,7 +68,11 @@
   border: 0;
   border-bottom: 6px solid var(--spc-coral);
   background-color: var(--spc-indigo);
-  background-image: var(--spc-challenge-cover, linear-gradient(135deg, #1a2744, #28395e));
+  /* Shares --spc-hero-cover with every other hero now that the challenge
+     renders through the same function. The homepage monthly card keeps
+     --spc-challenge-cover: it is a card, not a hero, and nothing is served by
+     making them one variable. */
+  background-image: var(--spc-hero-cover, linear-gradient(135deg, #1a2744, #28395e));
   background-position: center;
   background-size: cover;
 }
@@ -148,7 +152,9 @@
   line-height: 1.6;
 }
 
-.spc-hero__date {
+/* The status line. Named __meta rather than __date because the slot holds a
+   status, and the challenge is simply the only hero with one. */
+.spc-hero__meta {
   margin-top: 1rem;
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.86rem;

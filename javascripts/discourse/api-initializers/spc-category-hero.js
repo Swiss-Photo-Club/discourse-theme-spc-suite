@@ -20,6 +20,7 @@ const RENDER_THROTTLE_MS = 200;
  * to be its own name, and Discourse already localises that — writing it out a
  * second time only creates a string that can drift out of step with the
  * sidebar and the breadcrumb.
+ *
  * `actions` is a function rather than data because the spec's `actions[].href`
  * schema does not survive contact with these categories: critique's primary
  * depends on critique_image_use_form AND the locale suffix, introductions'
@@ -189,6 +190,21 @@ function activeHeroCategory() {
 }
 
 /**
+ * Clear the hero, but only if it is one of ours.
+ *
+ * clearHero() is marker-scoped now that the monthly challenge renders through
+ * the same function, so this asks about every marker this module can own rather
+ * than deleting whatever hero happens to be on the page. Arriving on category 6
+ * that distinction is the whole ballgame: an unscoped clear here would race the
+ * challenge initializer and delete the challenge hero.
+ */
+function clearOwnHero() {
+  for (const id of Object.keys(CATEGORY_HEROES)) {
+    clearHero(id);
+  }
+}
+
+/**
  * The lead. `description_excerpt` is plain text and already localised, which is
  * the whole point of reading it: the hero is not a second place to author a
  * category description. `description` is HTML, so it is only a fallback and is
@@ -211,13 +227,13 @@ export default apiInitializer((api) => {
 
   function render() {
     if (!settings.enable_category_hero) {
-      clearHero();
+      clearOwnHero();
       return;
     }
 
     const active = activeHeroCategory();
     if (!active) {
-      clearHero();
+      clearOwnHero();
       return;
     }
 

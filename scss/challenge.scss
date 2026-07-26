@@ -118,11 +118,14 @@ body.category-monthly-challenge .list-controls {
   margin: 1.5rem auto;
 }
 
+/* Same callout pattern. The width and style are stated outright rather than
+   left to core's blockquote defaults, so this and the composer callout are
+   the same 4px rather than coincidentally similar. */
 .spc-challenge-brief__content blockquote {
   margin: 1.5rem 0;
   padding: 0.85rem 1.1rem;
-  border-left-color: var(--spc-coral);
-  background: #fff4f2;
+  border-left: 4px solid var(--spc-coral);
+  background: var(--bg-alt);
 }
 
 /* Winner-led archive ------------------------------------------------- */
@@ -353,13 +356,17 @@ body.category-monthly-challenge .list-controls {
   width: 100%;
 }
 
+/* Callout pattern (D7): a 4px coral rule down the left on --bg-alt. Shared
+   with the brief's blockquote below. .spc-cw-banner in critique-workspace.scss
+   is the same shape but keeps --tertiary / --primary-very-low, because that
+   file stays on core palette tokens so a dark scheme can move it. */
 .spc-composer-challenge {
   display: grid;
   gap: 0.45rem;
   margin-bottom: 0.85rem;
   padding: 1rem 1.15rem;
-  border-top: 4px solid var(--spc-coral);
-  background: #f3f5f8;
+  border-left: 4px solid var(--spc-coral);
+  background: var(--bg-alt);
 }
 
 .spc-composer-challenge .spc-eyebrow {

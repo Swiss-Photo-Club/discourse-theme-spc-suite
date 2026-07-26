@@ -80,12 +80,22 @@ function legacyTopicContent(challenge) {
       : "",
   ].join("");
 
+  // The listing fields win over the settings registry and over the generic
+  // label, because they are the live topic as Discourse itself renders it in
+  // the category. They matter most to signed-out visitors: categories 6, 7 and
+  // 8 are members-only, so /t/<id>.json answers 402 for them and this fallback
+  // is the only path they ever take. Without the listing they saw "Monthly
+  // challenge" and no summary; with it they see the real round.
+  //
+  // cooked stays empty on that path and the brief section stays unrendered,
+  // which is correct - the post body is the part behind the paywall.
   return {
     id: Number(challenge?.topic_id) || 0,
-    title: localized(challenge, "title") || translate("label"),
-    summary,
+    title:
+      challenge?.listing?.title || localized(challenge, "title") || translate("label"),
+    summary: summary || challenge?.listing?.excerpt || "",
     cooked: content,
-    coverImage: "",
+    coverImage: challenge?.listing?.image || "",
     url: challenge?.topic_url || "",
     updatedAt: "legacy",
   };
@@ -163,6 +173,13 @@ async function loadTopicContent(challenge) {
           };
         })
         .catch((error) => {
+          // 402 is not a failure. Categories 6, 7 and 8 are members-only, so
+          // this is the paywall answering exactly as configured for every
+          // signed-out visitor, on the busiest page in the forum. Logging it
+          // as an error trained everyone to ignore this console.
+          if (error?.jqXHR?.status === 402 || error?.status === 402) {
+            return legacyTopicContent(challenge);
+          }
           // The failure is deliberately left in the cache. Deleting the entry
           // here re-armed the fetch, and since renders are driven by a
           // MutationObserver on document.body, the next frame asked for the
@@ -302,6 +319,14 @@ function fetchPinnedBrief() {
       return {
         topic_id: brief.id,
         tag: (brief.tags || []).find((tag) => /^\d{4}-\d{2}/.test(tag)),
+        // The category listing is public even where the topics behind it are
+        // not, and it already carries everything the hero needs. Taking it
+        // here costs nothing: this response was fetched anyway.
+        listing: {
+          title: brief.fancy_title_localized || brief.fancy_title || brief.title || "",
+          excerpt: brief.excerpt || "",
+          image: brief.image_url || "",
+        },
       };
     } catch {
       return null;
@@ -323,6 +348,7 @@ function deriveChallengeFromBrief(brief) {
   votingDate.setDate(votingDate.getDate() + 3);
 
   return {
+    listing: brief.listing,
     topic_id: brief.topic_id,
     tag: brief.tag,
     status: "active",
@@ -347,6 +373,7 @@ async function resolveActiveChallenge(challenges) {
         ? {
             ...derived,
             ...override,
+            listing: derived.listing,
             topic_id: Number(override.topic_id) || brief.topic_id,
             status: "active",
           }

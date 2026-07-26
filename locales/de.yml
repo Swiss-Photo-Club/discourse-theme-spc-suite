@@ -24,6 +24,7 @@ de:
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.
     button: Foto einreichen
   form:
+    required: (erforderlich)
     heading: Foto einreichen
     round_label: Challenge-Runde
     title_label: Titel
@@ -84,19 +85,36 @@ de:
       abstract: Abstrakt
   project_form:
     heading: Projekt zur Kritik einreichen
-    intro_title: Bevor du einreichst
-    intro_body: Reiche eine zusammenhängende Arbeit ein – zum Beispiel eine Fotoserie, ein Buchprojekt oder ein Portfolio.
+    lead: Zeig eine zusammenhängende Arbeit und sag den Mitgliedern, wo Feedback dir am meisten hilft.
+    guidance_title: Hinweise zum Projekt
+    guidance_body: Eine zusammenhängende Arbeit – zum Beispiel eine Fotoserie, ein Buchprojekt oder ein Portfolio. Markdown, Links und @-Erwähnungen werden unterstützt.
+    section_submission: Deine Einreichung
+    section_direction: Kritik-Richtung
+    section_direction_intro: Hilf den Mitgliedern zu verstehen, worauf sie eingehen sollen.
     title_label: Projekttitel
     title_placeholder: Gib deinem Projekt einen klaren Titel
+    type_label: Wie möchtest du dein Projekt einreichen?
+    types:
+      images:
+        title: Bilder hochladen
+        description: Lade die Bilder hoch, aus denen dein Projekt besteht.
+        error: Bitte lade mindestens ein Bild hoch.
+      pdf:
+        title: PDF hochladen
+        description: Teile dein Projekt als einzelnes PDF.
+        error: Bitte lade ein PDF hoch.
+      link:
+        title: Link teilen
+        description: Verlinke dein Projekt, wenn es anderswo liegt.
+        error: Bitte gib einen Link zu deinem Projekt an.
+    pdf_button: PDF wählen
+    pdf_uploading: Wird hochgeladen …
+    content_placeholder: Link zu deinem Portfolio oder Buchprojekt
     description_label: Kurzbeschreibung
     description_hint: Worum geht es? Thema, Idee oder roter Faden.
-    content_label: Projektinhalt
-    content_hint: Lade deine Bilder hoch, eines nach dem anderen. Du kannst stattdessen oder zusätzlich einen Link zu deinem Projekt angeben.
-    content_placeholder: Link zu deinem Portfolio, Buchprojekt oder einer PDF …
     subject_label: Thema
     subject_placeholder: Thema wählen …
     focus_label: Feedback-Fokus
-    focus_placeholder: Fokus wählen …
     direction_label: Deine kreative Richtung
     direction_hint: Was willst du ausdrücken oder verfeinern? Stimmung, visueller Ansatz, Sequenz-Ideen, offene Fragen.
     working_label: Was funktioniert, was noch nicht?
@@ -108,11 +126,10 @@ de:
     details_label: Weitere Details (optional)
     submit: Projekt einreichen
     error_missing: "Bitte fülle dieses Feld aus: %{field}"
-    error_no_content: Bitte lade mindestens ein Bild hoch oder gib einen Link zu deinem Projekt an.
     focus:
-      artistic: Künstlerisch / Konzeptionell – Sequenz, Kohärenz, Bildsprache, Stimmung, Aussage
-      technical: Technik / Präsentation – Konsistenz, Bearbeitung, Qualität, Layout
-      both: Beides – künstlerisch und technisch
+      artistic: Sequenz, Kohärenz, Bildsprache, Stimmung, Aussage
+      technical: Konsistenz, Bearbeitung, Qualität, Layout
+      both: Künstlerisch und technisch zugleich
     presentation:
       print: Druck / Buch
       exhibition: Ausstellung

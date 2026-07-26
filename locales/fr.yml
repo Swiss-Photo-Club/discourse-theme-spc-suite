@@ -20,6 +20,7 @@ fr:
       nonmember_categories_url: Destination du bouton permettant de parcourir les catégories.
       nonmember_show_categories_button: Afficher le bouton permettant de parcourir les catégories.
   form:
+    required: (obligatoire)
     heading: Envoyer une photo
     round_label: Manche du challenge
     title_label: Titre
@@ -80,19 +81,36 @@ fr:
       abstract: Abstrait
   project_form:
     heading: Soumettre un projet pour critique
-    intro_title: Avant d'envoyer
-    intro_body: Propose un travail cohérent – une série photo, un projet de livre ou un portfolio.
+    lead: Partage un travail cohérent et indique aux membres où le feedback te serait le plus utile.
+    guidance_title: Conseils pour le projet
+    guidance_body: Un travail cohérent – une série photo, un projet de livre ou un portfolio. Markdown, liens et @mentions sont pris en charge.
+    section_submission: Ton envoi
+    section_direction: Orientation de la critique
+    section_direction_intro: Aide les membres à comprendre comment réagir au projet.
     title_label: Titre du projet
     title_placeholder: Donne un titre clair à ton projet
+    type_label: Comment veux-tu soumettre ton projet ?
+    types:
+      images:
+        title: Téléverser des images
+        description: Téléverse les images qui composent ton projet.
+        error: Merci de téléverser au moins une image.
+      pdf:
+        title: Téléverser un PDF
+        description: Partage ton projet sous forme d'un seul PDF.
+        error: Merci de téléverser un PDF.
+      link:
+        title: Partager un lien
+        description: Mets un lien vers ton projet s'il est hébergé ailleurs.
+        error: Merci de partager un lien vers ton projet.
+    pdf_button: Choisir un PDF
+    pdf_uploading: Téléversement…
+    content_placeholder: Un lien vers ton portfolio ou ton projet de livre
     description_label: Brève description
     description_hint: De quoi s'agit-il ? Le thème, l'idée, le fil conducteur.
-    content_label: Contenu du projet
-    content_hint: Téléverse tes images, une par une. Tu peux aussi simplement partager un lien vers ton projet.
-    content_placeholder: Un lien vers ton portfolio, ton projet de livre ou un PDF…
     subject_label: Sujet
     subject_placeholder: Choisis un sujet…
     focus_label: Focus du feedback
-    focus_placeholder: Choisis un focus…
     direction_label: Ta direction créative
     direction_hint: Que veux-tu exprimer ou affiner ? Ambiance, approche visuelle, idées de séquence, questions ouvertes.
     working_label: Qu'est-ce qui fonctionne, qu'est-ce qui ne fonctionne pas encore ?
@@ -104,11 +122,10 @@ fr:
     details_label: Autres détails (optionnel)
     submit: Envoyer le projet
     error_missing: "Merci de remplir ce champ : %{field}"
-    error_no_content: Merci de téléverser au moins une image ou de partager un lien vers ton projet.
     focus:
-      artistic: Artistique / Conceptuel – séquence, cohérence, langage visuel, ambiance, message
-      technical: Technique / Présentation – cohérence, retouche, qualité, mise en page
-      both: Les deux – artistique et technique
+      artistic: Séquence, cohérence, langage visuel, ambiance, message
+      technical: Cohérence, retouche, qualité, mise en page
+      both: Artistique et technique à parts égales
     presentation:
       print: Impression / Livre
       exhibition: Exposition

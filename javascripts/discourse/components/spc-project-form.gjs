@@ -2,6 +2,7 @@ import { tracked } from "@glimmer/tracking";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import { i18n } from "discourse-i18n";
@@ -16,7 +17,31 @@ import {
   fetchSubjectTags,
   subjectOptions,
 } from "../lib/spc-submit-helpers";
+import SpcCardChoice from "./spc-card-choice";
+import SpcFileUpload from "./spc-file-upload";
+import SpcFormSection from "./spc-form-section";
 import SpcSubmitShell from "./spc-submit-shell";
+
+// Submit a project or series for critique — the replacement for the Custom
+// Wizard "projekt-zur-kritik-einreichen". Posts into the same category as the
+// single-image critique and carries the same subject tags; see lib/spc-project.js
+// for why its output has to stay byte-compatible with that wizard.
+//
+// The wizard's `step_1_inhalt` was one composer field that was meant to accept
+// images, a PDF or a link interchangeably. Here those are three explicit modes,
+// chosen up front — which is both clearer and honest about the fact that they
+// are different things. d-editor was the obvious way to keep the composer and
+// turns out to carry no upload handling at all: the composer's uploads come from
+// wiring the wizard reproduces by subclassing ComposerEditor and reaching into
+// uppyComposerUpload's private internals, against a d-editor core has since
+// rewritten and moved to ui-kit.
+//
+// The PDF mode is offered only when the site would actually accept one. It is
+// not in authorized_extensions today, which means the wizard's PDF path has
+// never worked on this install — the upload would have been rejected server
+// side. Offering a button that always fails is worse than not offering it.
+
+const SUBMISSION_TYPES = ["images", "pdf", "link"];
 
 function withSelection(choices, current) {
   return choices.map((choice) => ({
@@ -25,22 +50,9 @@ function withSelection(choices, current) {
   }));
 }
 
-// Submit a project or series for critique — the replacement for the Custom
-// Wizard "projekt-zur-kritik-einreichen". Posts into the same category as the
-// single-image critique and carries the same subject tags; see lib/spc-project.js
-// for why its output has to stay byte-compatible with that wizard.
-//
-// The wizard's `step_1_inhalt` was a full composer field: markdown, drag-and-
-// drop images, a PDF, a link. This is a list of image uploaders plus a free-text
-// box instead. d-editor turns out to carry no upload handling of its own — the
-// composer's uploads come from wiring the wizard reproduces by subclassing
-// ComposerEditor and reaching into uppyComposerUpload's internals, against a
-// d-editor core has since rewritten. Copying that into a theme with no build and
-// no tests trades a fragile thing for the same fragile thing. The list keeps the
-// three forms looking alike, which is the point of the port, and the free-text
-// box keeps the wizard's "or just share a link to your project" path open.
-
 export default class SpcProjectForm extends SpcSubmitBase {
+  @service siteSettings;
+
   // Every image is one entry with a stable key. Keys matter: the uploaders are
   // rendered from this list, and reusing one for a different image after a
   // delete would leave the previous preview on screen.
@@ -49,7 +61,10 @@ export default class SpcProjectForm extends SpcSubmitBase {
   #nextKey = 0;
   #nextBlank = 0;
 
+  @tracked submissionType = "images";
+  @tracked pdf = null;
   @tracked contentText = "";
+
   @tracked subjects = [];
   @tracked subject = "";
   @tracked focus = "";
@@ -77,6 +92,10 @@ export default class SpcProjectForm extends SpcSubmitBase {
     return i18n(themePrefix("project_form.heading"));
   }
 
+  get lead() {
+    return i18n(themePrefix("project_form.lead"));
+  }
+
   get submitLabel() {
     return i18n(themePrefix("project_form.submit"));
   }
@@ -87,59 +106,63 @@ export default class SpcProjectForm extends SpcSubmitBase {
     return this.missing("title_label");
   }
 
+  // ---- submission type -----------------------------------------------------
+
+  // Only the modes the site can actually accept. PDF depends on a site setting
+  // this theme does not own, so it is read at render time rather than assumed.
+  get pdfAllowed() {
+    return (this.siteSettings.authorized_extensions || "")
+      .split("|")
+      .some((extension) => extension.trim().toLowerCase() === "pdf");
+  }
+
+  get submissionTypeChoices() {
+    return SUBMISSION_TYPES.filter(
+      (type) => type !== "pdf" || this.pdfAllowed
+    ).map((type) => ({
+      value: type,
+      title: i18n(themePrefix(`project_form.types.${type}.title`)),
+      description: i18n(themePrefix(`project_form.types.${type}.description`)),
+      selected: this.submissionType === type,
+    }));
+  }
+
+  get uploadingImages() {
+    return this.submissionType === "images";
+  }
+
+  get uploadingPdf() {
+    return this.submissionType === "pdf";
+  }
+
+  get sharingLink() {
+    return this.submissionType === "link";
+  }
+
+  @action
+  updateSubmissionType(event) {
+    this.submissionType = event.target.value;
+    this.error = null;
+  }
+
+  // ---- images --------------------------------------------------------------
+
   // One uploader per image, plus a trailing empty one to add the next.
   get uploadSlots() {
-    return [
-      ...this.entries,
-      { key: this.blankKey, upload: null, blank: true },
-    ];
+    return [...this.entries, { key: this.blankKey, upload: null }];
   }
 
   get images() {
     return this.entries.map((entry) => getUploadMarkdown(entry.upload));
   }
 
-  get subjectChoices() {
-    return subjectOptions(this.subjects, this.subject);
-  }
-
-  get noSubject() {
-    return !this.subject;
-  }
-
-  get noFocus() {
-    return !this.focus;
-  }
-
-  get noPresentation() {
-    return !this.presentation;
-  }
-
-  get focusChoices() {
-    return withSelection(projectChoices("focus"), this.focus);
-  }
-
-  get presentationChoices() {
-    return withSelection(projectChoices("presentation"), this.presentation);
-  }
-
-  get dirtyFields() {
-    return [
-      this.title,
-      this.contentText,
-      this.description,
-      this.direction,
-      this.working,
-      this.help,
-      this.details,
-      this.entries.length,
-    ];
-  }
-
   @action
   slotUploadDone(key, upload) {
     if (key === this.blankKey) {
-      this.entries = [...this.entries, { key: `img-${this.#nextKey++}`, upload }];
+      this.entries = [
+        ...this.entries,
+        { key: `img-${this.#nextKey++}`, upload },
+      ];
       this.blankKey = `blank-${++this.#nextBlank}`;
     } else {
       this.entries = this.entries.map((entry) =>
@@ -155,6 +178,64 @@ export default class SpcProjectForm extends SpcSubmitBase {
   }
 
   @action
+  pdfUploaded(upload) {
+    this.pdf = upload;
+    this.error = null;
+  }
+
+  get pdfButtonLabel() {
+    return themePrefix("project_form.pdf_button");
+  }
+
+  get pdfBusyLabel() {
+    return themePrefix("project_form.pdf_uploading");
+  }
+
+  // ---- the rest ------------------------------------------------------------
+
+  get subjectChoices() {
+    return subjectOptions(this.subjects, this.subject);
+  }
+
+  get noSubject() {
+    return !this.subject;
+  }
+
+  get noPresentation() {
+    return !this.presentation;
+  }
+
+  // The card's title is the value that lands in the post, straight from the
+  // load-bearing table, so a translator cannot make the card disagree with what
+  // gets written. Only the description below it is translatable.
+  get focusChoices() {
+    return projectChoices("focus").map((choice) => ({
+      value: choice.value,
+      title: choice.value,
+      description: choice.label,
+      selected: choice.value === this.focus,
+    }));
+  }
+
+  get presentationChoices() {
+    return withSelection(projectChoices("presentation"), this.presentation);
+  }
+
+  get dirtyFields() {
+    return [
+      this.title,
+      this.contentText,
+      this.pdf,
+      this.description,
+      this.direction,
+      this.working,
+      this.help,
+      this.details,
+      this.entries.length,
+    ];
+  }
+
+  @action
   updateField(name, event) {
     this[name] = event.target.value;
   }
@@ -163,13 +244,16 @@ export default class SpcProjectForm extends SpcSubmitBase {
     return [this.subject];
   }
 
-  // The wizard's content field takes images, a PDF or a link, so this reproduces
-  // "at least one of the two" rather than requiring an image. Images first, then
-  // whatever was typed, which is the order the composer field produced.
+  // Whichever mode is selected. The other modes keep their state, so switching
+  // back and forth to compare does not throw away an upload.
   get content() {
-    return [...this.images, this.contentText.trim()]
-      .filter(Boolean)
-      .join("\n\n");
+    if (this.uploadingPdf) {
+      return this.pdf ? getUploadMarkdown(this.pdf) : "";
+    }
+    if (this.sharingLink) {
+      return this.contentText.trim();
+    }
+    return this.images.join("\n\n");
   }
 
   buildRaw() {
@@ -201,7 +285,9 @@ export default class SpcProjectForm extends SpcSubmitBase {
       return problem;
     }
     if (!this.content) {
-      return i18n(themePrefix("project_form.error_no_content"));
+      return i18n(
+        themePrefix(`project_form.types.${this.submissionType}.error`)
+      );
     }
     if (!this.subject) {
       return this.missing("subject_label");
@@ -230,6 +316,7 @@ export default class SpcProjectForm extends SpcSubmitBase {
   <template>
     <SpcSubmitShell
       @heading={{this.heading}}
+      @lead={{this.lead}}
       @submitLabel={{this.submitLabel}}
       @submitting={{this.submitting}}
       @error={{this.error}}
@@ -237,177 +324,221 @@ export default class SpcProjectForm extends SpcSubmitBase {
       @onCancel={{this.cancel}}
     >
       <:fields>
-        <div class="spc-submit-page__intro">
-          <h2>{{i18n (themePrefix "project_form.intro_title")}}</h2>
-          <p>{{i18n (themePrefix "project_form.intro_body")}}</p>
-        </div>
+        <details class="spc-submit-page__guidance">
+          <summary>{{i18n (themePrefix "project_form.guidance_title")}}</summary>
+          <p>{{i18n (themePrefix "project_form.guidance_body")}}</p>
+        </details>
 
-        <div class="spc-submit-page__field">
-          <label for="spc-project-title">
-            {{i18n (themePrefix "project_form.title_label")}}
-          </label>
-          <input
-            id="spc-project-title"
-            type="text"
-            maxlength="255"
-            value={{this.title}}
-            placeholder={{i18n (themePrefix "project_form.title_placeholder")}}
-            {{on "input" this.updateTitle}}
-          />
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label for="spc-project-description">
-            {{i18n (themePrefix "project_form.description_label")}}
-          </label>
-          <p class="spc-submit-page__hint">
-            {{i18n (themePrefix "project_form.description_hint")}}
-          </p>
-          <textarea
-            id="spc-project-description"
-            rows="4"
-            {{on "input" (fn this.updateField "description")}}
-          >{{this.description}}</textarea>
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label>{{i18n (themePrefix "project_form.content_label")}}</label>
-          <p class="spc-submit-page__hint">
-            {{i18n (themePrefix "project_form.content_hint")}}
-          </p>
-
-          <div class="spc-submit-page__uploads">
-            {{#each this.uploadSlots key="key" as |slot|}}
-              <UppyImageUploader
-                @id="spc-project-upload-{{slot.key}}"
-                @type="composer"
-                @imageUrl={{slot.upload.url}}
-                @onUploadDone={{fn this.slotUploadDone slot.key}}
-                @onUploadDeleted={{fn this.slotUploadDeleted slot.key}}
-                class="spc-submit-page__uploader"
-              />
-            {{/each}}
+        <SpcFormSection
+          @title={{i18n (themePrefix "project_form.section_submission")}}
+        >
+          <div class="spc-submit-page__field">
+            <label for="spc-project-title">
+              {{i18n (themePrefix "project_form.title_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <input
+              id="spc-project-title"
+              type="text"
+              maxlength="255"
+              value={{this.title}}
+              placeholder={{i18n (themePrefix "project_form.title_placeholder")}}
+              {{on "input" this.updateTitle}}
+            />
           </div>
 
-          <textarea
-            id="spc-project-content-text"
-            rows="3"
-            placeholder={{i18n (themePrefix "project_form.content_placeholder")}}
-            {{on "input" (fn this.updateField "contentText")}}
-          >{{this.contentText}}</textarea>
-        </div>
+          <div class="spc-submit-page__field">
+            <label>
+              {{i18n (themePrefix "project_form.type_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <SpcCardChoice
+              @name="spc-project-type"
+              @choices={{this.submissionTypeChoices}}
+              @onChange={{this.updateSubmissionType}}
+            />
 
-        <div class="spc-submit-page__field">
-          <label for="spc-project-subject">
-            {{i18n (themePrefix "project_form.subject_label")}}
-          </label>
-          {{! The block param must not be called `option` - see the note in
-              spc-submit-form.gjs for what that costs. }}
-          <select
-            id="spc-project-subject"
-            {{on "change" (fn this.updateField "subject")}}
-          >
-            <option value="" selected={{this.noSubject}}>
-              {{i18n (themePrefix "project_form.subject_placeholder")}}
-            </option>
-            {{#each this.subjectChoices as |choice|}}
-              <option value={{choice.value}} selected={{choice.selected}}>
-                {{choice.label}}
+            {{#if this.uploadingImages}}
+              <div class="spc-submit-page__uploads">
+                {{#each this.uploadSlots key="key" as |slot|}}
+                  <UppyImageUploader
+                    @id="spc-project-upload-{{slot.key}}"
+                    @type="composer"
+                    @imageUrl={{slot.upload.url}}
+                    @onUploadDone={{fn this.slotUploadDone slot.key}}
+                    @onUploadDeleted={{fn this.slotUploadDeleted slot.key}}
+                    class="spc-submit-page__uploader"
+                  />
+                {{/each}}
+              </div>
+            {{else if this.uploadingPdf}}
+              <SpcFileUpload
+                @id="spc-project-pdf"
+                @accept=".pdf"
+                @label={{this.pdfButtonLabel}}
+                @busyLabel={{this.pdfBusyLabel}}
+                @onUploadDone={{this.pdfUploaded}}
+              />
+            {{else}}
+              <textarea
+                id="spc-project-content-text"
+                rows="3"
+                placeholder={{i18n
+                  (themePrefix "project_form.content_placeholder")
+                }}
+                {{on "input" (fn this.updateField "contentText")}}
+              >{{this.contentText}}</textarea>
+            {{/if}}
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-description">
+              {{i18n (themePrefix "project_form.description_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <p class="spc-submit-page__hint">
+              {{i18n (themePrefix "project_form.description_hint")}}
+            </p>
+            <textarea
+              id="spc-project-description"
+              rows="4"
+              {{on "input" (fn this.updateField "description")}}
+            >{{this.description}}</textarea>
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-subject">
+              {{i18n (themePrefix "project_form.subject_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            {{! The block param must not be called `option` - see the note in
+                spc-submit-form.gjs for what that costs. }}
+            <select
+              id="spc-project-subject"
+              {{on "change" (fn this.updateField "subject")}}
+            >
+              <option value="" selected={{this.noSubject}}>
+                {{i18n (themePrefix "project_form.subject_placeholder")}}
               </option>
-            {{/each}}
-          </select>
-        </div>
+              {{#each this.subjectChoices as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+        </SpcFormSection>
 
-        <div class="spc-submit-page__field">
-          <label for="spc-project-focus">
-            {{i18n (themePrefix "project_form.focus_label")}}
-          </label>
-          <select
-            id="spc-project-focus"
-            {{on "change" (fn this.updateField "focus")}}
-          >
-            <option value="" selected={{this.noFocus}}>
-              {{i18n (themePrefix "project_form.focus_placeholder")}}
-            </option>
-            {{#each this.focusChoices as |choice|}}
-              <option value={{choice.value}} selected={{choice.selected}}>
-                {{choice.label}}
+        <SpcFormSection
+          @title={{i18n (themePrefix "project_form.section_direction")}}
+          @intro={{i18n (themePrefix "project_form.section_direction_intro")}}
+        >
+          <div class="spc-submit-page__field">
+            <label>
+              {{i18n (themePrefix "project_form.focus_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <SpcCardChoice
+              @name="spc-project-focus"
+              @choices={{this.focusChoices}}
+              @onChange={{fn this.updateField "focus"}}
+            />
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-direction">
+              {{i18n (themePrefix "project_form.direction_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <p class="spc-submit-page__hint">
+              {{i18n (themePrefix "project_form.direction_hint")}}
+            </p>
+            <textarea
+              id="spc-project-direction"
+              rows="4"
+              {{on "input" (fn this.updateField "direction")}}
+            >{{this.direction}}</textarea>
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-working">
+              {{i18n (themePrefix "project_form.working_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <p class="spc-submit-page__hint">
+              {{i18n (themePrefix "project_form.working_hint")}}
+            </p>
+            <textarea
+              id="spc-project-working"
+              rows="4"
+              {{on "input" (fn this.updateField "working")}}
+            >{{this.working}}</textarea>
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-help">
+              {{i18n (themePrefix "project_form.help_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <p class="spc-submit-page__hint">
+              {{i18n (themePrefix "project_form.help_hint")}}
+            </p>
+            <textarea
+              id="spc-project-help"
+              rows="4"
+              {{on "input" (fn this.updateField "help")}}
+            >{{this.help}}</textarea>
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-project-presentation">
+              {{i18n (themePrefix "project_form.presentation_label")}}
+              <span class="spc-submit-page__required">
+                {{i18n (themePrefix "form.required")}}
+              </span>
+            </label>
+            <select
+              id="spc-project-presentation"
+              {{on "change" (fn this.updateField "presentation")}}
+            >
+              <option value="" selected={{this.noPresentation}}>
+                {{i18n (themePrefix "project_form.presentation_placeholder")}}
               </option>
-            {{/each}}
-          </select>
-        </div>
+              {{#each this.presentationChoices as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
 
-        <div class="spc-submit-page__field">
-          <label for="spc-project-direction">
-            {{i18n (themePrefix "project_form.direction_label")}}
-          </label>
-          <p class="spc-submit-page__hint">
-            {{i18n (themePrefix "project_form.direction_hint")}}
-          </p>
-          <textarea
-            id="spc-project-direction"
-            rows="4"
-            {{on "input" (fn this.updateField "direction")}}
-          >{{this.direction}}</textarea>
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label for="spc-project-working">
-            {{i18n (themePrefix "project_form.working_label")}}
-          </label>
-          <p class="spc-submit-page__hint">
-            {{i18n (themePrefix "project_form.working_hint")}}
-          </p>
-          <textarea
-            id="spc-project-working"
-            rows="4"
-            {{on "input" (fn this.updateField "working")}}
-          >{{this.working}}</textarea>
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label for="spc-project-help">
-            {{i18n (themePrefix "project_form.help_label")}}
-          </label>
-          <p class="spc-submit-page__hint">
-            {{i18n (themePrefix "project_form.help_hint")}}
-          </p>
-          <textarea
-            id="spc-project-help"
-            rows="4"
-            {{on "input" (fn this.updateField "help")}}
-          >{{this.help}}</textarea>
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label for="spc-project-presentation">
-            {{i18n (themePrefix "project_form.presentation_label")}}
-          </label>
-          <select
-            id="spc-project-presentation"
-            {{on "change" (fn this.updateField "presentation")}}
-          >
-            <option value="" selected={{this.noPresentation}}>
-              {{i18n (themePrefix "project_form.presentation_placeholder")}}
-            </option>
-            {{#each this.presentationChoices as |choice|}}
-              <option value={{choice.value}} selected={{choice.selected}}>
-                {{choice.label}}
-              </option>
-            {{/each}}
-          </select>
-        </div>
-
-        <div class="spc-submit-page__field">
-          <label for="spc-project-details">
-            {{i18n (themePrefix "project_form.details_label")}}
-          </label>
-          <textarea
-            id="spc-project-details"
-            rows="3"
-            {{on "input" (fn this.updateField "details")}}
-          >{{this.details}}</textarea>
-        </div>
+          <div class="spc-submit-page__field">
+            <label for="spc-project-details">
+              {{i18n (themePrefix "project_form.details_label")}}
+            </label>
+            <textarea
+              id="spc-project-details"
+              rows="3"
+              {{on "input" (fn this.updateField "details")}}
+            >{{this.details}}</textarea>
+          </div>
+        </SpcFormSection>
       </:fields>
     </SpcSubmitShell>
   </template>

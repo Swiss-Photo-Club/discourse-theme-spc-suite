@@ -38,6 +38,11 @@ export default class SpcSubmitShell extends Component {
         <div class="spc-submit-page__header">
           <h1>{{@heading}}</h1>
           {{yield to="meta"}}
+          {{! Inside the header, not after it, so it sits above the rule. The
+              header wraps, and the lead is styled to claim a whole line. }}
+          {{#if @lead}}
+            <p class="spc-submit-page__lead">{{@lead}}</p>
+          {{/if}}
           <DButton
             @icon="xmark"
             @action={{@onCancel}}

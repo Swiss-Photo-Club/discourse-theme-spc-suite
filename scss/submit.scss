@@ -70,6 +70,36 @@
     font-size: var(--font-up-2);
   }
 
+  // Claims its own line inside the wrapping header, so the subtitle sits under
+  // the title and above the rule rather than beside the round tag.
+  &__lead {
+    flex: 0 0 100%;
+    margin: 0.4em 0 0;
+    color: var(--primary-high);
+  }
+
+  &__guidance {
+    margin-bottom: 2em;
+    color: var(--primary-high);
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    p {
+      margin: 0.6em 0 0;
+    }
+  }
+
+  &__required {
+    margin-left: 0.4em;
+    font-weight: 400;
+    font-size: var(--font-down-1);
+    color: var(--primary-medium);
+  }
+
   &__field {
     margin-bottom: 1.5em;
 
@@ -199,6 +229,106 @@
       font-size: var(--font-up-1);
       margin-bottom: 1em;
     }
+  }
+}
+
+// ---------- Sections and card choosers (shared by the /submit forms) --------
+.spc-form-section {
+  margin-bottom: 2.5em;
+
+  &__title {
+    margin: 0 0 0.35em;
+    font-size: var(--font-down-1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-medium);
+    border-bottom: 1px solid var(--primary-low);
+    padding-bottom: 0.5em;
+  }
+
+  &__intro {
+    margin: 0 0 1.25em;
+    color: var(--primary-high);
+  }
+}
+
+.spc-card-choice {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75em;
+  margin-bottom: 0.75em;
+
+  &__card {
+    display: block;
+    position: relative;
+    padding: 0.9em 1em;
+    border: 1px solid var(--primary-low);
+    background: var(--secondary);
+    cursor: pointer;
+
+    // Never display:none - that takes the radio out of the tab order and out of
+    // the accessibility tree, which is the only reason to use a real input
+    // here. Moved out of sight instead, so focus still lands on it.
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    &:hover {
+      border-color: var(--primary-medium);
+    }
+
+    &:focus-within {
+      outline: 2px solid var(--tertiary);
+      outline-offset: 2px;
+    }
+
+    &--selected {
+      border-color: var(--tertiary);
+      background: var(--tertiary-very-low);
+    }
+  }
+
+  &__title {
+    display: block;
+    font-weight: 700;
+  }
+
+  &__description {
+    display: block;
+    margin-top: 0.25em;
+    font-size: var(--font-down-1);
+    color: var(--primary-high);
+    font-weight: 400;
+  }
+}
+
+.spc-file-upload {
+  &__file {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.75em 1em;
+    border: 1px solid var(--primary-low);
+    background: var(--primary-very-low);
+  }
+
+  &__size {
+    color: var(--primary-medium);
+    font-size: var(--font-down-1);
+  }
+
+  &__remove {
+    margin-left: auto;
+  }
+
+  // The picker renders its own <input type="file"> next to the button; only the
+  // button should be visible.
+  &__input {
+    display: none;
   }
 }
 

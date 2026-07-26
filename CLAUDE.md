@@ -79,18 +79,43 @@ and overlaps photos with text. On topic rows, only ever add absolutely-positione
 typo for `8`, and category 8 — long assumed to be stock Discourse — is masonry. Anything that
 changes a category's canvas width has to be verified on **8** as well as 6, 7 and 12.
 
-**But category 6 is configured as masonry and then has it cancelled.** That list is about which
-categories the component is *configured* for; it is not the list of pages the JS actually
-positions. `challenge.scss` overrides `> tbody` to `display: grid` with three fixed columns and
-forces every row back to `position: relative; inset: auto`, both `!important`, so Topic List
-Thumbnails' absolute positioning never takes effect there. Verified 2026-07-26 by reading
-`getComputedStyle` off the rendered rows: **6 is `relative` with `top: 0` — a CSS grid. 7 and 12
-are genuinely `absolute` with staggered tops. 10 is `topic-thumbnails-list`.** Those rules landed
-in `55fbddb`, the repo's first commit, so this has always been true.
+**Topic List Thumbnails absolutely positions the image inside the thumbnail box, so that box must
+keep a real height.** `challenge.scss` styled `.topic-list-thumbnail > a` as a centering flex box,
+which was harmless only because it also carried `height: 100%`. Removing the height left the link
+at zero height, and the plugin's absolutely positioned image then centred around zero — rendering
+at `top: -246px` inside a 493px box, with the parent clipping its upper half and leaving what
+looks exactly like a large empty gap in the card. Apply the centering to `.thumbnail-placeholder`
+only; leave `> a` alone, which is what the working categories do.
 
-The practical consequence: **the desync failure mode applies to 7, 8 and 12, not to 6.** Category
-6 looks like the risky one and is the safe one. Do not read a tidy uniform grid there as evidence
-that masonry broke — that grid *is* the design.
+**When a masonry card looks wrong, measure OFFSETS, not just sizes.** This bug survived four
+rounds of diagnosis because every size check passed: the image's height equalled its box's height,
+`rowHeight − thumbnail − footer` was zero, and the photo metadata matched its files. All true, and
+all blind to an element translated out of view. The check that finds it in one pass is
+`img.getBoundingClientRect().top − thumb.getBoundingClientRect().top`, which should be `0`.
+
+**Never `display: none` anything the component has measured** — not a row, not a box inside a row.
+Topic List Thumbnails measures and positions once and does not re-run on DOM changes: verified by
+hiding a row and then deleting it outright on category 7, neither of which moved the others. Two
+rules in `challenge.scss` did this and both left holes the moment the grid override went:
+`.spc-challenge-official-topic-row` (a whole row) and `.topic-list-item.pinned
+.topic-list-thumbnail` (a box inside one). Recolour, move or cover such an element; do not
+collapse it.
+
+**Category 6 was a CSS grid until 2026-07-26 and is real masonry now.** For the whole history
+before that, `challenge.scss` overrode `> tbody` to `display: grid` with three fixed columns and
+forced every row back to `position: relative; inset: auto`, both `!important`, so Topic List
+Thumbnails' positioning never took effect there. That was not a workaround for masonry being
+fragile — it was downstream of one declaration, `.topic-list-thumbnail { height: 245px }`. Fix
+every thumbnail to the same height and every card is the same height, and once rows are uniform a
+grid is the honest layout.
+
+Removing the fixed height removed the reason for the rest, and **all four categories now behave
+the same way: 6, 7, 8 and 12 are genuinely JS-positioned masonry, 10 is
+`topic-thumbnails-list`.** The desync failure mode therefore applies to all four, category 6
+included — it is no longer the safe exception it used to be.
+
+That conversion took five attempts on the live site, and every wrong turn is written up in the
+three notes above. Read them before touching this layout again.
 
 The real category set is 6 `monthly-challenge`, 7 `critique-portfolio-reviews`,
 8 `meetups-photowalks`, 10 `support` (displayed "Post Processing"), 5 `announcements-club-news`,

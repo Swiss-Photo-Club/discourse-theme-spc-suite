@@ -79,13 +79,18 @@ const CATEGORY_HEROES = {
   // which is what the --with-cover split exists for.
   //
   // Both actions are the ones the floating .spc-critique-submit row used to
-  // carry, with their URLs derived the same way. Each now has its own switch
-  // between the built-in form and the Custom Wizard it replaced, and each is an
-  // instant rollback: flip the setting and the button points back at the wizard
-  // on the next render, with no commit and no theme update. Their labels stay on
-  // critique_submit.* rather than moving into hero.*: they are the same two
-  // buttons in a new place, and re-keying them would have thrown away
-  // translations that already exist.
+  // carry. Their labels stay on critique_submit.* rather than moving into
+  // hero.*: they are the same two buttons in a new place, and re-keying them
+  // would have thrown away translations that already exist.
+  //
+  // The two destinations are no longer symmetrical. The image button still
+  // switches on critique_image_use_form, because bild-zur-kritik-einreichen is
+  // still installed and is still what the onboarding panel's first-photo step
+  // links to. The project button is hardwired: projekt-zur-kritik-einreichen has
+  // been deleted, so there is nothing left for a setting to fall back to, and a
+  // rollback switch pointing at a wizard that no longer exists is worse than no
+  // switch at all — it looks like a way out and lands on a 404. Rolling the
+  // project form back now means reverting the commit and running an Update.
   7: {
     key: "critique",
     variant: "category",
@@ -99,9 +104,7 @@ const CATEGORY_HEROES = {
       },
       {
         label: i18n(themePrefix("critique_submit.project_button")),
-        href: settings.critique_project_use_form
-          ? "/submit/project"
-          : settings.critique_project_wizard_url + localeSuffix(),
+        href: "/submit/project",
         style: "secondary",
       },
     ],

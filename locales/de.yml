@@ -8,9 +8,6 @@ de:
       onboarding_introduce_url_de: Deutsches Ziel des Schritts ‚Stell dich vor‘.
       onboarding_introduce_url_en: Englisches Ziel des Schritts ‚Stell dich vor‘.
       onboarding_introduce_url_fr: Französisches Ziel des Schritts ‚Stell dich vor‘.
-      onboarding_first_photo_url_de: Deutsches Ziel des Schritts ‚Erstes Foto‘.
-      onboarding_first_photo_url_en: Englisches Ziel des Schritts ‚Erstes Foto‘.
-      onboarding_first_photo_url_fr: Französisches Ziel des Schritts ‚Erstes Foto‘.
       onboarding_show_on_mobile: Das Onboarding auch auf Mobilgeräten anzeigen.
       onboarding_dismissal_version: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen.
       nonmember_member_groups: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.

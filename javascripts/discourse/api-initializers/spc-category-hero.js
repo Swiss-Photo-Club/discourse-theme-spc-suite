@@ -22,10 +22,10 @@ const RENDER_THROTTLE_MS = 200;
  * sidebar and the breadcrumb.
  *
  * `actions` is a function rather than data because the spec's `actions[].href`
- * schema does not survive contact with these categories: critique's primary
- * depends on critique_image_use_form AND the locale suffix, introductions'
- * is a locale-suffixed wizard URL, and only meetups' is a literal setting. A
- * schema field four of five call sites cannot use is unshipped API.
+ * schema does not survive contact with these categories: introductions' is a
+ * locale-suffixed wizard URL, meetups' is a literal setting, and the critique
+ * pair were settings-switched for as long as their wizards existed. A schema
+ * field most call sites cannot use is unshipped API.
  *
  * Adding a category means three edits that ship together: an entry here, its
  * slug in category-hero.scss, and a locale block in all three locales.
@@ -83,23 +83,18 @@ const CATEGORY_HEROES = {
   // hero.*: they are the same two buttons in a new place, and re-keying them
   // would have thrown away translations that already exist.
   //
-  // The two destinations are no longer symmetrical. The image button still
-  // switches on critique_image_use_form, because bild-zur-kritik-einreichen is
-  // still installed and is still what the onboarding panel's first-photo step
-  // links to. The project button is hardwired: projekt-zur-kritik-einreichen has
-  // been deleted, so there is nothing left for a setting to fall back to, and a
-  // rollback switch pointing at a wizard that no longer exists is worse than no
-  // switch at all — it looks like a way out and lands on a 404. Rolling the
-  // project form back now means reverting the commit and running an Update.
+  // Both destinations are hardwired now. Their wizards have been deleted, so
+  // there is nothing for a setting to fall back to, and a rollback switch
+  // pointing at a wizard that no longer exists is worse than no switch at all —
+  // it looks like a way out and lands on a 404. Rolling either form back means
+  // reverting the commit and running an Update.
   7: {
     key: "critique",
     variant: "category",
     actions: () => [
       {
         label: i18n(themePrefix("critique_submit.image_button")),
-        href: settings.critique_image_use_form
-          ? "/submit/critique"
-          : settings.critique_image_wizard_url + localeSuffix(),
+        href: "/submit/critique",
         style: "primary",
       },
       {
@@ -252,9 +247,9 @@ export default apiInitializer((api) => {
       marker: String(id),
       variant: entry.variant,
       // Destinations are part of the signature because some of them are
-      // derived from settings — critique_image_use_form retargets the critique
-      // primary — and a hero that only kept the category in its signature
-      // would go on showing the previous destination.
+      // derived from settings — critique_intro_wizard_url retargets the
+      // introductions action — and a hero that only kept the category in its
+      // signature would go on showing the previous destination.
       signature: [
         id,
         locale,

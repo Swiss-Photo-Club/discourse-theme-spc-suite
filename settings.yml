@@ -194,16 +194,6 @@ critique_category_id:
   default: 7
   description: "ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
 
-critique_image_use_form:
-  type: bool
-  default: true
-  description: "Send 'Submit an image' to the built-in /submit/critique form. Turn this off to fall back to the Custom Wizard at critique_image_wizard_url - a rollback that takes effect immediately, without a theme update."
-
-critique_image_wizard_url:
-  type: string
-  default: "/w/bild-zur-kritik-einreichen"
-  description: "Wizard URL for submitting a single image for critique, used only when critique_image_use_form is off. The locale suffix (-en / -fr) is appended automatically."
-
 critique_intro_category_slug:
   type: string
   default: "vorstellungen"
@@ -297,18 +287,6 @@ onboarding_introduce_url_en:
 onboarding_introduce_url_fr:
   type: string
   default: "/w/vorstellung-einreichen-fr/steps/step_1"
-
-onboarding_first_photo_url_de:
-  type: string
-  default: "/w/bild-zur-kritik-einreichen/steps/step_1"
-
-onboarding_first_photo_url_en:
-  type: string
-  default: "/w/bild-zur-kritik-einreichen-en/steps/step_1"
-
-onboarding_first_photo_url_fr:
-  type: string
-  default: "/w/bild-zur-kritik-einreichen-fr/steps/step_1"
 
 onboarding_show_on_mobile:
   type: bool

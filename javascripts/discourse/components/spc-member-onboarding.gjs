@@ -146,7 +146,11 @@ export default class SpcMemberOnboarding extends Component {
         number: 3,
         label: i18n(themePrefix("onboarding.steps.first_photo")),
         cta: i18n(themePrefix("onboarding.actions.first_photo")),
-        url: this.localizedUrl("onboarding_first_photo_url"),
+        // Was onboarding_first_photo_url_{de,en,fr}, three settings that existed
+        // only because the wizard carried its locale in the path. The form does
+        // not: it reads the interface language itself, so one URL serves all
+        // three and there is nothing left to keep in step.
+        url: "/submit/critique",
       },
     ].map((step) => {
       const completed = this.completedSteps.includes(step.id);

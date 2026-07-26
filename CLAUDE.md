@@ -335,17 +335,24 @@ rather than a permission error.
 
 ## Rollback
 
-`critique_image_use_form` off is the instant rollback for the image critique form — no commit, no
-Update; the category 7 hero's primary button points back at the wizard on the next render.
-**That is only true while `bild-zur-kritik-einreichen` still exists**, so it and its `-en` / `-fr`
-siblings stay in the Custom Wizard admin. The onboarding panel's first-photo step links straight
-at them too, so they have a second reason to survive.
+**Neither critique form has a setting-level rollback any more.** Both wizards were deleted on
+2026-07-26, and every setting that pointed at them went in the same change:
+`critique_image_use_form`, `critique_image_wizard_url`, `critique_project_use_form`,
+`critique_project_wizard_url` and `onboarding_first_photo_url_{de,en,fr}`. A switch whose off
+position points at a deleted wizard is worse than no switch, because it looks like a way out and
+lands on a 404. **Rolling either form back is a `git revert` plus an Update.**
 
-**The project form has no setting-level rollback.** `projekt-zur-kritik-einreichen` was deleted on
-2026-07-26, and `critique_project_use_form` / `critique_project_wizard_url` went with it: a switch
-whose off position points at a deleted wizard is worse than no switch, because it looks like a way
-out and lands on a 404. Rolling that form back means reverting the commit and running an Update.
-Whenever a wizard is deleted, delete the setting that falls back to it in the same change.
+The general rule: **whenever a wizard is deleted, delete the settings that fall back to it in the
+same change**, and grep for the wizard's URL first — the rollback switch is rarely the only thing
+pointing at one. The image wizard also had the onboarding panel's first-photo step, which was
+three settings deep and easy to miss.
+
+The introduction wizard `vorstellung-einreichen` (with its `-en` / `-fr` siblings) is the last one
+standing. `critique_intro_wizard_url` and `onboarding_introduce_url_{de,en,fr}` both point at it,
+and `localeSuffix()` in the hero registry exists only for it. The Custom Wizard plugin can be
+uninstalled once it is gone — it is the source of the `discourse.html-safe-helper`,
+`native-array-extensions`, `template-action` and `select-kit-resolved-components` admin notices,
+none of which come from this theme.
 
 The seven disabled components (3, 12, 19, 20, 23, 36, 37) are the rollback path for the
 merged-in features; their settings are intact in the database. Do not delete them yet.

@@ -132,11 +132,11 @@ const spcRun = (api) => {
             return;
           }
 
-          // Guarded by the same switch that points the "Submit an image"
-          // button at the form, so turning the form off restores the plain
-          // composer here too rather than stranding people on a dead route.
+          // Unguarded since the image wizard was deleted. This used to be
+          // gated on critique_image_use_form so that turning the form off
+          // restored the plain composer here too; with no wizard left to fall
+          // back to, that switch is gone and the form is the only way in.
           if (
-            settings.critique_image_use_form &&
             isCategoryParam(
               params,
               settings.critique_category_id,

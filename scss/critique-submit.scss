@@ -3,8 +3,10 @@
 // Its two visible parts are both gone. The pink and teal .category-title-header
 // recolours went with D10, because categories 7 and 12 now render the shared
 // hero and that hero hides the node the recolours tinted. The .spc-critique-submit
-// button row went with them: its three buttons are hero actions now, with the
-// same URLs and the same critique_image_use_form switch.
+// button row went with them: its three buttons are hero actions now. Two of
+// those URLs have since become the theme's own /submit/critique and
+// /submit/project, and the settings that used to switch them back to Custom
+// Wizard went when those wizards were deleted.
 //
 // The teal block in particular was already invisible before it was deleted. A
 // site-wide component hides .category-title-header on any category whose body

@@ -8,9 +8,6 @@ fr:
       onboarding_introduce_url_de: Destination allemande de l’étape Présentez-vous.
       onboarding_introduce_url_en: Destination anglaise de l’étape Présentez-vous.
       onboarding_introduce_url_fr: Destination française de l’étape Présentez-vous.
-      onboarding_first_photo_url_de: Destination allemande de l’étape Première photo.
-      onboarding_first_photo_url_en: Destination anglaise de l’étape Première photo.
-      onboarding_first_photo_url_fr: Destination française de l’étape Première photo.
       onboarding_show_on_mobile: Afficher le panneau d’onboarding sur les appareils mobiles.
       onboarding_dismissal_version: Modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres.
       nonmember_member_groups: Groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut.

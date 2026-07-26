@@ -49,9 +49,6 @@ en:
       onboarding_introduce_url_de: German destination for the Introduce yourself step.
       onboarding_introduce_url_en: English destination for the Introduce yourself step.
       onboarding_introduce_url_fr: French destination for the Introduce yourself step.
-      onboarding_first_photo_url_de: German destination for the First photo step.
-      onboarding_first_photo_url_en: English destination for the First photo step.
-      onboarding_first_photo_url_fr: French destination for the First photo step.
       onboarding_show_on_mobile: Show the onboarding panel on mobile devices.
       onboarding_dismissal_version: Change this value to reset progress and dismissal for every member.
       nonmember_member_groups: Groups whose members should not see the banner. This defaults to the SPC ‘members’ group.

@@ -79,10 +79,83 @@ and overlaps photos with text. On topic rows, only ever add absolutely-positione
 typo for `8`, and category 8 — long assumed to be stock Discourse — is masonry. Anything that
 changes a category's canvas width has to be verified on **8** as well as 6, 7 and 12.
 
+**But category 6 is configured as masonry and then has it cancelled.** That list is about which
+categories the component is *configured* for; it is not the list of pages the JS actually
+positions. `challenge.scss` overrides `> tbody` to `display: grid` with three fixed columns and
+forces every row back to `position: relative; inset: auto`, both `!important`, so Topic List
+Thumbnails' absolute positioning never takes effect there. Verified 2026-07-26 by reading
+`getComputedStyle` off the rendered rows: **6 is `relative` with `top: 0` — a CSS grid. 7 and 12
+are genuinely `absolute` with staggered tops. 10 is `topic-thumbnails-list`.** Those rules landed
+in `55fbddb`, the repo's first commit, so this has always been true.
+
+The practical consequence: **the desync failure mode applies to 7, 8 and 12, not to 6.** Category
+6 looks like the risky one and is the safe one. Do not read a tidy uniform grid there as evidence
+that masonry broke — that grid *is* the design.
+
 The real category set is 6 `monthly-challenge`, 7 `critique-portfolio-reviews`,
 8 `meetups-photowalks`, 10 `support` (displayed "Post Processing"), 5 `announcements-club-news`,
 2 `feedback`, 12 `vorstellungen`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
 name disagree, so match on id, never on slug-looks-like-the-name.
+
+## Category heroes
+
+Categories 6, 7, 8, 10 and 12 all render `.spc-hero` through `lib/spc-hero.js`. Category 6 goes
+through the same function but is **not** in the registry and **not** gated by
+`enable_category_hero` — its hero is part of the route-map, permalink and `route:new-topic` stack
+behind `/submit`, and half-enabling that breaks photo submission. Sharing a renderer is not
+joining the registry.
+
+**Adding a category is four edits, and the fourth is not in this repo.** The registry entry in
+`api-initializers/spc-category-hero.js`, the slug in `$spc-hero-slugs` in `category-hero.scss`,
+a locale block in all three `locales/*.yml` — and then **adding the category to
+`hero_enabled_categories` by hand on the settings page.** An Update preserves the value of every
+setting whose name is unchanged, so raising the default in `settings.yml` only affects a fresh
+install. Miss that step and the category renders with no header at all: the CSS has already
+hidden the native one.
+
+**Which native header is on screen is decided by another component.** Theme component 5 emits
+`body:not(.category-header) .category-title-header { display: none }` and
+`body.category-header .category-heading { display: none }` — a site-wide toggle driven by a
+per-category setting this component does not own. Today 7 and 8 show the banner while 10 and 12
+show the heading. So **always hide both**, as `challenge.scss` already did for 6. Never hide only
+the one you happened to see.
+
+`.category-title-header` is hidden but never removed — the hero is inserted immediately before it
+and needs it as an anchor.
+
+**Suppressing the category background needs `!important`.** Discourse paints
+`category.uploaded_background` full-bleed on `<body>` via a rule it generates into the inline
+`#d-styles` block, and that block is injected **after** the theme stylesheet. An unqualified
+`background-image: none` loses on source order and the photo renders twice, once behind the whole
+page and once in the hero.
+
+**The slug list in `category-hero.scss` is the one place slugs are correct**, because the body
+class carries the slug. Everything else matches on id. It is keyed on the slug rather than on
+`body:has(.spc-hero)` deliberately: the hero arrives on a 200ms observer throttle, so a
+presence-based rule would leave the stock header and the background photo on screen until the
+first render, then collapse them.
+
+**`clearHero(marker)` is scoped, and must stay scoped.** Two initializers render heroes now and
+both run off their own observers in no fixed order. An unscoped clear meant that arriving on
+category 6, the category module saw a category it does not own and deleted the challenge hero
+that had just rendered. `spc-category-hero.js` clears only markers in its registry; the challenge
+owns the marker `"challenge"`, which is not a category id and so cannot collide.
+
+**Rolling the hero back takes two settings, not one.** `enable_category_hero = false` restores the
+native headers, but on 7 and 12 the hero action disappears while `critique_hide_new_topic_button`
+keeps `#create-topic` hidden — leaving both categories with no way to post. Turn
+`critique_hide_new_topic_button` off as well. This is why the `@if` block in `critique-submit.scss`
+survives even though it looks redundant against the hero's own `#create-topic` rule: that rule is
+only emitted while the feature is on.
+
+`critique_banner_background` is declared and unread. R4 keeps the pink banner restorable without a
+commit for one release; deleting the setting, not the rule, is what closes that door.
+
+**`min-height` on a flex/inline-flex button sizes the CONTENT box.** `.spc-button` set
+`min-height: 54px` with no `box-sizing` and rendered 76.8px on every desktop for as long as it
+existed — only the narrow-viewport block set `border-box`, so the geometry was right on mobile
+and wrong everywhere else. Any shared control with a fixed height needs `box-sizing: border-box`
+in the same rule.
 
 **In a `.gjs` strict-mode template, a block param shadows the HTML element of the same name.** A
 param named `option` turns every `<option>` in that block into a component invocation. At risk:

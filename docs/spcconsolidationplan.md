@@ -4,7 +4,11 @@ Execution plan for collapsing the parallel implementations found in the 2026-07-
 Companion: `spc-category-hero-design-spec.md` (the target pattern).
 Repo: `Swiss-Photo-Club/discourse-theme-spc-suite`, branch `main`, component 61.
 
-Status: proposal. Nothing here has been implemented or verified on the live site.
+Status: **complete, 2026-07-26.** Steps 1-5 and 7-8 are on the live site and verified; step 6
+was dropped, keeping the core-palette files on core tokens so a dark scheme stays possible. D10
+is done: both banner recolours are deleted and their settings retained per R4. The category-hero
+work that step 8 called for is described in `spc-category-hero-design-spec.md`, whose status note
+records where execution overrode the spec.
 
 ---
 

@@ -4,7 +4,23 @@ Design-system *extend* spec for community.swissphotoclub.com. Proposes one hero 
 every category page uses, replacing three unrelated header treatments. Companion docs:
 `claude/spc-suite-how-it-works.md`, `claude/discourse-configuration.md`.
 
-Status: proposal. Nothing here has been implemented or verified on the live site.
+Status: **executed, 2026-07-26.** Categories 6, 7, 8, 10 and 12 render the shared hero on the
+live site. Read §6a before the spec body; then read this note, because execution overrode both
+in three further places.
+
+- **One `--category` variant, not `--submission` / `--events` / `--plain`.** §6a dropped
+  `--events`' meta line as a fetch; `--submission`'s subject chips fall to the same rule. That
+  left all three with identical declarations, and "two actions instead of one" is not a CSS
+  difference.
+- **No `actions[]` in the schema, and no `category_heroes` objects setting.** Four of the five
+  categories derive their destinations from other settings plus the locale, so the field could
+  not express them. The registry is code, in `api-initializers/spc-category-hero.js`; the setting
+  is a plain category list, `hero_enabled_categories`.
+- **No `headline` key.** Every category's headline turned out to be its own name, which Discourse
+  already localises. Writing it out again only creates a string that drifts from the sidebar.
+
+§1's table is also wrong about where a category header comes from: a site-wide component toggles
+between `.category-title-header` and `.list-controls .category-heading`. See CLAUDE.md.
 
 ---
 

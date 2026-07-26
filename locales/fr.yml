@@ -99,7 +99,18 @@ fr:
         title: Partager un lien
         description: Mets un lien vers ton projet s'il est hébergé ailleurs.
         error: Merci de partager un lien vers ton projet.
-    content_placeholder: Un lien vers ton portfolio ou ton projet de livre
+    images_hint: Téléverse les images qui composent ton projet. Tu peux en choisir plusieurs à la fois et les réordonner ensuite – l'ordre est conservé dans ton message.
+    images_add: Choisir des images
+    images_add_more: Ajouter d'autres images
+    images_drop_hint: Fais glisser des images ici, ou clique pour parcourir.
+    images_uploading: Téléversement…
+    image_number: Image %{number}
+    image_note_label: Note sur l'image (optionnel)
+    image_note_placeholder: Ce que les membres devraient savoir sur cette image ?
+    image_move_up: Monter
+    image_move_down: Descendre
+    image_remove: Supprimer l'image
+    link_placeholder: https://
     description_label: Brève description
     description_hint: De quoi s'agit-il ? Le thème, l'idée, le fil conducteur.
     subject_label: Sujet

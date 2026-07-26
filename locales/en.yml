@@ -144,7 +144,18 @@ en:
         title: Share a link
         description: Link to your project if it lives elsewhere.
         error: Please share a link to your project.
-    content_placeholder: A link to your portfolio or book project
+    images_hint: Upload the images that make up your project. You can pick several at once and reorder them afterwards — the order is kept in your post.
+    images_add: Choose images
+    images_add_more: Add more images
+    images_drop_hint: Drag images here, or click to browse.
+    images_uploading: Uploading…
+    image_number: Image %{number}
+    image_note_label: Image note (optional)
+    image_note_placeholder: Anything members should know about this image?
+    image_move_up: Move up
+    image_move_down: Move down
+    image_remove: Remove image
+    link_placeholder: https://
     description_label: Brief description
     description_hint: What is it about? The theme, the idea, the thread running through it.
     subject_label: Subject

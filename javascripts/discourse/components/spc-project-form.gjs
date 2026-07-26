@@ -2,7 +2,6 @@ import { tracked } from "@glimmer/tracking";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
-import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import { i18n } from "discourse-i18n";
 import {
@@ -18,6 +17,7 @@ import {
 } from "../lib/spc-submit-helpers";
 import SpcCardChoice from "./spc-card-choice";
 import SpcFormSection from "./spc-form-section";
+import SpcImageList from "./spc-image-list";
 import SpcSubmitShell from "./spc-submit-shell";
 
 // Submit a project or series for critique — the replacement for the Custom
@@ -50,16 +50,12 @@ function withSelection(choices, current) {
 }
 
 export default class SpcProjectForm extends SpcSubmitBase {
-  // Every image is one entry with a stable key. Keys matter: the uploaders are
-  // rendered from this list, and reusing one for a different image after a
-  // delete would leave the previous preview on screen.
-  @tracked entries = [];
-  @tracked blankKey = "blank-0";
-  #nextKey = 0;
-  #nextBlank = 0;
+  // [{ key, upload, note }], owned here so buildRaw() has one source of truth.
+  // SpcImageList renders and mutates it but never keeps a copy.
+  @tracked projectImages = [];
 
   @tracked submissionType = "images";
-  @tracked contentText = "";
+  @tracked link = "";
 
   @tracked subjects = [];
   @tracked subject = "";
@@ -129,34 +125,42 @@ export default class SpcProjectForm extends SpcSubmitBase {
 
   // ---- images --------------------------------------------------------------
 
-  // One uploader per image, plus a trailing empty one to add the next.
-  get uploadSlots() {
-    return [...this.entries, { key: this.blankKey, upload: null }];
-  }
-
-  get images() {
-    return this.entries.map((entry) => getUploadMarkdown(entry.upload));
-  }
-
   @action
-  slotUploadDone(key, upload) {
-    if (key === this.blankKey) {
-      this.entries = [
-        ...this.entries,
-        { key: `img-${this.#nextKey++}`, upload },
-      ];
-      this.blankKey = `blank-${++this.#nextBlank}`;
-    } else {
-      this.entries = this.entries.map((entry) =>
-        entry.key === key ? { ...entry, upload } : entry
-      );
-    }
+  updateImages(images) {
+    this.projectImages = images;
     this.error = null;
   }
 
-  @action
-  slotUploadDeleted(key) {
-    this.entries = this.entries.filter((entry) => entry.key !== key);
+  // An image, then its note if it has one. The wizard's content field was free
+  // markdown, so notes between images are ordinary content and change nothing
+  // about the post's structure.
+  get imageMarkdown() {
+    return this.projectImages
+      .map(({ upload, note }) => {
+        const markdown = getUploadMarkdown(upload);
+        return note?.trim() ? `${markdown}\n\n${note.trim()}` : markdown;
+      })
+      .join("\n\n");
+  }
+
+  // Labels are resolved here rather than in the list component, so that the
+  // component carries no strings of its own and the introduction form can reuse
+  // it with its own.
+  get imageListLabels() {
+    return {
+      itemLabelKey: themePrefix("project_form.image_number"),
+      noteLabel: i18n(themePrefix("project_form.image_note_label")),
+      notePlaceholder: i18n(
+        themePrefix("project_form.image_note_placeholder")
+      ),
+      addLabel: themePrefix("project_form.images_add"),
+      addMoreLabel: themePrefix("project_form.images_add_more"),
+      dropHint: i18n(themePrefix("project_form.images_drop_hint")),
+      uploadingLabel: i18n(themePrefix("project_form.images_uploading")),
+      moveUpLabel: themePrefix("project_form.image_move_up"),
+      moveDownLabel: themePrefix("project_form.image_move_down"),
+      removeLabel: themePrefix("project_form.image_remove"),
+    };
   }
 
   // ---- the rest ------------------------------------------------------------
@@ -192,13 +196,13 @@ export default class SpcProjectForm extends SpcSubmitBase {
   get dirtyFields() {
     return [
       this.title,
-      this.contentText,
+      this.link,
       this.description,
       this.direction,
       this.working,
       this.help,
       this.details,
-      this.entries.length,
+      this.projectImages.length,
     ];
   }
 
@@ -215,9 +219,9 @@ export default class SpcProjectForm extends SpcSubmitBase {
   // back and forth to compare does not throw away an upload.
   get content() {
     if (this.sharingLink) {
-      return this.contentText.trim();
+      return this.link.trim();
     }
-    return this.images.join("\n\n");
+    return this.imageMarkdown;
   }
 
   buildRaw() {
@@ -327,27 +331,34 @@ export default class SpcProjectForm extends SpcSubmitBase {
             />
 
             {{#if this.uploadingImages}}
-              <div class="spc-submit-page__uploads">
-                {{#each this.uploadSlots key="key" as |slot|}}
-                  <UppyImageUploader
-                    @id="spc-project-upload-{{slot.key}}"
-                    @type="composer"
-                    @imageUrl={{slot.upload.url}}
-                    @onUploadDone={{fn this.slotUploadDone slot.key}}
-                    @onUploadDeleted={{fn this.slotUploadDeleted slot.key}}
-                    class="spc-submit-page__uploader"
-                  />
-                {{/each}}
-              </div>
+              <p class="spc-submit-page__hint">
+                {{i18n (themePrefix "project_form.images_hint")}}
+              </p>
+              <SpcImageList
+                @id="spc-project-images"
+                @images={{this.projectImages}}
+                @onChange={{this.updateImages}}
+                @itemLabelKey={{this.imageListLabels.itemLabelKey}}
+                @noteLabel={{this.imageListLabels.noteLabel}}
+                @notePlaceholder={{this.imageListLabels.notePlaceholder}}
+                @addLabel={{this.imageListLabels.addLabel}}
+                @addMoreLabel={{this.imageListLabels.addMoreLabel}}
+                @dropHint={{this.imageListLabels.dropHint}}
+                @uploadingLabel={{this.imageListLabels.uploadingLabel}}
+                @moveUpLabel={{this.imageListLabels.moveUpLabel}}
+                @moveDownLabel={{this.imageListLabels.moveDownLabel}}
+                @removeLabel={{this.imageListLabels.removeLabel}}
+              />
             {{else}}
-              <textarea
-                id="spc-project-content-text"
-                rows="3"
+              <input
+                id="spc-project-link"
+                type="url"
+                value={{this.link}}
                 placeholder={{i18n
-                  (themePrefix "project_form.content_placeholder")
+                  (themePrefix "project_form.link_placeholder")
                 }}
-                {{on "input" (fn this.updateField "contentText")}}
-              >{{this.contentText}}</textarea>
+                {{on "input" (fn this.updateField "link")}}
+              />
             {{/if}}
           </div>
 

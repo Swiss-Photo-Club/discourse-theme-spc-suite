@@ -103,7 +103,18 @@ de:
         title: Link teilen
         description: Verlinke dein Projekt, wenn es anderswo liegt.
         error: Bitte gib einen Link zu deinem Projekt an.
-    content_placeholder: Link zu deinem Portfolio oder Buchprojekt
+    images_hint: Lade die Bilder hoch, die dein Projekt ausmachen. Du kannst mehrere auf einmal auswählen und die Reihenfolge danach ändern – sie bleibt im Beitrag erhalten.
+    images_add: Bilder auswählen
+    images_add_more: Weitere Bilder hinzufügen
+    images_drop_hint: Bilder hierher ziehen oder klicken zum Auswählen.
+    images_uploading: Wird hochgeladen …
+    image_number: Bild %{number}
+    image_note_label: Notiz zum Bild (optional)
+    image_note_placeholder: Was sollten die Mitglieder zu diesem Bild wissen?
+    image_move_up: Nach oben
+    image_move_down: Nach unten
+    image_remove: Bild entfernen
+    link_placeholder: https://
     description_label: Kurzbeschreibung
     description_hint: Worum geht es? Thema, Idee oder roter Faden.
     subject_label: Thema

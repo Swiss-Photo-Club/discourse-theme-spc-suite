@@ -816,9 +816,18 @@ body.category-monthly-challenge .topic-thumbnails-masonry .views {
 /* A pinned entry used to span the full width via grid-column. There are no
    grid tracks to span once the component positions rows absolutely, so it is
    a normal-width card now and keeps only its colour treatment below. */
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .topic-list-thumbnail {
-  display: none;
-}
+/* A pinned card keeps its thumbnail. It used to be hidden so a pinned topic
+   read as a plain indigo banner, and that is the last thing in this file that
+   collapsed a box the component had already measured: Topic List Thumbnails
+   sized each pinned row to include its thumbnail, then this rule took the
+   thumbnail away, leaving 184px of nothing above one pinned card and 237px
+   above the other. Measured on the live category — every other card had zero
+   unaccounted height, and restoring this one took both to zero too.
+
+   The rule for this whole partial: under masonry, never `display: none`
+   anything the component measured — not a row, not a thumbnail. Recolour it,
+   move it, cover it; do not collapse it. The indigo treatment on .main-link
+   below is still there and still fine, because colour costs no height. */
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .main-link {
   display: block !important;

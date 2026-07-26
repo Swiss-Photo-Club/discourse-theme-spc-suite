@@ -720,6 +720,14 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail 
    the 5.5rem on the right is the gutter the vote button sits in. */
 body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
   position: relative;
+  /* Room for the vote control, which is absolutely positioned against this
+     box. The number is arithmetic, not taste: .list-vote-count is 56px tall
+     and anchored bottom: 0.9rem, so it needs 70.4px before it starts hanging
+     out of the footer and over the photograph. 76px leaves 6px of clearance.
+     A previous version of this file said 94px and this one briefly said
+     nothing at all, at which point the button overlapped every entry's image
+     by 12px. If the button's height or offset changes, redo the sum. */
+  min-height: 76px;
   padding: 1rem 5.5rem 1rem 1.15rem !important;
   box-sizing: border-box;
 }

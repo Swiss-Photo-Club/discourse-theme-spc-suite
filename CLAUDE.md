@@ -72,7 +72,17 @@ Create your own element, or position absolutely.
 **Masonry is fragile.** Topic List Thumbnails (component 1) measures every `tr.topic-list-item`
 and sets `position: absolute`. Any DOM change altering a row's height desynchronises the layout
 and overlaps photos with text. On topic rows, only ever add absolutely-positioned decoration.
-`masonry_categories = 6|11|7|12`.
+
+**Masonry is 6, 7, 8, 12. Category 10 is list mode. There is no category 11.** Verified
+2026-07-26 by reading `.topic-thumbnails-*` off each rendered category. This note previously said
+`masonry_categories = 6|11|7|12`, which was wrong twice: `11` does not exist and was probably a
+typo for `8`, and category 8 — long assumed to be stock Discourse — is masonry. Anything that
+changes a category's canvas width has to be verified on **8** as well as 6, 7 and 12.
+
+The real category set is 6 `monthly-challenge`, 7 `critique-portfolio-reviews`,
+8 `meetups-photowalks`, 10 `support` (displayed "Post Processing"), 5 `announcements-club-news`,
+2 `feedback`, 12 `vorstellungen`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
+name disagree, so match on id, never on slug-looks-like-the-name.
 
 **In a `.gjs` strict-mode template, a block param shadows the HTML element of the same name.** A
 param named `option` turns every `<option>` in that block into a component invocation. At risk:

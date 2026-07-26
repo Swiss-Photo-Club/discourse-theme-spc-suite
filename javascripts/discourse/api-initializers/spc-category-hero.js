@@ -79,12 +79,13 @@ const CATEGORY_HEROES = {
   // which is what the --with-cover split exists for.
   //
   // Both actions are the ones the floating .spc-critique-submit row used to
-  // carry, with their URLs derived the same way, so critique_image_use_form
-  // still switches the primary between the built-in form and the Custom
-  // Wizard and remains the instant rollback it is documented to be. Their
-  // labels stay on critique_submit.* rather than moving into hero.*: they are
-  // the same two buttons in a new place, and re-keying them would have thrown
-  // away translations that already exist.
+  // carry, with their URLs derived the same way. Each now has its own switch
+  // between the built-in form and the Custom Wizard it replaced, and each is an
+  // instant rollback: flip the setting and the button points back at the wizard
+  // on the next render, with no commit and no theme update. Their labels stay on
+  // critique_submit.* rather than moving into hero.*: they are the same two
+  // buttons in a new place, and re-keying them would have thrown away
+  // translations that already exist.
   7: {
     key: "critique",
     variant: "category",
@@ -98,7 +99,9 @@ const CATEGORY_HEROES = {
       },
       {
         label: i18n(themePrefix("critique_submit.project_button")),
-        href: settings.critique_project_wizard_url + localeSuffix(),
+        href: settings.critique_project_use_form
+          ? "/submit/project"
+          : settings.critique_project_wizard_url + localeSuffix(),
         style: "secondary",
       },
     ],

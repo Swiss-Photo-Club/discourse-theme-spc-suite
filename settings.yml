@@ -204,10 +204,15 @@ critique_image_wizard_url:
   default: "/w/bild-zur-kritik-einreichen"
   description: "Wizard URL for submitting a single image for critique, used only when critique_image_use_form is off. The locale suffix (-en / -fr) is appended automatically."
 
+critique_project_use_form:
+  type: bool
+  default: true
+  description: "Send 'Submit a project' to the built-in /submit/project form. Turn this off to fall back to the Custom Wizard at critique_project_wizard_url - a rollback that takes effect immediately, without a theme update."
+
 critique_project_wizard_url:
   type: string
   default: "/w/projekt-zur-kritik-einreichen"
-  description: "Wizard URL for submitting a project or series for critique. The locale suffix is appended automatically."
+  description: "Wizard URL for submitting a project or series for critique, used only when critique_project_use_form is off. The locale suffix is appended automatically."
 
 critique_intro_category_slug:
   type: string

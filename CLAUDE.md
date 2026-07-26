@@ -335,6 +335,12 @@ rather than a permission error.
 
 ## Rollback
 
-`critique_image_use_form` off is the instant rollback for the critique form — no commit, no
-Update. The seven disabled components (3, 12, 19, 20, 23, 36, 37) are the rollback path for the
+`critique_image_use_form` and `critique_project_use_form` off are the instant rollbacks for the
+two critique forms — no commit, no Update; the category 7 hero's buttons point back at the
+wizards on the next render. **That is only true while those wizards still exist**, so
+`bild-zur-kritik-einreichen` and `projekt-zur-kritik-einreichen` (with their `-en` / `-fr`
+siblings) stay in the Custom Wizard admin. Deleting a wizard also deletes its saved submissions,
+and it is the only thing either setting can fall back to.
+
+The seven disabled components (3, 12, 19, 20, 23, 36, 37) are the rollback path for the
 merged-in features; their settings are intact in the database. Do not delete them yet.

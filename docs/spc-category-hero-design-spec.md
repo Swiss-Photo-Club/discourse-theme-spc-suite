@@ -295,6 +295,61 @@ to silence it breaks the initializer.
 
 ---
 
+## 6a. Resolutions (2026-07-26) — these override §1–§6 where they disagree
+
+Verified against the live site, not against the two project docs.
+
+**Category facts.** There is no category 11; it was a typo for 8. Masonry is **6, 7, 8, 12**;
+category 10 is list mode. §1's table calling 8 "stock Discourse" is wrong — 8 is masonry, so it
+needs the same verification pass as 6, 7 and 12 after any width change. Category 10's slug is
+`support` but it displays as "Post Processing", so match on id, never slug.
+
+**Covers come from the category, not a setting.** `category.uploaded_background.url` is present
+in `/site.json`, which Discourse preloads — so covers cost **zero network requests**. Note the
+field is `uploaded_background` (an object), not `uploaded_background_url`. Categories 8 and 10
+have backgrounds; 6, 7 and 12 do not. **Delete `cover` from the `category_heroes` schema in §4**
+and drop §5's "four more files that only exist in git" risk with it. `uploaded_background_dark`
+exists and is null everywhere — the hook for the dark scheme.
+
+**Discourse already paints this field, and the hero must suppress it.** "Category background
+image" in category settings is the correct field — but Discourse renders it full-bleed as
+`background-image` on `<body>`, via a generated rule keyed on the slug (`body.category-support`).
+A hero using the same image without suppressing that would show the photo twice, once behind the
+whole page and once in the hero. Note the body class uses the **slug**, so category 10's is
+`category-support`, not `category-post-processing`.
+
+*Caveat, and it is not the hero's fault:* Discourse serves the **original** upload, with no
+optimized variant. Category 8's background is 4032x3024 at **3.0 MB**, category 10's is 1790x1162
+at 1.1 MB, and both are already being fetched on every visit to those categories today. Resize
+before step 8 ships, or the hero inherits a 3 MB blocking image on a page members hit constantly.
+
+**The `--events` variant is dropped, collapsing into `--plain`.** Its meta line needed a date
+source. The Calendar plugin is installed (`/discourse-post-event/events.json` → 200) but returns
+no events, and reading it would mean a network request — the exact pattern behind the 429 storm.
+§2's own guidance applies: drop the slot rather than fetch for it. Category 8's primary action
+points at `/upcoming-events`, where that information already lives.
+
+**Canvas width: change nothing.** §5 frames this as "widen all or widen none" because unequal
+hero widths undercut harmonisation. Widening none wins. Masonry desync is the component's
+highest-severity failure mode, the difference is invisible to any user (nobody sees two category
+pages at once), and a hero matching its own page's content width reads as intentional while one
+overhanging its list reads as broken. Revisit as its own all-or-nothing commit if it grates.
+
+**Button geometry: `--h-hero-action: 54px`, `--ls-button: 0.08em`, consumed by `.spc-button`.**
+Every category hero identical, as §2 requires. The invitation banner keeps 46px / `0.04em` as
+documented deltas — it is not a category hero, and forcing it to 54px would regress a verified
+surface to fix an inconsistency nobody can perceive. D2's 42px `--md` is dropped: no consumer,
+and onboarding is out of scope. Do not ship unused API.
+
+**Already done, before step 8 starts.** §4's file list is half complete: `scss/hero.scss` exists
+and imports immediately after `branding`; `challenge.scss` is reduced to its deltas;
+`non-member-banner.scss` is reduced to the `--invitation` variant; the `--spc-challenge-*` alias
+block is retired. §6's decisions 2, 3 and 5 are therefore closed — no category 11, the banner is
+already folded in (commit `747656d`), and `min-height` is already a variant property rather than
+a shared value (core sets none; `--challenge` 360px, `--invitation` 380px).
+
+Still open: what `min-height` a coverless `--plain` hero should use.
+
 ## 6. Open decisions
 
 1. Do categories 8, 10 and 11 get covers, or is `--plain` (flat indigo, no photo) the intended

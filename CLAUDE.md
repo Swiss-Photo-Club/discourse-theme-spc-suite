@@ -261,6 +261,26 @@ showing that no partial between the old and new import positions mentions any mo
 None of this catches the basename-import trap, and none of it covers JS. **A class rename must be
 verified by clicking, not by looking** — see the rename trap above.
 
+## Parse-checking the JS without pushing
+
+A syntax error in one `.gjs` takes the whole theme's JS down, and nothing in the admin UI says
+so. There is no build here, but the two libraries Discourse's own pipeline uses will parse the
+tree from a scratchpad, with nothing added to the repo:
+
+```bash
+npm install --no-save content-tag @glimmer/syntax @babel/parser
+```
+
+Walk `javascripts/`, run each `.gjs` through `content-tag` (this is what catches a malformed
+`<template>`), parse each extracted template with `@glimmer/syntax` so template errors are
+reported as template errors, and parse the emitted JS with `@babel/parser` — with the
+`decorators` plugin, because `@tracked` / `@action` / `@service` appear in plain `.js` files here
+too and node's own parser rejects them.
+
+**This proves the files parse and nothing else.** It cannot see a wrong selector, a getter the
+subclass forgot to define or an action wired to the wrong handler, all of which render a page
+that looks perfect and does nothing. Clicking is still the verification.
+
 ## Assets, locales, colours
 
 `assets/` carries the five branding files (Open Sans ×4 + `JWIM4133.jpg`), declared in

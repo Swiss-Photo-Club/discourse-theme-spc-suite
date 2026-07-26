@@ -1,15 +1,9 @@
-import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
-import { service } from "@ember/service";
-import { modifier } from "ember-modifier";
-import DButton from "discourse/components/d-button";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
-import { extractError } from "discourse/lib/ajax-error";
 import { getUploadMarkdown } from "discourse/lib/uploads";
-import DiscourseURL from "discourse/lib/url";
 import I18n, { i18n } from "discourse-i18n";
 import {
   buildCritiqueRaw,
@@ -17,7 +11,13 @@ import {
   critiqueLocale,
   defaultCritiqueValues,
 } from "../lib/spc-critique";
-import { currentMonthYM, resolveRoundTag } from "../lib/spc-submit-helpers";
+import SpcSubmitBase from "../lib/spc-submit-base";
+import {
+  categoryUrlFor,
+  currentMonthYM,
+  resolveRoundTag,
+} from "../lib/spc-submit-helpers";
+import SpcSubmitShell from "./spc-submit-shell";
 
 function withSelection(choices, current) {
   return choices.map((choice) => ({
@@ -37,19 +37,14 @@ function withSelection(choices, current) {
 //
 // The two share everything structural — login gate, uploader, title, cancel
 // confirmation, error handling — and differ only in the extra fields and in
-// what buildRaw() emits. The critique mode replaces the Custom Wizard
-// "bild-zur-kritik-einreichen"; see lib/spc-critique.js for why its output has
-// to stay byte-compatible with that wizard.
+// what buildRaw() emits. That shared part is no longer here: the chrome is
+// SpcSubmitShell and the pipeline is SpcSubmitBase, so a third and fourth form
+// can be written without copying either. The critique mode replaces the Custom
+// Wizard "bild-zur-kritik-einreichen"; see lib/spc-critique.js for why its
+// output has to stay byte-compatible with that wizard.
 
-export default class SpcSubmitForm extends Component {
-  @service currentUser;
-  @service dialog;
-
-  @tracked title = "";
+export default class SpcSubmitForm extends SpcSubmitBase {
   @tracked description = "";
-  @tracked upload = null;
-  @tracked submitting = false;
-  @tracked error = null;
   @tracked resolvedTag = null;
 
   // critique mode only
@@ -62,6 +57,18 @@ export default class SpcSubmitForm extends Component {
   @tracked feedback = "";
   @tracked technical = "";
 
+  // Both loads used to hang off render modifiers on the page's outer element.
+  // That element belongs to the shell now, and neither load has ever needed the
+  // DOM: one asks Discourse for a tag list, the other for the round tag.
+  constructor() {
+    super(...arguments);
+    if (this.isCritique) {
+      this.loadSubjects();
+    } else {
+      resolveRoundTag(settings).then((tag) => (this.resolvedTag = tag));
+    }
+  }
+
   get isCritique() {
     return this.args.type === "critique";
   }
@@ -70,23 +77,13 @@ export default class SpcSubmitForm extends Component {
     return parseInt(settings.critique_category_id, 10);
   }
 
-  loadRoundTag = modifier(() => {
-    if (this.isCritique) {
-      return;
-    }
-    resolveRoundTag(settings).then((tag) => (this.resolvedTag = tag));
-  });
-
   // The subject list is fetched rather than hard-coded on purpose. The critique
   // category requires at least one tag from the "Critique Subjects" tag group,
   // and /posts.json enforces that server-side. Asking Discourse which tags it
   // will accept means this form can never offer one it would then reject — if
   // a subject is added to or removed from the tag group in admin, the dropdown
   // follows without a code change.
-  loadSubjects = modifier(() => {
-    if (!this.isCritique) {
-      return;
-    }
+  loadSubjects() {
     ajax("/tags/filter/search.json", {
       data: {
         q: "",
@@ -100,23 +97,33 @@ export default class SpcSubmitForm extends Component {
           .filter(Boolean);
       })
       .catch(() => (this.subjects = []));
-  });
+  }
+
+  get categoryId() {
+    return this.isCritique
+      ? this.critiqueCategoryId
+      : parseInt(settings.challenge_category_id, 10);
+  }
 
   get categoryUrl() {
-    if (this.isCritique) {
-      const slug = (settings.critique_category_slug || "").trim();
-      const id = this.critiqueCategoryId;
-      return slug ? `/c/${slug}/${id}` : `/c/${id}`;
-    }
-    const slug = (settings.challenge_category_slug || "").trim();
-    const id = parseInt(settings.challenge_category_id, 10);
-    return slug ? `/c/${slug}/${id}` : `/c/${id}`;
+    return this.isCritique
+      ? categoryUrlFor(settings.critique_category_slug, this.critiqueCategoryId)
+      : categoryUrlFor(
+          settings.challenge_category_slug,
+          parseInt(settings.challenge_category_id, 10)
+        );
   }
 
   get heading() {
     return this.isCritique
       ? i18n(themePrefix("critique_form.heading"))
       : i18n(themePrefix("form.heading"));
+  }
+
+  get submitLabel() {
+    return this.isCritique
+      ? i18n(themePrefix("critique_form.submit"))
+      : i18n(themePrefix("form.submit"));
   }
 
   get roundLabel() {
@@ -129,19 +136,17 @@ export default class SpcSubmitForm extends Component {
     return currentMonthYM();
   }
 
-  get imageUrl() {
-    return this.upload?.url;
-  }
-
-  get dirty() {
-    return (
-      this.title ||
-      this.description ||
-      this.upload ||
-      this.about ||
-      this.feedback ||
-      this.technical
-    );
+  // The dropdowns are deliberately absent: they all start on a default, so a
+  // form where only a dropdown has moved is not work worth warning about.
+  get dirtyFields() {
+    return [
+      this.title,
+      this.description,
+      this.upload,
+      this.about,
+      this.feedback,
+      this.technical,
+    ];
   }
 
   get subjectOptions() {
@@ -170,11 +175,6 @@ export default class SpcSubmitForm extends Component {
 
   get examplesOptions() {
     return withSelection(critiqueChoices("examples"), this.examples);
-  }
-
-  @action
-  updateTitle(event) {
-    this.title = event.target.value;
   }
 
   @action
@@ -217,32 +217,13 @@ export default class SpcSubmitForm extends Component {
     this.technical = event.target.value;
   }
 
-  @action
-  uploadDone(upload) {
-    this.upload = upload;
-    this.error = null;
-  }
-
-  @action
-  uploadDeleted() {
-    this.upload = null;
-  }
-
-  @action
-  goToLogin() {
-    DiscourseURL.routeTo("/login");
-  }
-
-  @action
-  cancel() {
-    if (this.dirty) {
-      this.dialog.yesNoConfirm({
-        message: i18n(themePrefix("form.discard_confirm")),
-        didConfirm: () => DiscourseURL.routeTo(this.categoryUrl),
-      });
-    } else {
-      DiscourseURL.routeTo(this.categoryUrl);
+  async resolveTags() {
+    if (this.isCritique) {
+      return [this.subject];
     }
+    // The constructor's lookup normally has an answer by now; if it does not,
+    // ask again rather than posting an untagged entry into the round.
+    return [this.resolvedTag || (await resolveRoundTag(settings))];
   }
 
   buildRaw() {
@@ -267,8 +248,9 @@ export default class SpcSubmitForm extends Component {
   }
 
   validate() {
-    if (!this.title?.trim()) {
-      return i18n(themePrefix("form.error_no_title"));
+    const problem = super.validate();
+    if (problem) {
+      return problem;
     }
     if (!this.upload) {
       return i18n(themePrefix("form.error_no_photo"));
@@ -284,273 +266,196 @@ export default class SpcSubmitForm extends Component {
     return null;
   }
 
-  @action
-  async submit() {
-    const problem = this.validate();
-    if (problem) {
-      this.error = problem;
-      return;
-    }
-
-    this.error = null;
-    this.submitting = true;
-
-    const data = {
-      title: this.title.trim(),
-      raw: this.buildRaw(),
-      category: this.isCritique
-        ? this.critiqueCategoryId
-        : parseInt(settings.challenge_category_id, 10),
-      tags: [this.isCritique ? this.subject : this.resolvedTag],
-    };
-
-    if (!this.isCritique && !data.tags[0]) {
-      data.tags = [await resolveRoundTag(settings)];
-    }
-
-    try {
-      const post = await ajax("/posts.json", { type: "POST", data });
-      DiscourseURL.routeTo(`/t/${post.topic_slug}/${post.topic_id}`);
-    } catch (e) {
-      this.error = extractError(e);
-      this.submitting = false;
-    }
-  }
-
   <template>
-    <div
-      class="spc-submit-page"
-      {{this.loadRoundTag}}
-      {{this.loadSubjects}}
+    <SpcSubmitShell
+      @heading={{this.heading}}
+      @submitLabel={{this.submitLabel}}
+      @submitting={{this.submitting}}
+      @error={{this.error}}
+      @onSubmit={{this.submit}}
+      @onCancel={{this.cancel}}
     >
-      <div class="spc-submit-page__inner">
-        <div class="spc-submit-page__header">
-          <h1>{{this.heading}}</h1>
-          {{#unless this.isCritique}}
-            <span class="spc-submit-page__round">
-              {{i18n (themePrefix "form.round_label")}}:
-              <span class="spc-submit-page__round-tag">{{this.roundLabel}}</span>
-            </span>
-          {{/unless}}
-          <DButton
-            @icon="xmark"
-            @action={{this.cancel}}
-            class="btn-flat spc-submit-page__close"
+      <:meta>
+        {{#unless this.isCritique}}
+          <span class="spc-submit-page__round">
+            {{i18n (themePrefix "form.round_label")}}:
+            <span class="spc-submit-page__round-tag">{{this.roundLabel}}</span>
+          </span>
+        {{/unless}}
+      </:meta>
+
+      <:fields>
+        {{#if this.isCritique}}
+          <div class="spc-submit-page__intro">
+            <h2>{{i18n (themePrefix "critique_form.intro_title")}}</h2>
+            <p>{{i18n (themePrefix "critique_form.intro_exchange")}}</p>
+            <p>{{i18n (themePrefix "critique_form.intro_limit")}}</p>
+          </div>
+        {{/if}}
+
+        <div class="spc-submit-page__field">
+          <label for="spc-submit-title">
+            {{#if this.isCritique}}
+              {{i18n (themePrefix "critique_form.title_label")}}
+            {{else}}
+              {{i18n (themePrefix "form.title_label")}}
+            {{/if}}
+          </label>
+          <input
+            id="spc-submit-title"
+            type="text"
+            maxlength="255"
+            value={{this.title}}
+            placeholder={{i18n (themePrefix "form.title_placeholder")}}
+            {{on "input" this.updateTitle}}
           />
         </div>
 
-        {{#if this.currentUser}}
-          {{#if this.isCritique}}
-            <div class="spc-submit-page__intro">
-              <h2>{{i18n (themePrefix "critique_form.intro_title")}}</h2>
-              <p>{{i18n (themePrefix "critique_form.intro_exchange")}}</p>
-              <p>{{i18n (themePrefix "critique_form.intro_limit")}}</p>
-            </div>
-          {{/if}}
+        <div class="spc-submit-page__field">
+          <label>
+            {{#if this.isCritique}}
+              {{i18n (themePrefix "critique_form.photo_label")}}
+            {{else}}
+              {{i18n (themePrefix "form.photo_label")}}
+            {{/if}}
+          </label>
+          <p class="spc-submit-page__hint">
+            {{#if this.isCritique}}
+              {{i18n (themePrefix "critique_form.photo_hint")}}
+            {{else}}
+              {{i18n (themePrefix "form.photo_hint")}}
+            {{/if}}
+          </p>
+          <UppyImageUploader
+            @id="spc-photo-upload"
+            @type="composer"
+            @imageUrl={{this.imageUrl}}
+            @onUploadDone={{this.uploadDone}}
+            @onUploadDeleted={{this.uploadDeleted}}
+            class="spc-submit-page__uploader"
+          />
+        </div>
 
+        {{#if this.isCritique}}
           <div class="spc-submit-page__field">
-            <label for="spc-submit-title">
-              {{#if this.isCritique}}
-                {{i18n (themePrefix "critique_form.title_label")}}
-              {{else}}
-                {{i18n (themePrefix "form.title_label")}}
-              {{/if}}
+            <label for="spc-critique-subject">
+              {{i18n (themePrefix "critique_form.subject_label")}}
             </label>
-            <input
-              id="spc-submit-title"
-              type="text"
-              maxlength="255"
-              value={{this.title}}
-              placeholder={{i18n (themePrefix "form.title_placeholder")}}
-              {{on "input" this.updateTitle}}
-            />
-          </div>
-
-          <div class="spc-submit-page__field">
-            <label>
-              {{#if this.isCritique}}
-                {{i18n (themePrefix "critique_form.photo_label")}}
-              {{else}}
-                {{i18n (themePrefix "form.photo_label")}}
-              {{/if}}
-            </label>
-            <p class="spc-submit-page__hint">
-              {{#if this.isCritique}}
-                {{i18n (themePrefix "critique_form.photo_hint")}}
-              {{else}}
-                {{i18n (themePrefix "form.photo_hint")}}
-              {{/if}}
-            </p>
-            <UppyImageUploader
-              @id="spc-photo-upload"
-              @type="composer"
-              @imageUrl={{this.imageUrl}}
-              @onUploadDone={{this.uploadDone}}
-              @onUploadDeleted={{this.uploadDeleted}}
-              class="spc-submit-page__uploader"
-            />
-          </div>
-
-          {{#if this.isCritique}}
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-subject">
-                {{i18n (themePrefix "critique_form.subject_label")}}
-              </label>
-              <select id="spc-critique-subject" {{on "change" this.updateSubject}}>
-                <option value="" selected={{this.noSubject}}>
-                  {{i18n (themePrefix "critique_form.subject_placeholder")}}
+            <select id="spc-critique-subject" {{on "change" this.updateSubject}}>
+              <option value="" selected={{this.noSubject}}>
+                {{i18n (themePrefix "critique_form.subject_placeholder")}}
+              </option>
+              {{! The block param must not be called `option`. These are
+                  strict-mode templates, so a tag that matches an in-scope
+                  variable is compiled as a component invocation rather than
+                  an HTML element - `<option>` inside `as |option|` resolved
+                  to a plain object, Glimmer read `.manager` off a null
+                  definition and the whole render threw. On a direct load
+                  that killed the root render, and Ember re-appended the
+                  top-level outlet, which is why the entire app shell used to
+                  appear three times over on the critique form. }}
+              {{#each this.subjectOptions as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
                 </option>
-                {{! The block param must not be called `option`. These are
-                    strict-mode templates, so a tag that matches an in-scope
-                    variable is compiled as a component invocation rather than
-                    an HTML element - `<option>` inside `as |option|` resolved
-                    to a plain object, Glimmer read `.manager` off a null
-                    definition and the whole render threw. On a direct load
-                    that killed the root render, and Ember re-appended the
-                    top-level outlet, which is why the entire app shell used to
-                    appear three times over on the critique form. }}
-                {{#each this.subjectOptions as |choice|}}
-                  <option value={{choice.value}} selected={{choice.selected}}>
-                    {{choice.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </div>
+              {{/each}}
+            </select>
+          </div>
 
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-style">
-                {{i18n (themePrefix "critique_form.style_label")}}
-              </label>
-              <select id="spc-critique-style" {{on "change" this.updateStyle}}>
-                {{#each this.styleOptions as |choice|}}
-                  <option value={{choice.value}} selected={{choice.selected}}>
-                    {{choice.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </div>
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-style">
+              {{i18n (themePrefix "critique_form.style_label")}}
+            </label>
+            <select id="spc-critique-style" {{on "change" this.updateStyle}}>
+              {{#each this.styleOptions as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
 
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-focus">
-                {{i18n (themePrefix "critique_form.focus_label")}}
-              </label>
-              <select id="spc-critique-focus" {{on "change" this.updateFocus}}>
-                {{#each this.focusOptions as |choice|}}
-                  <option value={{choice.value}} selected={{choice.selected}}>
-                    {{choice.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </div>
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-focus">
+              {{i18n (themePrefix "critique_form.focus_label")}}
+            </label>
+            <select id="spc-critique-focus" {{on "change" this.updateFocus}}>
+              {{#each this.focusOptions as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
 
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-examples">
-                {{i18n (themePrefix "critique_form.examples_label")}}
-              </label>
-              <select
-                id="spc-critique-examples"
-                {{on "change" this.updateExamples}}
-              >
-                {{#each this.examplesOptions as |choice|}}
-                  <option value={{choice.value}} selected={{choice.selected}}>
-                    {{choice.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </div>
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-examples">
+              {{i18n (themePrefix "critique_form.examples_label")}}
+            </label>
+            <select
+              id="spc-critique-examples"
+              {{on "change" this.updateExamples}}
+            >
+              {{#each this.examplesOptions as |choice|}}
+                <option value={{choice.value}} selected={{choice.selected}}>
+                  {{choice.label}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
 
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-about">
-                {{i18n (themePrefix "critique_form.about_label")}}
-              </label>
-              <textarea
-                id="spc-critique-about"
-                rows="4"
-                {{on "input" this.updateAbout}}
-              >{{this.about}}</textarea>
-            </div>
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-about">
+              {{i18n (themePrefix "critique_form.about_label")}}
+            </label>
+            <textarea
+              id="spc-critique-about"
+              rows="4"
+              {{on "input" this.updateAbout}}
+            >{{this.about}}</textarea>
+          </div>
 
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-feedback">
-                {{i18n (themePrefix "critique_form.feedback_label")}}
-              </label>
-              <textarea
-                id="spc-critique-feedback"
-                rows="5"
-                placeholder={{i18n
-                  (themePrefix "critique_form.feedback_placeholder")
-                }}
-                {{on "input" this.updateFeedback}}
-              >{{this.feedback}}</textarea>
-            </div>
-
-            <div class="spc-submit-page__field">
-              <label for="spc-critique-technical">
-                {{i18n (themePrefix "critique_form.technical_label")}}
-              </label>
-              <textarea
-                id="spc-critique-technical"
-                rows="3"
-                placeholder={{i18n
-                  (themePrefix "critique_form.technical_placeholder")
-                }}
-                {{on "input" this.updateTechnical}}
-              >{{this.technical}}</textarea>
-            </div>
-          {{else}}
-            <div class="spc-submit-page__field">
-              <label for="spc-submit-description">
-                {{i18n (themePrefix "form.description_label")}}
-              </label>
-              <textarea
-                id="spc-submit-description"
-                rows="6"
-                placeholder={{i18n (themePrefix "form.description_placeholder")}}
-                {{on "input" this.updateDescription}}
-              >{{this.description}}</textarea>
-            </div>
-          {{/if}}
-
-          {{#if this.error}}
-            <div class="spc-submit-page__error alert alert-error">
-              {{this.error}}
-            </div>
-          {{/if}}
-
-          <div class="spc-submit-page__actions">
-            <DButton
-              @icon="camera"
-              @translatedLabel={{if
-                this.submitting
-                (i18n (themePrefix "form.submitting"))
-                (if
-                  this.isCritique
-                  (i18n (themePrefix "critique_form.submit"))
-                  (i18n (themePrefix "form.submit"))
-                )
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-feedback">
+              {{i18n (themePrefix "critique_form.feedback_label")}}
+            </label>
+            <textarea
+              id="spc-critique-feedback"
+              rows="5"
+              placeholder={{i18n
+                (themePrefix "critique_form.feedback_placeholder")
               }}
-              @action={{this.submit}}
-              @disabled={{this.submitting}}
-              @isLoading={{this.submitting}}
-              class="btn-primary btn-large spc-submit-page__submit"
-            />
-            <DButton
-              @translatedLabel={{i18n (themePrefix "form.cancel")}}
-              @action={{this.cancel}}
-              class="btn-flat"
-            />
+              {{on "input" this.updateFeedback}}
+            >{{this.feedback}}</textarea>
+          </div>
+
+          <div class="spc-submit-page__field">
+            <label for="spc-critique-technical">
+              {{i18n (themePrefix "critique_form.technical_label")}}
+            </label>
+            <textarea
+              id="spc-critique-technical"
+              rows="3"
+              placeholder={{i18n
+                (themePrefix "critique_form.technical_placeholder")
+              }}
+              {{on "input" this.updateTechnical}}
+            >{{this.technical}}</textarea>
           </div>
         {{else}}
-          <div class="spc-submit-page__login">
-            <p>{{i18n (themePrefix "form.login_required")}}</p>
-            <DButton
-              @translatedLabel={{i18n (themePrefix "form.login_button")}}
-              @action={{this.goToLogin}}
-              class="btn-primary"
-            />
+          <div class="spc-submit-page__field">
+            <label for="spc-submit-description">
+              {{i18n (themePrefix "form.description_label")}}
+            </label>
+            <textarea
+              id="spc-submit-description"
+              rows="6"
+              placeholder={{i18n (themePrefix "form.description_placeholder")}}
+              {{on "input" this.updateDescription}}
+            >{{this.description}}</textarea>
           </div>
         {{/if}}
-      </div>
-    </div>
+      </:fields>
+    </SpcSubmitShell>
   </template>
 }

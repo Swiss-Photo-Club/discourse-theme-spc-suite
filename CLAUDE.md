@@ -318,41 +318,52 @@ and it lives in `critique-workspace`. **Unify shape across the palette boundary,
 
 ## Load-bearing strings
 
-`javascripts/discourse/lib/spc-critique.js` holds every critique heading. They are matched
-**literally** by `lib/spc-parse-request.js` to rebuild a request for the workspace modal, and
-they reproduce the Custom Wizard's Liquid `post_template` byte-for-byte so wizard-made and
-form-made posts stay interchangeable. They live in JS rather than `locales/*.yml` **so a
-translator cannot silently break the parser.** Changing a heading means editing three places:
-`spc-critique.js`, `spc-parse-request.js`, and the three wizard definitions in the admin.
+Three libs hold headings that are matched or reproduced literally, and none of them may be
+edited casually:
 
-**Read a wizard's `post_template` at `/admin/wizards/wizard/<id>.json`**, signed in as admin.
-The id is the slug with underscores — `bild_zur_kritik_einreichen`, and `_en` / `_fr` for the
-siblings. `/w/<slug>.json` is the tempting URL and answers 200, but it carries only steps and
-fields: the `actions[]` array, and with it `post_template`, `category` and `tags`, exists
-**only** on the admin path. Signed out, `/w/<slug>.json` still answers 200 with
-`permitted: false` and `steps: []`, so an unauthenticated check looks like an empty wizard
-rather than a permission error.
+| Lib | Holds | Why it is load-bearing |
+| --- | --- | --- |
+| `lib/spc-critique.js` | image critique headings and metadata keys | `lib/spc-parse-request.js` matches them **literally** to rebuild a request for the workspace modal |
+| `lib/spc-project.js` | project critique headings, blockquote keys, dropdown values | the dropdown values land in the post; the blockquote is what the workspace half-parses |
+| `lib/spc-introduction.js` | introduction headings and the image markdown | nothing parses it, but every existing introduction carries this exact shape |
+
+All three live in JS rather than `locales/*.yml` **so a translator cannot silently break the
+parser.** Only the *descriptions* of choices are translatable.
+
+All three reproduce the Liquid `post_template` of the Custom Wizard they replaced, byte for byte.
+**That property is now historical, not enforced** — the wizards are gone, so nothing can drift out
+of step with them any more, and the reason to keep the strings is that existing posts carry them.
+Changing a critique heading still means `spc-critique.js` **and** `spc-parse-request.js`.
+
+**If a wizard ever has to be read again**, its `post_template` is at
+`/admin/wizards/wizard/<id>.json`, signed in as admin — id is the slug with underscores.
+`/w/<slug>.json` is the tempting URL and answers 200, but carries only steps and fields; the
+`actions[]` array, and with it `post_template`, `category` and `tags`, exists **only** on the
+admin path. Signed out, `/w/<slug>.json` also answers 200, with `permitted: false` and
+`steps: []`, so an unauthenticated check looks like an empty wizard rather than a permission
+error. The scratchpad harnesses that proved each template (six, six and twelve cases) are the
+model for the next one of these.
 
 ## Rollback
 
-**Neither critique form has a setting-level rollback any more.** Both wizards were deleted on
-2026-07-26, and every setting that pointed at them went in the same change:
+**No form has a setting-level rollback.** All three Custom Wizards were replaced and deleted on
+2026-07-26, and every setting that pointed at one went in the same change — nine of them:
 `critique_image_use_form`, `critique_image_wizard_url`, `critique_project_use_form`,
-`critique_project_wizard_url` and `onboarding_first_photo_url_{de,en,fr}`. A switch whose off
-position points at a deleted wizard is worse than no switch, because it looks like a way out and
-lands on a 404. **Rolling either form back is a `git revert` plus an Update.**
+`critique_project_wizard_url`, `critique_intro_wizard_url`,
+`onboarding_first_photo_url_{de,en,fr}` and `onboarding_introduce_url_{de,en,fr}`. A switch whose
+off position points at a deleted wizard is worse than no switch, because it looks like a way out
+and lands on a 404. **Rolling any of the three forms back is a `git revert` plus an Update.**
 
-The general rule: **whenever a wizard is deleted, delete the settings that fall back to it in the
-same change**, and grep for the wizard's URL first — the rollback switch is rarely the only thing
-pointing at one. The image wizard also had the onboarding panel's first-photo step, which was
-three settings deep and easy to miss.
+The general rule, worth keeping even though the wizards are gone: **delete the settings that fall
+back to a thing in the same change as the thing**, and grep for its URL first — the rollback
+switch is rarely the only thing pointing at one. Each image wizard also had an onboarding panel
+step, three locale-suffixed settings deep, which nothing else would have caught.
 
-The introduction wizard `vorstellung-einreichen` (with its `-en` / `-fr` siblings) is the last one
-standing. `critique_intro_wizard_url` and `onboarding_introduce_url_{de,en,fr}` both point at it,
-and `localeSuffix()` in the hero registry exists only for it. The Custom Wizard plugin can be
-uninstalled once it is gone — it is the source of the `discourse.html-safe-helper`,
-`native-array-extensions`, `template-action` and `select-kit-resolved-components` admin notices,
-none of which come from this theme.
+**The Custom Wizard plugin can now be uninstalled.** Nothing in this theme references it. It is
+the source of the `discourse.html-safe-helper`, `native-array-extensions`, `template-action` and
+`select-kit-resolved-components` admin notices, none of which come from this theme — expect all
+four to disappear with it. On a hosted install that is a change to the plugin list at the host,
+not something the admin panel can do.
 
 The seven disabled components (3, 12, 19, 20, 23, 36, 37) are the rollback path for the
 merged-in features; their settings are intact in the database. Do not delete them yet.

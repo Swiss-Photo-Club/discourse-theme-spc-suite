@@ -1,6 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 import Category from "discourse/models/category";
-import I18n, { i18n } from "discourse-i18n";
+import { i18n } from "discourse-i18n";
 import { clearHero, renderHero, uploadUrl } from "../lib/spc-hero";
 
 const RENDER_THROTTLE_MS = 200;
@@ -22,10 +22,12 @@ const RENDER_THROTTLE_MS = 200;
  * sidebar and the breadcrumb.
  *
  * `actions` is a function rather than data because the spec's `actions[].href`
- * schema does not survive contact with these categories: introductions' is a
- * locale-suffixed wizard URL, meetups' is a literal setting, and the critique
- * pair were settings-switched for as long as their wizards existed. A schema
- * field most call sites cannot use is unshipped API.
+ * schema did not survive contact with these categories: two of them build a URL
+ * from the category, and the three critique/introduction destinations were
+ * settings-switched and locale-suffixed for as long as their wizards existed. A
+ * schema field most call sites cannot use is unshipped API. Three of the five
+ * are literal paths today; the function stays because it is what let those
+ * three become literal without touching a schema.
  *
  * Adding a category means three edits that ship together: an entry here, its
  * slug in category-hero.scss, and a locale block in all three locales.
@@ -108,12 +110,10 @@ const CATEGORY_HEROES = {
   // 12 — New Member Introductions. Masonry, no cover: the second coverless
   // hero.
   //
-  // One action, and it is like for like with the button the connector used to
-  // render — critique_intro_wizard_url plus the locale suffix. The spec wanted
-  // onboarding_introduce_url_{de,en,fr} here instead, so that this and the
-  // onboarding panel could not drift apart. They reach the same wizard by
-  // different paths, so swapping them is a behaviour change, and one worth
-  // making deliberately rather than smuggling into a move.
+  // One action, hardwired to the form that replaced the wizard. The spec once
+  // wanted this to read onboarding_introduce_url_{de,en,fr} so that the hero and
+  // the onboarding panel could not drift apart; that problem solved itself when
+  // both became the same literal path and all six locale settings went away.
   //
   // No secondary. The spec suggested linking a guide topic, but the only guide
   // setting this component has is the challenge's, and inventing a destination
@@ -124,28 +124,12 @@ const CATEGORY_HEROES = {
     actions: () => [
       {
         label: i18n(themePrefix("critique_submit.intro_button")),
-        href: settings.critique_intro_wizard_url + localeSuffix(),
+        href: "/submit/introduction",
         style: "primary",
       },
     ],
   },
 };
-
-/**
- * The wizard URLs carry their locale in the path. Read from I18n.currentLocale()
- * rather than document.documentElement.lang so this stays byte-identical to the
- * connector these actions came from.
- */
-function localeSuffix() {
-  const locale = I18n.currentLocale() || "";
-  if (locale.startsWith("en")) {
-    return "-en";
-  }
-  if (locale.startsWith("fr")) {
-    return "-fr";
-  }
-  return "";
-}
 
 function heroText(key, suffix) {
   return i18n(themePrefix(`hero.${key}.${suffix}`));
@@ -246,9 +230,9 @@ export default apiInitializer((api) => {
     renderHero({
       marker: String(id),
       variant: entry.variant,
-      // Destinations are part of the signature because some of them are
-      // derived from settings — critique_intro_wizard_url retargets the
-      // introductions action — and a hero that only kept the category in its
+      // Destinations are part of the signature because some of them are still
+      // derived from settings — meetups' primary is /upcoming-events only until
+      // someone changes it — and a hero that only kept the category in its
       // signature would go on showing the previous destination.
       signature: [
         id,

@@ -5,9 +5,6 @@ fr:
       webinars_url: Destination de la carte Webinaires mensuels en direct.
       onboarding_member_groups: Groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members ».
       onboarding_profile_url: Destination de l’étape Profil.
-      onboarding_introduce_url_de: Destination allemande de l’étape Présentez-vous.
-      onboarding_introduce_url_en: Destination anglaise de l’étape Présentez-vous.
-      onboarding_introduce_url_fr: Destination française de l’étape Présentez-vous.
       onboarding_show_on_mobile: Afficher le panneau d’onboarding sur les appareils mobiles.
       onboarding_dismissal_version: Modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres.
       nonmember_member_groups: Groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut.

@@ -7,7 +7,6 @@ import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
 
 const STEP_IDS = ["profile", "introduce", "first_photo"];
-const SUPPORTED_LANGUAGES = ["de", "en", "fr"];
 
 export default class SpcMemberOnboarding extends Component {
   @service currentUser;
@@ -106,21 +105,6 @@ export default class SpcMemberOnboarding extends Component {
     );
   }
 
-  get language() {
-    const language = document.documentElement.lang
-      ?.toLowerCase()
-      .split("-")[0];
-
-    return SUPPORTED_LANGUAGES.includes(language) ? language : "de";
-  }
-
-  localizedUrl(settingName) {
-    return (
-      settings[`${settingName}_${this.language}`] ||
-      settings[`${settingName}_de`]
-    );
-  }
-
   get steps() {
     const activeStepId = STEP_IDS.find(
       (stepId) => !this.completedSteps.includes(stepId)
@@ -139,17 +123,19 @@ export default class SpcMemberOnboarding extends Component {
         number: 2,
         label: i18n(themePrefix("onboarding.steps.introduce")),
         cta: i18n(themePrefix("onboarding.actions.introduce")),
-        url: this.localizedUrl("onboarding_introduce_url"),
+        url: "/submit/introduction",
       },
       {
         id: "first_photo",
         number: 3,
         label: i18n(themePrefix("onboarding.steps.first_photo")),
         cta: i18n(themePrefix("onboarding.actions.first_photo")),
-        // Was onboarding_first_photo_url_{de,en,fr}, three settings that existed
-        // only because the wizard carried its locale in the path. The form does
-        // not: it reads the interface language itself, so one URL serves all
-        // three and there is nothing left to keep in step.
+        // Both this and the introduce step above were six settings between
+        // them - onboarding_introduce_url_{de,en,fr} and
+        // onboarding_first_photo_url_{de,en,fr} - which existed only because the
+        // wizards carried their locale in the path. The forms do not: they read
+        // the interface language themselves, so one URL serves all three and
+        // there is nothing left to keep in step.
         url: "/submit/critique",
       },
     ].map((step) => {

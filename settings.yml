@@ -204,15 +204,10 @@ critique_intro_category_id:
   default: 12
   description: "ID of the member introductions category. Used by /submit/introduction to post the introduction."
 
-critique_intro_wizard_url:
-  type: string
-  default: "/w/vorstellung-einreichen"
-  description: "Wizard URL for the member introduction. The locale suffix is appended automatically."
-
 critique_hide_new_topic_button:
   type: bool
   default: true
-  description: "Hide the default New Topic button in the critique and introductions categories, so the wizard buttons are the only way in."
+  description: "Hide the default New Topic button in the critique and introductions categories, so the hero's buttons are the only way in."
 
 critique_banner_background:
   type: string
@@ -280,18 +275,6 @@ onboarding_member_groups:
 onboarding_profile_url:
   type: string
   default: "/my/preferences/profile"
-
-onboarding_introduce_url_de:
-  type: string
-  default: "/w/vorstellung-einreichen/steps/step_1"
-
-onboarding_introduce_url_en:
-  type: string
-  default: "/w/vorstellung-einreichen-en/steps/step_1"
-
-onboarding_introduce_url_fr:
-  type: string
-  default: "/w/vorstellung-einreichen-fr/steps/step_1"
 
 onboarding_show_on_mobile:
   type: bool

@@ -102,6 +102,31 @@ const CATEGORY_HEROES = {
       },
     ],
   },
+
+  // 12 — New Member Introductions. Masonry, no cover: the second coverless
+  // hero.
+  //
+  // One action, and it is like for like with the button the connector used to
+  // render — critique_intro_wizard_url plus the locale suffix. The spec wanted
+  // onboarding_introduce_url_{de,en,fr} here instead, so that this and the
+  // onboarding panel could not drift apart. They reach the same wizard by
+  // different paths, so swapping them is a behaviour change, and one worth
+  // making deliberately rather than smuggling into a move.
+  //
+  // No secondary. The spec suggested linking a guide topic, but the only guide
+  // setting this component has is the challenge's, and inventing a destination
+  // is worse than an honest single action.
+  12: {
+    key: "introductions",
+    variant: "category",
+    actions: () => [
+      {
+        label: i18n(themePrefix("critique_submit.intro_button")),
+        href: settings.critique_intro_wizard_url + localeSuffix(),
+        style: "primary",
+      },
+    ],
+  },
 };
 
 /**

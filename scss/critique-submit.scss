@@ -1,29 +1,34 @@
-// The critique category's pink banner recolour is gone: category 7 now renders
-// the shared hero, which hides .category-title-header outright, so the recolour
-// had nothing left to tint. D10.
+// What is left of the old Critique Submit component (20).
 //
-// $critique_banner_background is deliberately still declared in settings.yml
-// even though nothing reads it any more. Deleting the setting as well as the
-// rule is what removes the ability to put the pink banner back without a
-// commit, and R4 keeps that option open for one release.
+// Its two visible parts are both gone. The pink and teal .category-title-header
+// recolours went with D10, because categories 7 and 12 now render the shared
+// hero and that hero hides the node the recolours tinted. The .spc-critique-submit
+// button row went with them: its three buttons are hero actions now, with the
+// same URLs and the same critique_image_use_form switch.
+//
+// The teal block in particular was already invisible before it was deleted. A
+// site-wide component hides .category-title-header on any category whose body
+// does not carry .category-header, and category 12 is one of those - so the
+// rule had been tinting a display:none element for as long as it had existed.
+//
+// $critique_banner_background, $critique_banner_text_color and
+// $critique_intro_banner_background stay declared in settings.yml, now unread.
+// R4 keeps the pink and teal banners restorable for one release without a
+// commit, and it is deleting the settings rather than the rules that closes
+// that door.
+//
+// The file keeps its name. Discourse keys extra_scss by BASENAME, so renaming
+// a partial means editing common.scss in the same breath and risking the
+// import trap that serves the whole site 300 bytes of CSS comment. Not worth
+// it for a tidier filename.
 
-// Introductions banner in the teal accent
-body.category-#{$critique_intro_category_slug} {
-  .category-title-header,
-  .category-banner {
-    background: #{$critique_intro_banner_background} !important;
-
-    .category-title,
-    h1,
-    .category-title-description,
-    .category-title-description p,
-    .cooked {
-      color: #{$critique_banner_text_color} !important;
-    }
-  }
-}
-
-// Hide the default New Topic button in the managed categories
+// The one rule that survives, and it is not redundant with the hero's own
+// #create-topic rule even though it looks it. category-hero.scss only emits
+// that rule while enable_category_hero is on; this one is what still governs
+// categories 7 and 12 after the feature is rolled back. Note the consequence:
+// turning the hero off leaves both categories with no posting route at all
+// until critique_hide_new_topic_button is turned off too, because the hero
+// action disappears and this rule keeps the native button hidden.
 @if $critique_hide_new_topic_button {
   body.category-#{$critique_category_slug},
   body.category-#{$critique_intro_category_slug} {
@@ -32,12 +37,4 @@ body.category-#{$critique_intro_category_slug} {
       display: none;
     }
   }
-}
-
-// Submit buttons
-.spc-critique-submit {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5em;
-  margin: 0 0 0.75em 0;
 }

@@ -26,11 +26,6 @@ enable_critique_workspace:
   default: true
   description: "Critique Workspace: side-by-side critique modal on first posts in the critique categories."
 
-enable_critique_submit:
-  type: bool
-  default: true
-  description: "Critique Submit: wizard buttons above the topic list in the critique and introductions categories."
-
 enable_leaderboard:
   type: bool
   default: true
@@ -251,7 +246,7 @@ critique_intro_banner_background:
 hero_enabled_categories:
   type: list
   list_type: category
-  default: "10|8|7"
+  default: "10|8|7|12"
   description: "Categories that render the shared hero. A category only renders one if the theme also has a registry entry and a locale block for it, so adding an arbitrary category here does nothing. Removing one stops its hero rendering but does NOT restore its native header, which is hidden in CSS keyed on the slug - use enable_category_hero to roll the feature back."
 
 # -----------------------------------------------------------------------------

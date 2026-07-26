@@ -394,13 +394,11 @@ body.navigation-topics .spc-monthly-card__content {
   grid-area: auto !important;
 }
 
-body.navigation-topics .spc-monthly-card__eyebrow {
-  color: rgba(255, 255, 255, 0.82);
-  font-size: var(--fs-detail);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
+/* The monthly card's eyebrow used to be restated here at 0.08em tracking,
+   12px, weight 700 and white-82%. Deleted per D3: it was a near-copy of the
+   shared eyebrow in hero.scss, and one eyebrow with three tracking values was
+   the duplication this consolidation exists to remove. The card now takes the
+   shared 0.12em / 0.75rem / weight 800 / white-74% treatment. */
 
 body.navigation-topics .spc-monthly-card__title,
 body.navigation-topics

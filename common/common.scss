@@ -17,6 +17,11 @@
 
 // --- merged-in components, in their original component-id order --------------
 @import "branding";
+
+// Shared primitives, extracted from challenge.scss. Sits here so every feature
+// partial below can override it just by importing later.
+@import "hero";
+
 @import "critique-workspace";
 @import "critique-submit";
 @import "leaderboard";

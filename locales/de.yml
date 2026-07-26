@@ -196,3 +196,9 @@ de:
       headline: Bildbearbeitung
       actions:
         ask: Thema erstellen
+    meetups:
+      eyebrow: Gemeinsam fotografieren
+      headline: Meetups & Photowalks
+      actions:
+        upcoming: Kommende Events
+        propose: Meetup vorschlagen

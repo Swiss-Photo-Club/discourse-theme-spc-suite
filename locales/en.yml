@@ -237,3 +237,9 @@ en:
       headline: Post Processing
       actions:
         ask: Start a topic
+    meetups:
+      eyebrow: Meet in person
+      headline: Meetups & Photowalks
+      actions:
+        upcoming: See upcoming events
+        propose: Propose a meetup

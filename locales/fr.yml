@@ -192,3 +192,9 @@ fr:
       headline: Post-traitement
       actions:
         ask: Créer un sujet
+    meetups:
+      eyebrow: Se retrouver
+      headline: Meetups & Photowalks
+      actions:
+        upcoming: Événements à venir
+        propose: Proposer une sortie

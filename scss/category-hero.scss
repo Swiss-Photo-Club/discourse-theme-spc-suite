@@ -32,7 +32,7 @@
 
 /* One line per category that has a hero. Grows with each step of the
    rollout: 10, then 8, then 7, then 12. */
-$spc-hero-slugs: "support";
+$spc-hero-slugs: "support", "meetups-photowalks";
 
 @if $enable_category_hero {
   @each $slug in $spc-hero-slugs {

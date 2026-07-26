@@ -36,6 +36,32 @@ const CATEGORY_HEROES = {
       },
     ],
   },
+
+  // 8 — Meetups & Photowalks. Masonry, but the hero adds no height to any
+  // topic row, so it cannot desynchronise the layout.
+  //
+  // Browse before create, which inverts the other heroes on purpose: far more
+  // members want to find a meetup than to organise one. /upcoming-events is
+  // hardcoded rather than read from webinars_url as the spec suggested —
+  // that setting is the homepage Monthly Live Webinars card's destination and
+  // only happens to share this default, so pointing the hero at it would mean
+  // retargeting the webinars card silently moved the meetups hero too.
+  8: {
+    key: "meetups",
+    variant: "category",
+    actions: (category) => [
+      {
+        label: heroText("meetups", "actions.upcoming"),
+        href: "/upcoming-events",
+        style: "primary",
+      },
+      {
+        label: heroText("meetups", "actions.propose"),
+        href: `/new-topic?category=${category.slug}`,
+        style: "secondary",
+      },
+    ],
+  },
 };
 
 function heroText(key, suffix) {

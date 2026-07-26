@@ -1,10 +1,14 @@
 /* ===================================================================
    Card treatment for the photography categories.
 
+   One block for categories 6, 7 and 12, emitted from the slug list
+   below. Before this file there were three treatments: category 6's,
+   which was elaborate, and none on the other two.
+
    Deliberately tiny. Everything a Discourse default already gets right
    is left alone, and every rule below has a reason a default does not
-   cover. What was in the first draft of this file and got cut, after
-   measuring category 7 rather than assuming:
+   cover. What category 6 used to carry and this file does not, after
+   measuring rather than assuming:
 
      .thumbnail-placeholder centering  already flex, centred, both axes
      > td { box-sizing: border-box }   only matters with td padding, and
@@ -30,11 +34,12 @@
 
    so #333 against #999 is the read/unread cue, and on a critique
    category "have I already given feedback on this one?" is exactly what
-   members are scanning for. Category 6 overrides that colour and loses
-   the cue; that is a bug to fix there, not a look to copy here. Note the
-   visited selector is (0,4,1) — the same specificity a body-scoped rule
-   reaches — so anything that did want to win here should set the
-   variables rather than out-specify, and never reach for !important.
+   members are scanning for. Category 6 used to override that colour and
+   lost the cue for as long as it did. Note the visited selector is
+   (0,4,1) — the same specificity a body-scoped rule reaches, which is
+   how it was beaten by source order rather than on merit — so anything
+   that does want to change a title here should set the variables rather
+   than out-specify, and never reach for !important.
 
    MASONRY. These categories are JS-positioned by Topic List Thumbnails
    (component 1), which measures every row. Nothing below sets position,
@@ -48,7 +53,13 @@
    than a page load where the CSS is there from first paint.
    =================================================================== */
 
-$spc-card-slugs: "critique-portfolio-reviews", "vorstellungen";
+/* All three photography categories. Category 6 joined last: its copy of these
+   rules lived in challenge.scss, tangled with the vote control and the pinned
+   card, and it carried four more that were fighting defaults plus a title
+   override that cost the read/unread cue. Those are gone; what remains is the
+   same three rules the other two get. */
+$spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
+  "vorstellungen";
 
 @each $slug in $spc-card-slugs {
   /* A card rather than a list row: white, lifted, and clipping its photo

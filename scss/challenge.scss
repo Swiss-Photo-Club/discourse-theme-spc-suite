@@ -662,34 +662,33 @@ body.category-monthly-challenge #list-area {
    component's, it recomputes them on every measure, and overriding one is how
    the layout desynchronises and photos land on top of text. Verified against
    category 7 as the unmodified baseline — 3 columns, 10px gutter, row width
-   and thumbnail height both derived by the component. */
+   and thumbnail height both derived by the component.
+
+   The card itself — white, shadow, hover, and object-fit: cover — is no longer
+   here. It moved to topic-cards.scss, which emits the identical selectors for
+   this category and for 7 and 12 from one slug list, so there is one card
+   treatment on the site instead of three drifting copies. What stayed in this
+   file is what is genuinely about the challenge: the vote control, the pinned
+   guide card, and the author/time placement in the footer. */
 body.category-monthly-challenge .topic-list-header {
   display: none;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item {
-  overflow: hidden;
-  border: 0;
-  background: #ffffff;
-  box-shadow: 0 8px 22px rgba(26, 39, 68, 0.08);
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item:hover {
-  box-shadow: 0 12px 28px rgba(26, 39, 68, 0.14);
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item > td {
-  box-sizing: border-box;
 }
 
 /* Thumbnails — height is the component's, and it is the whole mechanism.
 
    `height: 245px !important` used to live here. It is what made every card
    identical and therefore what forced the grid; removing it is the change that
-   turns this category back into masonry. The tint stays as the backdrop behind
-   a placeholder or a photo that does not fill its box.
+   turns this category back into masonry.
 
-   object-fit: cover survives, and it is load-bearing rather than cosmetic. The
+   Nothing else is left in this file about the thumbnail, and the four rules
+   that were here are worth recording because three of them were fighting a
+   Discourse default that already did the right thing. Measured on category 7:
+   .thumbnail-placeholder is already flex and centred on both axes; a tint on
+   .topic-list-thumbnail is the backdrop behind a photo that does not fill its
+   box, which with cover never happens; .background-thumbnail is the blurred
+   copy behind the same gap and is invisible for the same reason.
+
+   The fourth, object-fit: cover, is real and moved to topic-cards.scss. The
    component sizes the box from the photo's own aspect ratio, so cover and
    contain agree whenever that box is exact — but the moment it is off by even
    a few pixels the two diverge completely. contain letterboxes, which means a
@@ -702,23 +701,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item > td 
    .main-link below used to add min-height: 94px against the roughly 76px it
    assumed. That is fixed at source too, but cover is what makes the whole
    class of mismatch harmless rather than this one instance of it. */
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail {
-  background: #e9ebef;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .main-thumbnail {
-  object-fit: cover;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .thumbnail-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-thumbnail .background-thumbnail {
-  display: none;
-}
 
 /* Card body.
 
@@ -742,13 +724,22 @@ body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
   box-sizing: border-box;
 }
 
-body.category-monthly-challenge .topic-thumbnails-masonry .link-top-line .title {
-  color: var(--spc-charcoal);
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.3;
-}
+/* The entry title used to be restyled here — charcoal, 16px, 700. All four
+   declarations are gone and none is replaced, because core already has an
+   opinion about a topic title and it is a better one than ours was.
 
+   The colour was the costly part. Core sets `color: var(--title-color)` and,
+   for a row carrying .visited, `var(--title-color--read)` — #333 against #999.
+   That pair IS the read/unread cue, and overriding it here flattened the whole
+   list to one colour, so a member could not tell which entries they had
+   already looked at. It won that fight by source order rather than by
+   specificity: the visited selector is (0,4,1) and so was this one.
+
+   Which is also the note for anyone who does want to change a title here:
+   set the variable, do not out-specify it, and never reach for !important.
+
+   The pinned card's white title below is deliberate and still here — it sits
+   on the indigo footer, carries an extra class, and wins on specificity. */
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-excerpt {
   display: none;
 }

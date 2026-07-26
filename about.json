@@ -11,5 +11,15 @@
     "OpenSans-Medium": "assets/OpenSans-Medium.ttf",
     "OpenSans-SemiBold": "assets/OpenSans-SemiBold.ttf"
   },
-  "color_schemes": {}
+  "color_schemes": {},
+  "modifiers": {
+    "svg_icons": [
+      "arrow-down",
+      "arrow-up",
+      "camera",
+      "cloud-arrow-up",
+      "trash-can",
+      "xmark"
+    ]
+  }
 }

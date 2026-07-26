@@ -65,6 +65,20 @@ invisible and catastrophic respectively, and a bisect cannot tell them apart.
 `nonmember_member_groups` breaks the fast path; both call sites guard with `Object.hasOwn` and
 fall back to comparing `currentUser.groups`, so it degrades rather than breaks.
 
+**An icon this theme uses must be declared in `about.json`, or it silently renders nothing.**
+Discourse ships a *subset* of Font Awesome, and it does not scan theme JS for icon names — it
+collects them from core's base set, from theme settings whose name contains `_icon`, and from the
+`svg_icons` theme modifier. So `@icon="camera"` in a `.gjs` adds nothing to the sprite. `DButton`
+renders its `<use>` regardless, so a missing icon is an empty box, not an error: the submit
+button's camera was invisible from the day that form shipped until 2026-07-26. Declare every icon:
+
+```json
+"modifiers": { "svg_icons": ["camera", "..."] }
+```
+
+Check one against the live sprite before trusting it:
+`[...document.querySelectorAll("symbol[id]")].map(s => s.id).includes("camera")`.
+
 **Never decorate a DOM element core owns.** Core re-renders its own nodes on navigation and the
 two will fight — the symptom is a correct first paint followed by a broken flash on reload.
 Create your own element, or position absolutely.

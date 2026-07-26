@@ -36,11 +36,28 @@ body.category-monthly-challenge .navigation-controls {
   display: none !important;
 }
 
-/* Hide the official challenge topic row in the entry grid — its content
-   is rendered separately as the challenge brief. */
-body.category-monthly-challenge .spc-challenge-official-topic-row {
-  display: none !important;
-}
+/* The official challenge topic is NOT hidden from the entry grid, and cannot
+   be while the grid is masonry.
+
+   There used to be a `display: none !important` here, on the reasoning that
+   the brief's content is rendered separately above so its row is a duplicate.
+   It never once took effect: `.topic-list-item` further down carried
+   `display: block !important` at the same specificity and later in the file,
+   so it won, and the brief has always shown as a card among the entries.
+
+   That made the rule harmless right up until the grid override was removed.
+   Then `display: none` started winning for the first time, and because Topic
+   List Thumbnails measures and positions every row exactly once and does not
+   re-run on DOM changes — verified by both hiding and removing a row on
+   category 7, neither of which moved the others — the row left a hole its own
+   size in the first column.
+
+   Hiding it needs the row to be absent or collapsed BEFORE the component
+   measures, which spc-monthly-challenge.js cannot guarantee: it marks the row
+   from a 200ms-throttled render, long after layout. Marking it is all that
+   still happens; the class is a hook, not a hiding mechanism. If the duplicate
+   card is worth removing, that is a separate change and it has to work from
+   first paint. */
 
 body.category-monthly-challenge .list-controls {
   padding-top: 1.25rem;

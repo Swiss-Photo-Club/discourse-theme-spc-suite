@@ -15,14 +15,14 @@
  * dropped both the meetups date line and the critique subject chips for
  * exactly this reason: drop the slot rather than fetch for it.
  *
- * The hero is our OWN element, inserted before `.category-title-header` and
- * removed by clearHero(). It never rewrites that node. Ember keeps the core
- * header across category navigations, so writing into it leaves one category's
- * hero on screen after moving to the next — the bug the challenge hero already
+ * The hero is our OWN element, appended to SPC Suite's category surface and
+ * removed by clearHero(). It never rewrites a core node. Ember keeps its
+ * category controls across category navigations, so writing into one leaves
+ * the previous category's content behind — the bug the challenge hero already
  * had and fixed.
  */
 
-const ANCHOR_SELECTOR = ".category-title-header";
+const SURFACE_SELECTOR = "[data-spc-category-surface]";
 const HERO_SELECTOR = "[data-spc-hero]";
 
 function escapeHtml(value) {
@@ -64,6 +64,10 @@ export function uploadUrl(value) {
   return typeof value === "string" ? value : "";
 }
 
+export function categorySurface() {
+  return document.querySelector(SURFACE_SELECTOR);
+}
+
 function ensureHero(marker, variant) {
   const existing = document.querySelector(HERO_SELECTOR);
 
@@ -86,11 +90,11 @@ function ensureHero(marker, variant) {
     return existing;
   }
 
-  const anchor = document.querySelector(ANCHOR_SELECTOR);
-  if (!anchor) {
-    // The anchor is Ember-rendered and may not exist on the first pass. The
-    // observer will call again; rendering into #main-outlet directly instead
-    // would fight core on navigation.
+  const surface = categorySurface();
+  if (!surface) {
+    // The outlet component may not exist on the first pass. The observer will
+    // call again; rendering into #main-outlet directly instead would put this
+    // renderer back in competition with Ember's route lifecycle.
     return null;
   }
 
@@ -98,7 +102,7 @@ function ensureHero(marker, variant) {
   hero.className = `spc-hero spc-hero--${variant}`;
   hero.dataset.spcHero = marker;
   hero.setAttribute("aria-labelledby", "spc-hero-title");
-  anchor.insertAdjacentElement("beforebegin", hero);
+  surface.append(hero);
   return hero;
 }
 

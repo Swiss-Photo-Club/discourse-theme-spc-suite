@@ -38,6 +38,14 @@
 
 /* Hero shell ---------------------------------------------------------- */
 
+/* Theme-owned mount rendered through the above-main-container outlet.
+   display:contents preserves the old layout: the hero and challenge brief
+   participate as though they were still direct children of #main-outlet,
+   without depending on Category Banners to create an adjacent anchor. */
+.spc-category-surface {
+  display: contents;
+}
+
 /* The core carries only what every hero shares — a full-width, self-clipping
    flex box with light text on a dark ground. Everything that answers "which
    hero is this" lives in a variant, because a base that decided padding,

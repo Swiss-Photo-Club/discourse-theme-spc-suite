@@ -2,7 +2,12 @@ import { getOwnerWithFallback } from "discourse/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
-import { clearHero, renderHero, uploadUrl } from "../lib/spc-hero";
+import {
+  categorySurface,
+  clearHero,
+  renderHero,
+  uploadUrl,
+} from "../lib/spc-hero";
 
 const COMPONENT_SELECTOR = "[data-spc-monthly-challenge]";
 const RENDER_THROTTLE_MS = 200;
@@ -564,21 +569,19 @@ function deadlineText(challenge, state) {
   return "";
 }
 
-// The hero is our own element, inserted before the core category header,
-// which CSS hides on this category. It used to be built by overwriting
-// `.category-title-header` itself, and that was wrong twice over: Ember keeps
-// that node across category navigations, so the challenge hero stayed on
-// screen after switching to Critique, and it only reserved its dark styling
-// under `body.category-monthly-challenge`, so the leftover markup rendered as
-// dark text on a pale block over the category nav. Owning the node means
-// clearHero() can simply delete it — see findHomeCard() for the same lesson.
+// The hero is our own element inside SPC Suite's category surface. It used to
+// overwrite a core node, and later used Category Banners' hidden
+// `.category-title-header` as an insertion anchor. The former fought Ember on
+// navigation; the latter made an invisible third-party component load-bearing.
+// Owning both the element and its mount lets clearHero() simply delete it —
+// see findHomeCard() for the same lesson.
 //
 // Both of those functions now live in lib/spc-hero.js, shared with the four
-// category heroes. This category is NOT gated by enable_category_hero or
-// listed in hero_enabled_categories, and must not be: the hero is part of the
-// route-map, permalink and route:new-topic stack behind /submit, and a
-// half-enabled state breaks photo submission. Sharing the renderer is not the
-// same as joining the registry.
+// category-specific overrides and the generic category fallback. This category
+// is NOT gated by enable_category_hero or handled by the generic initializer,
+// and must not be: the hero is part of the route-map, permalink and
+// route:new-topic stack behind /submit, and a half-enabled state breaks photo
+// submission. Sharing the renderer is not sharing a lifecycle.
 function renderChallengeHero(challenge) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
@@ -677,7 +680,7 @@ function renderEducation(challenge) {
     <div class="spc-challenge-brief__content cooked">${cooked}</div>
   `;
 
-  document.querySelector(".category-title-header")?.insertAdjacentElement("afterend", section);
+  categorySurface()?.append(section);
 }
 
 function archivedChallenges(challenges) {

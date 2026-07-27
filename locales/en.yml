@@ -302,6 +302,10 @@ en:
     join: Join the community
     browse_categories: Browse categories
   hero:
+    generic:
+      eyebrow: Community category
+      actions:
+        create: Start a topic
     post_processing:
       eyebrow: Technique & workflow
       actions:

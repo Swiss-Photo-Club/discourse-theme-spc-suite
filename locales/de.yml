@@ -261,6 +261,10 @@ de:
     join: Community beitreten
     browse_categories: Kategorien durchsuchen
   hero:
+    generic:
+      eyebrow: Community-Kategorie
+      actions:
+        create: Thema erstellen
     post_processing:
       eyebrow: Technik & Workflow
       actions:

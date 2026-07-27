@@ -38,6 +38,7 @@ its prefix.
 | Feature | Toggle | SCSS | JS | Locale namespace | Setting prefix |
 | --- | --- | --- | --- | --- | --- |
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
+| Category heroes | `enable_category_hero` | `scss/hero.scss`, `scss/category-hero.scss` | `api-initializers/spc-category-surface.js`, `api-initializers/spc-category-hero.js`, `components/spc-category-surface.gjs`, `lib/spc-hero.js` | `hero.*` | — |
 | Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | — |
 | Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
 | `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
@@ -123,6 +124,18 @@ than a category.
 external Featured Categories component is attached; detach that component and enable this
 switch in the same maintenance pass. After the local renderer has remained stable, remove
 the switch and its legacy fallback.
+
+## Category headers
+
+SPC Suite renders its own category surface through Discourse's `above-main-container` outlet.
+Every category gets the shared hero automatically; the Monthly Challenge supplies its
+data-backed variant, and Critique, Meetups, Post Processing and Introductions override the
+generic actions where needed. New categories need no theme setting or code change unless they
+need similarly specialised actions.
+
+The external **Category Banners** theme component is not required and should remain detached
+from both Foundation and Horizon. During a cutover it is safe for both components to be attached:
+SPC Suite hides the old banner and core heading while its hero is enabled.
 
 ## Rolling back
 

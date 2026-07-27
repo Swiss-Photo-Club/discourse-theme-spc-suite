@@ -6,12 +6,12 @@ import { clearHero, renderHero, uploadUrl } from "../lib/spc-hero";
 const RENDER_THROTTLE_MS = 200;
 
 /**
- * The category hero registry.
+ * Category-specific hero overrides.
  *
- * Keyed by category ID, never by slug: category 10's slug is `support` while it
- * displays as "Post Processing", so slug-looks-like-the-name reasoning is wrong
- * on this site. (The one place slugs are unavoidable is category-hero.scss,
- * because the body class Discourse emits carries the slug.)
+ * Every category gets the generic hero automatically. Entries here exist only
+ * where a category needs a more specific eyebrow or actions. They are keyed by
+ * category ID, never by slug: category 10's slug is `support` while it displays
+ * as "Post Processing", so slug-looks-like-the-name reasoning is wrong.
  *
  * `key` names the locale block — hero.<key>.eyebrow and, where the action
  * labels are not already written down somewhere better, hero.<key>.actions.*.
@@ -29,8 +29,8 @@ const RENDER_THROTTLE_MS = 200;
  * are literal paths today; the function stays because it is what let those
  * three become literal without touching a schema.
  *
- * Adding a category means three edits that ship together: an entry here, its
- * slug in category-hero.scss, and a locale block in all three locales.
+ * Adding a category requires no theme edit. Add an entry here only when the
+ * generic "Community category / Start a topic" treatment is not enough.
  */
 const CATEGORY_HEROES = {
   // 10 — Post Processing (slug `support`). List mode, so no masonry exposure.
@@ -131,15 +131,23 @@ const CATEGORY_HEROES = {
   },
 };
 
+const DEFAULT_CATEGORY_HERO = {
+  key: "generic",
+  variant: "category",
+  actions: (category) =>
+    category.canCreateTopic
+      ? [
+          {
+            label: heroText("generic", "actions.create"),
+            href: `/new-topic?category=${category.slug}`,
+            style: "primary",
+          },
+        ]
+      : [],
+};
+
 function heroText(key, suffix) {
   return i18n(themePrefix(`hero.${key}.${suffix}`));
-}
-
-function enabledCategoryIds() {
-  const value = settings.hero_enabled_categories;
-  const values = Array.isArray(value) ? value : String(value || "").split("|");
-
-  return values.map(Number).filter((id) => Number.isInteger(id) && id > 0);
 }
 
 /**
@@ -148,45 +156,29 @@ function enabledCategoryIds() {
  * this file can fetch, so that it stays true if someone later adds a variant
  * that can.
  */
-function activeHeroCategory() {
+function activeHeroCategory(router) {
   if (!document.body.classList.contains("navigation-category")) {
     return null;
   }
 
-  for (const id of enabledCategoryIds()) {
-    const entry = CATEGORY_HEROES[id];
-    if (!entry) {
-      // Listed in settings but unknown to the registry: nothing to render.
-      // Documented in the setting's description rather than logged, because
-      // the observer would log it on every mutation.
-      continue;
-    }
+  const slugPathWithId =
+    router?.currentRoute?.params?.category_slug_path_with_id;
+  const category = slugPathWithId
+    ? Category.findBySlugPathWithID(slugPathWithId)
+    : null;
+  const id = Number(category?.id);
 
-    const category = Category.findById(id);
-    if (
-      category?.slug &&
-      document.body.classList.contains(`category-${category.slug}`)
-    ) {
-      return { id, entry, category };
-    }
+  // The Monthly Challenge has a data-backed hero with its own lifecycle. It
+  // deliberately shares renderHero(), but it does not use this generic path.
+  if (!id || id === Number(settings.monthly_category_id)) {
+    return null;
   }
 
-  return null;
-}
-
-/**
- * Clear the hero, but only if it is one of ours.
- *
- * clearHero() is marker-scoped now that the monthly challenge renders through
- * the same function, so this asks about every marker this module can own rather
- * than deleting whatever hero happens to be on the page. Arriving on category 6
- * that distinction is the whole ballgame: an unscoped clear here would race the
- * challenge initializer and delete the challenge hero.
- */
-function clearOwnHero() {
-  for (const id of Object.keys(CATEGORY_HEROES)) {
-    clearHero(id);
-  }
+  return {
+    id,
+    category,
+    entry: CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
+  };
 }
 
 /**
@@ -208,7 +200,23 @@ function categoryLead(category) {
 }
 
 export default apiInitializer((api) => {
+  const router = api.container.lookup("service:router");
   let renderQueued = false;
+  let renderedMarker = null;
+
+  /**
+   * Clear only the category hero this initializer last rendered.
+   *
+   * The challenge initializer can re-marker the shared element as "challenge"
+   * before this one observes the navigation. clearHero() checks the marker, so
+   * that race is harmless and this function never deletes the challenge hero.
+   */
+  function clearOwnHero() {
+    if (renderedMarker) {
+      clearHero(renderedMarker);
+      renderedMarker = null;
+    }
+  }
 
   function render() {
     if (!settings.enable_category_hero) {
@@ -216,7 +224,7 @@ export default apiInitializer((api) => {
       return;
     }
 
-    const active = activeHeroCategory();
+    const active = activeHeroCategory(router);
     if (!active) {
       clearOwnHero();
       return;
@@ -227,7 +235,7 @@ export default apiInitializer((api) => {
     const locale = document.documentElement.lang || "en";
     const actions = entry.actions(category);
 
-    renderHero({
+    const hero = renderHero({
       marker: String(id),
       variant: entry.variant,
       // Destinations are part of the signature because some of them are still
@@ -246,6 +254,10 @@ export default apiInitializer((api) => {
       cover,
       actions,
     });
+
+    if (hero) {
+      renderedMarker = String(id);
+    }
   }
 
   // Throttled on a timer, leading edge — never requestAnimationFrame. The

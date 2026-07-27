@@ -8,6 +8,11 @@ Status: **executed, 2026-07-26.** Categories 6, 7, 8, 10 and 12 render the share
 live site. Read §6a before the spec body; then read this note, because execution overrode both
 in three further places.
 
+**2026-07-27 follow-up:** the category list and `.category-title-header` anchor described below
+have been retired. SPC Suite now owns an `above-main-container` surface, and every category gets
+the generic hero unless it has a category-specific override. This document remains the design
+history; `README.md` and `CLAUDE.md` describe the current behavior.
+
 - **One `--category` variant, not `--submission` / `--events` / `--plain`.** §6a dropped
   `--events`' meta line as a fetch; `--submission`'s subject chips fall to the same rule. That
   left all three with identical declarations, and "two actions instead of one" is not a CSS

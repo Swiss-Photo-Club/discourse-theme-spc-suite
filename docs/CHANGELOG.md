@@ -4,6 +4,24 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Make SPC Suite own every category header
+
+Category Banners remained enabled only because the shared hero used its hidden
+`.category-title-header` element as an insertion anchor. The Monthly Challenge brief used the
+same element for placement. That made a visually obsolete component an undocumented runtime
+dependency, and because it was attached only to Foundation, Horizon did not have the same
+category-page contract.
+
+SPC Suite now renders a stable `above-main-container` surface of its own. The hero and challenge
+brief render into that surface, whose `display: contents` wrapper preserves their previous
+direct-child layout. Every category receives the shared hero automatically, so neither Category
+Banners' three-category setting nor SPC Suite's separate `hero_enabled_categories` list remains
+part of the behavior. Categories with no explicit override use their own name, description and
+background plus a permission-aware “Start a topic” action.
+
+The external Category Banners component can be detached after this version is installed. It is
+safe to leave it attached during the update because SPC Suite continues hiding its output.
+
 ## Unreleased — Make Discourse navigation defaults own homepage categories
 
 The homepage category renderer now reads core's

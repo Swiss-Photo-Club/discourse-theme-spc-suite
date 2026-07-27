@@ -8,10 +8,9 @@
 // /submit/project, and the settings that used to switch them back to Custom
 // Wizard went when those wizards were deleted.
 //
-// The teal block in particular was already invisible before it was deleted. A
-// site-wide component hides .category-title-header on any category whose body
-// does not carry .category-header, and category 12 is one of those - so the
-// rule had been tinting a display:none element for as long as it had existed.
+// The teal block in particular was already invisible before it was deleted:
+// the shared hero replaces the native header on every category page now, so
+// recolouring a hidden header would be dead code.
 //
 // $critique_banner_background, $critique_banner_text_color and
 // $critique_intro_banner_background stay declared in settings.yml, now unread.

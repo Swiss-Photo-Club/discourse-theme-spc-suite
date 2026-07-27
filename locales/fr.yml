@@ -257,6 +257,10 @@ fr:
     join: Rejoindre la communauté
     browse_categories: Parcourir les catégories
   hero:
+    generic:
+      eyebrow: Catégorie de la communauté
+      actions:
+        create: Créer un sujet
     post_processing:
       eyebrow: Technique & flux de travail
       actions:

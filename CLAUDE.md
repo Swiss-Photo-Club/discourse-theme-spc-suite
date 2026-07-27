@@ -138,29 +138,28 @@ name disagree, so match on id, never on slug-looks-like-the-name.
 
 ## Category heroes
 
-Categories 6, 7, 8, 10 and 12 all render `.spc-hero` through `lib/spc-hero.js`. Category 6 goes
-through the same function but is **not** in the registry and **not** gated by
-`enable_category_hero` — its hero is part of the route-map, permalink and `route:new-topic` stack
-behind `/submit`, and half-enabling that breaks photo submission. Sharing a renderer is not
-joining the registry.
+Every category renders `.spc-hero` through `lib/spc-hero.js`. The generic path reads the current
+category from `router.currentRoute.params.category_slug_path_with_id`, resolves it with
+Discourse's `Category.findBySlugPathWithID()`, and needs **no registry or setting entry**. Add an
+override in `api-initializers/spc-category-hero.js` only when a category needs actions or an
+eyebrow different from `hero.generic`.
 
-**Adding a category is four edits, and the fourth is not in this repo.** The registry entry in
-`api-initializers/spc-category-hero.js`, the slug in `$spc-hero-slugs` in `category-hero.scss`,
-a locale block in all three `locales/*.yml` — and then **adding the category to
-`hero_enabled_categories` by hand on the settings page.** An Update preserves the value of every
-setting whose name is unchanged, so raising the default in `settings.yml` only affects a fresh
-install. Miss that step and the category renders with no header at all: the CSS has already
-hidden the native one.
+Category 6 goes through the same renderer but is **not** on the generic path and is **not** gated
+by `enable_category_hero` — its hero is part of the route-map, permalink and `route:new-topic`
+stack behind `/submit`, and half-enabling that breaks photo submission. Sharing a renderer is not
+sharing a lifecycle.
 
-**Which native header is on screen is decided by another component.** Theme component 5 emits
-`body:not(.category-header) .category-title-header { display: none }` and
-`body.category-header .category-heading { display: none }` — a site-wide toggle driven by a
-per-category setting this component does not own. Today 7 and 8 show the banner while 10 and 12
-show the heading. So **always hide both**, as `challenge.scss` already did for 6. Never hide only
-the one you happened to see.
+**The mount is ours.** `components/spc-category-surface.gjs` renders
+`[data-spc-category-surface]` through the `above-main-container` outlet on every route.
+`display: contents` keeps the hero and challenge brief laid out as direct children of
+`#main-outlet`, while the stable owned element survives category transitions. Never go back to
+inserting relative to `.category-title-header`: that element belongs to the detachable Category
+Banners component, and making its hidden output the anchor is what made component 5 an invisible
+runtime dependency.
 
-`.category-title-header` is hidden but never removed — the hero is inserted immediately before it
-and needs it as an anchor.
+Category Banners may be attached during the update but should be detached from Foundation and
+Horizon afterwards. While it is present, `category-hero.scss` hides both its
+`.category-title-header` and core's `.category-heading` on every category route.
 
 **Suppressing the category background needs `!important`.** Discourse paints
 `category.uploaded_background` full-bleed on `<body>` via a rule it generates into the inline
@@ -168,24 +167,19 @@ and needs it as an anchor.
 `background-image: none` loses on source order and the photo renders twice, once behind the whole
 page and once in the hero.
 
-**The slug list in `category-hero.scss` is the one place slugs are correct**, because the body
-class carries the slug. Everything else matches on id. It is keyed on the slug rather than on
-`body:has(.spc-hero)` deliberately: the hero arrives on a 200ms observer throttle, so a
-presence-based rule would leave the stock header and the background photo on screen until the
-first render, then collapse them.
-
 **`clearHero(marker)` is scoped, and must stay scoped.** Two initializers render heroes now and
 both run off their own observers in no fixed order. An unscoped clear meant that arriving on
 category 6, the category module saw a category it does not own and deleted the challenge hero
-that had just rendered. `spc-category-hero.js` clears only markers in its registry; the challenge
-owns the marker `"challenge"`, which is not a category id and so cannot collide.
+that had just rendered. `spc-category-hero.js` remembers the last category marker it rendered;
+the challenge owns the marker `"challenge"`, which is not a category id and so cannot collide.
 
-**Rolling the hero back takes two settings, not one.** `enable_category_hero = false` restores the
-native headers, but on 7 and 12 the hero action disappears while `critique_hide_new_topic_button`
-keeps `#create-topic` hidden — leaving both categories with no way to post. Turn
-`critique_hide_new_topic_button` off as well. This is why the `@if` block in `critique-submit.scss`
-survives even though it looks redundant against the hero's own `#create-topic` rule: that rule is
-only emitted while the feature is on.
+**Rolling the generic heroes back takes two settings, not one.**
+`enable_category_hero = false` restores every native category header, background and New Topic
+button except the Monthly Challenge, whose workflow stays active. On 7 and 12 the hero action
+disappears while `critique_hide_new_topic_button` keeps `#create-topic` hidden — leaving both
+categories with no way to post. Turn `critique_hide_new_topic_button` off as well. This is why
+the `@if` block in `critique-submit.scss` survives even though it looks redundant against the
+hero's own `#create-topic` rule: that rule is only emitted while the feature is on.
 
 `critique_banner_background` is declared and unread. R4 keeps the pink banner restorable without a
 commit for one release; deleting the setting, not the rule, is what closes that door.

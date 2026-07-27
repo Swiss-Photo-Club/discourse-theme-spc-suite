@@ -411,6 +411,18 @@ function isChallengePage() {
   return document.body.classList.contains(`category-${settings.monthly_category_slug}`);
 }
 
+function isChallengeCategoryUrl(url) {
+  const path = new URL(url, window.location.origin).pathname.replace(/\/+$/, "");
+  const categoryId = Number(settings.monthly_category_id);
+  const categorySlug = settings.monthly_category_slug;
+
+  return (
+    path === `/c/${categoryId}` ||
+    path === `/c/${categorySlug}/${categoryId}` ||
+    path.startsWith(`/c/${categorySlug}/${categoryId}/`)
+  );
+}
+
 function findHomeCard() {
   // Legacy slot used only while the external Featured Categories component
   // remains active during migration.
@@ -1130,8 +1142,18 @@ const spcRun = (api) => {
     clearPinnedBriefCache();
   }
 
-  api.onPageChange(() => {
+  api.onPageChange((url) => {
     expireStaleCaches();
+
+    // Route cleanup must not wait behind a challenge fetch already in flight.
+    // Invalidate that render and remove category-only content synchronously,
+    // otherwise the brief can remain visible for a moment after navigating to
+    // another category even though the shared hero has already switched.
+    if (!isChallengeCategoryUrl(url)) {
+      renderRequest += 1;
+      clearChallengeSections();
+    }
+
     scheduleRender();
   });
   new MutationObserver(scheduleRender).observe(document.body, {

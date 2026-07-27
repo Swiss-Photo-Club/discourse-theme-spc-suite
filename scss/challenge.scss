@@ -1492,14 +1492,13 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   }
 }
 
-/* The homepage Monthly Challenge card is rendered in the component's own
-   slot; hide the native Featured Categories card to avoid duplicates and
-   Ember re-render races. */
+/* Legacy migration fallback: when the external Featured Categories component
+   is active, the challenge initializer owns its Monthly Challenge slot. The
+   local renderer must always show every admin-selected category verbatim. */
 body.navigation-topics
-  .featured-categories__category-container:not([data-spc-monthly-challenge-slot]):has(
-    > a[href*="/c/monthly-challenge"]
-  ) {
+  .featured-categories:not([data-spc-featured-categories="local"])
+  .featured-categories__category-container:not(
+    [data-spc-monthly-challenge-slot]
+  ):has(> a[href*="/c/monthly-challenge"]) {
   display: none;
 }
-
-

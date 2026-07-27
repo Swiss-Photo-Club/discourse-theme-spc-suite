@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import { LinkTo } from "@ember/routing";
 import { service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
-import { themePrefix } from "virtual:theme";
+import { settings, themePrefix } from "virtual:theme";
 import CategoryLogo from "discourse/components/category-logo";
 import categoryLink from "discourse/helpers/category-link";
 import { defaultHomepage } from "discourse/lib/utilities";
@@ -14,23 +14,38 @@ function categoryId(value) {
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
+function configuredCategoryIds(configured) {
+  const values = Array.isArray(configured)
+    ? configured
+    : String(configured || "").split("|");
+
+  return values
+    .map(categoryId)
+    .filter((id, index, ids) => id !== null && ids.indexOf(id) === index);
+}
+
 export default class SpcFeaturedCategories extends Component {
   @service router;
   @service siteSettings;
 
   get selectedCategoryIds() {
-    const configured = this.siteSettings.default_navigation_menu_categories;
-    const values = Array.isArray(configured)
-      ? configured
-      : String(configured || "").split("|");
+    return configuredCategoryIds(
+      this.siteSettings.default_navigation_menu_categories
+    );
+  }
 
-    return values
-      .map(categoryId)
-      .filter((id, index, ids) => id !== null && ids.indexOf(id) === index);
+  get secondaryCategoryIds() {
+    return configuredCategoryIds(settings.homepage_secondary_categories);
   }
 
   get categoryEntries() {
-    return this.selectedCategoryIds
+    const selectedIds = new Set(this.selectedCategoryIds);
+    const categoryIds = [
+      ...selectedIds,
+      ...this.secondaryCategoryIds.filter((id) => !selectedIds.has(id)),
+    ];
+
+    return categoryIds
       .map((id) => {
         const category = Category.findById(id);
 
@@ -42,6 +57,7 @@ export default class SpcFeaturedCategories extends Component {
           category,
           hasLogo: Boolean(category.uploaded_logo?.url),
           id,
+          isHighlighted: selectedIds.has(id),
         };
       })
       .filter(Boolean);
@@ -78,6 +94,7 @@ export default class SpcFeaturedCategories extends Component {
               <div
                 class="featured-categories__category-container"
                 data-spc-category-id={{entry.id}}
+                data-spc-highlighted={{entry.isHighlighted}}
               >
                 <a
                   class="featured-categories__category-link"

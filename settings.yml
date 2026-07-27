@@ -54,11 +54,17 @@ enable_locale_cookie:
 enable_local_featured_categories:
   type: bool
   default: false
-  description: "Migration switch: render homepage categories from Discourse's Default navigation menu categories setting. Enable only when the external Featured Categories component is detached."
+  description: "Migration switch: render homepage categories locally. Default navigation menu categories are the highlighted cards. Enable only when the external Featured Categories component is detached."
 
 # -----------------------------------------------------------------------------
 # Monthly challenge, homepage and /submit page (original Suite stack)
 # -----------------------------------------------------------------------------
+
+homepage_secondary_categories:
+  type: list
+  list_type: category
+  default: "12|8|4|2"
+  description: "Compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
 
 challenge_category_id:
   type: integer

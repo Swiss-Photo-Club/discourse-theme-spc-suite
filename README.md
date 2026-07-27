@@ -108,14 +108,16 @@ round is current. Use it to record past rounds, deadline text for the hero, and 
 ## Homepage category workflow
 
 **Admin → Configure → Navigation → Default navigation menu categories** is the single source
-of truth for homepage category cards and their order. It is a core Discourse setting, so the
-same selection also seeds the sidebar for anonymous visitors and new accounts. Existing
-members can still customize their own sidebar; that personal choice does not change the
-site-wide homepage selection.
+of truth for the highlighted homepage cards and their order. It is a core Discourse setting,
+so the same selection also seeds the sidebar for anonymous visitors and new accounts.
+Existing members can still customize their own sidebar; that personal choice does not change
+the site-wide homepage highlights.
 
-The renderer neither adds nor substitutes categories. Category-specific styling can decorate
-a selected card, but the admin selection and order remain authoritative. The Monthly Live
-Webinars card remains independent because it links to an events page rather than a category.
+The `homepage_secondary_categories` SPC Suite setting controls the compact category cards
+shown underneath. If a category is in both settings, it appears once in the highlighted
+group. The renderer does not inject, substitute, or reorder either admin-controlled list.
+The Monthly Live Webinars card remains independent because it links to an events page rather
+than a category.
 
 `enable_local_featured_categories` is a temporary cutover switch. Keep it off while the
 external Featured Categories component is attached; detach that component and enable this

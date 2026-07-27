@@ -2,7 +2,7 @@ import { getOwnerWithFallback } from "discourse/lib/get-owner";
 import { i18n } from "discourse-i18n";
 
 const MONTHLY_SELECTOR =
-  '.featured-categories__category-link[data-spc-monthly-challenge="home"]';
+  '.featured-categories__category-link[data-spc-monthly-challenge="home"], .featured-categories__category-link[href="/c/monthly-challenge/6"]';
 const CRITIQUE_SELECTOR =
   '.featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]';
 const FEEDBACK_SELECTOR =
@@ -99,7 +99,11 @@ function ensureWebinarCard(list, feedbackContainer) {
 }
 
 function enhanceCategories() {
-  const root = document.querySelector(".featured-categories");
+  const root = document.querySelector(
+    settings.enable_local_featured_categories
+      ? '[data-spc-featured-categories="local"]'
+      : ".featured-categories"
+  );
   const list = root?.querySelector(".featured-categories__list-container");
   if (!root || !list) {
     return;
@@ -121,7 +125,7 @@ function enhanceCategories() {
 
   root
     .querySelectorAll(
-      '.featured-categories__category-link[href]:not([data-spc-monthly-challenge="home"]):not([href="/c/critique-portfolio-reviews/7"]):not(.spc-home-webinar-link)'
+      '.featured-categories__category-link[href]:not([data-spc-monthly-challenge="home"]):not([href="/c/monthly-challenge/6"]):not([href="/c/critique-portfolio-reviews/7"]):not(.spc-home-webinar-link)'
     )
     .forEach((link) => ensureSmallCardMeta(link));
 

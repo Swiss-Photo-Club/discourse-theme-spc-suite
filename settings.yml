@@ -51,6 +51,11 @@ enable_locale_cookie:
   default: true
   description: "Locale Cookie: mirrors the forum interface language into a cookie on swissphotoclub.com so the main site can match it."
 
+enable_local_featured_categories:
+  type: bool
+  default: false
+  description: "Migration switch: render homepage categories from Discourse's Default navigation menu categories setting. Enable only when the external Featured Categories component is detached."
+
 # -----------------------------------------------------------------------------
 # Monthly challenge, homepage and /submit page (original Suite stack)
 # -----------------------------------------------------------------------------

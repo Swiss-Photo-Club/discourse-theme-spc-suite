@@ -38,7 +38,7 @@ its prefix.
 | Feature | Toggle | SCSS | JS | Locale namespace | Setting prefix |
 | --- | --- | --- | --- | --- | --- |
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
-| Homepage design | — | `scss/homepage.scss` | `api-initializers/spc-homepage.js` | `homepage.*` | — |
+| Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | — |
 | Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
 | `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
 | Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
@@ -59,7 +59,7 @@ Other top-level files:
 | Path | Purpose |
 | --- | --- |
 | `about.json` | Component manifest, including the five branding assets. Must stay at the repository root. |
-| `settings.yml` | All 50 admin settings, grouped by feature. |
+| `settings.yml` | Admin settings, grouped by feature. |
 | `common/common.scss` | Import list only. See below. |
 | `locales/{en,de,fr}.yml` | Interface strings in all three site languages. |
 | `assets/` | Open Sans (4 weights) and the branding image. These exist nowhere else — do not delete them. |
@@ -104,6 +104,23 @@ hero and `/submit` form pick up the round tag on their own.
 
 The `challenges` setting is an **archive and override**, not the source of truth for which
 round is current. Use it to record past rounds, deadline text for the hero, and winners.
+
+## Homepage category workflow
+
+**Admin → Configure → Navigation → Default navigation menu categories** is the single source
+of truth for homepage category cards and their order. It is a core Discourse setting, so the
+same selection also seeds the sidebar for anonymous visitors and new accounts. Existing
+members can still customize their own sidebar; that personal choice does not change the
+site-wide homepage selection.
+
+The renderer neither adds nor substitutes categories. Category-specific styling can decorate
+a selected card, but the admin selection and order remain authoritative. The Monthly Live
+Webinars card remains independent because it links to an events page rather than a category.
+
+`enable_local_featured_categories` is a temporary cutover switch. Keep it off while the
+external Featured Categories component is attached; detach that component and enable this
+switch in the same maintenance pass. After the local renderer has remained stable, remove
+the switch and its legacy fallback.
 
 ## Rolling back
 

@@ -2,9 +2,9 @@
 /* =====================================================================
    Swiss Photo Club Community — Homepage design
 
-   This component keeps Discourse, Featured Categories, Topic List
-   Thumbnails, and SPC Monthly Challenge as the data/behaviour owners. It
-   only composes and styles their existing output on the topics homepage.
+   Discourse's Default navigation menu categories setting owns the category
+   selection and order. SPC Suite renders that list verbatim, then composes it
+   with category-specific presentation and Topic List Thumbnails.
    ===================================================================== */
 
 
@@ -138,6 +138,10 @@ body.navigation-topics
   ),
 body.navigation-topics
   .featured-categories__category-container:has(
+    > .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  ),
+body.navigation-topics
+  .featured-categories__category-container:has(
     > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   ) {
   grid-column: span 5 !important;
@@ -162,7 +166,9 @@ body.navigation-topics .featured-categories__category-link {
 
 /* Square bullet decoration on the compact category cards. */
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )::before {
   position: static;
@@ -177,7 +183,9 @@ body.navigation-topics
 
 body.navigation-topics
   .featured-categories__list-container
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   ) {
   min-height: 154px !important;
@@ -212,7 +220,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   > .category-logo {
@@ -220,7 +230,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   .category-name {
@@ -238,7 +250,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   .badge-category__name {
@@ -248,7 +262,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   :is(.badge-category__wrapper, .badge-category) {
@@ -258,7 +274,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   .badge-category::before {
@@ -267,7 +285,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   .badge-category
@@ -276,7 +296,9 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link:not(.spc-monthly-card):not(
+  .featured-categories__category-link:not(
+    .spc-monthly-card,
+    [href="/c/monthly-challenge/6"],
     [href="/c/critique-portfolio-reviews/7"]
   )
   .category-description {
@@ -301,10 +323,13 @@ body.navigation-topics .spc-home-category-meta {
   line-height: 1.35;
 }
 
-/* Two feature cards: current challenge and critique. */
+/* The two currently selected categories keep their established highlight
+   treatment. `.spc-monthly-card` remains only for the migration fallback. */
 body.navigation-topics
   .featured-categories__category-container
   > .spc-monthly-card,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"],
 body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
   position: relative;
@@ -329,7 +354,9 @@ body.navigation-topics
 
 body.navigation-topics
   .featured-categories__category-container
-  > .spc-monthly-card {
+  > .spc-monthly-card,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"] {
   background-image:
     var(--overlay-card),
     var(
@@ -353,6 +380,10 @@ body.navigation-topics
   .featured-categories__category-container
   > .spc-monthly-card::after,
 body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]::before,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]::after,
+body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::before,
 body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::after {
@@ -360,6 +391,9 @@ body.navigation-topics
   content: none !important;
 }
 
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  > .category-logo,
 body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   > .category-logo {
@@ -402,6 +436,9 @@ body.navigation-topics .spc-monthly-card__content {
 
 body.navigation-topics .spc-monthly-card__title,
 body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  .category-name,
+body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   .category-name {
   position: relative;
@@ -417,12 +454,19 @@ body.navigation-topics
 }
 
 body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  .badge-category__name,
+body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   .badge-category__name {
   color: #ffffff;
   font-weight: var(--fw-xbold);
 }
 
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  .badge-category
+  :is(.emoji, .d-icon-lock),
 body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   .badge-category
@@ -431,6 +475,9 @@ body.navigation-topics
 }
 
 body.navigation-topics .spc-monthly-card__summary,
+body.navigation-topics
+  .featured-categories__category-link[href="/c/monthly-challenge/6"]
+  .category-description,
 body.navigation-topics
   .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
   .category-description {
@@ -611,7 +658,7 @@ body.navigation-topics .spc-home-login-cta:focus-visible {
 
 /* Topic list rendering is handled by Topic List Thumbnails native masonry mode. */
 
-/* Current monthly prompt: populated from the existing challenge card. */
+/* Current monthly prompt: enabled when Monthly Challenge is selected above. */
 body.navigation-topics .topic-list .spc-home-monthly-prompt
   .topic-list-thumbnail {
   position: relative;
@@ -649,6 +696,10 @@ body.navigation-topics .spc-home-pinned-badge {
   body.navigation-topics
     .featured-categories__category-container:has(
       > .spc-monthly-card
+    ),
+  body.navigation-topics
+    .featured-categories__category-container:has(
+      > .featured-categories__category-link[href="/c/monthly-challenge/6"]
     ),
   body.navigation-topics
     .featured-categories__category-container:has(
@@ -720,6 +771,10 @@ body.navigation-topics .spc-home-pinned-badge {
     ),
   body.navigation-topics
     .featured-categories__category-container:has(
+      > .featured-categories__category-link[href="/c/monthly-challenge/6"]
+    ),
+  body.navigation-topics
+    .featured-categories__category-container:has(
       > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
     ) {
     grid-column: 1 / -1 !important;
@@ -727,7 +782,12 @@ body.navigation-topics .spc-home-pinned-badge {
 
   body.navigation-topics
     .featured-categories__list-container
-    .featured-categories__category-container:has(> .spc-monthly-card) {
+    .featured-categories__category-container:has(> .spc-monthly-card),
+  body.navigation-topics
+    .featured-categories__list-container
+    .featured-categories__category-container:has(
+      > .featured-categories__category-link[href="/c/monthly-challenge/6"]
+    ) {
     height: 224px !important;
     min-height: 224px !important;
     margin: 0 !important;
@@ -737,6 +797,8 @@ body.navigation-topics .spc-home-pinned-badge {
     .featured-categories__category-container
     > .spc-monthly-card,
   body.navigation-topics
+    .featured-categories__category-link[href="/c/monthly-challenge/6"],
+  body.navigation-topics
     .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
     height: 224px !important;
     min-height: 224px !important;
@@ -744,6 +806,9 @@ body.navigation-topics .spc-home-pinned-badge {
 
 
   body.navigation-topics .spc-monthly-card__title,
+  body.navigation-topics
+    .featured-categories__category-link[href="/c/monthly-challenge/6"]
+    .category-name,
   body.navigation-topics
     .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
     .category-name {
@@ -764,6 +829,3 @@ body.navigation-topics .spc-home-pinned-badge {
     max-height: 380px;
   }
 }
-
-
-

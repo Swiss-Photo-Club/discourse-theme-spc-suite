@@ -407,10 +407,8 @@ function isChallengePage() {
 }
 
 function findHomeCard() {
-  // Only ever use our own slot. Decorating the Ember-rendered Featured
-  // Categories card is racy: Ember re-renders wipe the injected content,
-  // which intermittently left the homepage card half-hydrated. The native
-  // Monthly Challenge card is hidden via CSS instead.
+  // Legacy slot used only while the external Featured Categories component
+  // remains active during migration.
   return document.querySelector(
     '[data-spc-monthly-challenge-slot="home"] > a'
   );
@@ -421,11 +419,20 @@ function ensureHomeCard() {
     return null;
   }
 
+  // The local renderer outputs the administrator's category selection
+  // verbatim. Homepage challenge content must not add or replace a category.
+  if (settings.enable_local_featured_categories) {
+    return null;
+  }
+
   const existing = findHomeCard();
   if (existing) {
     return existing;
   }
 
+  // Migration fallback for the external Featured Categories component. It
+  // cannot reserve a special card, so retain the old prepended slot until the
+  // local renderer is enabled and the external component is detached.
   const list = document.querySelector(".featured-categories__list-container");
   if (!list) {
     return null;
@@ -979,8 +986,9 @@ const spcRun = (api) => {
   function needsChallengeData() {
     return (
       isChallengePage() ||
-      // Matches ensureHomeCard(): the homepage slot only exists here.
-      document.body.classList.contains("navigation-topics") ||
+      // The legacy external component still needs its injected homepage card.
+      (!settings.enable_local_featured_categories &&
+        document.body.classList.contains("navigation-topics")) ||
       // renderComposer() prefills the round tag, but only while it is open.
       Boolean(document.querySelector("#reply-control.open"))
     );
@@ -1012,9 +1020,9 @@ const spcRun = (api) => {
       return;
     }
 
-    // Own the homepage slot from the start so Featured Categories does not
-    // need to render a separate native Monthly card while topic data loads.
-    prepareHomeCard(activeRecord);
+    if (!settings.enable_local_featured_categories) {
+      prepareHomeCard(activeRecord);
+    }
 
     const active = await hydrateChallenge(activeRecord);
     if (request !== renderRequest) {

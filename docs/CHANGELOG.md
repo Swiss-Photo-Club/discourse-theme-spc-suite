@@ -4,6 +4,19 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Make Discourse navigation defaults own homepage categories
+
+The homepage category renderer now reads core's
+`default_navigation_menu_categories` client setting instead of maintaining a second category
+list in an external theme component. This makes the admin navigation selection the single
+source of truth for both new-visitor sidebar defaults and homepage category order.
+
+SPC Suite preserves the Featured Categories DOM contract so the existing homepage styling
+and enhancements continue to work. It renders the configured category list verbatim; no
+category-specific feature may insert, replace, or reorder an entry. A temporary
+`enable_local_featured_categories` switch keeps the old component available during cutover
+and will be removed after the local renderer has been stable in production.
+
 ## 7215dd1 — Stop the leaderboard and challenge renderers from storming the rate limiter
 
 **Symptom.** A bare "429 error" dialog on reloading `/c/critique-portfolio-reviews/7`, and

@@ -95,9 +95,15 @@ challenge gives the club a shared, dated rhythm that an open forum has no way to
 
 ## Brand Commitments
 
-- **Swiss Photo Club**, and the community must stay visually continuous with
-  **swissphotoclub.com** — the main site's identity is the authority, not this theme's own
-  invention.
+- **Swiss Photo Club.** The **swissphotoclub.com design system is the authority** — its
+  typography, palette, spacing and component vocabulary are inherited, not reinvented here.
+- **But the community is not meant to look identical to the main site.** It is a dialect of the
+  same system, allowed its own look and feel. The deliberate expression of that: the main site
+  leads with **coral pink**; the community leads with the **dark indigo `--spc-indigo: #1a2744`**.
+  Coral is not banished — it is what ties the two together — and both tokens are live today
+  across the same six partials (indigo 32 uses, coral 46). Read the rule as *which colour carries
+  the community's lead surfaces*, not as a ban on coral, and do not "correct" the community back
+  towards the main site's balance.
 - **Open Sans** in four weights (Light, Medium, SemiBold, ExtraBold), shipped in `assets/` and
   declared in `about.json`. Those files, plus `JWIM4133.jpg`, exist nowhere else outside the
   Discourse database.

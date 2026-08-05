@@ -6,14 +6,13 @@
  * never the shell, the type scale or the button geometry. Those live in
  * hero.scss and are shared with the challenge and invitation variants.
  *
- * THIS FILE MAKES NO NETWORK REQUEST, AND MUST NOT GAIN ONE. Everything it
- * renders comes off the Category model that Discourse preloads into
- * /site.json: the cover from `uploaded_background`, the lead from
- * `description_excerpt`. A header is on every category page a member opens, so
- * a fetch here would be the same shape as the renderer that produced the
- * site-wide 429 storm, on the busiest surface in the component. The spec
- * dropped both the meetups date line and the critique subject chips for
- * exactly this reason: drop the slot rather than fetch for it.
+ * THIS FILE MAKES NO NETWORK REQUEST, AND MUST NOT GAIN ONE. The generic caller
+ * supplies the Category model Discourse preloads into /site.json; the Monthly
+ * Challenge caller supplies data its own workflow already resolved. A header
+ * is on every category page a member opens, so fetching from this shared
+ * renderer would repeat the request pattern that produced the site-wide 429
+ * storm. The spec dropped both the meetups date line and the critique subject
+ * chips for exactly this reason: drop the slot rather than fetch for it.
  *
  * The hero is our OWN element, appended to SPC Suite's category surface and
  * removed by clearHero(). It never rewrites a core node. Ember keeps its
@@ -24,6 +23,7 @@
 
 const SURFACE_SELECTOR = "[data-spc-category-surface]";
 const HERO_SELECTOR = "[data-spc-hero]";
+const INTRODUCTION_SELECTOR = "[data-spc-category-introduction]";
 
 function escapeHtml(value) {
   const element = document.createElement("span");
@@ -46,6 +46,14 @@ export function clearHero(marker) {
   const hero = document.querySelector(HERO_SELECTOR);
   if (hero && hero.dataset.spcHero === String(marker)) {
     hero.remove();
+  }
+
+  const introduction = document.querySelector(INTRODUCTION_SELECTOR);
+  if (
+    introduction &&
+    introduction.dataset.spcCategoryIntroduction === String(marker)
+  ) {
+    introduction.remove();
   }
 }
 
@@ -74,8 +82,8 @@ function ensureHero(marker, variant) {
   if (existing) {
     // Same element, different category: re-marker it rather than inserting a
     // second hero.
-    if (existing.dataset.spcHero !== marker) {
-      existing.dataset.spcHero = marker;
+    if (existing.dataset.spcHero !== String(marker)) {
+      existing.dataset.spcHero = String(marker);
       delete existing.dataset.spcHeroSignature;
     }
     // Only rewrite the class list when the variant actually changed. Doing it
@@ -121,22 +129,45 @@ function actionMarkup(action) {
   }>${label}</button>`;
 }
 
-/**
- * The winner callout. Structured rather than an HTML string on purpose: taking
- * markup would move escaping back out to every caller, which is how the one
- * unescaped interpolation eventually gets written. Named for what it is rather
- * than as a generic "aside" — it has exactly one caller and one shape, and a
- * generic slot with one shape is an abstraction that has not earned itself.
- */
-function winnerMarkup(winner) {
-  if (!winner?.title) {
-    return "";
+function renderIntroduction(marker, introduction) {
+  let element = document.querySelector(INTRODUCTION_SELECTOR);
+
+  if (!introduction?.body) {
+    // There is only one active category surface. Remove a previous route's
+    // introduction even when it had a different marker, otherwise navigating
+    // from a category with prose to one without it leaves stale copy behind.
+    element?.remove();
+    return;
   }
-  return `<a class="spc-hero__winner" href="${escapeHtml(winner.href)}">
-      <span>${escapeHtml(winner.label)}</span>
-      <strong>${escapeHtml(winner.title)}</strong>
-      ${winner.note ? `<small>${escapeHtml(winner.note)}</small>` : ""}
-    </a>`;
+
+  if (!element) {
+    element = document.createElement("section");
+    element.className = "spc-category-introduction";
+    categorySurface()?.append(element);
+  }
+
+  element.dataset.spcCategoryIntroduction = String(marker);
+  const signature = [
+    introduction.body,
+    introduction.href || "",
+    introduction.label || "",
+  ].join("|");
+
+  if (element.dataset.spcCategoryIntroductionSignature === signature) {
+    return;
+  }
+
+  element.dataset.spcCategoryIntroductionSignature = signature;
+  element.innerHTML = `
+    <p>${escapeHtml(introduction.body)}</p>
+    ${
+      introduction.href && introduction.label
+        ? `<a href="${escapeHtml(introduction.href)}">${escapeHtml(
+            introduction.label
+          )}</a>`
+        : ""
+    }
+  `;
 }
 
 /**
@@ -149,9 +180,10 @@ function winnerMarkup(winner) {
  * @param {string} config.signature  re-render guard; equal signature = no work
  * @param {string} config.eyebrow    kicker — the category's role, not its name
  * @param {string} config.title      the headline
- * @param {string} [config.lead]     one sentence, from category.description_excerpt
+ * @param {string} [config.lead]     optional banner-specific supporting line
  * @param {string} [config.meta]     status line — the challenge's deadlines
- * @param {object} [config.winner]   { href, label, title, note }, challenge only
+ * @param {object} [config.introduction] { body, href?, label? }, the shared
+ *                                   admin-maintained category explanation
  * @param {string} [config.cover]    background image URL
  * @param {boolean} [config.shade]   render the scrim; defaults to "only with a
  *                                   cover". The challenge passes true outright
@@ -166,6 +198,8 @@ export function renderHero(config) {
   if (!hero) {
     return null;
   }
+
+  renderIntroduction(config.marker, config.introduction);
 
   if (hero.dataset.spcHeroSignature === config.signature) {
     return hero;
@@ -189,7 +223,6 @@ export function renderHero(config) {
           ? `<span class="spc-hero__meta">${escapeHtml(config.meta)}</span>`
           : ""
       }
-      ${winnerMarkup(config.winner)}
       ${
         actions.length
           ? `<div class="spc-hero__actions">${actions

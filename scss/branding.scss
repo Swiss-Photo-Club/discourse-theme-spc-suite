@@ -522,6 +522,9 @@ body:not(.admin-interface)
   .sidebar-section-link[href^="/c/monthly-challenge/"],
 body:not(.admin-interface)
   .sidebar-section[data-section-name="categories"]
+  .sidebar-section-link[href^="/c/photo-feedback/"],
+body:not(.admin-interface)
+  .sidebar-section[data-section-name="categories"]
   .sidebar-section-link[href^="/c/critique-portfolio-reviews/"] {
   color: var(--spc-indigo);
   font-weight: 700;

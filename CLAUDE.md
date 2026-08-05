@@ -138,9 +138,9 @@ and let the core wrapper own the page geometry.
 That conversion took five attempts on the live site, and every wrong turn is written up in the
 three notes above. Read them before touching this layout again.
 
-The real category set is 6 `monthly-challenge`, 7 `critique-portfolio-reviews`,
+The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
 8 `meetups-photowalks`, 10 `support` (displayed "Post Processing"), 5 `announcements-club-news`,
-2 `feedback`, 12 `vorstellungen`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
+2 `feedback`, 12 `introductions`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
 name disagree, so match on id, never on slug-looks-like-the-name.
 
 ## Category heroes
@@ -158,11 +158,19 @@ sharing a lifecycle.
 
 **The mount is ours.** `components/spc-category-surface.gjs` renders
 `[data-spc-category-surface]` through the `above-main-container` outlet on every route.
-`display: contents` keeps the hero and challenge brief laid out as direct children of
-`#main-outlet`, while the stable owned element survives category transitions. Never go back to
-inserting relative to `.category-title-header`: that element belongs to the detachable Category
-Banners component, and making its hidden output the anchor is what made component 5 an invisible
-runtime dependency.
+It is an ordered flex column containing the hero, native category introduction, optional
+category-specific sections and optional leaderboard. Discourse's `.list-controls` and topic
+list stay outside it as adjacent core-owned siblings, so no custom section may be inserted
+between the controls and `#list-area`. The stable owned element survives category transitions.
+Never go back to inserting relative to `.category-title-header`: that element belongs to the
+detachable Category Banners component, and making its hidden output the anchor is what made
+component 5 an invisible runtime dependency.
+
+**Category copy already has an admin-owned source.** The shared explanation reads
+`Category.description` and links to `Category.topic_url`, the built-in About topic. Do not add a
+parallel setting registry for category prose or read-more URLs. The banner image likewise comes
+from the category's native `uploaded_background`. The category page keeps Discourse's normal
+1110px wrapper; only individual topic-entry pages may opt into a wider canvas.
 
 Category Banners may be attached during the update but should be detached from Foundation and
 Horizon afterwards. While it is present, `category-hero.scss` hides both its

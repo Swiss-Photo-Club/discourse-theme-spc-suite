@@ -8,8 +8,9 @@ import Component from "@glimmer/component";
  * mount alive lets the two renderers clear or replace their own children
  * without depending on another theme component's lifecycle.
  *
- * CSS gives this element `display: contents`, so the hero and challenge brief
- * keep the same layout they had as direct children of #main-outlet.
+ * CSS gives this element an ordered vertical layout so shared and
+ * category-specific content always stays above Discourse's native list
+ * controls. The controls and topic list remain core-owned siblings.
  */
 export default class SpcCategorySurface extends Component {
   <template>

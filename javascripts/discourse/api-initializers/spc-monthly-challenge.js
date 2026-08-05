@@ -216,6 +216,22 @@ function challengeSummary(challenge) {
   return challenge?.topic?.summary || localized(challenge, "summary") || "";
 }
 
+function categoryDescription(category) {
+  const value = category?.description || category?.description_excerpt;
+  if (!value) {
+    return "";
+  }
+  const container = document.createElement("div");
+  container.innerHTML = value;
+  return container.textContent.trim();
+}
+
+function categoryTopicUrl(category) {
+  return (
+    category?.topic_url || category?.topicUrl || settings.guide_topic_url || ""
+  );
+}
+
 function validDate(value) {
   if (!value) {
     return null;
@@ -332,6 +348,9 @@ function fetchPinnedBrief() {
       }
       return {
         topic_id: brief.id,
+        topic_url: brief.slug
+          ? `/t/${encodeURIComponent(brief.slug)}/${brief.id}`
+          : `/t/${brief.id}`,
         tag: (brief.tags || [])
           .map(tagName)
           .find((tag) => /^\d{4}-\d{2}/.test(tag)),
@@ -373,6 +392,7 @@ function deriveChallengeFromBrief(brief) {
   return {
     listing: brief.listing,
     topic_id: brief.topic_id,
+    topic_url: brief.topic_url,
     tag: brief.tag,
     status: "active",
     start_at: `${year}-${pad(month)}-01T00:00:00+02:00`,
@@ -570,13 +590,20 @@ function deadlineText(challenge, state) {
   }
   if (state === "submissions-closed") {
     return challenge.voting_deadline
-      ? translate("submissions_closed_voting_open", {
+      ? translate("deadline_voting_open", {
+          submission_date: formatDate(challenge.submission_deadline),
           date: formatDate(challenge.voting_deadline),
         })
-      : translate("closed");
+      : translate("closed_with_deadline", {
+          date: formatDate(challenge.submission_deadline),
+        });
   }
   if (state === "closed") {
-    return translate("closed");
+    return challenge.submission_deadline
+      ? translate("closed_with_deadline", {
+          date: formatDate(challenge.submission_deadline),
+        })
+      : translate("closed");
   }
   return "";
 }
@@ -597,32 +624,35 @@ function deadlineText(challenge, state) {
 function renderChallengeHero(challenge) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
-  const winnerImage = uploadUrl(challenge.winner_image);
-  const cover =
-    winnerImage || uploadUrl(challenge.cover_image) || challenge.topic?.coverImage;
+  const category = Category.findById(Number(settings.monthly_category_id));
+  const cover = uploadUrl(category?.uploaded_background);
+  const description = categoryDescription(category);
+  const topicUrl = categoryTopicUrl(category);
+  const currentTitle = challengeTitle(challenge);
 
   renderHero({
     marker: HERO_MARKER,
     variant: "challenge",
-    signature: `${challenge.tag}-${challenge.topic?.updatedAt}-${state}-${localeCode()}`,
-    eyebrow: `${translate("label")} · ${monthLabel(challenge)}`,
-    title: challengeTitle(challenge),
-    lead: challengeSummary(challenge),
+    signature: [
+      challenge.tag,
+      challenge.topic?.updatedAt,
+      state,
+      localeCode(),
+      category?.name,
+      currentTitle,
+      cover,
+      description,
+      topicUrl,
+    ].join("-"),
+    eyebrow: monthLabel(challenge),
+    title: category?.name || translate("label"),
+    lead: translate("current_theme", { title: currentTitle }),
     meta: deadlineText(challenge, state),
-    winner:
-      challenge.status === "archived" && challenge.winner_title
-        ? {
-            href:
-              challenge.winner_topic_url ||
-              challenge.topic?.url ||
-              categoryRoute(),
-            label: translate("winner"),
-            title: challenge.winner_title,
-            note: challenge.winner_author
-              ? translate("by_author", { author: challenge.winner_author })
-              : "",
-          }
-        : null,
+    introduction: {
+      body: description,
+      href: topicUrl,
+      label: translate("read_more_category"),
+    },
     cover,
     shade: true,
     actions: [
@@ -650,46 +680,49 @@ function renderChallengeHero(challenge) {
   });
 }
 
-function renderEducation(challenge) {
-  const existing = document.querySelector(".spc-challenge-brief");
-  if (!settings.show_education) {
-    existing?.remove();
-    return;
-  }
+function renderCurrentChallenge(challenge) {
+  const existing = document.querySelector(".spc-challenge-current");
+  const title = challengeTitle(challenge);
+  const summary = challengeSummary(challenge);
+  const image = uploadUrl(challenge.cover_image) || challenge.topic?.coverImage;
+  const href =
+    challenge.topic?.url || challenge.topic_url || settings.guide_topic_url;
+  const signature = [
+    challenge.tag,
+    challenge.topic?.updatedAt,
+    localeCode(),
+    title,
+    summary,
+    image,
+    href,
+  ].join("-");
 
-  const cooked = challenge.topic?.cooked || "";
-  const signature = `${challenge.tag}-${challenge.topic?.updatedAt}-${localeCode()}`;
-
-  if (!cooked) {
-    existing?.remove();
-    return;
-  }
   if (existing?.dataset.spcChallengeSignature === signature) {
     return;
   }
 
   existing?.remove();
   const section = document.createElement("section");
-  section.className = "spc-challenge-brief";
-  section.dataset.spcMonthlyChallenge = "brief";
+  section.className = "spc-challenge-current";
+  section.dataset.spcMonthlyChallenge = "current";
   section.dataset.spcChallengeSignature = signature;
+  section.setAttribute("aria-labelledby", "spc-challenge-current-title");
   section.innerHTML = `
-    <header class="spc-challenge-brief__header">
-      <div>
-        <span class="spc-eyebrow">${escapeHtml(
-          translate("official_brief")
-        )}</span>
-        <h2>${escapeHtml(challengeTitle(challenge))}</h2>
-      </div>
-      ${
-        challenge.topic?.url
-          ? `<a href="${escapeHtml(challenge.topic.url)}">${escapeHtml(
-              translate("read_full_challenge")
-            )} →</a>`
-          : ""
-      }
-    </header>
-    <div class="spc-challenge-brief__content cooked">${cooked}</div>
+    <div class="spc-challenge-current__media">
+      ${image ? `<img src="${escapeHtml(image)}" alt="">` : ""}
+    </div>
+    <div class="spc-challenge-current__content">
+      <span class="spc-eyebrow">${escapeHtml(translate("current"))}</span>
+      <h2 id="spc-challenge-current-title">${escapeHtml(title)}</h2>
+      ${summary ? `<p>${escapeHtml(summary)}</p>` : ""}
+    </div>
+    ${
+      href
+        ? `<a class="spc-challenge-current__link" href="${escapeHtml(
+            href
+          )}">${escapeHtml(translate("read_full_challenge"))} →</a>`
+        : ""
+    }
   `;
 
   categorySurface()?.append(section);
@@ -701,78 +734,80 @@ function archivedChallenges(challenges) {
     .sort((a, b) => (validDate(b.start_at)?.getTime() || 0) - (validDate(a.start_at)?.getTime() || 0));
 }
 
-function renderArchive(challenges) {
-  const existing = document.querySelector(".spc-challenge-archive");
-  const archived = archivedChallenges(challenges);
-  if (!settings.show_archive || archived.length === 0) {
+function renderPreviousWinner(challenges) {
+  const existing = document.querySelector(".spc-challenge-winner");
+  // The newest archived round is the previous month. Do not skip over an
+  // incomplete record and accidentally label an older photograph as last
+  // month's winner; wait until staff add both the title and image instead.
+  const previous = archivedChallenges(challenges)[0];
+
+  if (!previous?.winner_title || !uploadUrl(previous.winner_image)) {
     existing?.remove();
     return;
   }
 
-  const signature = `${archived
-    .map((challenge) => `${challenge.tag}:${challenge.topic?.updatedAt}`)
-    .join("|")}-${localeCode()}`;
+  const image = uploadUrl(previous.winner_image);
+  const month = monthLabel(previous);
+  const theme = challengeTitle(previous);
+  const href =
+    previous.gallery_url ||
+    previous.winner_topic_url ||
+    previous.topic?.url ||
+    categoryRoute();
+  const meta = [
+    previous.winner_author
+      ? translate("by_author", { author: previous.winner_author })
+      : "",
+    Number(previous.entry_count) > 0
+      ? translate("entries", { count: Number(previous.entry_count) })
+      : "",
+  ].filter(Boolean);
+  const signature = [
+    previous.tag,
+    previous.topic?.updatedAt,
+    localeCode(),
+    previous.winner_title,
+    previous.winner_author,
+    previous.entry_count,
+    image,
+    href,
+  ].join("-");
+
   if (existing?.dataset.spcChallengeSignature === signature) {
     return;
   }
 
   existing?.remove();
   const section = document.createElement("section");
-  section.className = "spc-challenge-archive";
-  section.dataset.spcMonthlyChallenge = "archive";
+  section.className = "spc-challenge-winner";
+  section.dataset.spcMonthlyChallenge = "winner";
   section.dataset.spcChallengeSignature = signature;
+  section.setAttribute("aria-labelledby", "spc-challenge-winner-title");
   section.innerHTML = `
-    <header class="spc-challenge-archive__header">
-      <div>
-        <span class="spc-eyebrow">${escapeHtml(translate("past_challenges"))}</span>
-        <h2>${escapeHtml(translate("past_challenges"))}</h2>
-      </div>
-      <p>${escapeHtml(translate("past_challenges_intro"))}</p>
-    </header>
-    <div class="spc-challenge-archive__grid">
-      ${archived
-        .map((challenge) => {
-          const image =
-            uploadUrl(challenge.winner_image) ||
-            uploadUrl(challenge.cover_image) ||
-            challenge.topic?.coverImage;
-          const title = challengeTitle(challenge);
-          return `<a class="spc-challenge-archive-card" href="${escapeHtml(
-            challenge.gallery_url || challenge.topic?.url || categoryRoute()
-          )}" ${image ? `style="--spc-archive-image: url('${escapeHtml(image).replaceAll("'", "%27")}')"` : ""}>
-            <span class="spc-challenge-archive-card__month">${escapeHtml(monthLabel(challenge))}</span>
-            <span class="spc-challenge-archive-card__overlay">
-              <strong>${escapeHtml(title)}</strong>
-              ${
-                challenge.winner_title
-                  ? `<span>${escapeHtml(translate("winning_photo"))}: ${escapeHtml(
-                      challenge.winner_title
-                    )}</span>`
-                  : ""
-              }
-              ${
-                challenge.winner_author
-                  ? `<small>${escapeHtml(translate("by_author", { author: challenge.winner_author }))}</small>`
-                  : ""
-              }
-              ${
-                Number(challenge.entry_count) > 0
-                  ? `<small>${escapeHtml(
-                      translate("entries", { count: Number(challenge.entry_count) })
-                    )}</small>`
-                  : ""
-              }
-            </span>
-          </a>`;
-        })
-        .join("")}
+    <div class="spc-challenge-winner__media">
+      ${
+        image
+          ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(
+              previous.winner_title
+            )}">`
+          : ""
+      }
+    </div>
+    <div class="spc-challenge-winner__content">
+      <span class="spc-eyebrow">${escapeHtml(
+        translate("last_month_winner", { month, theme })
+      )}</span>
+      <h2 id="spc-challenge-winner-title">${escapeHtml(
+        previous.winner_title
+      )}</h2>
+      ${meta.length ? `<p>${escapeHtml(meta.join(" · "))}</p>` : ""}
+      <a href="${escapeHtml(href)}">${escapeHtml(
+        translate("previous_entries", { month })
+      )} →</a>
     </div>
   `;
 
-  const listContainer = document.querySelector(".container.list-container.--topic-list");
-  if (listContainer) {
-    listContainer.insertAdjacentElement("afterend", section);
-  }
+  categorySurface()?.append(section);
 }
 
 function hideOfficialTopicRow(challenge) {
@@ -937,7 +972,6 @@ function repairLegacyCategoryLinks() {
   });
 }
 
-
 let spcStarted = false;
 
 function spcStartWhenReady(passedOwner, run) {
@@ -1013,7 +1047,7 @@ const spcRun = (api) => {
     clearHero(HERO_MARKER);
     document
       .querySelectorAll(
-        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive"
+        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner"
       )
       .forEach((element) => element.remove());
   }
@@ -1054,18 +1088,20 @@ const spcRun = (api) => {
       return;
     }
 
-    const archived = await Promise.all(
-      challenges
-        .filter((challenge) => challenge.status === "archived")
-        .map((challenge) => hydrateChallenge(challenge))
-    );
+    // The category template shows only last month's winner. Hydrate that one
+    // archived brief instead of fetching every historical challenge topic on
+    // each visit to the category.
+    const previousRecord = archivedChallenges(challenges)[0];
+    const archived = previousRecord
+      ? [await hydrateChallenge(previousRecord)]
+      : [];
     if (request !== renderRequest) {
       return;
     }
 
     renderChallengeHero(active);
-    renderEducation(active);
-    renderArchive([active, ...archived]);
+    renderCurrentChallenge(active);
+    renderPreviousWinner(archived);
     hideOfficialTopicRow(active);
   }
 

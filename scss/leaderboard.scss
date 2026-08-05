@@ -116,6 +116,11 @@ body.spc-leaderboard-strip-active {
   }
 }
 
+.spc-category-surface > .spc-leaderboard-strip {
+  order: 50;
+  margin: 24px 0 0;
+}
+
 @media (max-width: 900px) {
   .spc-leaderboard-strip {
     &__inner {

@@ -4,6 +4,25 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Standardise category pages and specialise the challenge content
+
+Every category now uses one ordered surface: photo-backed hero and actions, native category
+description with a link to its admin-maintained About topic, optional category sections and
+leaderboard, then Discourse's native list controls immediately before the posts. The category
+background continues to come from `uploaded_background`; no parallel text or URL registry was
+added. Photo Feedback has no post-count status line.
+
+Monthly Challenge now names the category in the hero and places the current theme plus its
+end-of-month deadline beneath it. A compact current-round card links to the pinned brief, and
+the most recent archived round gets a dedicated, uncropped winner section once its winner data
+is complete.
+The former full cooked brief and post-list archive have been retired.
+
+The challenge category no longer widens `#main-outlet-wrapper` to 1500px, hides native filters,
+or adds its own horizontal list padding. It uses the same Discourse 1110px wrapper as every
+other category. Leaderboard strips on category pages moved above the list controls so nothing
+custom separates those controls from `#list-area`.
+
 ## Unreleased — Add the member identity banner and restore native homepage width
 
 The homepage now owns a photo-backed member identity banner and an introductory text band.

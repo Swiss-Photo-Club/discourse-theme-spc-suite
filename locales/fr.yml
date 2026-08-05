@@ -155,6 +155,8 @@ fr:
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois
+    current_theme: "Challenge de ce mois : %{title}"
+    read_more_category: En savoir plus sur cette catégorie →
     submit_photo: ENVOYER UNE PHOTO
     view_entries: VOIR LES PHOTOS
     closed: CHALLENGE TERMINÉ
@@ -178,6 +180,10 @@ fr:
     voting_closes: Vote jusqu’au %{date}
     active_deadlines: Envoyer avant le %{submission_date} · Voter avant le %{voting_date}
     submissions_closed_voting_open: Envois terminés · Vote jusqu’au %{date}
+    deadline_voting_open: Date limite %{submission_date} · Envois terminés · Vote jusqu’au %{date}
+    closed_with_deadline: Date limite %{date} · Challenge terminé
+    last_month_winner: Photo gagnante du mois dernier · %{month} — %{theme}
+    previous_entries: Voir toutes les participations de %{month}
     vote_modal_title: Comment fonctionne le vote
     vote_step_one_title: Découvrez les nouvelles participations
     vote_step_one_body: Les nouvelles photos apparaissent pendant la période d’envoi et peuvent recevoir des votes immédiatement.
@@ -271,6 +277,7 @@ fr:
   hero:
     generic:
       eyebrow: Catégorie de la communauté
+      read_more: En savoir plus sur cette catégorie →
       actions:
         create: Créer un sujet
     post_processing:

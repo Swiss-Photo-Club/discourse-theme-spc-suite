@@ -38,12 +38,51 @@
 
 /* Hero shell ---------------------------------------------------------- */
 
-/* Theme-owned mount rendered through the above-main-container outlet.
-   display:contents preserves the old layout: the hero and challenge brief
-   participate as though they were still direct children of #main-outlet,
-   without depending on Category Banners to create an adjacent anchor. */
+/* Theme-owned mount rendered through the above-main-container outlet. It is a
+   real flex container now because every category has an ordered stack: hero,
+   introduction, optional category-specific sections, optional leaderboard,
+   then the native list controls and topic list outside this mount. */
 .spc-category-surface {
-  display: contents;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.spc-category-surface > .spc-hero {
+  order: 10;
+}
+
+.spc-category-introduction {
+  order: 20;
+  width: 100%;
+  padding: 22px 32px 24px;
+  border-bottom: 1px solid var(--spc-gray-200);
+  background: #ffffff;
+  color: var(--spc-charcoal);
+  box-sizing: border-box;
+}
+
+.spc-category-introduction p {
+  max-width: 78ch;
+  margin: 0 0 10px;
+  color: var(--spc-gray-700);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.spc-category-introduction a {
+  display: inline-block;
+  border-bottom: 2px solid var(--spc-coral);
+  color: var(--spc-indigo) !important;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.spc-category-introduction a:hover,
+.spc-category-introduction a:focus-visible {
+  color: var(--spc-coral-hover) !important;
 }
 
 /* The core carries only what every hero shares — a full-width, self-clipping
@@ -86,17 +125,16 @@
 }
 
 /* Category: the shared header for every category that is not the challenge.
-   Shorter than --challenge because it carries a name, a sentence and one or
-   two actions rather than a month of status, deadlines and a winner.
+   Shorter than --challenge because it carries a name and one or two actions,
+   while the longer explanation lives in the white introduction band below.
 
    One variant, not three. The spec proposed --submission, --events and --plain;
    --events lost its meta line to the no-fetch rule and --submission lost its
    subject chips to the same rule, which left all three with identical
    declarations. "Two actions instead of one" is not a CSS difference.
 
-   min-height is provisional at 300px and is the one number here settled by eye
-   rather than by argument. The coverless case is still open — no coverless
-   category hero exists until categories 7 and 12 land. */
+   Coverless categories keep the same height and alignment as categories with
+   images, so every category begins with the same visual template. */
 .spc-hero--category {
   isolation: isolate;
   min-height: 300px;
@@ -114,18 +152,6 @@
    category name it reads as shouting. */
 .spc-hero--category .spc-hero__content h1 {
   font-size: clamp(2rem, 3.5vw, 3.2rem);
-}
-
-/* Coverless — categories 7 and 12, which have no uploaded_background. Left as
-   a variant property rather than folded into the shared value, because 300px
-   of flat indigo under a two-line headline is a lot of empty ground.
-
-   In practice this rarely binds: eyebrow, headline, lead and a 54px button row
-   already come to roughly 290px at this padding, so the content sets the
-   height and this only stops a short headline from opening a gap. If a
-   coverless hero still reads as heavy, padding is the lever, not min-height. */
-.spc-hero--category:not(.spc-hero--with-cover) {
-  min-height: 220px;
 }
 
 .spc-hero__shade {
@@ -229,32 +255,6 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* Winner callout ------------------------------------------------------ */
-
-.spc-hero__winner {
-  display: grid;
-  width: fit-content;
-  gap: 0.15rem;
-  margin-top: 1.1rem;
-  padding: 0.8rem 1rem;
-  border-left: 4px solid var(--spc-casablanca);
-  background: rgba(12, 20, 37, 0.64);
-  color: #ffffff !important;
-  text-decoration: none;
-}
-
-.spc-hero__winner > span {
-  color: var(--spc-casablanca);
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.spc-hero__winner small {
-  color: rgba(255, 255, 255, 0.68);
-}
-
 /* Narrow viewports ----------------------------------------------------- */
 
 @media (max-width: 600px) {
@@ -293,5 +293,13 @@
 
   .spc-button {
     width: 100%;
+  }
+
+  .spc-category-introduction {
+    padding: 20px;
+  }
+
+  .spc-category-introduction p {
+    font-size: 15px;
   }
 }

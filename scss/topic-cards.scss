@@ -59,7 +59,7 @@
    override that cost the read/unread cue. Those are gone; what remains is the
    same three rules the other two get. */
 $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
-  "vorstellungen";
+  "photo-feedback", "vorstellungen", "introductions";
 
 @each $slug in $spc-card-slugs {
   /* A card rather than a list row: white, lifted, and clipping its photo

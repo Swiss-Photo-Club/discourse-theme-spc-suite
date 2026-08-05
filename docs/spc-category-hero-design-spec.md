@@ -8,6 +8,12 @@ Status: **executed, 2026-07-26.** Categories 6, 7, 8, 10 and 12 render the share
 live site. Read §6a before the spec body; then read this note, because execution overrode both
 in three further places.
 
+**2026-08-05 category-page revision:** this file remains historical. The current composition is
+documented in `README.md`: shared banner, action buttons, a separate admin-authored introduction,
+optional category-specific sections, then Discourse's native list controls immediately before the
+topic list. Monthly Challenge no longer places its winner in the banner, and category pages use
+Discourse's default content width.
+
 **2026-07-27 follow-up:** the category list and `.category-title-header` anchor described below
 have been retired. SPC Suite now owns an `above-main-container` surface, and every category gets
 the generic hero unless it has a category-specific override. This document remains the design

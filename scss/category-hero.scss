@@ -21,6 +21,11 @@
        inside the hero. */
     background-image: none !important;
 
+    #main-outlet {
+      padding-top: 0;
+      background: var(--spc-wild-sand);
+    }
+
     /* Hide both possible native headers during the safe rollout window:
        core owns .category-heading, while the detachable Category Banners
        component owns .category-title-header. */

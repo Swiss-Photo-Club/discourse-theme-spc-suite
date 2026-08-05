@@ -135,14 +135,6 @@ guide_topic_url:
   type: string
   default: /t/monatliche-foto-challenge-so-funktioniert-es/8
 
-show_education:
-  type: bool
-  default: true
-
-show_archive:
-  type: bool
-  default: true
-
 challenges:
   type: objects
   default:
@@ -217,7 +209,7 @@ workspace_enabled_categories:
 
 critique_category_slug:
   type: string
-  default: "critique-portfolio-reviews"
+  default: "photo-feedback"
   description: "Slug of the critique category."
 
 critique_category_id:
@@ -227,7 +219,7 @@ critique_category_id:
 
 critique_intro_category_slug:
   type: string
-  default: "vorstellungen"
+  default: "introductions"
   description: "Slug of the member introductions category."
 
 critique_intro_category_id:

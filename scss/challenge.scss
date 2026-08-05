@@ -12,15 +12,15 @@
    that direction is paid on the homepage and the sidebar border instead.
 
    Not listed here and not ours to define: --spc-challenge-cover, which
-   spc-monthly-challenge.js sets inline on the hero and the homepage
-   card. It has a gradient fallback at its use site. */
+   spc-monthly-challenge.js sets inline on the homepage card. The category
+   banner uses the shared --spc-hero-cover variable instead. */
 
 /* The hero shell, the button and the eyebrow now live in hero.scss, which
    imports earlier. Only the challenge-specific rules are left here: the
    page plumbing below, and the contextual kicker overrides further down,
    which keep winning because this partial imports later. */
 
-/* Current and archived challenge hero -------------------------------- */
+/* Challenge category page shell -------------------------------------- */
 
 /* The hero replaces the core category header rather than overwriting it, so
    the header is hidden from the first paint. Doing it in CSS rather than in
@@ -30,9 +30,13 @@ body.category-monthly-challenge .category-title-header {
   display: none;
 }
 
-/* The hero owns the submit action; hide the native topic-creation and
-   notification controls in the filter bar. */
-body.category-monthly-challenge .navigation-controls {
+body.navigation-category.category-monthly-challenge {
+  background-image: none !important;
+}
+
+/* The hero owns the submit action. Keep the rest of Discourse's native list
+   controls, including notification and moderation actions. */
+body.category-monthly-challenge #create-topic {
   display: none !important;
 }
 
@@ -69,207 +73,115 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   display: none;
 }
 
-body.category-monthly-challenge .list-controls {
-  padding-top: 1.25rem;
-}
-
-/* Official topic content -------------------------------------------- */
-.spc-challenge-brief {
+/* Current challenge and previous winner ----------------------------- */
+.spc-challenge-current {
+  order: 30;
+  display: grid;
   width: 100%;
-  padding: 2.5rem 3rem 3rem;
-  border-bottom: 1px solid var(--spc-gray-200);
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 0;
+  padding: 14px 18px;
+  border: 1px solid var(--spc-gray-200);
   background: #ffffff;
-  color: var(--spc-charcoal);
+  box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
   box-sizing: border-box;
 }
 
-.spc-challenge-brief__header {
+.spc-challenge-current__media {
   display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto 1.75rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--spc-gray-200);
+  width: 96px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a2744, #455d88);
 }
 
-.spc-challenge-brief__header h2 {
-  margin: 0.35rem 0 0;
-  color: var(--spc-indigo);
-  font-size: clamp(1.7rem, 3vw, 2.6rem);
+.spc-challenge-current__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.spc-challenge-brief__header > a {
-  color: var(--spc-coral) !important;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.spc-challenge-brief .spc-eyebrow,
-.spc-challenge-archive .spc-eyebrow,
+.spc-challenge-current .spc-eyebrow,
+.spc-challenge-winner .spc-eyebrow,
 .spc-voting-dialog .spc-eyebrow {
   color: var(--spc-coral);
 }
 
-.spc-challenge-brief__content {
-  max-width: 860px;
-  margin: 0 auto;
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-.spc-challenge-brief__content > :first-child {
-  margin-top: 0;
-}
-
-.spc-challenge-brief__content > :last-child {
-  margin-bottom: 0;
-}
-
-.spc-challenge-brief__content p,
-.spc-challenge-brief__content li {
-  color: #5f6470;
-}
-
-.spc-challenge-brief__content h2,
-.spc-challenge-brief__content h3 {
-  margin-top: 2rem;
+.spc-challenge-current h2 {
+  margin: 2px 0 3px;
   color: var(--spc-indigo);
+  font-size: 17px;
 }
 
-.spc-challenge-brief__content img:not(.emoji) {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 1.5rem auto;
+.spc-challenge-current p {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--spc-gray-400);
+  line-height: 1.5;
 }
 
-/* Same callout pattern. The width and style are stated outright rather than
-   left to core's blockquote defaults, so this and the composer callout are
-   the same 4px rather than coincidentally similar. */
-.spc-challenge-brief__content blockquote {
-  margin: 1.5rem 0;
-  padding: 0.85rem 1.1rem;
-  border-left: 4px solid var(--spc-coral);
-  background: var(--bg-alt);
+.spc-challenge-current__link,
+.spc-challenge-winner__content > a {
+  border-bottom: 2px solid var(--spc-coral);
+  color: var(--spc-indigo) !important;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Winner-led archive ------------------------------------------------- */
-.spc-challenge-archive {
+.spc-challenge-winner {
+  order: 40;
+  display: grid;
   width: 100%;
-  margin-top: 2rem;
-  padding: 3rem 2rem 4rem;
+  min-height: 300px;
+  grid-template-columns: minmax(280px, 45%) minmax(0, 1fr);
+  margin: 16px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--spc-gray-200);
   background: #ffffff;
+  box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
   box-sizing: border-box;
 }
 
-.spc-challenge-archive__header {
-  display: grid;
-  grid-template-columns: 1fr minmax(260px, 500px);
-  align-items: end;
-  gap: 2rem;
-  max-width: 1320px;
-  margin: 0 auto 1.75rem;
+.spc-challenge-winner__media {
+  display: flex;
+  min-height: 300px;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: #141a26;
+  box-sizing: border-box;
 }
 
-.spc-challenge-archive__header h2 {
-  margin: 0.35rem 0 0;
+.spc-challenge-winner__media img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
+
+.spc-challenge-winner__content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 28px;
+}
+
+.spc-challenge-winner__content h2 {
+  margin: 8px 0 4px;
   color: var(--spc-indigo);
-  font-size: clamp(1.9rem, 3vw, 3rem);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 
-.spc-challenge-archive__header p {
-  margin: 0;
+.spc-challenge-winner__content p {
+  margin: 0 0 12px;
   color: var(--spc-gray-400);
-  line-height: 1.6;
-}
-
-.spc-challenge-archive__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  max-width: 1320px;
-  margin: 0 auto;
-}
-
-.spc-challenge-archive-card {
-  position: relative;
-  isolation: isolate;
-  min-height: 310px;
-  overflow: hidden;
-  background-color: var(--spc-indigo);
-  background-image: var(--spc-archive-image, linear-gradient(135deg, #1a2744, #344974));
-  background-position: center;
-  background-size: cover;
-  color: #ffffff !important;
-}
-
-.spc-challenge-archive-card:first-child {
-  grid-column: span 2;
-  min-height: 420px;
-}
-
-.spc-challenge-archive-card::after {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(16, 27, 50, 0.08) 25%, rgba(16, 27, 50, 0.96) 100%);
-  content: "";
-  transition: background 180ms ease;
-}
-
-.spc-challenge-archive-card__month {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.45rem 0.6rem;
-  background: rgba(16, 27, 50, 0.8);
-  color: #ffffff;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.spc-challenge-archive-card__overlay {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: grid;
-  gap: 0.25rem;
-  padding: 1.35rem;
-  transform: translateY(2.4rem);
-  transition: transform 180ms ease;
-}
-
-.spc-challenge-archive-card__overlay strong {
-  font-size: 1.4rem;
-}
-
-.spc-challenge-archive-card__overlay span,
-.spc-challenge-archive-card__overlay small {
-  color: rgba(255, 255, 255, 0.76);
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.spc-challenge-archive-card:hover::after,
-.spc-challenge-archive-card:focus-visible::after {
-  background: linear-gradient(180deg, rgba(16, 27, 50, 0.22) 0%, rgba(16, 27, 50, 0.98) 100%);
-}
-
-.spc-challenge-archive-card:hover .spc-challenge-archive-card__overlay,
-.spc-challenge-archive-card:focus-visible .spc-challenge-archive-card__overlay {
-  transform: translateY(0);
-}
-
-.spc-challenge-archive-card:hover .spc-challenge-archive-card__overlay span,
-.spc-challenge-archive-card:hover .spc-challenge-archive-card__overlay small,
-.spc-challenge-archive-card:focus-visible .spc-challenge-archive-card__overlay span,
-.spc-challenge-archive-card:focus-visible .spc-challenge-archive-card__overlay small {
-  opacity: 1;
 }
 
 /* Voting explainer modal -------------------------------------------- */
@@ -468,58 +380,38 @@ body.category-monthly-challenge .list-controls {
 }
 
 /* Responsive --------------------------------------------------------- */
-@media (max-width: 900px) {
-  .spc-challenge-archive__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 600px) {
-
-
-  .spc-challenge-brief {
-    padding: 2rem 1.25rem 2.5rem;
+  .spc-challenge-current {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
   }
 
-  .spc-challenge-brief__header {
-    display: block;
+  .spc-challenge-current__media {
+    width: 72px;
+    height: 58px;
   }
 
-  .spc-challenge-brief__header > a {
-    display: inline-block;
-    margin-top: 0.85rem;
+  .spc-challenge-current__link {
+    grid-column: 1 / -1;
+    width: fit-content;
     white-space: normal;
   }
 
-  .spc-challenge-archive {
-    padding: 2.5rem 1rem 3rem;
-  }
-
-  .spc-challenge-archive__header {
-    display: block;
-  }
-
-  .spc-challenge-archive__header p {
-    margin-top: 0.85rem;
-  }
-
-  .spc-challenge-archive__grid {
+  .spc-challenge-winner {
     grid-template-columns: 1fr;
   }
 
-  .spc-challenge-archive-card,
-  .spc-challenge-archive-card:first-child {
-    grid-column: auto;
-    min-height: 340px;
+  .spc-challenge-winner__media {
+    min-height: 220px;
   }
 
-  .spc-challenge-archive-card__overlay {
-    transform: none;
+  .spc-challenge-winner__media img {
+    max-height: 320px;
   }
 
-  .spc-challenge-archive-card__overlay span,
-  .spc-challenge-archive-card__overlay small {
-    opacity: 1;
+  .spc-challenge-winner__content {
+    padding: 22px 20px 24px;
   }
 
   .spc-voting-dialog__panel {
@@ -531,39 +423,20 @@ body.category-monthly-challenge .list-controls {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .spc-challenge-archive-card::after,
-  .spc-challenge-archive-card__overlay,
-  .spc-challenge-archive-card__overlay span,
-  .spc-challenge-archive-card__overlay small {
-    transition: none;
-  }
-}
-
 /* ==================================================================
    Monthly Challenge — category page (consolidated 2026-07-22, phase 3)
 
    Replaces the former "category v1" section and its ~10 stacked
-   QA-correction layers with their net effect. The hero, brief, archive,
-   voting dialog and composer are owned by the SPC Monthly Challenge
-   component, which rewrites the category header at runtime; this block
-   only covers what that component does not: design tokens, the widened
-   canvas, the filter bar, and the photo entry-card grid.
+   QA-correction layers with their net effect. The shared category surface,
+   current-round card, previous winner, voting dialog and composer are owned
+   by the SPC Monthly Challenge component. Discourse owns the canvas and list
+   controls; this block only styles the photo entry cards and voting details.
    Moved here from SPC Branding in phase 4 — this component owns every
    challenge surface.
    ================================================================== */
 
-/* Widened, centered canvas */
-body.category-monthly-challenge #main-outlet-wrapper {
-  width: calc(100vw - 4rem) !important;
-  max-width: 1500px !important;
-  margin-inline: auto !important;
-}
-
 body.category-monthly-challenge #main-outlet {
   position: relative;
-  width: 100% !important;
-  max-width: none !important;
   padding-top: 0;
   background: var(--spc-wild-sand);
 }
@@ -571,76 +444,6 @@ body.category-monthly-challenge #main-outlet {
 /* The native category heading duplicates the component-rendered hero. */
 body.category-monthly-challenge .list-controls .category-heading {
   display: none;
-}
-
-/* Filter bar */
-body.category-monthly-challenge .list-controls {
-  margin: 0;
-  padding: 1.75rem 2rem 0;
-  background: var(--spc-wild-sand);
-}
-
-body.category-monthly-challenge .list-controls > .container {
-  position: static;
-  width: 100%;
-  max-width: none;
-  padding: 0;
-}
-
-body.category-monthly-challenge .navigation-container {
-  position: static !important;
-  min-height: 48px;
-  margin: 0;
-  border: 0;
-}
-
-body.category-monthly-challenge .category-breadcrumb,
-body.category-monthly-challenge .nav-item_new,
-body.category-monthly-challenge .nav-item_hot {
-  display: none;
-}
-
-body.category-monthly-challenge #navigation-bar {
-  gap: 0.35rem;
-  margin: 0;
-}
-
-body.category-monthly-challenge #navigation-bar > li > a {
-  padding: 0.75rem 0.8rem;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  color: var(--spc-gray-400);
-  font-size: 0.98rem;
-  font-weight: 700;
-}
-
-body.category-monthly-challenge #navigation-bar > li.active > a,
-body.category-monthly-challenge #navigation-bar > li > a.active {
-  border-bottom-color: var(--spc-coral);
-  color: var(--spc-indigo);
-}
-
-/* List container */
-body.category-monthly-challenge .container.list-container.--topic-list {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 1.5rem 2rem 3rem;
-  background: var(--spc-wild-sand);
-  box-sizing: border-box;
-}
-
-body.category-monthly-challenge .container.list-container.--topic-list > .row.full-width:has(#list-area) {
-  display: block;
-  width: 100%;
-}
-
-body.category-monthly-challenge #list-area {
-  float: none !important;
-  width: 100% !important;
-  max-width: 1180px;
-  min-width: 0;
-  margin: 0 auto;
 }
 
 /* Photo entry cards — real masonry, positioned by Topic List Thumbnails.
@@ -869,33 +672,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
 /* Mobile */
 @media (max-width: 600px) {
-  body.category-monthly-challenge #main-outlet-wrapper,
-  body.category-monthly-challenge #main-outlet {
-    width: 100% !important;
-  }
-
-  body.category-monthly-challenge .list-controls {
-    padding: 1rem 1rem 0;
-  }
-
-  body.category-monthly-challenge .navigation-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  body.category-monthly-challenge #navigation-bar {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  body.category-monthly-challenge #navigation-bar > li > a {
-    padding-inline: 0.65rem;
-  }
-
-  body.category-monthly-challenge .container.list-container.--topic-list {
-    padding: 1rem 1rem 2rem;
-  }
-
   /* The 260px thumbnail height that used to live here was the mobile twin of
      the 245px one, and had the same effect: uniform cards, no stagger. */
   body.category-monthly-challenge .topic-thumbnails-masonry .main-link {

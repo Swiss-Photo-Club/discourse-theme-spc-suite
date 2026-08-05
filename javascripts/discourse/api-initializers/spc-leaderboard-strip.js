@@ -165,19 +165,35 @@ export default apiInitializer("1.8.0", (api) => {
 
     const listArea = document.querySelector("#list-area");
     const row = listArea?.closest(".row.full-width");
-    if (!listArea || !row) {
+    const categorySurface = document.querySelector(
+      "[data-spc-category-surface]"
+    );
+    const useCategorySurface =
+      document.body.classList.contains("navigation-category") &&
+      selectedCategoryIsActive();
+    if (!listArea || !row || (useCategorySurface && !categorySurface)) {
       removeStrip();
       return;
     }
 
     document.body.classList.add(ACTIVE_CLASS);
 
-    let strip = row.querySelector(STRIP_SELECTOR);
+    let strip = document.querySelector(STRIP_SELECTOR);
     if (!strip) {
       strip = document.createElement("section");
       strip.className = "spc-leaderboard-strip";
       strip.dataset.spcLeaderboardStrip = "";
       strip.setAttribute("aria-label", "Leaderboard");
+    }
+
+    if (useCategorySurface) {
+      if (strip.parentElement !== categorySurface) {
+        categorySurface.append(strip);
+      }
+    } else if (
+      strip.parentElement !== row ||
+      strip.nextElementSibling !== listArea
+    ) {
       row.insertBefore(strip, listArea);
     }
 

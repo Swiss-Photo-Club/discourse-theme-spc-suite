@@ -146,6 +146,22 @@ data-backed variant, and Critique, Meetups, Post Processing and Introductions ov
 generic actions where needed. New categories need no theme setting or code change unless they
 need similarly specialised actions.
 
+Every category page follows the same order: hero and category-specific actions, a white
+explanation band, optional category-specific sections, an optional leaderboard, Discourse's
+native list controls, then the topic list. Nothing custom is inserted between the list controls
+and `#list-area`. The page uses Discourse's normal 1110px wrapper; topic layout remains whatever
+the category and Topic List Thumbnails settings specify.
+
+The explanation and read-more link come from the category's native `description` and
+`topic_url`. Edit the built-in **About the … category** topic to update both without releasing
+the theme. Upload a category background in the category settings; SPC Suite uses
+`uploaded_background` inside the banner instead of painting it across the whole page.
+
+Monthly Challenge adds a compact current-round card and, when a completed round has winner
+data, a dedicated previous-winner section before the native controls. The winner image uses
+`object-fit: contain`, so portrait and landscape photographs remain uncropped. Photo Feedback
+uses the same shared shell and intentionally has no post-count status line in its banner.
+
 The external **Category Banners** theme component is not required and should remain detached
 from both Foundation and Horizon. During a cutover it is safe for both components to be attached:
 SPC Suite hides the old banner and core heading while its hero is enabled.
@@ -181,7 +197,7 @@ Both are required:
 | Permalink URL | Target |
 | --- | --- |
 | `submit` | `/new-topic?category=monthly-challenge` |
-| `submit?type=critique` | `/new-topic?category=critique-portfolio-reviews` |
+| `submit?type=critique` | `/new-topic?category=photo-feedback` |
 
 The mode is carried by the *category*, not by an extra query param, so `route:new-topic`
 decodes it with the same helper for both. A side effect worth knowing: any link to the

@@ -6,8 +6,6 @@ en:
       monthly_category_id: Numeric ID of the monthly challenge category.
       challenge_timezone: Timezone used for challenge dates and deadlines.
       guide_topic_url: Link to the complete entry and voting guide.
-      show_education: Show the challenge-specific shooting guide.
-      show_archive: Show the winner-led past challenge archive.
       challenges:
         description: One row per official challenge topic. Keep exactly one row active; archive it after recording the winner.
         schema:
@@ -200,6 +198,8 @@ en:
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month
+    current_theme: "This month’s challenge: %{title}"
+    read_more_category: Read more about this category →
     submit_photo: SUBMIT A PHOTO
     view_entries: VIEW ENTRIES
     closed: CHALLENGE CLOSED
@@ -223,6 +223,10 @@ en:
     voting_closes: Voting closes %{date}
     active_deadlines: Submit by %{submission_date} · Vote by %{voting_date}
     submissions_closed_voting_open: Submissions closed · Voting closes %{date}
+    deadline_voting_open: Submission deadline %{submission_date} · Submissions closed · Voting closes %{date}
+    closed_with_deadline: Deadline %{date} · Challenge closed
+    last_month_winner: Last month’s winner · %{month} — %{theme}
+    previous_entries: See all %{month} entries
     vote_modal_title: How voting works
     vote_step_one_title: Browse entries as they arrive
     vote_step_one_body: New photographs appear throughout the submission period and can be voted on immediately.
@@ -316,6 +320,7 @@ en:
   hero:
     generic:
       eyebrow: Community category
+      read_more: Read more about this category →
       actions:
         create: Start a topic
     post_processing:

@@ -182,21 +182,22 @@ function activeHeroCategory(router) {
 }
 
 /**
- * The lead. `description_excerpt` is plain text and already localised, which is
- * the whole point of reading it: the hero is not a second place to author a
- * category description. `description` is HTML, so it is only a fallback and is
- * flattened through textContent rather than trusted as markup.
+ * The explanation band reads the native, localised category description. The
+ * About topic remains the single admin-owned source; HTML is flattened through
+ * textContent rather than trusted as markup in the shared page shell.
  */
-function categoryLead(category) {
-  if (category.description_excerpt) {
-    return category.description_excerpt;
-  }
-  if (!category.description) {
+function categoryDescription(category) {
+  const value = category.description || category.description_excerpt;
+  if (!value) {
     return "";
   }
   const container = document.createElement("div");
-  container.innerHTML = category.description;
+  container.innerHTML = value;
   return container.textContent.trim();
+}
+
+function categoryTopicUrl(category) {
+  return category.topic_url || category.topicUrl || "";
 }
 
 export default apiInitializer((api) => {
@@ -234,6 +235,8 @@ export default apiInitializer((api) => {
     const cover = uploadUrl(category.uploaded_background);
     const locale = document.documentElement.lang || "en";
     const actions = entry.actions(category);
+    const description = categoryDescription(category);
+    const topicUrl = categoryTopicUrl(category);
 
     const hero = renderHero({
       marker: String(id),
@@ -246,11 +249,18 @@ export default apiInitializer((api) => {
         id,
         locale,
         cover,
+        category.name,
+        description,
+        topicUrl,
         actions.map((action) => action.href || action.label).join("|"),
       ].join("-"),
       eyebrow: heroText(entry.key, "eyebrow"),
       title: category.name,
-      lead: categoryLead(category),
+      introduction: {
+        body: description,
+        href: topicUrl,
+        label: heroText("generic", "read_more"),
+      },
       cover,
       actions,
     });

@@ -159,6 +159,8 @@ de:
   monthly_challenge:
     label: Monatliche Challenge
     current: Challenge des Monats
+    current_theme: "Challenge dieses Monats: %{title}"
+    read_more_category: Mehr über diese Kategorie erfahren →
     submit_photo: FOTO EINREICHEN
     view_entries: BEITRÄGE ANSEHEN
     closed: CHALLENGE BEENDET
@@ -182,6 +184,10 @@ de:
     voting_closes: Abstimmung bis %{date}
     active_deadlines: Einreichen bis %{submission_date} · Abstimmen bis %{voting_date}
     submissions_closed_voting_open: Einreichungen beendet · Abstimmung bis %{date}
+    deadline_voting_open: Einreichfrist %{submission_date} · Einreichungen beendet · Abstimmung bis %{date}
+    closed_with_deadline: Einreichfrist %{date} · Challenge beendet
+    last_month_winner: Gewinnerfoto des letzten Monats · %{month} — %{theme}
+    previous_entries: Alle Beiträge vom %{month} ansehen
     vote_modal_title: So funktioniert die Abstimmung
     vote_step_one_title: Neue Beiträge entdecken
     vote_step_one_body: Neue Fotos erscheinen während der Einreichungszeit und können sofort Stimmen erhalten.
@@ -275,6 +281,7 @@ de:
   hero:
     generic:
       eyebrow: Community-Kategorie
+      read_more: Mehr über diese Kategorie erfahren →
       actions:
         create: Thema erstellen
     post_processing:

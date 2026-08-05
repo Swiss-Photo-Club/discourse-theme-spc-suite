@@ -104,29 +104,32 @@
   box-sizing: border-box;
 }
 
-/* Challenge: a tall cover-image slab with a coral rule under it. isolation
-   is here rather than in the core because it exists for __shade's z-index:-1,
-   and only this variant has a shade. */
-.spc-hero--challenge {
+/* Category banners share one shell. Monthly Challenge fills two extra text
+   slots, but that is a content exception rather than a reason for a different
+   title scale, padding or minimum height. Both variants need isolation for
+   the cover-image shade's z-index. */
+.spc-hero--challenge,
+.spc-hero--category {
   isolation: isolate;
-  min-height: 360px;
+  min-height: 300px;
   margin: 0;
-  padding: 3.5rem;
+  padding: 3rem;
   border: 0;
   border-bottom: 6px solid var(--spc-coral);
   background-color: var(--spc-indigo);
+  background-position: center;
+  background-size: cover;
+}
+
+.spc-hero--challenge {
   /* Shares --spc-hero-cover with every other hero now that the challenge
      renders through the same function. The homepage monthly card keeps
      --spc-challenge-cover: it is a card, not a hero, and nothing is served by
      making them one variable. */
   background-image: var(--spc-hero-cover, linear-gradient(135deg, #1a2744, #28395e));
-  background-position: center;
-  background-size: cover;
 }
 
 /* Category: the shared header for every category that is not the challenge.
-   Shorter than --challenge because it carries a name and one or two actions,
-   while the longer explanation lives in the white introduction band below.
 
    One variant, not three. The spec proposed --submission, --events and --plain;
    --events lost its meta line to the no-fetch rule and --submission lost its
@@ -136,21 +139,13 @@
    Coverless categories keep the same height and alignment as categories with
    images, so every category begins with the same visual template. */
 .spc-hero--category {
-  isolation: isolate;
-  min-height: 300px;
-  margin: 0;
-  padding: 3rem;
-  border: 0;
-  border-bottom: 6px solid var(--spc-coral);
-  background-color: var(--spc-indigo);
   background-image: var(--spc-hero-cover, none);
-  background-position: center;
-  background-size: cover;
 }
 
-/* The core h1 is sized for the 360px challenge slab; at 300px with a one-line
-   category name it reads as shouting. */
-.spc-hero--category .spc-hero__content h1 {
+/* One category-heading scale, including Monthly Challenge. At the default
+   1110px page width this keeps all current category names on one line. */
+.spc-hero--category .spc-hero__content h1,
+.spc-hero--challenge .spc-hero__content h1 {
   font-size: clamp(2rem, 3.5vw, 3.2rem);
 }
 
@@ -258,15 +253,9 @@
 /* Narrow viewports ----------------------------------------------------- */
 
 @media (max-width: 600px) {
-  /* --challenge, not the core: the invitation variant wants min-height 0 on
-     narrow screens and puts its padding on __content, so a core rule here
-     would be something it has to undo. */
-  .spc-hero--challenge {
-    min-height: 440px;
-    padding: 2rem 1.25rem;
-    background-position: 64% center;
-  }
-
+  /* Keep both category variants aligned on narrow screens as well. Content
+     can still grow the Monthly Challenge banner when its extra lines need it. */
+  .spc-hero--challenge,
   .spc-hero--category {
     min-height: 320px;
     padding: 2rem 1.25rem;

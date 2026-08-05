@@ -15,7 +15,8 @@ added. Photo Feedback has no post-count status line.
 Monthly Challenge now names the category in the hero and places the current theme plus its
 end-of-month deadline beneath it. A compact current-round card links to the pinned brief, and
 the most recent archived round gets a dedicated, uncropped winner section once its winner data
-is complete.
+is complete. Its banner uses the same heading scale, padding and minimum height as every other
+category; only the additional theme and deadline content differs.
 The former full cooked brief and post-list archive have been retired.
 
 The challenge category no longer widens `#main-outlet-wrapper` to 1500px, hides native filters,

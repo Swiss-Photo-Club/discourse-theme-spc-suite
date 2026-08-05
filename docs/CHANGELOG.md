@@ -12,6 +12,10 @@ leaderboard, then Discourse's native list controls immediately before the posts.
 background continues to come from `uploaded_background`; no parallel text or URL registry was
 added. Photo Feedback has no post-count status line.
 
+Signed-in members keep a generic **Start a topic** action while Discourse's per-category
+permission value is still loading. The native New Topic control is hidden only when the hero
+actually rendered a replacement, preventing a category from ending up with no posting action.
+
 Monthly Challenge now names the category in the hero and places the current theme plus its
 end-of-month deadline beneath it. A compact current-round card links to the pinned brief, and
 the most recent archived round gets a dedicated, uncropped winner section once its winner data

@@ -134,8 +134,8 @@ const CATEGORY_HEROES = {
 const DEFAULT_CATEGORY_HERO = {
   key: "generic",
   variant: "category",
-  actions: (category) =>
-    category.canCreateTopic
+  actions: (category, currentUser) =>
+    canOfferCreateTopic(category, currentUser)
       ? [
           {
             label: heroText("generic", "actions.create"),
@@ -145,6 +145,21 @@ const DEFAULT_CATEGORY_HERO = {
         ]
       : [],
 };
+
+/**
+ * Category.canCreateTopic is the right Discourse API once `permission` has
+ * loaded. On this site the category surface can render first, leaving
+ * `permission` temporarily null and the computed getter false even for a
+ * signed-in member. Keep the member action during that indeterminate state;
+ * an explicit non-FULL permission still suppresses it, and Discourse remains
+ * the authority when the destination route opens.
+ */
+function canOfferCreateTopic(category, currentUser) {
+  if (!currentUser) {
+    return false;
+  }
+  return category.permission == null || category.canCreateTopic;
+}
 
 function heroText(key, suffix) {
   return i18n(themePrefix(`hero.${key}.${suffix}`));
@@ -202,6 +217,7 @@ function categoryTopicUrl(category) {
 
 export default apiInitializer((api) => {
   const router = api.container.lookup("service:router");
+  const currentUser = api.getCurrentUser();
   let renderQueued = false;
   let renderedMarker = null;
 
@@ -234,7 +250,7 @@ export default apiInitializer((api) => {
     const { id, entry, category } = active;
     const cover = uploadUrl(category.uploaded_background);
     const locale = document.documentElement.lang || "en";
-    const actions = entry.actions(category);
+    const actions = entry.actions(category, currentUser);
     const description = categoryDescription(category);
     const topicUrl = categoryTopicUrl(category);
 

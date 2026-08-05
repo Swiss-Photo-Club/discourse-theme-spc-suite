@@ -34,9 +34,10 @@
       display: none;
     }
 
-    /* The hero owns the primary action, so the native New Topic button
-       would be a second copy. */
-    #create-topic {
+    /* Hide the native action only after the hero has supplied its replacement.
+       If permission data is late or a category deliberately has no hero action,
+       core keeps control of whether New Topic should be shown. */
+    &:has([data-spc-hero] .spc-hero__actions) #create-topic {
       display: none;
     }
   }

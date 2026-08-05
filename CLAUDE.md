@@ -128,6 +128,13 @@ the same way: 6, 7, 8 and 12 are genuinely JS-positioned masonry, 10 is
 `topic-thumbnails-list`.** The desync failure mode therefore applies to all four, category 6
 included — it is no longer the safe exception it used to be.
 
+**The homepage already has a container.** `#main-outlet-wrapper.wrap` is Discourse's 1110px
+shell, including its responsive side padding, and `#main-outlet` is the usable content column
+inside it. Do not put `calc(100% - 64px)` plus another max-width on Featured Categories, list
+controls or onboarding: live measurement showed that combination shrinking those bands to
+1024.6px while the banner and topic list remained 1088.6px. Homepage bands use `width: 100%`
+and let the core wrapper own the page geometry.
+
 That conversion took five attempts on the live site, and every wrong turn is written up in the
 three notes above. Read them before touching this layout again.
 

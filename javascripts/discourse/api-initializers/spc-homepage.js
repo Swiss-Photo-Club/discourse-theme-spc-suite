@@ -3,10 +3,15 @@ import { i18n } from "discourse-i18n";
 
 const MONTHLY_SELECTOR =
   '.featured-categories__category-link[data-spc-monthly-challenge="home"], .featured-categories__category-link[href="/c/monthly-challenge/6"]';
-const CRITIQUE_SELECTOR =
-  '.featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]';
-const FEEDBACK_SELECTOR =
-  '.featured-categories__category-link[href="/c/feedback/2"]';
+const CRITIQUE_SELECTOR = [
+  '.featured-categories__category-container[data-spc-category-id="7"] > .featured-categories__category-link',
+  '.featured-categories__category-link[href="/c/photo-feedback/7"]',
+  '.featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]',
+].join(", ");
+const FEEDBACK_SELECTOR = [
+  '.featured-categories__category-container[data-spc-category-id="2"] > .featured-categories__category-link',
+  '.featured-categories__category-link[href="/c/feedback/2"]',
+].join(", ");
 
 function translated(key, options) {
   return i18n(themePrefix(`homepage.${key}`), options);
@@ -31,6 +36,8 @@ function ensureFeatureDecoration(link, actionKey) {
   if (!link) {
     return;
   }
+
+  link.dataset.spcHomeFeature = actionKey;
 
   let badge = link.querySelector(":scope > .spc-home-feature-badge");
   if (!badge) {
@@ -125,9 +132,13 @@ function enhanceCategories() {
 
   root
     .querySelectorAll(
-      '.featured-categories__category-link[href]:not([data-spc-monthly-challenge="home"]):not([href="/c/monthly-challenge/6"]):not([href="/c/critique-portfolio-reviews/7"]):not(.spc-home-webinar-link)'
+      ".featured-categories__category-link[href]:not(.spc-home-webinar-link)"
     )
-    .forEach((link) => ensureSmallCardMeta(link));
+    .forEach((link) => {
+      if (link !== monthly && link !== critique) {
+        ensureSmallCardMeta(link);
+      }
+    });
 
   const feedback = root.querySelector(FEEDBACK_SELECTOR);
   if (feedback) {

@@ -39,7 +39,7 @@ its prefix.
 | --- | --- | --- | --- | --- | --- |
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
 | Category heroes | `enable_category_hero` | `scss/hero.scss`, `scss/category-hero.scss` | `api-initializers/spc-category-surface.js`, `api-initializers/spc-category-hero.js`, `components/spc-category-surface.gjs`, `lib/spc-hero.js` | `hero.*` | — |
-| Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | — |
+| Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-home-identity.js`, `components/spc-home-identity.gjs`, `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | `homepage_*` |
 | Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
 | `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
 | Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
@@ -107,6 +107,19 @@ The `challenges` setting is an **archive and override**, not the source of truth
 round is current. Use it to record past rounds, deadline text for the hero, and winners.
 
 ## Homepage category workflow
+
+The member homepage opens with a photo-backed identity banner and a short introduction.
+Upload the roughly 2:1 landscape image in the `homepage_banner_image` theme setting; the
+non-member invitation reuses the same image when it replaces the member banner. The concise
+introduction is translated in `locales/{de,en,fr}.yml` and can be edited without a release in
+the component's **Translations** screen. Its read-more destination is configurable per
+interface language with `homepage_about_url_de`, `homepage_about_url_en`, and
+`homepage_about_url_fr`, so the longer copy can live in a normal Discourse topic that
+moderators maintain.
+
+Homepage bands use the width Discourse already gives `#main-outlet` inside its 1110px
+`.wrap`; they do not create a second max-width container. The homepage New Topic control is
+hidden because posting starts from a category-specific action.
 
 **Admin → Configure → Navigation → Default navigation menu categories** is the single source
 of truth for the highlighted homepage cards and their order. It is a core Discourse setting,

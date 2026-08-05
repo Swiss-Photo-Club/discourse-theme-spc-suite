@@ -1,12 +1,12 @@
 body.navigation-topics #main-outlet > .spc-member-onboarding {
-  order: -20;
+  order: -40;
 }
 
 .spc-member-onboarding {
   position: relative;
   display: block;
-  width: calc(100% - 64px);
-  max-width: 1120px;
+  width: 100%;
+  max-width: none;
   box-sizing: border-box;
   margin: 26px auto 0;
   border-top: 4px solid var(--spc-coral);
@@ -230,7 +230,7 @@ body.navigation-topics #main-outlet > .spc-member-onboarding {
   }
 
   .spc-member-onboarding {
-    width: calc(100% - 32px);
+    width: 100%;
   }
 
   .spc-member-onboarding__steps {
@@ -254,7 +254,7 @@ body.navigation-topics #main-outlet > .spc-member-onboarding {
   }
 
   .spc-member-onboarding--show-mobile {
-    width: calc(100% - 24px);
+    width: 100%;
     margin-top: 12px;
   }
 

@@ -8,7 +8,13 @@ export default class SpcNonMemberBanner extends Component {
   @service router;
 
   get isHomepage() {
-    return this.router.currentURL?.split("?")[0] === "/";
+    const path = this.router.currentURL?.split("?")[0];
+
+    return path === "/" || path === "/latest";
+  }
+
+  get bannerImage() {
+    return settings.homepage_banner_image || null;
   }
 
   get isMember() {
@@ -54,6 +60,16 @@ export default class SpcNonMemberBanner extends Component {
         class="spc-hero spc-hero--invitation spc-non-member-banner"
         aria-labelledby="spc-non-member-banner-title"
       >
+        {{#if this.bannerImage}}
+          <img
+            class="spc-non-member-banner__image"
+            src={{this.bannerImage}}
+            alt=""
+          />
+        {{/if}}
+
+        <div class="spc-non-member-banner__overlay" aria-hidden="true"></div>
+
         <div class="spc-non-member-banner__content">
           <p class="spc-eyebrow spc-non-member-banner__eyebrow">
             {{i18n (themePrefix "nonmember_banner.eyebrow")}}

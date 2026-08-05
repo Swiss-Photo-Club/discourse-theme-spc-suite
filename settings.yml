@@ -66,6 +66,26 @@ homepage_secondary_categories:
   default: "12|8|4|2"
   description: "Compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
 
+homepage_banner_image:
+  type: upload
+  default: ""
+  description: "Member-homepage banner image. A landscape image around 2:1 works best."
+
+homepage_about_url_de:
+  type: string
+  default: "/t/willkommen-bei-swiss-photo-club-community/5"
+  description: "Destination of the community information link for the German interface."
+
+homepage_about_url_en:
+  type: string
+  default: "/t/willkommen-bei-swiss-photo-club-community/5"
+  description: "Destination of the community information link for the English interface."
+
+homepage_about_url_fr:
+  type: string
+  default: "/t/willkommen-bei-swiss-photo-club-community/5"
+  description: "Destination of the community information link for the French interface."
+
 challenge_category_id:
   type: integer
   default: 6

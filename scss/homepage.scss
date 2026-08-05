@@ -33,11 +33,17 @@ body.navigation-topics #main-outlet :where(
   border-radius: var(--radius) !important;
 }
 
-body.navigation-topics #main-outlet > .welcome-banner {
-  order: -30;
+body.navigation-topics:has(#main-outlet > .spc-home-surface)
+  #main-outlet
+  > .welcome-banner {
+  display: none;
 }
 
 body.navigation-topics #main-outlet > .spc-member-onboarding {
+  order: -40;
+}
+
+body.navigation-topics #main-outlet > .spc-home-surface {
   order: -20;
 }
 
@@ -45,10 +51,118 @@ body.navigation-topics #main-outlet > .featured-categories {
   order: -10;
 }
 
+/* Member identity banner and editable introduction ------------------- */
+body.navigation-topics .spc-home-surface {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+/* The invitation banner replaces only the photo-backed identity banner for
+   guests and non-members. The separate community introduction stays visible
+   immediately below it. */
+body.navigation-topics:has(.spc-non-member-banner) .spc-home-identity {
+  display: none;
+}
+
+body.navigation-topics .spc-home-identity {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 250px;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 42px 32px;
+  overflow: hidden;
+  border-bottom: 4px solid var(--spc-coral);
+  background: linear-gradient(120deg, var(--spc-indigo), #35466a);
+  color: #ffffff;
+}
+
+body.navigation-topics .spc-home-identity__image,
+body.navigation-topics .spc-home-identity__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body.navigation-topics .spc-home-identity__image {
+  z-index: -2;
+  object-fit: cover;
+}
+
+body.navigation-topics .spc-home-identity__overlay {
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(18, 28, 52, 0.88) 0%,
+    rgba(18, 28, 52, 0.66) 52%,
+    rgba(18, 28, 52, 0.28) 100%
+  );
+}
+
+body.navigation-topics .spc-home-identity__content {
+  max-width: 680px;
+}
+
+body.navigation-topics .spc-home-identity__eyebrow {
+  margin: 0 0 10px;
+  color: var(--spc-primary-200);
+  line-height: 1.4;
+}
+
+body.navigation-topics .spc-home-identity__title {
+  margin: 0;
+  color: #ffffff !important;
+  font-size: clamp(2.35rem, 5vw, 44px);
+  font-weight: var(--fw-xbold);
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  text-transform: none;
+}
+
+body.navigation-topics .spc-home-identity__tagline {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+body.navigation-topics .spc-home-introduction {
+  box-sizing: border-box;
+  padding: 22px 32px 24px;
+  border-bottom: 1px solid var(--stroke-1);
+  background: #ffffff;
+}
+
+body.navigation-topics .spc-home-introduction p {
+  max-width: 78ch;
+  margin: 0 0 10px;
+  color: var(--spc-gray-700);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+body.navigation-topics .spc-home-introduction a {
+  display: inline-block;
+  border-bottom: 2px solid var(--spc-coral);
+  color: var(--spc-indigo);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+}
+
+body.navigation-topics .spc-home-introduction a:hover,
+body.navigation-topics .spc-home-introduction a:focus-visible {
+  color: var(--spc-coral-hover);
+}
+
 /* Popular categories ------------------------------------------------- */
 body.navigation-topics .featured-categories {
-  width: calc(100% - 64px);
-  max-width: 1120px;
+  width: 100%;
+  max-width: none;
   margin: 26px auto 30px;
 }
 
@@ -142,7 +256,7 @@ body.navigation-topics
   ),
 body.navigation-topics
   .featured-categories__category-container:has(
-    > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+    > [data-spc-home-feature="critique"]
   ) {
   grid-column: span 5 !important;
   min-height: 248px;
@@ -169,7 +283,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )::before {
   position: static;
   display: block;
@@ -186,7 +300,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   ) {
   min-height: 154px !important;
   justify-content: flex-start !important;
@@ -196,17 +310,20 @@ body.navigation-topics
 }
 
 body.navigation-topics
-  .featured-categories__category-link[href="/c/vorstellungen/12"]::before {
+  .featured-categories__category-container[data-spc-category-id="12"]
+  > .featured-categories__category-link::before {
   background: var(--spc-casablanca) !important;
 }
 
 body.navigation-topics
-  .featured-categories__category-link[href="/c/meetups-photowalks/8"]::before {
+  .featured-categories__category-container[data-spc-category-id="8"]
+  > .featured-categories__category-link::before {
   background: var(--spc-indigo) !important;
 }
 
 body.navigation-topics
-  .featured-categories__category-link[href="/c/general/4"]::before {
+  .featured-categories__category-container[data-spc-category-id="4"]
+  > .featured-categories__category-link::before {
   background: var(--spc-gray-400) !important;
 }
 
@@ -215,7 +332,8 @@ body.navigation-topics .spc-home-webinar-link::before {
 }
 
 body.navigation-topics
-  .featured-categories__category-link[href="/c/feedback/2"]::before {
+  .featured-categories__category-container[data-spc-category-id="2"]
+  > .featured-categories__category-link::before {
   background: var(--spc-gray-300) !important;
 }
 
@@ -223,7 +341,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   > .category-logo {
   display: none;
@@ -233,7 +351,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   .category-name {
   position: static;
@@ -253,7 +371,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   .badge-category__name {
   color: var(--fg-structure);
@@ -265,7 +383,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   :is(.badge-category__wrapper, .badge-category) {
   min-width: 0;
@@ -277,7 +395,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   .badge-category::before {
   display: none !important;
@@ -288,7 +406,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   .badge-category
   :is(.emoji, .d-icon-lock) {
@@ -299,7 +417,7 @@ body.navigation-topics
   .featured-categories__category-link:not(
     .spc-monthly-card,
     [href="/c/monthly-challenge/6"],
-    [href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
   )
   .category-description {
   position: static;
@@ -331,7 +449,7 @@ body.navigation-topics
 body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"],
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+  [data-spc-home-feature="critique"] {
   position: relative;
   isolation: isolate;
   display: flex !important;
@@ -367,7 +485,7 @@ body.navigation-topics
 
 
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+  [data-spc-home-feature="critique"] {
   background-image:
     var(--overlay-card),
     url("/uploads/default/original/1X/8220fea23f9c1828678047c2fbdef88ee3680da0.jpeg") !important;
@@ -384,9 +502,9 @@ body.navigation-topics
 body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"]::after,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::before,
+  [data-spc-home-feature="critique"]::before,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]::after {
+  [data-spc-home-feature="critique"]::after {
   display: none !important;
   content: none !important;
 }
@@ -395,7 +513,7 @@ body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"]
   > .category-logo,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  [data-spc-home-feature="critique"]
   > .category-logo {
   display: none;
 }
@@ -439,7 +557,7 @@ body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"]
   .category-name,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  [data-spc-home-feature="critique"]
   .category-name {
   position: relative;
   z-index: 2;
@@ -457,7 +575,7 @@ body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"]
   .badge-category__name,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  [data-spc-home-feature="critique"]
   .badge-category__name {
   color: #ffffff;
   font-weight: var(--fw-xbold);
@@ -468,7 +586,7 @@ body.navigation-topics
   .badge-category
   :is(.emoji, .d-icon-lock),
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  [data-spc-home-feature="critique"]
   .badge-category
   :is(.emoji, .d-icon-lock) {
   display: none;
@@ -479,7 +597,7 @@ body.navigation-topics
   .featured-categories__category-link[href="/c/monthly-challenge/6"]
   .category-description,
 body.navigation-topics
-  .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+  [data-spc-home-feature="critique"]
   .category-description {
   position: relative;
   z-index: 2;
@@ -531,8 +649,8 @@ body.navigation-topics
 
 /* Raised native topic toolbar --------------------------------------- */
 body.navigation-topics .list-controls {
-  width: calc(100% - 64px);
-  max-width: 1120px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 0;
 }
@@ -621,7 +739,6 @@ body.navigation-topics .navigation-controls {
   margin-left: auto;
 }
 
-body.navigation-topics #create-topic,
 body.navigation-topics .spc-home-login-cta {
   display: inline-flex;
   min-height: 40px;
@@ -639,15 +756,15 @@ body.navigation-topics .spc-home-login-cta {
   text-transform: uppercase;
 }
 
+/* Topic creation belongs to category pages, where the destination and any
+   category-specific workflow are unambiguous. */
+body.navigation-topics #create-topic {
+  display: none !important;
+}
+
 body.navigation-topics .spc-home-login-cta {
   background: transparent !important;
   color: var(--spc-coral) !important;
-}
-
-body.navigation-topics #create-topic:hover,
-body.navigation-topics #create-topic:focus-visible {
-  border-color: var(--spc-coral-hover) !important;
-  background: var(--spc-coral-hover) !important;
 }
 
 body.navigation-topics .spc-home-login-cta:hover,
@@ -703,7 +820,7 @@ body.navigation-topics .spc-home-pinned-badge {
     ),
   body.navigation-topics
     .featured-categories__category-container:has(
-      > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+      > [data-spc-home-feature="critique"]
     ) {
     grid-column: span 3 !important;
   }
@@ -739,7 +856,28 @@ body.navigation-topics .spc-home-pinned-badge {
   body.navigation-topics .featured-categories,
   body.navigation-topics .list-controls,
   body.navigation-topics .container.list-container.--topic-list {
-    width: calc(100% - 32px);
+    width: 100%;
+  }
+
+  body.navigation-topics .spc-home-identity {
+    min-height: 220px;
+    padding: 34px 20px;
+  }
+
+  body.navigation-topics .spc-home-identity__overlay {
+    background: rgba(18, 28, 52, 0.74);
+  }
+
+  body.navigation-topics .spc-home-identity__tagline {
+    font-size: 16px;
+  }
+
+  body.navigation-topics .spc-home-introduction {
+    padding: 20px;
+  }
+
+  body.navigation-topics .spc-home-introduction p {
+    font-size: 15px;
   }
 
   body.navigation-topics .featured-categories {
@@ -775,7 +913,7 @@ body.navigation-topics .spc-home-pinned-badge {
     ),
   body.navigation-topics
     .featured-categories__category-container:has(
-      > .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+      > [data-spc-home-feature="critique"]
     ) {
     grid-column: 1 / -1 !important;
   }
@@ -799,7 +937,7 @@ body.navigation-topics .spc-home-pinned-badge {
   body.navigation-topics
     .featured-categories__category-link[href="/c/monthly-challenge/6"],
   body.navigation-topics
-    .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"] {
+    [data-spc-home-feature="critique"] {
     height: 224px !important;
     min-height: 224px !important;
   }
@@ -810,7 +948,7 @@ body.navigation-topics .spc-home-pinned-badge {
     .featured-categories__category-link[href="/c/monthly-challenge/6"]
     .category-name,
   body.navigation-topics
-    .featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]
+    [data-spc-home-feature="critique"]
     .category-name {
     font-size: 22px;
   }

@@ -3,6 +3,10 @@ de:
     description: SPC-Homepage mit nativen Kategorien, Filtern und einer dreispaltigen Themen-Kartenansicht.
     settings:
       webinars_url: Ziel der Karte «Monatliche Live-Webinare».
+      homepage_banner_image: Bannerbild der Mitglieder-Startseite. Empfohlenes Bildformat ungefähr 2:1.
+      homepage_about_url_de: Ziel des Community-Informationslinks für die deutsche Oberfläche.
+      homepage_about_url_en: Ziel des Community-Informationslinks für die englische Oberfläche.
+      homepage_about_url_fr: Ziel des Community-Informationslinks für die französische Oberfläche.
       onboarding_member_groups: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.
       onboarding_profile_url: Ziel des Schritts ‚Profil‘.
       onboarding_show_on_mobile: Das Onboarding auch auf Mobilgeräten anzeigen.
@@ -188,6 +192,14 @@ de:
     full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen
     close: Schliessen
   homepage:
+    identity:
+      eyebrow: Swiss Photo Club
+      title: Community
+      tagline: Vernetzen. Teilen. Weiterentwickeln.
+    introduction:
+      label: Über die Swiss Photo Club Community
+      body: Teile deine Fotos, erhalte ehrliches und konstruktives Feedback, nimm an der monatlichen Challenge teil und lerne Fotografinnen und Fotografen in deiner Nähe kennen. Die Community wird vom Swiss Photo Club betrieben und ist für alle Erfahrungsstufen offen.
+      read_more: Mehr über diese Community erfahren →
     popular_categories: Beliebte Kategorien
     all_categories: Alle Kategorien
     highlight: Highlight

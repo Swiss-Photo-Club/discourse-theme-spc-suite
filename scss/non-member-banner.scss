@@ -19,9 +19,33 @@ body.navigation-topics:has(.spc-non-member-banner)
    its children are still named for that block, and the two structural rules
    above key off it. */
 .spc-hero--invitation {
+  isolation: isolate;
   min-height: 380px;
   align-items: center;
   background: linear-gradient(105deg, #2d3d5b 0%, #536178 100%);
+}
+
+.spc-non-member-banner__image,
+.spc-non-member-banner__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.spc-non-member-banner__image {
+  z-index: -2;
+  object-fit: cover;
+}
+
+.spc-non-member-banner__overlay {
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(18, 28, 52, 0.92) 0%,
+    rgba(18, 28, 52, 0.74) 58%,
+    rgba(18, 28, 52, 0.38) 100%
+  );
 }
 
 /* A 5px pseudo-element rather than the challenge variant's 6px border-bottom.
@@ -39,8 +63,8 @@ body.navigation-topics:has(.spc-non-member-banner)
 
 .spc-non-member-banner__content {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   padding: 52px 48px 57px;
   box-sizing: border-box;
 }
@@ -141,6 +165,10 @@ body.navigation-topics:has(.spc-non-member-banner)
 
   .spc-non-member-banner__content {
     padding: 40px 20px 44px;
+  }
+
+  .spc-non-member-banner__overlay {
+    background: rgba(18, 28, 52, 0.78);
   }
 
   .spc-non-member-banner__eyebrow {

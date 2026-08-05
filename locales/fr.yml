@@ -3,6 +3,10 @@ fr:
     description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
     settings:
       webinars_url: Destination de la carte Webinaires mensuels en direct.
+      homepage_banner_image: Image de la bannière de la page d’accueil des membres. Un format paysage proche de 2:1 est recommandé.
+      homepage_about_url_de: Destination du lien d’information sur la communauté pour l’interface allemande.
+      homepage_about_url_en: Destination du lien d’information sur la communauté pour l’interface anglaise.
+      homepage_about_url_fr: Destination du lien d’information sur la communauté pour l’interface française.
       onboarding_member_groups: Groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members ».
       onboarding_profile_url: Destination de l’étape Profil.
       onboarding_show_on_mobile: Afficher le panneau d’onboarding sur les appareils mobiles.
@@ -184,6 +188,14 @@ fr:
     full_rules: Lire le guide complet de participation et de vote
     close: Fermer
   homepage:
+    identity:
+      eyebrow: Swiss Photo Club
+      title: Community
+      tagline: Échangez. Partagez. Progressez.
+    introduction:
+      label: À propos de la communauté Swiss Photo Club
+      body: Partagez vos photos, recevez des avis honnêtes et constructifs, participez au challenge mensuel et rencontrez des photographes près de chez vous. Animée par Swiss Photo Club, la communauté est ouverte aux photographes de tous niveaux.
+      read_more: En savoir plus sur cette communauté →
     popular_categories: Catégories populaires
     all_categories: Toutes les catégories
     highlight: À la une

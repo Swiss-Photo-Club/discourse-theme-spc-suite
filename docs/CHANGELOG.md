@@ -4,6 +4,25 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Add the member identity banner and restore native homepage width
+
+The homepage now owns a photo-backed member identity banner and an introductory text band.
+The photo is an upload theme setting, the three translations remain editable in Discourse,
+and the longer community copy stays in a linked topic rather than being duplicated in the
+theme. The existing non-member invitation reuses the uploaded photo and replaces only the
+member identity banner, leaving the introduction beneath it; onboarding keeps the slot
+immediately above both banners.
+
+Featured Categories, onboarding and list controls no longer subtract another 64px from the
+main column or impose a 1120px cap. Discourse already provides a 1110px wrapper and responsive
+side padding, so the extra container made these sections 64px narrower than both the banner
+and topic list. The homepage New Topic control is hidden while category-page actions remain
+untouched.
+
+The Photo Feedback category currently uses `/c/photo-feedback/7`, so homepage enhancement now
+resolves its stable category id first and treats the slug as a fallback. This restores the two
+large primary cards without making their presentation depend on the current slug.
+
 ## Unreleased — Make SPC Suite own every category header
 
 Category Banners remained enabled only because the shared hero used its hidden

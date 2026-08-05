@@ -44,6 +44,10 @@ en:
             entry_count:
               label: Final entry count
       webinars_url: Destination for the Monthly Live Webinars card.
+      homepage_banner_image: Member-homepage banner image. A landscape image around 2:1 works best.
+      homepage_about_url_de: Destination of the community information link for the German interface.
+      homepage_about_url_en: Destination of the community information link for the English interface.
+      homepage_about_url_fr: Destination of the community information link for the French interface.
       onboarding_member_groups: Groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group.
       onboarding_profile_url: Destination for the Profile step.
       onboarding_show_on_mobile: Show the onboarding panel on mobile devices.
@@ -229,6 +233,14 @@ en:
     full_rules: Read the full entry and voting guide
     close: Close
   homepage:
+    identity:
+      eyebrow: Swiss Photo Club
+      title: Community
+      tagline: Connect. Share. Improve.
+    introduction:
+      label: About the Swiss Photo Club Community
+      body: Share your photos, get honest and constructive feedback, take part in the monthly challenge, and meet photographers near you. Run by Swiss Photo Club and open to photographers of every level.
+      read_more: Read more about this community →
     popular_categories: Popular Categories
     all_categories: All categories
     highlight: Highlight

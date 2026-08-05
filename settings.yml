@@ -44,7 +44,7 @@ enable_nonmember_banner:
 enable_category_hero:
   type: bool
   default: true
-  description: "Category Hero: shared hero header on every category page. Turning it off restores the native category header, background and New Topic button together. The Monthly Challenge hero remains enabled because it is part of the photo-submission workflow."
+  description: "Category Hero: shared hero header on every category page. Turning it off restores the native category header and background. Native list controls remain available in either state. The Monthly Challenge hero remains enabled because it is part of the photo-submission workflow."
 
 enable_locale_cookie:
   type: bool
@@ -226,11 +226,6 @@ critique_intro_category_id:
   type: integer
   default: 12
   description: "ID of the member introductions category. Used by /submit/introduction to post the introduction."
-
-critique_hide_new_topic_button:
-  type: bool
-  default: true
-  description: "Hide the default New Topic button in the critique and introductions categories, so the hero's buttons are the only way in."
 
 critique_banner_background:
   type: string

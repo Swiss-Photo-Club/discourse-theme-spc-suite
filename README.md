@@ -201,9 +201,9 @@ Both are required:
 
 The mode is carried by the *category*, not by an extra query param, so `route:new-topic`
 decodes it with the same helper for both. A side effect worth knowing: any link to the
-composer for the critique category now lands on the critique form. That is intended — the
-New Topic button there is hidden by `critique_hide_new_topic_button` anyway — and it is
-guarded by `critique_image_use_form`, so the rollback switch restores the plain composer.
+composer for the critique category—including the native New Topic button in the list-controls
+bar—lands on the critique form. That is intended; the hero and list-controls actions are two
+entry points into the same workflow.
 
 **The masonry grid is fragile.** The Topic List Thumbnails component measures every topic
 row and positions it absolutely. Any DOM change that alters a row's height desynchronises
@@ -219,9 +219,7 @@ the top-level call.
 
 **Renaming a setting has three edit sites, not one.** Discourse exposes settings to SCSS as
 `$setting_name` as well as to JS as `settings.setting_name`, so a rename has to touch
-`settings.yml`, the JS, *and* the SCSS. `scss/critique-submit.scss` is the one partial that
-interpolates settings (`body.category-#{$critique_category_slug}`, `@if
-$critique_hide_new_topic_button`).
+`settings.yml`, the JS, *and* any SCSS interpolation that consumes it.
 
 **`resolve_group_membership: true`** on `onboarding_member_groups` and
 `nonmember_member_groups` makes Discourse expose derived booleans

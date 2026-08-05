@@ -13,8 +13,14 @@ background continues to come from `uploaded_background`; no parallel text or URL
 added. Photo Feedback has no post-count status line.
 
 Signed-in members keep a generic **Start a topic** action while Discourse's per-category
-permission value is still loading. The native New Topic control is hidden only when the hero
-actually rendered a replacement, preventing a category from ending up with no posting action.
+permission value is still loading, preventing the banner action from disappearing during the
+initial render.
+
+Native New Topic is now also retained in the list-controls bar on every category page; the
+homepage remains the only surface that suppresses it. Photo Feedback, Introductions and Monthly
+Challenge route that native control into their existing SPC submission forms. Category
+leaderboards now keep 24px of space below them before the list controls, matching the category
+mockup.
 
 Monthly Challenge now names the category in the hero and places the current theme plus its
 end-of-month deadline beneath it. A compact current-round card links to the pinned brief, and

@@ -188,13 +188,11 @@ category 6, the category module saw a category it does not own and deleted the c
 that had just rendered. `spc-category-hero.js` remembers the last category marker it rendered;
 the challenge owns the marker `"challenge"`, which is not a category id and so cannot collide.
 
-**Rolling the generic heroes back takes two settings, not one.**
-`enable_category_hero = false` restores every native category header, background and New Topic
-button except the Monthly Challenge, whose workflow stays active. On 7 and 12 the hero action
-disappears while `critique_hide_new_topic_button` keeps `#create-topic` hidden — leaving both
-categories with no way to post. Turn `critique_hide_new_topic_button` off as well. This is why
-the `@if` block in `critique-submit.scss` survives even though it looks redundant against the
-hero's own `#create-topic` rule: that rule is only emitted while the feature is on.
+**Native list controls stay native.** `enable_category_hero = false` restores every native
+category header and background except the Monthly Challenge, whose workflow stays active. It
+does not govern `#create-topic`: logged-in members keep Discourse's New Topic button in the
+list-controls bar whether or not the hero is enabled. Category-specific routes redirect that
+button to the appropriate SPC submission form.
 
 `critique_banner_background` is declared and unread. R4 keeps the pink banner restorable without a
 commit for one release; deleting the setting, not the rule, is what closes that door.

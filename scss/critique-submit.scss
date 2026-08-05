@@ -1,41 +1,8 @@
-// What is left of the old Critique Submit component (20).
+// The former Critique Submit component no longer owns visible layout. Photo
+// Feedback and Introductions use shared hero actions, while Discourse's native
+// New Topic button remains in the list-controls bar and is routed to the same
+// SPC forms by spc-photo-submit.js.
 //
-// Its two visible parts are both gone. The pink and teal .category-title-header
-// recolours went with D10, because categories 7 and 12 now render the shared
-// hero and that hero hides the node the recolours tinted. The .spc-critique-submit
-// button row went with them: its three buttons are hero actions now. Two of
-// those URLs have since become the theme's own /submit/critique and
-// /submit/project, and the settings that used to switch them back to Custom
-// Wizard went when those wizards were deleted.
-//
-// The teal block in particular was already invisible before it was deleted:
-// the shared hero replaces the native header on every category page now, so
-// recolouring a hidden header would be dead code.
-//
-// $critique_banner_background, $critique_banner_text_color and
-// $critique_intro_banner_background stay declared in settings.yml, now unread.
-// R4 keeps the pink and teal banners restorable for one release without a
-// commit, and it is deleting the settings rather than the rules that closes
-// that door.
-//
-// The file keeps its name. Discourse keys extra_scss by BASENAME, so renaming
-// a partial means editing common.scss in the same breath and risking the
-// import trap that serves the whole site 300 bytes of CSS comment. Not worth
-// it for a tidier filename.
-
-// The one rule that survives, and it is not redundant with the hero's own
-// #create-topic rule even though it looks it. category-hero.scss only emits
-// that rule while enable_category_hero is on; this one is what still governs
-// categories 7 and 12 after the feature is rolled back. Note the consequence:
-// turning the hero off leaves both categories with no posting route at all
-// until critique_hide_new_topic_button is turned off too, because the hero
-// action disappears and this rule keeps the native button hidden.
-@if $critique_hide_new_topic_button {
-  body.category-#{$critique_category_slug},
-  body.category-#{$critique_intro_category_slug} {
-    #create-topic,
-    .topic-list-header-buttons #create-topic {
-      display: none;
-    }
-  }
-}
+// Keep this file as the stable `critique-submit` import. Discourse keys
+// extra_scss by BASENAME, so removing or renaming the partial needlessly risks
+// the import trap that can invalidate the whole compiled stylesheet.

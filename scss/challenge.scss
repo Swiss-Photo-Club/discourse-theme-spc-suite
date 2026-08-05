@@ -34,12 +34,6 @@ body.navigation-category.category-monthly-challenge {
   background-image: none !important;
 }
 
-/* The hero owns the submit action. Keep the rest of Discourse's native list
-   controls, including notification and moderation actions. */
-body.category-monthly-challenge #create-topic {
-  display: none !important;
-}
-
 /* The official challenge topic is NOT hidden from the entry grid, and cannot
    be while the grid is masonry.
 

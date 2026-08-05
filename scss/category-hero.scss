@@ -7,10 +7,10 @@
    full-bleed category background while the JS observer renders the hero.
 
    The renderer and these rules share one rollback switch. Turning
-   enable_category_hero off restores the core header, background and New
-   Topic button together. The Monthly Challenge remains independent: its
-   hero is part of the /submit workflow and challenge.scss carries the
-   equivalent page plumbing for that category.
+   enable_category_hero off restores the core header and background. Native
+   list controls, including New Topic, remain Discourse-owned in both states.
+   The Monthly Challenge remains independent: its hero is part of the /submit
+   workflow and challenge.scss carries the equivalent page plumbing for it.
    =================================================================== */
 
 @if $enable_category_hero {
@@ -31,13 +31,6 @@
        component owns .category-title-header. */
     .category-title-header,
     .list-controls .category-heading {
-      display: none;
-    }
-
-    /* Hide the native action only after the hero has supplied its replacement.
-       If permission data is late or a category deliberately has no hero action,
-       core keeps control of whether New Topic should be shown. */
-    &:has([data-spc-hero] .spc-hero__actions) #create-topic {
       display: none;
     }
   }

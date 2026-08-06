@@ -445,6 +445,19 @@ body.category-monthly-challenge .list-controls .category-heading {
   display: none;
 }
 
+/* Topic Voting's per-card count ("2 votes"), on the category list and on the
+   votes-ordered tag page staff judge from. Colour ONLY: these cards are
+   masonry-measured, and any metric change (weight, size, casing) can rewrap
+   the footer line, change the row height and desync the layout. Zero-vote
+   entries stay muted so the ranked page reads at a glance. */
+.topic-list-item a.list-vote-count {
+  color: var(--spc-coral);
+}
+
+.topic-list-item a.list-vote-count.vote-count-0 {
+  color: var(--spc-gray-400);
+}
+
 /* Keep a toolbar gutter even when the leaderboard is disabled or cannot
    render. Whichever owned section is last receives the same 24px separation. */
 body.category-monthly-challenge .spc-category-surface > :last-child {

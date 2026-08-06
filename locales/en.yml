@@ -202,7 +202,6 @@ en:
     read_more_category: Read more about this category →
     submit_photo: SUBMIT A PHOTO
     view_entries: VIEW ENTRIES
-    closed: CHALLENGE CLOSED
     how_voting_works: How voting works
     official_brief: Official challenge brief
     read_full_challenge: Read the full challenge
@@ -219,19 +218,17 @@ en:
     winning_photo: Winning photo
     entries: '%{count} entries'
     by_author: by %{author}
-    submissions_close: Submissions close %{date}
-    voting_closes: Voting closes %{date}
-    active_deadlines: Submit by %{submission_date} · Vote by %{voting_date}
-    submissions_closed_voting_open: Submissions closed · Voting closes %{date}
-    deadline_voting_open: Submission deadline %{submission_date} · Submissions closed · Voting closes %{date}
-    closed_with_deadline: Deadline %{date} · Challenge closed
+    open_deadlines: Submit and vote until %{date}
+    voting_until_winner: Submissions closed · Voting stays open until the winner is announced
+    entries_by_votes: Entries by votes
     last_month_winner: Last month’s winner · %{month} — %{theme}
+    last_month_winner_plain: Last month’s winner · %{month}
     previous_entries: See all %{month} entries
     vote_modal_title: How voting works
     vote_step_one_title: Browse entries as they arrive
     vote_step_one_body: New photographs appear throughout the submission period and can be voted on immediately.
     vote_step_two_title: Vote for your favourites
-    vote_step_two_body: Open an entry and use the vote button. Votes can be changed until voting closes.
+    vote_step_two_body: Open an entry and use the vote button. Votes can be changed until the winner is announced.
     vote_step_three_title: The community chooses
     vote_step_three_body: The photograph with the most valid votes is featured as the monthly winner.
     full_rules: Read the full entry and voting guide

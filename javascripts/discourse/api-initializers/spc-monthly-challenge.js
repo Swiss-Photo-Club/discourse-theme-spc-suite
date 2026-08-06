@@ -361,9 +361,24 @@ function fetchPinnedBrief() {
     try {
       const data = await ajax(`${categoryRoute()}/l/latest.json`);
       const topics = data?.topic_list?.topics || [];
-      const brief = topics.find((topic) =>
-        Boolean(topic.pinned && findRoundTag(topic.tags))
-      );
+      // topic.pinned is PER-USER: Discourse auto-unpins a pinned topic for
+      // anyone who has read it to the bottom (a user preference, on by
+      // default), and the listing then serves pinned:false to that reader -
+      // so the staff member who just posted the brief is exactly who stops
+      // seeing it as pinned. unpinned:true marks that per-user state, so
+      // "pinned || unpinned" means pinned-for-the-site.
+      //
+      // Among pinned briefs, the newest round tag wins, so a not-yet-unpinned
+      // previous brief cannot shadow the fresh one during the handover.
+      const brief = topics
+        .filter((topic) =>
+          Boolean((topic.pinned || topic.unpinned) && findRoundTag(topic.tags))
+        )
+        .sort((a, b) =>
+          tagName(findRoundTag(b.tags)).localeCompare(
+            tagName(findRoundTag(a.tags))
+          )
+        )[0];
       if (!brief) {
         return null;
       }

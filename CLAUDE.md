@@ -207,6 +207,16 @@ in the same rule.
 param named `option` turns every `<option>` in that block into a component invocation. At risk:
 `option`, `input`, `label`, `output`, `select`, `form`, `data`, `time`, `slot`.
 
+**Tag PAGES need the tag's numeric id; only the `.json`/`.rss` forms still accept a bare
+name.** Current Discourse routes browsers to `/tag/<slug>/<id>` (and
+`/tags/c/<cat-slug>/<cat-id>/<tag-slug>/<tag-id>`); the old name-only paths survive with a
+`format: /json|rss/` constraint, so a fetch of `/tags/c/monthly-challenge/6/winner.json`
+works while the same URL without `.json` is a 404 page. Verified live 2026-08-06: the hero's
+staff votes link 404'd as a name-based page while the sidebar linked `/tag/2026-07-cityscapes/1`.
+Tag ids ride on the tag objects `{id, name, slug}` that topic listings serialize —
+`tagPageUrl()` in `spc-monthly-challenge.js` builds hrefs from them; `tagListJsonUrl()` is
+for fetches only.
+
 **Permalinks match the full request path, query string included.** `submit` matches `/submit`
 and nothing else. Every query-param variant of a theme-owned route needs its own permalink row,
 which is why modes are carried by the **category** in the destination rather than an extra param.

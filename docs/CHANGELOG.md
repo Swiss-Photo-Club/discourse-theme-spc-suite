@@ -29,6 +29,14 @@ voting only — and the form falls back to the old current-month resolution.
 Setup this requires on the live site, one time: a `winner` tag in a tag group everyone can
 see but only staff may apply.
 
+Follow-up fix, found on the live site the same day: the staff votes link and the winner
+card's entries link were built as name-based tag pages (`/tags/c/monthly-challenge/6/<tag>`),
+which current Discourse serves only as `.json`/`.rss` — as HTML pages they 404, while
+browsers get `/tag/<slug>/<numeric id>`. Both links now build from the tag objects
+`{id, name, slug}` the topic listings serialize (`tagPageUrl()`), with the bare-name URL as
+a redirect-dependent fallback for registry-recorded rounds. The `winner.json` fetch was
+already on the surviving json route and is unchanged.
+
 ## Unreleased — Standardise category pages and specialise the challenge content
 
 Every category now uses one ordered surface: photo-backed hero and actions, native category

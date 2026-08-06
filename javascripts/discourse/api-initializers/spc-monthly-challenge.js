@@ -967,22 +967,22 @@ function renderPreviousWinner(winner) {
       <span class="spc-eyebrow">${escapeHtml(eyebrow)}</span>
       <h2 id="spc-challenge-winner-title">${escapeHtml(winner.title)}</h2>
       ${meta.length ? `<p>${escapeHtml(meta.join(" · "))}</p>` : ""}
-    </div>
-    <div class="spc-challenge-winner__links">
-      ${
-        winner.href
-          ? `<a href="${escapeHtml(winner.href)}">${escapeHtml(
-              translate("winning_photo")
-            )} →</a>`
-          : ""
-      }
-      ${
-        winner.entriesUrl
-          ? `<a href="${escapeHtml(winner.entriesUrl)}">${escapeHtml(
-              translate("previous_entries", { month: winner.month })
-            )} →</a>`
-          : ""
-      }
+      <div class="spc-challenge-winner__links">
+        ${
+          winner.href
+            ? `<a href="${escapeHtml(winner.href)}">${escapeHtml(
+                translate("winning_photo")
+              )} →</a>`
+            : ""
+        }
+        ${
+          winner.entriesUrl
+            ? `<a href="${escapeHtml(winner.entriesUrl)}">${escapeHtml(
+                translate("previous_entries", { month: winner.month })
+              )} →</a>`
+            : ""
+        }
+      </div>
     </div>
   `;
 

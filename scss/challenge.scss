@@ -85,23 +85,37 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   box-sizing: border-box;
 }
 
+/* The photograph hangs uncropped on the navy slab — object-fit: contain,
+   like the submit preview, never cover. These two sections present the
+   photograph itself; the masonry cards are where cover is correct. */
 .spc-challenge-current__media {
+  display: flex;
   min-height: 300px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
   background: linear-gradient(135deg, #1a2744, #455d88);
+  box-sizing: border-box;
 }
 
 .spc-challenge-current__media img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-height: 420px;
+  object-fit: contain;
 }
 
 .spc-challenge-current .spc-eyebrow,
 .spc-challenge-winner .spc-eyebrow,
 .spc-voting-dialog .spc-eyebrow {
   color: var(--spc-coral);
+}
+
+/* The one surface that says what the whole page is about, so its eyebrow
+   steps up from the base 0.75rem. Contextual override per the One Eyebrow
+   Rule — the base class in hero.scss stays untouched. */
+.spc-challenge-current .spc-eyebrow {
+  font-size: 0.95rem;
 }
 
 .spc-challenge-current__content {
@@ -139,16 +153,19 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   margin-top: 8px;
 }
 
+/* A medium showcase: real presence, clearly second to the current round
+   above it. The amber border-top is the system's winner mark (Winner
+   Amber, edge-not-corner, same move as the onboarding panel's coral top). */
 .spc-challenge-winner {
   order: 40;
   display: grid;
   width: 100%;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 18px;
+  min-height: 240px;
+  grid-template-columns: minmax(240px, 36%) minmax(0, 1fr);
   margin: 16px 0 0;
-  padding: 14px 18px;
+  overflow: hidden;
   border: 1px solid var(--spc-gray-200);
+  border-top: 4px solid var(--spc-casablanca);
   background: #ffffff;
   box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
   box-sizing: border-box;
@@ -156,32 +173,38 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 
 .spc-challenge-winner__media {
   display: flex;
-  width: 96px;
-  height: 64px;
+  min-height: 240px;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  padding: 18px;
   background: #141a26;
+  box-sizing: border-box;
 }
 
 .spc-challenge-winner__media img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-height: 300px;
+  object-fit: contain;
 }
 
 .spc-challenge-winner__content {
+  display: flex;
   min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 28px;
 }
 
 .spc-challenge-winner__content h2 {
-  margin: 2px 0 3px;
+  margin: 8px 0 4px;
   color: var(--spc-indigo);
-  font-size: 17px;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
 }
 
 .spc-challenge-winner__content p {
-  margin: 0;
+  margin: 0 0 12px;
   color: var(--spc-gray-400);
   line-height: 1.5;
 }
@@ -190,7 +213,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 /* Staff admin panel --------------------------------------------------
@@ -558,6 +582,10 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
     min-height: 220px;
   }
 
+  .spc-challenge-current__media img {
+    max-height: 320px;
+  }
+
   .spc-challenge-current__content {
     padding: 22px 20px 24px;
   }
@@ -567,18 +595,19 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   }
 
   .spc-challenge-winner {
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: 12px;
-    padding: 12px;
+    grid-template-columns: 1fr;
   }
 
   .spc-challenge-winner__media {
-    width: 72px;
-    height: 58px;
+    min-height: 200px;
   }
 
-  .spc-challenge-winner__links {
-    grid-column: 1 / -1;
+  .spc-challenge-winner__media img {
+    max-height: 260px;
+  }
+
+  .spc-challenge-winner__content {
+    padding: 20px 20px 22px;
   }
 
   .spc-challenge-winner__links a {

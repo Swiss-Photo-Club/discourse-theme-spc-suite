@@ -119,6 +119,27 @@ function topicSummary(cooked) {
   return paragraph?.textContent.trim() || "";
 }
 
+// The first few text paragraphs of the brief, as plain strings. The section
+// is a teaser above the entry grid, not a mirror of the topic, so headings,
+// images and lists are deliberately dropped and the tail stays behind the
+// "read the full challenge" link. Signed out, cooked is empty (the post body
+// is members-only — see legacyTopicContent) and the caller falls back to the
+// public listing excerpt.
+const BODY_PREVIEW_PARAGRAPHS = 3;
+
+function topicBodyPreview(cooked) {
+  if (!cooked) {
+    return [];
+  }
+
+  const container = document.createElement("div");
+  container.innerHTML = cooked;
+  return Array.from(container.querySelectorAll("p"))
+    .map((element) => element.textContent.trim())
+    .filter(Boolean)
+    .slice(0, BODY_PREVIEW_PARAGRAPHS);
+}
+
 function topicCoverImage(cooked) {
   if (!cooked) {
     return "";
@@ -830,19 +851,30 @@ function renderChallengeHero(challenge) {
   });
 }
 
+// The showcase treatment: the current round is what the page advertises, so
+// it gets the large media panel and the brief's own text, while the previous
+// winner below is a compact recognition strip. The two swapped treatments on
+// 2026-08-06 — the retrospective used to be the dominant section.
 function renderCurrentChallenge(challenge) {
   const existing = document.querySelector(".spc-challenge-current");
   const title = challengeTitle(challenge);
-  const summary = challengeSummary(challenge);
+  const paragraphs = topicBodyPreview(challenge.topic?.cooked);
+  if (!paragraphs.length) {
+    const summary = challengeSummary(challenge);
+    if (summary) {
+      paragraphs.push(summary);
+    }
+  }
   const image = uploadUrl(challenge.cover_image) || challenge.topic?.coverImage;
   const href =
     challenge.topic?.url || challenge.topic_url || settings.guide_topic_url;
+  const month = monthLabel(challenge);
   const signature = [
     challenge.tag,
     challenge.topic?.updatedAt,
     localeCode(),
     title,
-    summary,
+    paragraphs.join("|"),
     image,
     href,
   ].join("-");
@@ -862,17 +894,19 @@ function renderCurrentChallenge(challenge) {
       ${image ? `<img src="${escapeHtml(image)}" alt="">` : ""}
     </div>
     <div class="spc-challenge-current__content">
-      <span class="spc-eyebrow">${escapeHtml(translate("current"))}</span>
+      <span class="spc-eyebrow">${escapeHtml(translate("current"))}${
+        month ? ` · ${escapeHtml(month)}` : ""
+      }</span>
       <h2 id="spc-challenge-current-title">${escapeHtml(title)}</h2>
-      ${summary ? `<p>${escapeHtml(summary)}</p>` : ""}
+      ${paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("")}
+      ${
+        href
+          ? `<a class="spc-challenge-current__link" href="${escapeHtml(
+              href
+            )}">${escapeHtml(translate("read_full_challenge"))} →</a>`
+          : ""
+      }
     </div>
-    ${
-      href
-        ? `<a class="spc-challenge-current__link" href="${escapeHtml(
-            href
-          )}">${escapeHtml(translate("read_full_challenge"))} →</a>`
-        : ""
-    }
   `;
 
   categorySurface()?.append(section);
@@ -933,6 +967,8 @@ function renderPreviousWinner(winner) {
       <span class="spc-eyebrow">${escapeHtml(eyebrow)}</span>
       <h2 id="spc-challenge-winner-title">${escapeHtml(winner.title)}</h2>
       ${meta.length ? `<p>${escapeHtml(meta.join(" · "))}</p>` : ""}
+    </div>
+    <div class="spc-challenge-winner__links">
       ${
         winner.href
           ? `<a href="${escapeHtml(winner.href)}">${escapeHtml(

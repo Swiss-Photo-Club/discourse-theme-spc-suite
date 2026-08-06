@@ -67,16 +67,18 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   display: none;
 }
 
-/* Current challenge and previous winner ----------------------------- */
+/* Current challenge and previous winner ------------------------------
+   The current round carries the showcase treatment and the previous
+   winner sits below it as a compact recognition strip — the page
+   advertises this month first and honours last month second. */
 .spc-challenge-current {
   order: 30;
   display: grid;
   width: 100%;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 18px;
+  min-height: 300px;
+  grid-template-columns: minmax(280px, 45%) minmax(0, 1fr);
   margin: 24px 0 0;
-  padding: 14px 18px;
+  overflow: hidden;
   border: 1px solid var(--spc-gray-200);
   background: #ffffff;
   box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
@@ -84,16 +86,13 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 }
 
 .spc-challenge-current__media {
-  display: flex;
-  width: 96px;
-  height: 64px;
-  align-items: center;
-  justify-content: center;
+  min-height: 300px;
   overflow: hidden;
   background: linear-gradient(135deg, #1a2744, #455d88);
 }
 
 .spc-challenge-current__media img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -105,60 +104,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   color: var(--spc-coral);
 }
 
-.spc-challenge-current h2 {
-  margin: 2px 0 3px;
-  color: var(--spc-indigo);
-  font-size: 17px;
-}
-
-.spc-challenge-current p {
-  max-width: 70ch;
-  margin: 0;
-  color: var(--spc-gray-400);
-  line-height: 1.5;
-}
-
-.spc-challenge-current__link,
-.spc-challenge-winner__content > a {
-  border-bottom: 2px solid var(--spc-coral);
-  color: var(--spc-indigo) !important;
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.spc-challenge-winner {
-  order: 40;
-  display: grid;
-  width: 100%;
-  min-height: 300px;
-  grid-template-columns: minmax(280px, 45%) minmax(0, 1fr);
-  margin: 16px 0 0;
-  overflow: hidden;
-  border: 1px solid var(--spc-gray-200);
-  background: #ffffff;
-  box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
-  box-sizing: border-box;
-}
-
-.spc-challenge-winner__media {
-  display: flex;
-  min-height: 300px;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  background: #141a26;
-  box-sizing: border-box;
-}
-
-.spc-challenge-winner__media img {
-  display: block;
-  width: 100%;
-  max-height: 360px;
-  object-fit: contain;
-}
-
-.spc-challenge-winner__content {
+.spc-challenge-current__content {
   display: flex;
   min-width: 0;
   flex-direction: column;
@@ -167,20 +113,84 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   padding: 28px;
 }
 
-.spc-challenge-winner__content h2 {
+.spc-challenge-current__content h2 {
   margin: 8px 0 4px;
   color: var(--spc-indigo);
   font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 
-.spc-challenge-winner__content p {
-  margin: 0 0 12px;
+.spc-challenge-current__content p {
+  max-width: 70ch;
+  margin: 0 0 10px;
   color: var(--spc-gray-400);
+  line-height: 1.5;
 }
 
-/* Winning-photo link above the all-entries link. */
-.spc-challenge-winner__content > a + a {
+.spc-challenge-current__link,
+.spc-challenge-winner__links a {
+  border-bottom: 2px solid var(--spc-coral);
+  color: var(--spc-indigo) !important;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.spc-challenge-current__link {
   margin-top: 8px;
+}
+
+.spc-challenge-winner {
+  order: 40;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin: 16px 0 0;
+  padding: 14px 18px;
+  border: 1px solid var(--spc-gray-200);
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(20, 30, 60, 0.06);
+  box-sizing: border-box;
+}
+
+.spc-challenge-winner__media {
+  display: flex;
+  width: 96px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #141a26;
+}
+
+.spc-challenge-winner__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spc-challenge-winner__content {
+  min-width: 0;
+}
+
+.spc-challenge-winner__content h2 {
+  margin: 2px 0 3px;
+  color: var(--spc-indigo);
+  font-size: 17px;
+}
+
+.spc-challenge-winner__content p {
+  margin: 0;
+  color: var(--spc-gray-400);
+  line-height: 1.5;
+}
+
+.spc-challenge-winner__links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 /* Staff admin panel --------------------------------------------------
@@ -541,36 +551,38 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 /* Responsive --------------------------------------------------------- */
 @media (max-width: 600px) {
   .spc-challenge-current {
+    grid-template-columns: 1fr;
+  }
+
+  .spc-challenge-current__media {
+    min-height: 220px;
+  }
+
+  .spc-challenge-current__content {
+    padding: 22px 20px 24px;
+  }
+
+  .spc-challenge-current__link {
+    white-space: normal;
+  }
+
+  .spc-challenge-winner {
     grid-template-columns: 72px minmax(0, 1fr);
     gap: 12px;
     padding: 12px;
   }
 
-  .spc-challenge-current__media {
+  .spc-challenge-winner__media {
     width: 72px;
     height: 58px;
   }
 
-  .spc-challenge-current__link {
+  .spc-challenge-winner__links {
     grid-column: 1 / -1;
-    width: fit-content;
+  }
+
+  .spc-challenge-winner__links a {
     white-space: normal;
-  }
-
-  .spc-challenge-winner {
-    grid-template-columns: 1fr;
-  }
-
-  .spc-challenge-winner__media {
-    min-height: 220px;
-  }
-
-  .spc-challenge-winner__media img {
-    max-height: 320px;
-  }
-
-  .spc-challenge-winner__content {
-    padding: 22px 20px 24px;
   }
 
   .spc-voting-dialog__panel {

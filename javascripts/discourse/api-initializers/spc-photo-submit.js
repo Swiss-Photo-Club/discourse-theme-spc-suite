@@ -167,47 +167,65 @@ const spcRun = (api) => {
       }
   );
 
-  // The challenge hero's submit button and the core New Topic button open
-  // the composer programmatically, so route them to /submit as well.
-  if (settings.replace_new_topic_button) {
-    const categoryId = parseInt(settings.challenge_category_id, 10);
+  // The challenge hero and Discourse's native category action open the
+  // composer programmatically, so route the workflows that own an SPC form
+  // before core handles the click. Direct /new-topic links remain covered by
+  // route:new-topic above.
+  const challengeCategoryId = parseInt(settings.challenge_category_id, 10);
+  const critiqueCategoryId = parseInt(settings.critique_category_id, 10);
+  const introductionCategoryId = parseInt(
+    settings.critique_intro_category_id,
+    10
+  );
 
-    // Scoped to .spc-hero--challenge, and it has to stay that way. This
-    // selector used to be ".spc-hero__actions .spc-button--primary", which was
-    // correct only while the challenge was the sole hero on the site: the
-    // moment any other category grew one, its primary button was silently
-    // hijacked to the challenge photo-submission page. Nothing about the page
-    // would look wrong — the button renders, the label is right, the click
-    // just goes somewhere else. Verify this by clicking category 6's submit
-    // button, never by looking at it.
-    const CHALLENGE_PRIMARY =
-      ".spc-hero--challenge .spc-hero__actions .spc-button--primary";
+  // Scoped to .spc-hero--challenge, and it has to stay that way. This selector
+  // used to be ".spc-hero__actions .spc-button--primary", which was correct
+  // only while the challenge was the sole hero on the site: the moment any
+  // other category grew one, its primary button was silently hijacked to the
+  // challenge photo-submission page. Nothing about the page would look wrong —
+  // the button renders, the label is right, the click just goes somewhere
+  // else. Verify this by clicking category 6's submit button, never by looking
+  // at it.
+  const CHALLENGE_PRIMARY =
+    ".spc-hero--challenge .spc-hero__actions .spc-button--primary";
 
-    const clickHandler = (e) => {
-      const el = e.target.closest?.(`#create-topic, ${CHALLENGE_PRIMARY}`);
-      if (!el) {
-        return;
+  const clickHandler = (e) => {
+    const el = e.target.closest?.(`#create-topic, ${CHALLENGE_PRIMARY}`);
+    if (!el) {
+      return;
+    }
+
+    let destination = null;
+
+    if (el.matches(CHALLENGE_PRIMARY)) {
+      destination = settings.replace_new_topic_button ? SUBMIT_PATH : null;
+    } else {
+      const router = api.container.lookup("service:router");
+      const routeCategory =
+        router?.currentRoute?.attributes?.category ||
+        api.container.lookup("controller:navigation/category")?.category;
+      const routeCategoryId = Number(routeCategory?.id);
+
+      if (
+        settings.replace_new_topic_button &&
+        routeCategoryId === challengeCategoryId
+      ) {
+        destination = SUBMIT_PATH;
+      } else if (routeCategoryId === critiqueCategoryId) {
+        destination = CRITIQUE_PATH;
+      } else if (routeCategoryId === introductionCategoryId) {
+        destination = INTRODUCTION_PATH;
       }
+    }
 
-      let isChallenge = el.matches(CHALLENGE_PRIMARY);
+    if (destination) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      DiscourseURL.routeTo(destination);
+    }
+  };
 
-      if (!isChallenge) {
-        const router = api.container.lookup("service:router");
-        const routeCategory =
-          router?.currentRoute?.attributes?.category ||
-          api.container.lookup("controller:navigation/category")?.category;
-        isChallenge = routeCategory?.id === categoryId;
-      }
-
-      if (isChallenge) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        DiscourseURL.routeTo(SUBMIT_PATH);
-      }
-    };
-
-    document.addEventListener("click", clickHandler, { capture: true });
-  }
+  document.addEventListener("click", clickHandler, { capture: true });
 };
 
 spcStartWhenReady(null, spcRun);

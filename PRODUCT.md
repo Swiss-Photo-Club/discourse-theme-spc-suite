@@ -59,8 +59,10 @@ challenge gives the club a shared, dated rhythm that an open forum has no way to
   therefore everything else sits at the repository root.
 - **Monthly challenge round:** staff create a `YYYY-MM-theme` tag in the Challenge Round tag
   group, post the brief as a normal topic with a photo, and pin it. The pinned topic *is* the
-  current challenge — nothing is inferred from dates or authorship. The `challenges` setting is
-  an archive and override, not the source of truth.
+  current challenge — nothing is inferred from dates or authorship. Voting runs alongside
+  submissions all month and stays open until staff apply the staff-only `winner` tag to the
+  winning entry and pin the next brief; the winner showcase derives from that tag. The
+  `challenges` setting is an archive and override, not the source of truth.
 - **Homepage highlights** come from core's *Default navigation menu categories*, so the same
   admin choice seeds the anonymous sidebar. `homepage_secondary_categories` controls the
   compact cards below.

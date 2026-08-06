@@ -178,6 +178,11 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   color: var(--spc-gray-400);
 }
 
+/* Winning-photo link above the all-entries link. */
+.spc-challenge-winner__content > a + a {
+  margin-top: 8px;
+}
+
 /* Voting explainer modal -------------------------------------------- */
 .spc-voting-dialog {
   width: min(720px, calc(100vw - 2rem));

@@ -90,21 +90,38 @@ and it works purely by being later in the cascade.
 The **pinned topic in the Monthly Challenge category is the current challenge.** Nothing is
 inferred from post dates or authorship, so posting normally in the category is safe.
 
-To open a new round:
+A round runs on one rhythm: **submissions and voting are both open all month, then voting
+alone stays open until staff announce the winner and pin the next brief.** There is no fixed
+voting deadline and no closed state — the current round is always either accepting photos or
+accepting votes, so the category never shows a dead end between rounds.
 
-1. Create a tag named `YYYY-MM-theme` (for example `2026-08-portraits`) and add it to the
+**One-time setup:** create a tag named `winner` in a tag group that everyone can see but only
+staff may apply (Admin → Customize → Tags → Tag Groups → permissions). The theme finds the
+previous winner by reading the newest `winner`-tagged topic in the category.
+
+Each month, in one sitting, early in the month:
+
+1. Open **Entries by votes** — the staff-only button on the challenge hero — to see the
+   finished round's entries ranked by vote count.
+2. Add the `winner` tag to the winning topic (topic wrench → edit tags). The winner section
+   on the category page renders itself from that topic: title, photograph, author and month
+   all come from the topic and its round tag. Nothing needs to be typed into settings.
+3. Create a tag named `YYYY-MM-theme` (for example `2026-08-portraits`) and add it to the
    **Challenge Round** tag group. The category requires at least one tag, and the submit
-   form resolves the round by matching the current `YYYY-MM` prefix.
-2. Post the brief as a normal topic in **Monthly Challenge**, tagged with that tag, with a
-   photo attached — the homepage card uses the topic's own thumbnail.
-3. Pin it: topic footer → the wrench (topic admin menu) → **Pin Topic**. Discourse requires
-   a *Pin until* date; set it to the voting deadline.
+   form resolves the round from the pinned brief, falling back to the current `YYYY-MM`
+   prefix.
+4. Post the new brief as a normal topic in **Monthly Challenge**, tagged with that tag, with
+   a photo attached — the homepage card uses the topic's own thumbnail.
+5. Pin it: topic footer → the wrench (topic admin menu) → **Pin Topic**. Discourse requires
+   a *Pin until* date; set it a few days into the following month, past the point where you
+   expect to announce that round's winner. Unpin the previous brief if it is still pinned.
 
 The homepage then decorates that topic with a "This month's prompt" badge, and the category
 hero and `/submit` form pick up the round tag on their own.
 
-The `challenges` setting is an **archive and override**, not the source of truth for which
-round is current. Use it to record past rounds, deadline text for the hero, and winners.
+The `challenges` setting is an **override and archive**, not the source of truth. A record
+whose `tag` matches the winner's round tag can override the displayed title, author, photo,
+link and entry count; nothing needs to be entered there for the normal monthly routine.
 
 ## Homepage category workflow
 

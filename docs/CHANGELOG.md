@@ -4,6 +4,31 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Round model: vote until announced; winner by tag
+
+A challenge round no longer has a fixed voting deadline. Submissions and voting are both open
+during the month; after month end the round enters a voting-only state that lasts until staff
+announce the winner and pin the next brief. The former derived three-day voting window and the
+"closed" state are gone — the current round is always live, so the category never shows a
+dead end between rounds, and the old gap window (voting over, new brief not yet posted, hero
+showing a closed challenge) cannot occur.
+
+The previous winner now comes from a staff-only `winner` tag instead of hand-typed settings.
+The theme reads the newest winner-tagged topic in the category — title, photograph, author
+and round tag all come from the tag listing, which is public even where the topics are not —
+and renders the showcase from it. A `challenges` registry entry matching the same round tag
+acts as an optional override, and the registry-only path still renders rounds recorded before
+the tag existed. The hero gains a staff-only "Entries by votes" action linking to the round's
+entries ordered by Topic Voting count, so picking the winner is one look and one tag.
+
+`/submit` now prefers the pinned brief's round tag when it belongs to the current month, so
+the form and the hero cannot disagree when several tags share a month prefix. In the overlap
+days (month over, winner not yet announced) the hero deliberately shows no submit button —
+voting only — and the form falls back to the old current-month resolution.
+
+Setup this requires on the live site, one time: a `winner` tag in a tag group everyone can
+see but only staff may apply.
+
 ## Unreleased — Standardise category pages and specialise the challenge content
 
 Every category now uses one ordered surface: photo-backed hero and actions, native category

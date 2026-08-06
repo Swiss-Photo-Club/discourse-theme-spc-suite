@@ -277,22 +277,22 @@ function monthLabel(challenge) {
   }).format(date);
 }
 
+// A round has two live phases and no dead one. Submissions close at the end of
+// the month, but voting has no fixed deadline: it stays open until staff
+// announce the winner and pin the next brief, at which point this round simply
+// stops being the pinned one. There is deliberately no "closed" state — the
+// current round is always either accepting photos or accepting votes, so the
+// category never shows a dead end between rounds.
 function challengeState(challenge) {
   if (challenge?.status === "archived") {
     return "archived";
   }
 
-  const now = Date.now();
   const submissionDeadline = validDate(challenge?.submission_deadline)?.getTime();
-  const votingDeadline = validDate(challenge?.voting_deadline)?.getTime();
-
-  if (!submissionDeadline || now <= submissionDeadline) {
+  if (!submissionDeadline || Date.now() <= submissionDeadline) {
     return "submissions-open";
   }
-  if (!votingDeadline || now <= votingDeadline) {
-    return "submissions-closed";
-  }
-  return "closed";
+  return "voting-open";
 }
 
 function categoryRoute() {
@@ -386,8 +386,6 @@ function deriveChallengeFromBrief(brief) {
   const month = Number(match[2]);
   const lastDay = new Date(year, month, 0).getDate();
   const pad = (n) => String(n).padStart(2, "0");
-  const votingDate = new Date(year, month - 1, lastDay);
-  votingDate.setDate(votingDate.getDate() + 3);
 
   return {
     listing: brief.listing,
@@ -397,7 +395,8 @@ function deriveChallengeFromBrief(brief) {
     status: "active",
     start_at: `${year}-${pad(month)}-01T00:00:00+02:00`,
     submission_deadline: `${year}-${pad(month)}-${pad(lastDay)}T23:59:00+02:00`,
-    voting_deadline: `${votingDate.getFullYear()}-${pad(votingDate.getMonth() + 1)}-${pad(votingDate.getDate())}T23:59:00+02:00`,
+    // Voting has no fixed deadline — see challengeState().
+    voting_deadline: "",
     gallery_url: "",
     winner_title: "",
     winner_author: "",
@@ -425,6 +424,132 @@ async function resolveActiveChallenge(challenges) {
   }
   // Fallback: no pinned brief found — use the settings registry as before.
   return activeChallenge(challenges);
+}
+
+// --- Winner detection --------------------------------------------------------
+// The previous winner is the newest topic in the category carrying the
+// staff-only `winner` tag. Staff pick the winner by adding that tag to the
+// winning entry — no settings edit, no re-upload. The topic's own round tag
+// (YYYY-MM-theme) says which month it won; the category listing supplies
+// title, photograph and author. A `challenges` registry entry matching the
+// same round tag remains an optional override, and the registry-only path
+// below keeps rounds recorded before the tag existed rendering.
+const WINNER_TAG = "winner";
+
+let winnerPromise = null;
+
+function clearWinnerCache() {
+  winnerPromise = null;
+}
+
+function tagListUrl(tag) {
+  return `/tags/c/${settings.monthly_category_slug}/${Number(
+    settings.monthly_category_id
+  )}/${encodeURIComponent(tag)}`;
+}
+
+function roundMonthLabel(tag) {
+  const match = /^(\d{4})-(\d{2})/.exec(tag || "");
+  if (!match) {
+    return "";
+  }
+  return localizedDateFormat({ month: "long", year: "numeric" }).format(
+    new Date(Number(match[1]), Number(match[2]) - 1, 1)
+  );
+}
+
+function roundThemeLabel(tag) {
+  const suffix = (tag || "")
+    .replace(/^\d{4}-\d{2}-?/, "")
+    .replaceAll("-", " ")
+    .trim();
+  return suffix ? suffix.charAt(0).toUpperCase() + suffix.slice(1) : "";
+}
+
+function fetchWinnerTopic() {
+  winnerPromise ||= (async () => {
+    try {
+      const data = await ajax(`${tagListUrl(WINNER_TAG)}.json`);
+      const users = data?.users || [];
+      const candidates = (data?.topic_list?.topics || [])
+        .map((topic) => ({
+          topic,
+          roundTag: (topic.tags || [])
+            .map(tagName)
+            .find((tag) => /^\d{4}-\d{2}/.test(tag)),
+        }))
+        .filter((entry) => entry.roundTag)
+        // Round tags sort chronologically as strings; newest round wins.
+        .sort((a, b) => b.roundTag.localeCompare(a.roundTag));
+      const latest = candidates[0];
+      if (!latest) {
+        return null;
+      }
+      const { topic, roundTag } = latest;
+      const authorId =
+        (topic.posters || []).find((poster) =>
+          (poster.description || "").toLowerCase().includes("original")
+        )?.user_id ?? topic.posters?.[0]?.user_id;
+      const author = users.find((user) => user.id === authorId);
+      return {
+        tag: roundTag,
+        title: topic.title || topic.fancy_title || "",
+        author: author?.name || author?.username || "",
+        image: topic.image_url || "",
+        url: topic.slug
+          ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
+          : `/t/${topic.id}`,
+      };
+    } catch {
+      // Cached until the TTL expiry, same as the pinned brief — clearing on
+      // failure would re-arm the fetch on the next observed mutation.
+      return null;
+    }
+  })();
+  return winnerPromise;
+}
+
+async function resolveLatestWinner(challenges) {
+  const tagged = await fetchWinnerTopic();
+  if (tagged) {
+    const override = challenges.find((c) => c.tag === tagged.tag);
+    return {
+      tag: tagged.tag,
+      month: roundMonthLabel(tagged.tag),
+      theme: roundThemeLabel(tagged.tag),
+      title: override?.winner_title || tagged.title,
+      author: override?.winner_author || tagged.author,
+      image: uploadUrl(override?.winner_image) || tagged.image,
+      href: override?.gallery_url || tagged.url,
+      entriesUrl: tagListUrl(tagged.tag),
+      entryCount: Number(override?.entry_count) || 0,
+    };
+  }
+
+  // Registry-only fallback: the newest archived round, rendered only when
+  // staff completed both the title and the image. Do not skip over an
+  // incomplete record and accidentally label an older photograph as last
+  // month's winner.
+  const previous = archivedChallenges(challenges)[0];
+  if (!previous?.winner_title || !uploadUrl(previous.winner_image)) {
+    return null;
+  }
+  const hydrated = await hydrateChallenge(previous);
+  return {
+    tag: previous.tag,
+    month: monthLabel(previous),
+    theme: challengeTitle(hydrated),
+    title: previous.winner_title,
+    author: previous.winner_author || "",
+    image: uploadUrl(previous.winner_image),
+    href:
+      previous.gallery_url ||
+      previous.winner_topic_url ||
+      hydrated.topic?.url ||
+      categoryRoute(),
+    entriesUrl: previous.tag ? tagListUrl(previous.tag) : "",
+    entryCount: Number(previous.entry_count) || 0,
+  };
 }
 
 function isChallengePage() {
@@ -573,37 +698,13 @@ function renderHomeCard(challenge) {
 }
 
 function deadlineText(challenge, state) {
-  if (
-    state === "submissions-open" &&
-    challenge.submission_deadline &&
-    challenge.voting_deadline
-  ) {
-    return translate("active_deadlines", {
-      submission_date: formatDate(challenge.submission_deadline),
-      voting_date: formatDate(challenge.voting_deadline),
-    });
-  }
-  if (state === "submissions-open") {
-    return translate("submissions_close", {
+  if (state === "submissions-open" && challenge.submission_deadline) {
+    return translate("open_deadlines", {
       date: formatDate(challenge.submission_deadline),
     });
   }
-  if (state === "submissions-closed") {
-    return challenge.voting_deadline
-      ? translate("deadline_voting_open", {
-          submission_date: formatDate(challenge.submission_deadline),
-          date: formatDate(challenge.voting_deadline),
-        })
-      : translate("closed_with_deadline", {
-          date: formatDate(challenge.submission_deadline),
-        });
-  }
-  if (state === "closed") {
-    return challenge.submission_deadline
-      ? translate("closed_with_deadline", {
-          date: formatDate(challenge.submission_deadline),
-        })
-      : translate("closed");
+  if (state === "voting-open") {
+    return translate("voting_until_winner");
   }
   return "";
 }
@@ -621,7 +722,7 @@ function deadlineText(challenge, state) {
 // and must not be: the hero is part of the route-map, permalink and
 // route:new-topic stack behind /submit, and a half-enabled state breaks photo
 // submission. Sharing the renderer is not sharing a lifecycle.
-function renderChallengeHero(challenge) {
+function renderChallengeHero(challenge, currentUser) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const category = Category.findById(Number(settings.monthly_category_id));
@@ -629,6 +730,12 @@ function renderChallengeHero(challenge) {
   const description = categoryDescription(category);
   const topicUrl = categoryTopicUrl(category);
   const currentTitle = challengeTitle(challenge);
+  // Staff-only shortcut: this round's entries ranked by Topic Voting count,
+  // so picking the winner is one look and one tag.
+  const staffVotesUrl =
+    currentUser?.staff && challenge.tag
+      ? `${tagListUrl(challenge.tag)}?order=votes`
+      : "";
 
   renderHero({
     marker: HERO_MARKER,
@@ -643,6 +750,7 @@ function renderChallengeHero(challenge) {
       cover,
       description,
       topicUrl,
+      staffVotesUrl,
     ].join("-"),
     eyebrow: monthLabel(challenge),
     title: category?.name || translate("label"),
@@ -676,6 +784,13 @@ function renderChallengeHero(challenge) {
         style: "secondary",
         attribute: "data-spc-open-voting",
       },
+      staffVotesUrl
+        ? {
+            label: translate("entries_by_votes"),
+            href: staffVotesUrl,
+            style: "secondary",
+          }
+        : null,
     ],
   });
 }
@@ -734,43 +849,35 @@ function archivedChallenges(challenges) {
     .sort((a, b) => (validDate(b.start_at)?.getTime() || 0) - (validDate(a.start_at)?.getTime() || 0));
 }
 
-function renderPreviousWinner(challenges) {
+function renderPreviousWinner(winner) {
   const existing = document.querySelector(".spc-challenge-winner");
-  // The newest archived round is the previous month. Do not skip over an
-  // incomplete record and accidentally label an older photograph as last
-  // month's winner; wait until staff add both the title and image instead.
-  const previous = archivedChallenges(challenges)[0];
 
-  if (!previous?.winner_title || !uploadUrl(previous.winner_image)) {
+  // Incomplete data shows nothing rather than something wrong: the section
+  // waits for a winner-tagged topic with a photograph (or a completed
+  // registry record) instead of guessing.
+  if (!winner?.title || !winner.image) {
     existing?.remove();
     return;
   }
 
-  const image = uploadUrl(previous.winner_image);
-  const month = monthLabel(previous);
-  const theme = challengeTitle(previous);
-  const href =
-    previous.gallery_url ||
-    previous.winner_topic_url ||
-    previous.topic?.url ||
-    categoryRoute();
+  const eyebrow = winner.theme
+    ? translate("last_month_winner", { month: winner.month, theme: winner.theme })
+    : translate("last_month_winner_plain", { month: winner.month });
   const meta = [
-    previous.winner_author
-      ? translate("by_author", { author: previous.winner_author })
-      : "",
-    Number(previous.entry_count) > 0
-      ? translate("entries", { count: Number(previous.entry_count) })
+    winner.author ? translate("by_author", { author: winner.author }) : "",
+    winner.entryCount > 0
+      ? translate("entries", { count: winner.entryCount })
       : "",
   ].filter(Boolean);
   const signature = [
-    previous.tag,
-    previous.topic?.updatedAt,
+    winner.tag,
     localeCode(),
-    previous.winner_title,
-    previous.winner_author,
-    previous.entry_count,
-    image,
-    href,
+    winner.title,
+    winner.author,
+    winner.entryCount,
+    winner.image,
+    winner.href,
+    winner.entriesUrl,
   ].join("-");
 
   if (existing?.dataset.spcChallengeSignature === signature) {
@@ -785,25 +892,26 @@ function renderPreviousWinner(challenges) {
   section.setAttribute("aria-labelledby", "spc-challenge-winner-title");
   section.innerHTML = `
     <div class="spc-challenge-winner__media">
-      ${
-        image
-          ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(
-              previous.winner_title
-            )}">`
-          : ""
-      }
+      <img src="${escapeHtml(winner.image)}" alt="${escapeHtml(winner.title)}">
     </div>
     <div class="spc-challenge-winner__content">
-      <span class="spc-eyebrow">${escapeHtml(
-        translate("last_month_winner", { month, theme })
-      )}</span>
-      <h2 id="spc-challenge-winner-title">${escapeHtml(
-        previous.winner_title
-      )}</h2>
+      <span class="spc-eyebrow">${escapeHtml(eyebrow)}</span>
+      <h2 id="spc-challenge-winner-title">${escapeHtml(winner.title)}</h2>
       ${meta.length ? `<p>${escapeHtml(meta.join(" · "))}</p>` : ""}
-      <a href="${escapeHtml(href)}">${escapeHtml(
-        translate("previous_entries", { month })
-      )} →</a>
+      ${
+        winner.href
+          ? `<a href="${escapeHtml(winner.href)}">${escapeHtml(
+              translate("winning_photo")
+            )} →</a>`
+          : ""
+      }
+      ${
+        winner.entriesUrl
+          ? `<a href="${escapeHtml(winner.entriesUrl)}">${escapeHtml(
+              translate("previous_entries", { month: winner.month })
+            )} →</a>`
+          : ""
+      }
     </div>
   `;
 
@@ -1023,6 +1131,7 @@ function spcStartWhenReady(passedOwner, run) {
 
 const spcRun = (api) => {
   const composerService = api.container.lookup("service:composer");
+  const currentUser = api.getCurrentUser();
   let renderQueued = false;
   let renderRequest = 0;
   let currentActive = null;
@@ -1088,20 +1197,17 @@ const spcRun = (api) => {
       return;
     }
 
-    // The category template shows only last month's winner. Hydrate that one
-    // archived brief instead of fetching every historical challenge topic on
-    // each visit to the category.
-    const previousRecord = archivedChallenges(challenges)[0];
-    const archived = previousRecord
-      ? [await hydrateChallenge(previousRecord)]
-      : [];
+    // The category template shows only the latest winner. One tag-listing
+    // request resolves it (cached, TTL-expired) instead of fetching every
+    // historical challenge topic on each visit to the category.
+    const winner = await resolveLatestWinner(challenges);
     if (request !== renderRequest) {
       return;
     }
 
-    renderChallengeHero(active);
+    renderChallengeHero(active, currentUser);
     renderCurrentChallenge(active);
-    renderPreviousWinner(archived);
+    renderPreviousWinner(winner);
     hideOfficialTopicRow(active);
   }
 
@@ -1176,6 +1282,7 @@ const spcRun = (api) => {
     cachesFilledAt = Date.now();
     topicCache.clear();
     clearPinnedBriefCache();
+    clearWinnerCache();
   }
 
   api.onPageChange((url) => {

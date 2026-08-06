@@ -56,15 +56,37 @@ export function currentMonthYM() {
 
 // Resolve the active round tag:
 // 1. fixed setting wins
-// 2. otherwise search the challenge category's tags for one starting with
+// 2. otherwise the pinned brief's round tag, when it belongs to the current
+//    month — the hero resolves the round from the pinned brief, so the form
+//    must read the same source or the two can disagree whenever several tags
+//    share a month prefix
+// 3. otherwise search the challenge category's tags for one starting with
 //    the current month (e.g. "2026-07-cityscapes")
-// 3. fall back to plain YYYY-MM
+// 4. fall back to plain YYYY-MM
 export async function resolveRoundTag(settings) {
   if (settings.round_tag_mode === "fixed" && settings.round_tag?.trim()) {
     return settings.round_tag.trim();
   }
 
   const base = currentMonthYM();
+  const readTagName = (tag) =>
+    typeof tag === "string" ? tag : tag?.name || "";
+
+  try {
+    const data = await ajax(
+      `/c/${parseInt(settings.challenge_category_id, 10)}/l/latest.json`
+    );
+    const pinnedTag = (data?.topic_list?.topics || [])
+      .filter((topic) => topic.pinned)
+      .flatMap((topic) => (topic.tags || []).map(readTagName))
+      .find((tag) => tag.startsWith(base));
+    if (pinnedTag) {
+      return pinnedTag;
+    }
+  } catch {
+    // fall through to the tag search
+  }
+
   try {
     const res = await ajax("/tags/filter/search.json", {
       data: {

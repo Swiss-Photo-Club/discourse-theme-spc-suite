@@ -159,7 +159,6 @@ fr:
     read_more_category: En savoir plus sur cette catégorie →
     submit_photo: ENVOYER UNE PHOTO
     view_entries: VOIR LES PHOTOS
-    closed: CHALLENGE TERMINÉ
     how_voting_works: Comment fonctionne le vote
     official_brief: Présentation officielle du challenge
     read_full_challenge: Lire le challenge complet
@@ -176,19 +175,17 @@ fr:
     winning_photo: Photo gagnante
     entries: '%{count} participations'
     by_author: par %{author}
-    submissions_close: Envois jusqu’au %{date}
-    voting_closes: Vote jusqu’au %{date}
-    active_deadlines: Envoyer avant le %{submission_date} · Voter avant le %{voting_date}
-    submissions_closed_voting_open: Envois terminés · Vote jusqu’au %{date}
-    deadline_voting_open: Date limite %{submission_date} · Envois terminés · Vote jusqu’au %{date}
-    closed_with_deadline: Date limite %{date} · Challenge terminé
+    open_deadlines: Envoyez et votez jusqu’au %{date}
+    voting_until_winner: Envois terminés · Le vote reste ouvert jusqu’à l’annonce de la photo gagnante
+    entries_by_votes: Photos par votes
     last_month_winner: Photo gagnante du mois dernier · %{month} — %{theme}
+    last_month_winner_plain: Photo gagnante du mois dernier · %{month}
     previous_entries: Voir toutes les participations de %{month}
     vote_modal_title: Comment fonctionne le vote
     vote_step_one_title: Découvrez les nouvelles participations
     vote_step_one_body: Les nouvelles photos apparaissent pendant la période d’envoi et peuvent recevoir des votes immédiatement.
     vote_step_two_title: Votez pour vos préférées
-    vote_step_two_body: Ouvrez une participation et utilisez le bouton de vote. Vous pouvez modifier votre choix jusqu’à la clôture.
+    vote_step_two_body: Ouvrez une participation et utilisez le bouton de vote. Vous pouvez modifier votre choix jusqu’à l’annonce de la photo gagnante.
     vote_step_three_title: La communauté choisit
     vote_step_three_body: La photographie qui obtient le plus de votes valides devient la gagnante du mois.
     full_rules: Lire le guide complet de participation et de vote

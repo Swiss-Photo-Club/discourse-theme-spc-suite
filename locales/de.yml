@@ -163,7 +163,6 @@ de:
     read_more_category: Mehr über diese Kategorie erfahren →
     submit_photo: FOTO EINREICHEN
     view_entries: BEITRÄGE ANSEHEN
-    closed: CHALLENGE BEENDET
     how_voting_works: So funktioniert die Abstimmung
     official_brief: Offizielle Challenge-Beschreibung
     read_full_challenge: Vollständige Challenge lesen
@@ -180,19 +179,17 @@ de:
     winning_photo: Gewinnerfoto
     entries: '%{count} Beiträge'
     by_author: von %{author}
-    submissions_close: Einreichungen bis %{date}
-    voting_closes: Abstimmung bis %{date}
-    active_deadlines: Einreichen bis %{submission_date} · Abstimmen bis %{voting_date}
-    submissions_closed_voting_open: Einreichungen beendet · Abstimmung bis %{date}
-    deadline_voting_open: Einreichfrist %{submission_date} · Einreichungen beendet · Abstimmung bis %{date}
-    closed_with_deadline: Einreichfrist %{date} · Challenge beendet
+    open_deadlines: Einreichen und abstimmen bis %{date}
+    voting_until_winner: Einreichungen beendet · Abstimmung läuft bis zur Bekanntgabe des Gewinnerfotos
+    entries_by_votes: Beiträge nach Stimmen
     last_month_winner: Gewinnerfoto des letzten Monats · %{month} — %{theme}
+    last_month_winner_plain: Gewinnerfoto des letzten Monats · %{month}
     previous_entries: Alle Beiträge vom %{month} ansehen
     vote_modal_title: So funktioniert die Abstimmung
     vote_step_one_title: Neue Beiträge entdecken
     vote_step_one_body: Neue Fotos erscheinen während der Einreichungszeit und können sofort Stimmen erhalten.
     vote_step_two_title: Favoriten wählen
-    vote_step_two_body: Öffne einen Beitrag und nutze den Abstimmungsbutton. Deine Wahl kannst du bis zum Ende ändern.
+    vote_step_two_body: Öffne einen Beitrag und nutze den Abstimmungsbutton. Deine Wahl kannst du bis zur Bekanntgabe des Gewinnerfotos ändern.
     vote_step_three_title: Die Community entscheidet
     vote_step_three_body: Das Foto mit den meisten gültigen Stimmen wird als Monatsgewinner präsentiert.
     full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen

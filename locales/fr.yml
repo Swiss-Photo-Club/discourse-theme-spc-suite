@@ -201,7 +201,7 @@ fr:
       unpin: Désépingler
       open_brief: Ouvrir la présentation →
       crown_heading: Couronner la photo gagnante
-      crown_hint: Participations de la manche en cours, les plus votées d’abord. Couronner ajoute le tag winner réservé à l’équipe ; la vitrine du gagnant se met à jour toute seule.
+      crown_hint: Les cinq participations les plus votées de la manche. Couronner ajoute le tag winner réservé à l’équipe ; la vitrine du gagnant se met à jour toute seule.
       votes: "%{count} votes"
       crowned: "Photo gagnante couronnée"
       crown: Couronner

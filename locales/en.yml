@@ -244,7 +244,7 @@ en:
       unpin: Unpin
       open_brief: Open the brief →
       crown_heading: Crown the winner
-      crown_hint: Entries of the current round, most votes first. Crowning adds the staff-only winner tag; the winner showcase updates on its own.
+      crown_hint: The round’s top five entries, most votes first. Crowning adds the staff-only winner tag; the winner showcase updates on its own.
       votes: "%{count} votes"
       crowned: "Crowned winner"
       crown: Crown winner

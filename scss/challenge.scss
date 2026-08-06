@@ -265,6 +265,14 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   margin: 6px 0;
 }
 
+.spc-challenge-admin__thumb {
+  display: block;
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border: 1px solid var(--spc-gray-200);
+}
+
 .spc-challenge-admin__votes {
   color: var(--spc-coral);
   font-weight: 700;

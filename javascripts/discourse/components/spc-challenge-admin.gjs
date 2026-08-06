@@ -14,6 +14,7 @@ import {
   clearWinnerCache,
   findRoundTag,
   tagName,
+  tagPageUrl,
   WINNER_TAG,
 } from "../api-initializers/spc-monthly-challenge";
 import { currentMonthYM } from "../lib/spc-submit-helpers";
@@ -201,8 +202,11 @@ export default class SpcChallengeAdmin extends Component {
     const data = await ajax(
       `/tags/c/${settings.monthly_category_slug}/${this.categoryId}/${encodeURIComponent(this.roundTag)}.json?order=votes`
     );
+    // Top five only — enough to judge a tie, without turning the panel into
+    // a second gallery. The votes page linked below has the rest.
     this.entries = (data?.topic_list?.topics || [])
       .filter((topic) => topic.id !== this.roundBrief?.id)
+      .slice(0, 5)
       .map((topic) => {
         const names = (topic.tags || []).map(tagName);
         return {
@@ -210,11 +214,17 @@ export default class SpcChallengeAdmin extends Component {
           slug: topic.slug,
           title: topic.title || topic.fancy_title || "",
           url: briefSlugUrl(topic),
+          image: topic.image_url || "",
           votes: Number(topic.vote_count) || 0,
           tagNames: names,
           crowned: names.includes(WINNER_TAG),
         };
       });
+  }
+
+  get votesPageUrl() {
+    const roundTag = findRoundTag(this.roundBrief?.tags);
+    return roundTag ? `${tagPageUrl(roundTag)}?order=votes` : "";
   }
 
   afterChange() {
@@ -507,6 +517,14 @@ export default class SpcChallengeAdmin extends Component {
             <ol class="spc-challenge-admin__entries">
               {{#each this.entries as |entry|}}
                 <li class="spc-challenge-admin__entry">
+                  {{#if entry.image}}
+                    <a href={{entry.url}} tabindex="-1"><img
+                        class="spc-challenge-admin__thumb"
+                        src={{entry.image}}
+                        alt=""
+                        loading="lazy"
+                      /></a>
+                  {{/if}}
                   <a href={{entry.url}}>{{entry.title}}</a>
                   <span class="spc-challenge-admin__votes">{{i18n
                       (themePrefix "monthly_challenge.admin.votes")
@@ -539,6 +557,13 @@ export default class SpcChallengeAdmin extends Component {
             <p class="spc-challenge-admin__hint">{{i18n
                 (themePrefix "monthly_challenge.admin.no_entries")
               }}</p>
+          {{/if}}
+          {{#if this.votesPageUrl}}
+            <p class="spc-challenge-admin__links">
+              <a href={{this.votesPageUrl}}>{{i18n
+                  (themePrefix "monthly_challenge.entries_by_votes")
+                }} →</a>
+            </p>
           {{/if}}
         </details>
 

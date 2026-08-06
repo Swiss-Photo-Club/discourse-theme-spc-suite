@@ -205,7 +205,7 @@ de:
       unpin: Lösen
       open_brief: Briefing öffnen →
       crown_heading: Gewinnerfoto küren
-      crown_hint: Beiträge der aktuellen Runde, meiste Stimmen zuerst. Das Küren fügt das nur für das Team sichtbare Winner-Tag hinzu; die Gewinner-Anzeige aktualisiert sich selbst.
+      crown_hint: Die fünf meistgewählten Beiträge der Runde. Das Küren fügt das nur vom Team nutzbare Winner-Tag hinzu; die Gewinner-Anzeige aktualisiert sich selbst.
       votes: "%{count} Stimmen"
       crowned: "Gekürtes Gewinnerfoto"
       crown: Zum Gewinner küren

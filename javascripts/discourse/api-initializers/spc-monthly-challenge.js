@@ -768,7 +768,7 @@ function deadlineText(challenge, state) {
 // and must not be: the hero is part of the route-map, permalink and
 // route:new-topic stack behind /submit, and a half-enabled state breaks photo
 // submission. Sharing the renderer is not sharing a lifecycle.
-function renderChallengeHero(challenge, currentUser) {
+function renderChallengeHero(challenge) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const category = Category.findById(Number(settings.monthly_category_id));
@@ -776,14 +776,6 @@ function renderChallengeHero(challenge, currentUser) {
   const description = categoryDescription(category);
   const topicUrl = categoryTopicUrl(category);
   const currentTitle = challengeTitle(challenge);
-  // Staff-only shortcut: this round's entries ranked by Topic Voting count,
-  // so picking the winner is one look and one tag. tag_page_url carries the
-  // tag's numeric id from the pinned brief's listing; the bare tag name is
-  // the redirect-dependent fallback for the registry-only path.
-  const staffTagPage =
-    challenge.tag_page_url || (challenge.tag ? tagPageUrl(challenge.tag) : "");
-  const staffVotesUrl =
-    currentUser?.staff && staffTagPage ? `${staffTagPage}?order=votes` : "";
 
   renderHero({
     marker: HERO_MARKER,
@@ -798,7 +790,6 @@ function renderChallengeHero(challenge, currentUser) {
       cover,
       description,
       topicUrl,
-      staffVotesUrl,
     ].join("-"),
     eyebrow: monthLabel(challenge),
     title: category?.name || translate("label"),
@@ -832,13 +823,9 @@ function renderChallengeHero(challenge, currentUser) {
         style: "secondary",
         attribute: "data-spc-open-voting",
       },
-      staffVotesUrl
-        ? {
-            label: translate("entries_by_votes"),
-            href: staffVotesUrl,
-            style: "secondary",
-          }
-        : null,
+      // The staff votes shortcut moved into the Challenge admin panel
+      // (components/spc-challenge-admin.gjs), which lists the ranked entries
+      // itself and links to the votes-ordered page.
     ],
   });
 }
@@ -1179,7 +1166,6 @@ function spcStartWhenReady(passedOwner, run) {
 
 const spcRun = (api) => {
   const composerService = api.container.lookup("service:composer");
-  const currentUser = api.getCurrentUser();
   let renderQueued = false;
   let renderRequest = 0;
   let currentActive = null;
@@ -1253,7 +1239,7 @@ const spcRun = (api) => {
       return;
     }
 
-    renderChallengeHero(active, currentUser);
+    renderChallengeHero(active);
     renderCurrentChallenge(active);
     renderPreviousWinner(winner);
     hideOfficialTopicRow(active);

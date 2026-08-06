@@ -577,8 +577,12 @@ async function resolveLatestWinner(challenges) {
   };
 }
 
+// The URL, not the body class: Discourse stamps category-<slug> on the
+// category listing AND on every topic inside it, so a class check rendered
+// the hero, current-round card and winner section under each entry's post
+// stream too. Only /c/... paths are the category page.
 function isChallengePage() {
-  return document.body.classList.contains(`category-${settings.monthly_category_slug}`);
+  return isChallengeCategoryUrl(window.location.href);
 }
 
 function isChallengeCategoryUrl(url) {

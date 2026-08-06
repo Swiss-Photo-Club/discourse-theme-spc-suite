@@ -13,6 +13,10 @@
    workflow and challenge.scss carries the equivalent page plumbing for it.
    =================================================================== */
 
+body.navigation-category {
+  background-color: var(--spc-wild-sand) !important;
+}
+
 @if $enable_category_hero {
   body.navigation-category {
     /* Discourse paints category.uploaded_background full-bleed on <body>

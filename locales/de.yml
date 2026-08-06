@@ -258,6 +258,10 @@ de:
     image_button: Bild einreichen
     project_button: Projekt einreichen
     intro_button: Stell dich vor
+  category_actions:
+    new_topic: Neues Thema
+    new_introduction: Neue Vorstellung
+    ask_question: Frage stellen
   onboarding:
     title: Willkommen zurück, %{name} – vervollständige dein Profil
     subtitle: Ein vollständiges Profil sorgt dafür, dass deine Fotos mehr Aufmerksamkeit erhalten.

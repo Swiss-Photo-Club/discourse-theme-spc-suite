@@ -159,7 +159,7 @@ sharing a lifecycle.
 **The mount is ours.** `components/spc-category-surface.gjs` renders
 `[data-spc-category-surface]` through the `above-main-container` outlet on every route.
 It is an ordered flex column containing the hero, native category introduction, optional
-category-specific sections and optional leaderboard. Discourse's `.list-controls` and topic
+category-specific sections and the all-category leaderboard. Discourse's `.list-controls` and topic
 list stay outside it as adjacent core-owned siblings, so no custom section may be inserted
 between the controls and `#list-area`. The stable owned element survives category transitions.
 Never go back to inserting relative to `.category-title-header`: that element belongs to the

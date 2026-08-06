@@ -40,7 +40,7 @@
 
 /* Theme-owned mount rendered through the above-main-container outlet. It is a
    real flex container now because every category has an ordered stack: hero,
-   introduction, optional category-specific sections, optional leaderboard,
+   introduction, optional category-specific sections, shared leaderboard,
    then the native list controls and topic list outside this mount. */
 .spc-category-surface {
   display: flex;

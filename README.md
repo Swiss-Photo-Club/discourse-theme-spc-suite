@@ -147,7 +147,7 @@ generic actions where needed. New categories need no theme setting or code chang
 need similarly specialised actions.
 
 Every category page follows the same order: hero and category-specific actions, a white
-explanation band, optional category-specific sections, an optional leaderboard, Discourse's
+explanation band, optional category-specific sections, the shared leaderboard, Discourse's
 native list controls, then the topic list. Nothing custom is inserted between the list controls
 and `#list-area`. The page uses Discourse's normal 1110px wrapper; topic layout remains whatever
 the category and Topic List Thumbnails settings specify.

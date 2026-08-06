@@ -7,8 +7,8 @@ re-introduces a fixed bug. Newest first.
 ## Unreleased — Standardise category pages and specialise the challenge content
 
 Every category now uses one ordered surface: photo-backed hero and actions, native category
-description with a link to its admin-maintained About topic, optional category sections and
-leaderboard, then Discourse's native list controls immediately before the posts. The category
+description with a link to its admin-maintained About topic, optional category sections and the
+shared leaderboard, then Discourse's native list controls immediately before the posts. The category
 background continues to come from `uploaded_background`; no parallel text or URL registry was
 added. Photo Feedback has no post-count status line.
 
@@ -21,6 +21,12 @@ homepage remains the only surface that suppresses it. Photo Feedback, Introducti
 Challenge route that native control into their existing SPC submission forms. Category
 leaderboards now keep 24px of space below them before the list controls, matching the category
 mockup.
+
+Category pages now use the homepage's light-grey canvas and the same raised white controls bar.
+The active navigation tab has one coral underline—the duplicate navy core indicator is removed.
+Native creation controls are relabelled for their destination in German, English and French:
+photo submission, new introduction, meetup proposal, post-processing question or generic topic.
+The leaderboard is no longer category-selected; while enabled, it renders on every category.
 
 Monthly Challenge now names the category in the hero and places the current theme plus its
 end-of-month deadline beneath it. A compact current-round card links to the pinned brief, and

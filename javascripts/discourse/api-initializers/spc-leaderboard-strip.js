@@ -1,6 +1,5 @@
 import { apiInitializer } from "discourse/lib/api";
 import { ajax } from "discourse/lib/ajax";
-import Category from "discourse/models/category";
 
 const ACTIVE_CLASS = "spc-leaderboard-strip-active";
 const STRIP_SELECTOR = "[data-spc-leaderboard-strip]";
@@ -14,23 +13,10 @@ function escapeHtml(value) {
   return element.innerHTML;
 }
 
-function selectedCategoryIds() {
-  const value = settings.leaderboard_enabled_categories;
-  const values = Array.isArray(value)
-    ? value
-    : String(value || "").split("|");
-
-  return values.map(Number).filter((id) => Number.isInteger(id) && id > 0);
-}
-
-function selectedCategoryIsActive() {
-  return selectedCategoryIds().some((id) => {
-    const category = Category.findById(id);
-    return Boolean(
-      category?.slug &&
-        document.body.classList.contains(`category-${category.slug}`)
-    );
-  });
+function isCategoryUrl(url) {
+  const path = new URL(url || window.location.href, window.location.origin)
+    .pathname;
+  return path === "/c" || path.startsWith("/c/");
 }
 
 function activeForUrl(url) {
@@ -38,8 +24,8 @@ function activeForUrl(url) {
     .pathname;
 
   return (
-    (settings.leaderboard_show_on_homepage && path === "/") ||
-    selectedCategoryIsActive()
+    isCategoryUrl(url) ||
+    (settings.leaderboard_show_on_homepage && path === "/")
   );
 }
 
@@ -168,9 +154,7 @@ export default apiInitializer("1.8.0", (api) => {
     const categorySurface = document.querySelector(
       "[data-spc-category-surface]"
     );
-    const useCategorySurface =
-      document.body.classList.contains("navigation-category") &&
-      selectedCategoryIsActive();
+    const useCategorySurface = isCategoryUrl(currentUrl);
     if (!listArea || !row || (useCategorySurface && !categorySurface)) {
       removeStrip();
       return;
@@ -187,7 +171,14 @@ export default apiInitializer("1.8.0", (api) => {
     }
 
     if (useCategorySurface) {
-      if (strip.parentElement !== categorySurface) {
+      // Challenge data arrives asynchronously and can append its current and
+      // winner sections after this strip first renders. Re-append the existing
+      // node when necessary so the shared order stays: category content,
+      // leaderboard, native controls.
+      if (
+        strip.parentElement !== categorySurface ||
+        strip !== categorySurface.lastElementChild
+      ) {
         categorySurface.append(strip);
       }
     } else if (

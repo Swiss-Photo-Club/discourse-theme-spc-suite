@@ -254,6 +254,10 @@ fr:
     image_button: Soumettre une image
     project_button: Soumettre un projet
     intro_button: Présente-toi
+  category_actions:
+    new_topic: Nouveau sujet
+    new_introduction: Nouvelle présentation
+    ask_question: Poser une question
   onboarding:
     title: Bon retour, %{name} — terminez votre configuration
     subtitle: Un profil complet donne plus de visibilité à vos photos.

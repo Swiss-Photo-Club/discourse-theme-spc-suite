@@ -297,6 +297,10 @@ en:
     image_button: Submit an image
     project_button: Submit a project
     intro_button: Introduce yourself
+  category_actions:
+    new_topic: New topic
+    new_introduction: New introduction
+    ask_question: Ask a question
   onboarding:
     title: Welcome back, %{name} — finish setting up
     subtitle: A complete profile gets more eyes on your photos.

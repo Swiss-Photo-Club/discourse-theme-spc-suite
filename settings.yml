@@ -264,12 +264,6 @@ leaderboard_show_on_homepage:
   default: false
   description: "Show the strip on the community homepage."
 
-leaderboard_enabled_categories:
-  type: list
-  list_type: category
-  default: "7"
-  description: "Categories where the strip should appear."
-
 # -----------------------------------------------------------------------------
 # Member onboarding progress panel
 # -----------------------------------------------------------------------------

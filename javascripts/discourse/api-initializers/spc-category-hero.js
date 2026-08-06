@@ -165,22 +165,25 @@ function heroText(key, suffix) {
   return i18n(themePrefix(`hero.${key}.${suffix}`));
 }
 
-/**
- * The gate. Cheap, synchronous, and checked before any work — the same
- * discipline the networked renderers use, kept here even though nothing in
- * this file can fetch, so that it stays true if someone later adds a variant
- * that can.
- */
-function activeHeroCategory(router) {
+function categoryForRoute(router) {
   if (!document.body.classList.contains("navigation-category")) {
     return null;
   }
 
   const slugPathWithId =
     router?.currentRoute?.params?.category_slug_path_with_id;
-  const category = slugPathWithId
+  return slugPathWithId
     ? Category.findBySlugPathWithID(slugPathWithId)
     : null;
+}
+
+/**
+ * The gate. Cheap, synchronous, and checked before any work — the same
+ * discipline the networked renderers use, kept here even though nothing in
+ * this file can fetch, so that it stays true if someone later adds a variant
+ * that can.
+ */
+function activeHeroCategory(category) {
   const id = Number(category?.id);
 
   // The Monthly Challenge has a data-backed hero with its own lifecycle. It
@@ -194,6 +197,47 @@ function activeHeroCategory(router) {
     category,
     entry: CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
   };
+}
+
+function categoryCreateLabel(category) {
+  const id = Number(category?.id);
+
+  if (id === Number(settings.monthly_category_id)) {
+    return i18n(themePrefix("monthly_challenge.submit_photo"));
+  }
+  if (id === Number(settings.critique_category_id)) {
+    return i18n(themePrefix("critique_submit.image_button"));
+  }
+  if (id === Number(settings.critique_intro_category_id)) {
+    return i18n(themePrefix("category_actions.new_introduction"));
+  }
+  if (id === 8) {
+    return heroText("meetups", "actions.propose");
+  }
+  if (id === 10) {
+    return i18n(themePrefix("category_actions.ask_question"));
+  }
+  return i18n(themePrefix("category_actions.new_topic"));
+}
+
+/**
+ * Keep Discourse's native list-controls action, but name the action for the
+ * workflow it actually opens. The route layer remains authoritative: critique,
+ * introductions and challenge buttons are redirected to their SPC forms.
+ */
+function updateCreateTopicButton(category) {
+  const button = document.querySelector("#create-topic");
+  if (!button || !category) {
+    return;
+  }
+
+  const label = categoryCreateLabel(category);
+  const labelElement = button.querySelector(".d-button-label");
+  if (labelElement && labelElement.textContent.trim() !== label) {
+    labelElement.textContent = label;
+  }
+  button.setAttribute("aria-label", label);
+  button.setAttribute("title", label);
 }
 
 /**
@@ -236,12 +280,15 @@ export default apiInitializer((api) => {
   }
 
   function render() {
+    const routeCategory = categoryForRoute(router);
+    updateCreateTopicButton(routeCategory);
+
     if (!settings.enable_category_hero) {
       clearOwnHero();
       return;
     }
 
-    const active = activeHeroCategory(router);
+    const active = activeHeroCategory(routeCategory);
     if (!active) {
       clearOwnHero();
       return;

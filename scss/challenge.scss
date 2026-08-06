@@ -440,6 +440,12 @@ body.category-monthly-challenge .list-controls .category-heading {
   display: none;
 }
 
+/* Keep a toolbar gutter even when the leaderboard is disabled or cannot
+   render. Whichever owned section is last receives the same 24px separation. */
+body.category-monthly-challenge .spc-category-surface > :last-child {
+  margin-bottom: 24px;
+}
+
 /* Photo entry cards — real masonry, positioned by Topic List Thumbnails.
 
    This category used to cancel that component and lay the rows out itself, in

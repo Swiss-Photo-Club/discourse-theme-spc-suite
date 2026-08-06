@@ -23,7 +23,7 @@ body.navigation-topics #main-outlet {
   background: var(--spc-wild-sand);
 }
 
-body.navigation-topics #main-outlet :where(
+body:is(.navigation-topics, .navigation-category) #main-outlet :where(
     .btn,
     .select-kit-header,
     .featured-categories__category-container,
@@ -647,21 +647,21 @@ body.navigation-topics
   background: var(--spc-coral-hover);
 }
 
-/* Raised native topic toolbar --------------------------------------- */
-body.navigation-topics .list-controls {
+/* Raised native topic toolbar — shared by homepage and categories. */
+body:is(.navigation-topics, .navigation-category) .list-controls {
   width: 100%;
   max-width: none;
   margin: 0 auto;
   padding: 0;
 }
 
-body.navigation-topics .list-controls > .container {
+body:is(.navigation-topics, .navigation-category) .list-controls > .container {
   width: 100%;
   max-width: none;
   padding: 0;
 }
 
-body.navigation-topics .navigation-container {
+body:is(.navigation-topics, .navigation-category) .navigation-container {
   display: flex;
   min-height: 64px;
   box-sizing: border-box;
@@ -673,18 +673,18 @@ body.navigation-topics .navigation-container {
   box-shadow: var(--shadow-filters);
 }
 
-body.navigation-topics .category-breadcrumb {
+body:is(.navigation-topics, .navigation-category) .category-breadcrumb {
   display: flex;
   flex: 0 1 auto;
   gap: 8px;
   margin: 0;
 }
 
-body.navigation-topics .category-breadcrumb > li {
+body:is(.navigation-topics, .navigation-category) .category-breadcrumb > li {
   margin: 0;
 }
 
-body.navigation-topics
+body:is(.navigation-topics, .navigation-category)
   .category-breadcrumb
   .select-kit.single-select
   .select-kit-header {
@@ -696,7 +696,7 @@ body.navigation-topics
   font-size: 13px;
 }
 
-body.navigation-topics #navigation-bar {
+body:is(.navigation-topics, .navigation-category) #navigation-bar {
   display: flex;
   flex: 1 1 auto;
   align-items: stretch;
@@ -705,13 +705,13 @@ body.navigation-topics #navigation-bar {
   margin: 0;
 }
 
-body.navigation-topics #navigation-bar > li {
+body:is(.navigation-topics, .navigation-category) #navigation-bar > li {
   display: flex;
   align-items: stretch;
 }
 
-body.navigation-topics #navigation-bar > li > a,
-body.navigation-topics #navigation-bar > li > button {
+body:is(.navigation-topics, .navigation-category) #navigation-bar > li > a,
+body:is(.navigation-topics, .navigation-category) #navigation-bar > li > button {
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
@@ -724,15 +724,35 @@ body.navigation-topics #navigation-bar > li > button {
   line-height: 1.35;
 }
 
-body.navigation-topics #navigation-bar > li.active > a,
-body.navigation-topics #navigation-bar > li > a.active {
+body:is(.navigation-topics, .navigation-category)
+  #navigation-bar
+  > li.active
+  > a,
+body:is(.navigation-topics, .navigation-category)
+  #navigation-bar
+  > li
+  > a.active {
   border-bottom-color: var(--spc-coral);
   background: transparent;
   color: var(--fg-structure);
   font-weight: var(--fw-bold);
 }
 
-body.navigation-topics .navigation-controls {
+/* Core adds its own navy ::after indicator. The coral border above is the
+   single selected-state mark in the SPC toolbar. */
+body:is(.navigation-topics, .navigation-category)
+  #navigation-bar
+  > li.active
+  > a::after,
+body:is(.navigation-topics, .navigation-category)
+  #navigation-bar
+  > li
+  > a.active::after {
+  display: none;
+  content: none;
+}
+
+body:is(.navigation-topics, .navigation-category) .navigation-controls {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -825,28 +845,28 @@ body.navigation-topics .spc-home-pinned-badge {
     grid-column: span 3 !important;
   }
 
-  body.navigation-topics .navigation-container {
+  body:is(.navigation-topics, .navigation-category) .navigation-container {
     gap: 10px;
   }
 }
 
 @media (max-width: 850px) {
-  body.navigation-topics .navigation-container {
+  body:is(.navigation-topics, .navigation-category) .navigation-container {
     align-items: stretch;
     flex-wrap: wrap;
   }
 
-  body.navigation-topics .category-breadcrumb {
+  body:is(.navigation-topics, .navigation-category) .category-breadcrumb {
     order: 1;
   }
 
-  body.navigation-topics #navigation-bar {
+  body:is(.navigation-topics, .navigation-category) #navigation-bar {
     order: 3;
     width: 100%;
     overflow-x: auto;
   }
 
-  body.navigation-topics .navigation-controls {
+  body:is(.navigation-topics, .navigation-category) .navigation-controls {
     order: 2;
   }
 }
@@ -953,12 +973,15 @@ body.navigation-topics .spc-home-pinned-badge {
     font-size: 22px;
   }
 
-  body.navigation-topics .navigation-container {
+  body:is(.navigation-topics, .navigation-category) .navigation-container {
     padding: 10px;
   }
 
-  body.navigation-topics #navigation-bar > li > a,
-  body.navigation-topics #navigation-bar > li > button {
+  body:is(.navigation-topics, .navigation-category) #navigation-bar > li > a,
+  body:is(.navigation-topics, .navigation-category)
+    #navigation-bar
+    > li
+    > button {
     padding-inline: 8px;
     white-space: nowrap;
   }

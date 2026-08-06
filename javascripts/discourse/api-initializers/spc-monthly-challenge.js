@@ -327,6 +327,29 @@ function tagName(tag) {
   return typeof tag === "string" ? tag : tag?.name || "";
 }
 
+function findRoundTag(tags) {
+  return (tags || []).find((tag) => /^\d{4}-\d{2}/.test(tagName(tag)));
+}
+
+// A user-facing tag page URL. On current Discourse the HTML tag routes require
+// the tag's NUMERIC id - /tag/<slug>/<id> - and the old name-based paths
+// (/tag/<name>, /tags/c/<cat>/<id>/<name>) survive for json/rss formats only:
+// as pages they 404. The id and slug ride along on the tag objects the topic
+// listings serialize; when a listing hands us a bare string instead, the
+// name-based URL is the only option left and current Discourse redirects it
+// to the canonical form for browsers.
+function tagPageUrl(tag) {
+  const name = tagName(tag);
+  if (!name) {
+    return "";
+  }
+  const id = typeof tag === "object" ? Number(tag?.id) || 0 : 0;
+  const slug = (typeof tag === "object" && tag?.slug) || name;
+  return id
+    ? `/tag/${encodeURIComponent(slug)}/${id}`
+    : `/tag/${encodeURIComponent(name)}`;
+}
+
 let pinnedBriefPromise = null;
 
 function clearPinnedBriefCache() {
@@ -338,22 +361,20 @@ function fetchPinnedBrief() {
     try {
       const data = await ajax(`${categoryRoute()}/l/latest.json`);
       const topics = data?.topic_list?.topics || [];
-      const brief = topics.find(
-        (topic) =>
-          topic.pinned &&
-          (topic.tags || []).some((tag) => /^\d{4}-\d{2}/.test(tagName(tag)))
+      const brief = topics.find((topic) =>
+        Boolean(topic.pinned && findRoundTag(topic.tags))
       );
       if (!brief) {
         return null;
       }
+      const roundTag = findRoundTag(brief.tags);
       return {
         topic_id: brief.id,
         topic_url: brief.slug
           ? `/t/${encodeURIComponent(brief.slug)}/${brief.id}`
           : `/t/${brief.id}`,
-        tag: (brief.tags || [])
-          .map(tagName)
-          .find((tag) => /^\d{4}-\d{2}/.test(tag)),
+        tag: tagName(roundTag),
+        tag_page_url: tagPageUrl(roundTag),
         // The category listing is public even where the topics behind it are
         // not, and it already carries everything the hero needs. Taking it
         // here costs nothing: this response was fetched anyway.
@@ -392,6 +413,7 @@ function deriveChallengeFromBrief(brief) {
     topic_id: brief.topic_id,
     topic_url: brief.topic_url,
     tag: brief.tag,
+    tag_page_url: brief.tag_page_url,
     status: "active",
     start_at: `${year}-${pad(month)}-01T00:00:00+02:00`,
     submission_deadline: `${year}-${pad(month)}-${pad(lastDay)}T23:59:00+02:00`,
@@ -442,10 +464,13 @@ function clearWinnerCache() {
   winnerPromise = null;
 }
 
-function tagListUrl(tag) {
+// JSON ONLY. The name-based category+tag route survives solely for json/rss
+// formats on current Discourse; as an HTML page this path 404s. User-facing
+// hrefs go through tagPageUrl() instead.
+function tagListJsonUrl(tag) {
   return `/tags/c/${settings.monthly_category_slug}/${Number(
     settings.monthly_category_id
-  )}/${encodeURIComponent(tag)}`;
+  )}/${encodeURIComponent(tag)}.json`;
 }
 
 function roundMonthLabel(tag) {
@@ -469,18 +494,15 @@ function roundThemeLabel(tag) {
 function fetchWinnerTopic() {
   winnerPromise ||= (async () => {
     try {
-      const data = await ajax(`${tagListUrl(WINNER_TAG)}.json`);
+      const data = await ajax(tagListJsonUrl(WINNER_TAG));
       const users = data?.users || [];
       const candidates = (data?.topic_list?.topics || [])
-        .map((topic) => ({
-          topic,
-          roundTag: (topic.tags || [])
-            .map(tagName)
-            .find((tag) => /^\d{4}-\d{2}/.test(tag)),
-        }))
+        .map((topic) => ({ topic, roundTag: findRoundTag(topic.tags) }))
         .filter((entry) => entry.roundTag)
         // Round tags sort chronologically as strings; newest round wins.
-        .sort((a, b) => b.roundTag.localeCompare(a.roundTag));
+        .sort((a, b) =>
+          tagName(b.roundTag).localeCompare(tagName(a.roundTag))
+        );
       const latest = candidates[0];
       if (!latest) {
         return null;
@@ -492,7 +514,8 @@ function fetchWinnerTopic() {
         )?.user_id ?? topic.posters?.[0]?.user_id;
       const author = users.find((user) => user.id === authorId);
       return {
-        tag: roundTag,
+        tag: tagName(roundTag),
+        tagPage: tagPageUrl(roundTag),
         title: topic.title || topic.fancy_title || "",
         author: author?.name || author?.username || "",
         image: topic.image_url || "",
@@ -521,7 +544,7 @@ async function resolveLatestWinner(challenges) {
       author: override?.winner_author || tagged.author,
       image: uploadUrl(override?.winner_image) || tagged.image,
       href: override?.gallery_url || tagged.url,
-      entriesUrl: tagListUrl(tagged.tag),
+      entriesUrl: tagged.tagPage,
       entryCount: Number(override?.entry_count) || 0,
     };
   }
@@ -547,7 +570,9 @@ async function resolveLatestWinner(challenges) {
       previous.winner_topic_url ||
       hydrated.topic?.url ||
       categoryRoute(),
-    entriesUrl: previous.tag ? tagListUrl(previous.tag) : "",
+    // The registry stores the tag as a bare string, so this falls back to the
+    // name-based URL, which browsers get redirected from.
+    entriesUrl: previous.tag ? tagPageUrl(previous.tag) : "",
     entryCount: Number(previous.entry_count) || 0,
   };
 }
@@ -731,11 +756,13 @@ function renderChallengeHero(challenge, currentUser) {
   const topicUrl = categoryTopicUrl(category);
   const currentTitle = challengeTitle(challenge);
   // Staff-only shortcut: this round's entries ranked by Topic Voting count,
-  // so picking the winner is one look and one tag.
+  // so picking the winner is one look and one tag. tag_page_url carries the
+  // tag's numeric id from the pinned brief's listing; the bare tag name is
+  // the redirect-dependent fallback for the registry-only path.
+  const staffTagPage =
+    challenge.tag_page_url || (challenge.tag ? tagPageUrl(challenge.tag) : "");
   const staffVotesUrl =
-    currentUser?.staff && challenge.tag
-      ? `${tagListUrl(challenge.tag)}?order=votes`
-      : "";
+    currentUser?.staff && staffTagPage ? `${staffTagPage}?order=votes` : "";
 
   renderHero({
     marker: HERO_MARKER,

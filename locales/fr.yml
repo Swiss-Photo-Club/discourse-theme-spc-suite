@@ -190,6 +190,48 @@ fr:
     vote_step_three_body: La photographie qui obtient le plus de votes valides devient la gagnante du mois.
     full_rules: Lire le guide complet de participation et de vote
     close: Fermer
+    admin:
+      title: Administration du challenge
+      refresh: Actualiser
+      current_round: "Manche en cours %{tag} :"
+      no_pinned_brief: Aucune présentation de challenge épinglée — les membres voient un contenu obsolète ou aucun challenge. Lancez une nouvelle manche ci-dessous ou épinglez un sujet existant.
+      unpinned_brief_found: "« %{title} » ressemble à une présentation de challenge mais n’est pas épinglée."
+      pin_brief: L’épingler comme présentation actuelle
+      extra_pinned: "« %{title} » est encore épinglée d’une manche précédente."
+      unpin: Désépingler
+      open_brief: Ouvrir la présentation →
+      crown_heading: Couronner la photo gagnante
+      crown_hint: Participations de la manche en cours, les plus votées d’abord. Couronner ajoute le tag winner réservé à l’équipe ; la vitrine du gagnant se met à jour toute seule.
+      votes: "%{count} votes"
+      crowned: "Photo gagnante couronnée"
+      crown: Couronner
+      uncrown: Retirer la couronne
+      crown_confirm: "Couronner « %{title} » comme photo gagnante de cette manche ?"
+      crowned_notice: "« %{title} » est couronnée. La vitrine du gagnant l’affichera dans quelques minutes."
+      pinned_notice: "« %{title} » est épinglée comme présentation actuelle."
+      no_entries: Aucune participation trouvée pour cette manche pour l’instant.
+      new_round_heading: Lancer une nouvelle manche
+      month_label: Mois de la manche
+      title_label: Titre du challenge
+      title_placeholder: p. ex. Animaux
+      summary_label: Résumé en une phrase
+      summary_hint: Affiché dans la bannière et sur la carte de la page d’accueil.
+      task_label: La mission
+      ideas_label: Idées à essayer
+      ideas_hint: Une idée par ligne — elles deviennent une liste à puces.
+      bonus_label: Défi bonus (facultatif)
+      photo_label: Photo de couverture
+      language_hint: La présentation est publiée dans votre langue actuelle ; ajoutez ensuite d’autres langues avec le bouton de traduction (文A) du message.
+      create: Créer la manche — tag, publication et épinglage
+      creating: Création…
+      created_notice: La nouvelle manche est publiée et épinglée.
+      need_title: Donnez un titre au challenge.
+      need_summary: Écrivez le résumé en une phrase.
+      need_photo: Ajoutez une photo de couverture.
+      task_heading: La mission
+      rules_heading: Participation et vote
+      rules_body: Envoyez une photo prise par vous-même correspondant à la mission via le bouton d’envoi de photo. Clôture des envois le %{date}. Votez en ouvrant une participation et en utilisant le bouton de vote — le vote reste ouvert jusqu’à l’annonce de la photo gagnante.
+      manage_tags: Gérer les tags de manche
   homepage:
     identity:
       eyebrow: Swiss Photo Club

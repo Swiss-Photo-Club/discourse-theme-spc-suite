@@ -194,6 +194,48 @@ de:
     vote_step_three_body: Das Foto mit den meisten gültigen Stimmen wird als Monatsgewinner präsentiert.
     full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen
     close: Schliessen
+    admin:
+      title: Challenge-Verwaltung
+      refresh: Aktualisieren
+      current_round: "Aktuelle Runde %{tag}:"
+      no_pinned_brief: Keine angeheftete Challenge-Beschreibung — Mitglieder sehen veraltete oder keine Challenge-Inhalte. Starte unten eine neue Runde oder hefte ein bestehendes Briefing an.
+      unpinned_brief_found: "„%{title}“ sieht wie eine Challenge-Beschreibung aus, ist aber nicht angeheftet."
+      pin_brief: Als aktuelles Briefing anheften
+      extra_pinned: "„%{title}“ ist noch aus einer früheren Runde angeheftet."
+      unpin: Lösen
+      open_brief: Briefing öffnen →
+      crown_heading: Gewinnerfoto küren
+      crown_hint: Beiträge der aktuellen Runde, meiste Stimmen zuerst. Das Küren fügt das nur für das Team sichtbare Winner-Tag hinzu; die Gewinner-Anzeige aktualisiert sich selbst.
+      votes: "%{count} Stimmen"
+      crowned: "Gekürtes Gewinnerfoto"
+      crown: Zum Gewinner küren
+      uncrown: Kürung entfernen
+      crown_confirm: "„%{title}“ zum Gewinnerfoto dieser Runde küren?"
+      crowned_notice: "„%{title}“ ist gekürt. Die Gewinner-Anzeige zeigt es in wenigen Minuten."
+      pinned_notice: "„%{title}“ ist als aktuelles Briefing angeheftet."
+      no_entries: Für diese Runde wurden noch keine Beiträge gefunden.
+      new_round_heading: Neue Runde starten
+      month_label: Monat der Runde
+      title_label: Challenge-Titel
+      title_placeholder: z. B. Tiere
+      summary_label: Zusammenfassung in einem Satz
+      summary_hint: Erscheint im Banner und auf der Startseiten-Karte.
+      task_label: Die Aufgabe
+      ideas_label: Ideen zum Ausprobieren
+      ideas_hint: Eine Idee pro Zeile — sie werden zur Aufzählung.
+      bonus_label: Zusatz-Challenge (optional)
+      photo_label: Titelfoto
+      language_hint: Das Briefing wird in deiner aktuellen Sprache veröffentlicht; weitere Sprachen fügst du danach mit dem Übersetzungs-Button (文A) am Beitrag hinzu.
+      create: Runde erstellen — Tag, Beitrag und Anheften
+      creating: Wird erstellt…
+      created_notice: Die neue Runde ist veröffentlicht und angeheftet.
+      need_title: Gib der Challenge einen Titel.
+      need_summary: Schreibe die Zusammenfassung in einem Satz.
+      need_photo: Füge ein Titelfoto hinzu.
+      task_heading: Die Aufgabe
+      rules_heading: Einreichen und Abstimmen
+      rules_body: Reiche über den Foto-einreichen-Button ein selbst fotografiertes Bild passend zur Aufgabe ein. Einsendeschluss ist der %{date}. Stimme ab, indem du einen Beitrag öffnest und den Abstimmungsbutton nutzt — die Abstimmung läuft bis zur Bekanntgabe des Gewinnerfotos.
+      manage_tags: Runden-Tags verwalten
   homepage:
     identity:
       eyebrow: Swiss Photo Club

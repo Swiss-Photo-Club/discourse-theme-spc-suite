@@ -183,6 +183,158 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   margin-top: 8px;
 }
 
+/* Staff admin panel --------------------------------------------------
+   Rendered by components/spc-challenge-admin.gjs for staff only, between
+   the hero (10) and the category introduction (20). */
+.spc-challenge-admin {
+  order: 15;
+  width: 100%;
+  margin: 16px 0 0;
+  padding: 18px 22px;
+  border: 1px dashed var(--spc-coral);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.spc-challenge-admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spc-challenge-admin__refresh {
+  padding: 4px 10px;
+  border: 1px solid var(--spc-gray-200);
+  background: transparent;
+  color: var(--spc-indigo);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.spc-challenge-admin__status {
+  margin: 10px 0 0;
+  color: var(--spc-charcoal);
+}
+
+.spc-challenge-admin__status--warning {
+  color: #8a5300;
+}
+
+.spc-challenge-admin__error {
+  margin: 10px 0 0;
+  color: #a3222c;
+  font-weight: 700;
+}
+
+.spc-challenge-admin__notice {
+  margin: 10px 0 0;
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+.spc-challenge-admin__section {
+  margin-top: 14px;
+  border-top: 1px solid var(--spc-gray-200);
+  padding-top: 12px;
+}
+
+.spc-challenge-admin__section summary {
+  color: var(--spc-indigo);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spc-challenge-admin__hint {
+  display: block;
+  margin: 6px 0 0;
+  color: var(--spc-gray-400);
+  font-size: 13px;
+}
+
+.spc-challenge-admin__entries {
+  margin: 10px 0 0;
+  padding-left: 22px;
+}
+
+.spc-challenge-admin__entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+}
+
+.spc-challenge-admin__votes {
+  color: var(--spc-coral);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.spc-challenge-admin__crowned {
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+.spc-challenge-admin__button {
+  padding: 6px 12px;
+  border: 1px solid var(--spc-indigo);
+  background: transparent;
+  color: var(--spc-indigo);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spc-challenge-admin__button--primary {
+  border-color: var(--spc-coral);
+  background: var(--spc-coral);
+  color: #ffffff;
+}
+
+.spc-challenge-admin__button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.spc-challenge-admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  max-width: 640px;
+}
+
+.spc-challenge-admin__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+.spc-challenge-admin__form input[type="text"],
+.spc-challenge-admin__form textarea,
+.spc-challenge-admin__form select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--spc-gray-200);
+  font-weight: 400;
+  box-sizing: border-box;
+}
+
+.spc-challenge-admin__uploader span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+.spc-challenge-admin__links {
+  margin: 14px 0 0;
+  font-size: 13px;
+}
+
 /* Voting explainer modal -------------------------------------------- */
 .spc-voting-dialog {
   width: min(720px, calc(100vw - 2rem));

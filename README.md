@@ -40,7 +40,7 @@ its prefix.
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
 | Category heroes | `enable_category_hero` | `scss/hero.scss`, `scss/category-hero.scss` | `api-initializers/spc-category-surface.js`, `api-initializers/spc-category-hero.js`, `components/spc-category-surface.gjs`, `lib/spc-hero.js` | `hero.*` | — |
 | Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-home-identity.js`, `components/spc-home-identity.gjs`, `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | `homepage_*` |
-| Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
+| Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js`, `components/spc-challenge-admin.gjs` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
 | `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button` |
 | Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
 | Critique Submit buttons | `enable_critique_submit` | `scss/critique-submit.scss` | `connectors/discovery-list-container-top/spc-critique-submit.gjs` | `critique_submit.*` | `critique_*` |
@@ -99,22 +99,27 @@ accepting votes, so the category never shows a dead end between rounds.
 staff may apply (Admin → Customize → Tags → Tag Groups → permissions). The theme finds the
 previous winner by reading the newest `winner`-tagged topic in the category.
 
-Each month, in one sitting, early in the month:
+Each month, in one sitting, early in the month — all from the **Challenge admin panel**,
+the dashed staff-only box on the challenge category page
+(`components/spc-challenge-admin.gjs`):
 
-1. Open **Entries by votes** — the staff-only button on the challenge hero — to see the
-   finished round's entries ranked by vote count.
-2. Add the `winner` tag to the winning topic (topic wrench → edit tags). The winner section
-   on the category page renders itself from that topic: title, photograph, author and month
-   all come from the topic and its round tag. Nothing needs to be typed into settings.
-3. Create a tag named `YYYY-MM-theme` (for example `2026-08-portraits`) and add it to the
-   **Challenge Round** tag group. The category requires at least one tag, and the submit
-   form resolves the round from the pinned brief, falling back to the current `YYYY-MM`
-   prefix.
-4. Post the new brief as a normal topic in **Monthly Challenge**, tagged with that tag, with
-   a photo attached — the homepage card uses the topic's own thumbnail.
-5. Pin it: topic footer → the wrench (topic admin menu) → **Pin Topic**. Discourse requires
-   a *Pin until* date; set it a few days into the following month, past the point where you
-   expect to announce that round's winner. Unpin the previous brief if it is still pinned.
+1. **Crown the winner.** The panel lists the round's entries ranked by votes; one click on
+   **Crown winner** applies the staff-only `winner` tag. The winner showcase renders itself
+   from that topic — title, photograph, author and month — nothing is typed into settings.
+2. **Start a new round.** The panel's form takes a theme title, a one-sentence summary, the
+   templated brief sections and a cover photo, then in one click creates the
+   `YYYY-MM-theme` tag inside the round tag group, posts the brief, pins it until the 8th
+   of the following month, and unpins the previous brief. The brief posts in the language
+   the admin is using; add the other languages afterwards with the post translation tool.
+
+The panel also warns when no brief is pinned (with a one-click re-pin) and when an old
+brief is still pinned. Everything it does goes through Discourse's normal APIs, so the
+manual path still works and is worth knowing: tag the winning topic with `winner` by hand,
+post a topic tagged `YYYY-MM-theme` (the tag must be in the **Challenge Round** tag group)
+with a photo, and pin it via the topic wrench with *Pin until* a few days into the next
+month. Detection reads `pinned || unpinned` from the listing because Discourse auto-unpins
+per user once a pinned topic has been read to the bottom — staff who just posted the brief
+are exactly who would otherwise stop seeing it.
 
 The homepage then decorates that topic with a "This month's prompt" badge, and the category
 hero and `/submit` form pick up the round tag on their own.

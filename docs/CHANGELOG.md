@@ -4,6 +4,23 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Challenge admin panel
+
+Running a round previously meant four different hidden Discourse menus (tag groups page,
+title pencil for tags, topic wrench for pinning, votes-ordered list). A staff-only panel on
+the challenge category page (`components/spc-challenge-admin.gjs`, rendered through the
+category surface, order 15) now covers the whole monthly routine: a status strip that warns
+when no brief is pinned or an old one still is (with one-click pin/unpin), a votes-ranked
+entry list with one-click crown/uncrown of the `winner` tag, and a start-new-round form that
+creates the round tag inside the round tag group (found by content — the group already
+holding `YYYY-MM` tags), posts a templated brief with cover photo, pins it until the 8th of
+the following month and unpins the predecessor. All through Discourse's own authenticated
+ajax; the panel can do nothing its user could not do by hand.
+
+The same change exported the round-tag helpers and cache clears from
+`spc-monthly-challenge.js` so panel and renderer share one set of semantics, including the
+`pinned || unpinned` reading that survives Discourse's per-user auto-unpin.
+
 ## Unreleased — Round model: vote until announced; winner by tag
 
 A challenge round no longer has a fixed voting deadline. Submissions and voting are both open

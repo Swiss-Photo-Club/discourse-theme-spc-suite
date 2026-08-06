@@ -233,6 +233,48 @@ en:
     vote_step_three_body: The photograph with the most valid votes is featured as the monthly winner.
     full_rules: Read the full entry and voting guide
     close: Close
+    admin:
+      title: Challenge admin
+      refresh: Refresh
+      current_round: "Current round %{tag}:"
+      no_pinned_brief: No pinned challenge brief — members see stale or no challenge content. Start a new round below, or pin an existing brief topic.
+      unpinned_brief_found: "“%{title}” looks like a challenge brief but is not pinned."
+      pin_brief: Pin it as the current brief
+      extra_pinned: "“%{title}” is still pinned from an earlier round."
+      unpin: Unpin
+      open_brief: Open the brief →
+      crown_heading: Crown the winner
+      crown_hint: Entries of the current round, most votes first. Crowning adds the staff-only winner tag; the winner showcase updates on its own.
+      votes: "%{count} votes"
+      crowned: "Crowned winner"
+      crown: Crown winner
+      uncrown: Remove crown
+      crown_confirm: "Crown “%{title}” as this round’s winner?"
+      crowned_notice: "“%{title}” is crowned. The winner showcase will show it within a few minutes."
+      pinned_notice: "“%{title}” is pinned as the current brief."
+      no_entries: No entries found for this round yet.
+      new_round_heading: Start a new round
+      month_label: Round month
+      title_label: Challenge title
+      title_placeholder: e.g. Animals
+      summary_label: One-sentence summary
+      summary_hint: Shown in the hero banner and on the homepage card.
+      task_label: The task
+      ideas_label: Ideas to try
+      ideas_hint: One idea per line — they become a bullet list.
+      bonus_label: Bonus challenge (optional)
+      photo_label: Cover photo
+      language_hint: The brief is posted in the language you are using right now; add other languages afterwards with the translation (文A) button on the post.
+      create: Create round — tag, post and pin
+      creating: Creating…
+      created_notice: The new round is posted and pinned.
+      need_title: Give the challenge a title.
+      need_summary: Write the one-sentence summary.
+      need_photo: Attach a cover photo.
+      task_heading: The task
+      rules_heading: Submission and voting
+      rules_body: Submit one self-photographed image that fits the task, using the Submit a photo button. Submissions close on %{date}. Vote by opening an entry and pressing the vote button — voting stays open until the winner is announced.
+      manage_tags: Manage round tags
   homepage:
     identity:
       eyebrow: Swiss Photo Club

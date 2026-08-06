@@ -323,11 +323,13 @@ function activeChallenge(challenges) {
 // because reading one of them wrong fails silently: the brief is still found,
 // its round tag comes back undefined, and everything quietly falls through to
 // the settings registry instead.
-function tagName(tag) {
+// Exported for components/spc-challenge-admin.gjs, which must read round tags
+// with exactly these semantics — the two disagreeing fails silently.
+export function tagName(tag) {
   return typeof tag === "string" ? tag : tag?.name || "";
 }
 
-function findRoundTag(tags) {
+export function findRoundTag(tags) {
   return (tags || []).find((tag) => /^\d{4}-\d{2}/.test(tagName(tag)));
 }
 
@@ -338,7 +340,7 @@ function findRoundTag(tags) {
 // listings serialize; when a listing hands us a bare string instead, the
 // name-based URL is the only option left and current Discourse redirects it
 // to the canonical form for browsers.
-function tagPageUrl(tag) {
+export function tagPageUrl(tag) {
   const name = tagName(tag);
   if (!name) {
     return "";
@@ -352,7 +354,7 @@ function tagPageUrl(tag) {
 
 let pinnedBriefPromise = null;
 
-function clearPinnedBriefCache() {
+export function clearPinnedBriefCache() {
   pinnedBriefPromise = null;
 }
 
@@ -471,11 +473,11 @@ async function resolveActiveChallenge(challenges) {
 // title, photograph and author. A `challenges` registry entry matching the
 // same round tag remains an optional override, and the registry-only path
 // below keeps rounds recorded before the tag existed rendering.
-const WINNER_TAG = "winner";
+export const WINNER_TAG = "winner";
 
 let winnerPromise = null;
 
-function clearWinnerCache() {
+export function clearWinnerCache() {
   winnerPromise = null;
 }
 

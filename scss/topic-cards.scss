@@ -137,6 +137,27 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
   font-weight: 600;
 }
 
+/* The icon, if the Tag Icons component is configured to give `project` one.
+   Inert until it is, and wrong without this rule the moment it is.
+
+   That component renders the glyph as an inline SVG whose fill is
+   currentColor, and sets a colour of its own on the .tag-icon span that
+   wraps it — so the icon does NOT follow the colour set on the tag
+   itself. Measured on a live row: with the chip's own colour white, the
+   icon still computed #707070, which is all but invisible on navy.
+
+   `inherit` rather than a second #ffffff, so the chip has one
+   foreground colour and the icon cannot drift from it. Setting it here
+   rather than as the optional third field of the component's
+   "tag-slug,icon,iconColor" setting is deliberate: that colour applies
+   everywhere the tag renders, and white would disappear against the
+   white background of the topic page and the search results. */
+.topic-thumbnails-masonry
+  .discourse-tag[data-tag-name="project"]
+  .tag-icon {
+  color: inherit;
+}
+
 /* The stack mark: two offset frames in the photo's top-right corner,
    the idiom a phone gallery uses for "more than one image". The footer
    chip alone is legible but small, and the thing being scanned in this

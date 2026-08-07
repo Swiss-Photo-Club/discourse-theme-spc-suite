@@ -83,6 +83,16 @@ Check one against the live sprite before trusting it:
 two will fight — the symptom is a correct first paint followed by a broken flash on reload.
 Create your own element, or position absolutely.
 
+Rewriting core-rendered **text** is the worst case of that trap. Setting `textContent` on
+`#create-topic`'s `.d-button-label` detached the text node Glimmer tracks, and the next category
+transition died in `removeChild` (`NotFoundError`) — which aborts the **whole render
+transaction**, so the topic list froze showing the previous category's topics on every navigation
+after it (fixed 2026-08-07). Signed-in only, because anonymous pages render no `#create-topic`,
+and the crash surfaces nowhere near the code that caused it. A label on a core button rides in a
+`data-` attribute rendered through `::before` (see `updateCreateTopicButton`); the composer
+relabels in `renderComposer` (`spc-monthly-challenge.js`) still use `textContent` and are the
+same latent bug.
+
 **Masonry is fragile.** Topic List Thumbnails (component 1) measures every `tr.topic-list-item`
 and sets `position: absolute`. Any DOM change altering a row's height desynchronises the layout
 and overlaps photos with text. On topic rows, only ever add absolutely-positioned decoration.

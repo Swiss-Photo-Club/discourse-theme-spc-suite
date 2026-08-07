@@ -781,6 +781,27 @@ body.navigation-category .navigation-controls #create-topic .d-icon {
   color: inherit;
 }
 
+/* The workflow label spc-category-hero.js assigns rides in data-spc-label and
+   renders here, because the span's text node is Glimmer's and rewriting it
+   crashes core's next re-render (see updateCreateTopicButton). font-size: 0
+   collapses the native text without touching it; the ::before restores the
+   13px the button rule above sets. Scoped to category routes like the relabel
+   itself, so a not-yet-cleaned attribute elsewhere changes nothing. */
+body.navigation-category
+  .navigation-controls
+  #create-topic
+  .d-button-label[data-spc-label] {
+  font-size: 0;
+}
+
+body.navigation-category
+  .navigation-controls
+  #create-topic
+  .d-button-label[data-spc-label]::before {
+  content: attr(data-spc-label);
+  font-size: 13px;
+}
+
 body.navigation-category .navigation-controls #create-topic:hover,
 body.navigation-category .navigation-controls #create-topic:focus-visible {
   border-color: var(--spc-coral-hover);

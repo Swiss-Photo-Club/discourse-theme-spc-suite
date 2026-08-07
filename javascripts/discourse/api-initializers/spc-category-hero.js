@@ -224,17 +224,37 @@ function categoryCreateLabel(category) {
  * Keep Discourse's native list-controls action, but name the action for the
  * workflow it actually opens. The route layer remains authoritative: critique,
  * introductions and challenge buttons are redirected to their SPC forms.
+ *
+ * The label rides in a data attribute that homepage.scss renders through
+ * ::before — never in the button's text. The text node inside .d-button-label
+ * belongs to Glimmer; replacing it via textContent detaches the node Glimmer
+ * tracks, and core's next re-render of the button dies in removeChild. That
+ * exception aborts the whole render transaction, so the symptom is nowhere
+ * near this function: the topic list freezes on the next category navigation
+ * and every listing after it shows the previous category's topics.
  */
 function updateCreateTopicButton(category) {
   const button = document.querySelector("#create-topic");
-  if (!button || !category) {
+  const labelElement = button?.querySelector(".d-button-label");
+  if (!labelElement) {
+    return;
+  }
+
+  if (!category) {
+    // Off the category routes: hand the native label back. The text node
+    // still holds core's own localized label because nothing ever writes to
+    // it, so it is also the restore value for the aria-label we overwrote.
+    if (labelElement.dataset.spcLabel) {
+      delete labelElement.dataset.spcLabel;
+      button.setAttribute("aria-label", labelElement.textContent.trim());
+      button.removeAttribute("title");
+    }
     return;
   }
 
   const label = categoryCreateLabel(category);
-  const labelElement = button.querySelector(".d-button-label");
-  if (labelElement && labelElement.textContent.trim() !== label) {
-    labelElement.textContent = label;
+  if (labelElement.dataset.spcLabel !== label) {
+    labelElement.dataset.spcLabel = label;
   }
   button.setAttribute("aria-label", label);
   button.setAttribute("title", label);

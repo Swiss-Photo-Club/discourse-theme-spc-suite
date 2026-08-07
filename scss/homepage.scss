@@ -759,6 +759,35 @@ body:is(.navigation-topics, .navigation-category) .navigation-controls {
   margin-left: auto;
 }
 
+/* Compact New Topic button, sized to the 34px dropdown chips beside it.
+   The full-size coral CTA it replaces is a repeat of the hero's primary
+   action, and its uppercase label at branding's button scale pushed the
+   toolbar onto two rows in French ("ENVOYER UNE PHOTO"). Outlined rather
+   than filled for the same reason — the hero already carries the loud
+   version of this action. */
+body.navigation-category .navigation-controls #create-topic {
+  min-height: 34px;
+  padding: 5px 14px;
+  border: 1px solid var(--spc-coral);
+  background: #ffffff;
+  color: var(--spc-coral);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+body.navigation-category .navigation-controls #create-topic .d-icon {
+  color: inherit;
+}
+
+body.navigation-category .navigation-controls #create-topic:hover,
+body.navigation-category .navigation-controls #create-topic:focus-visible {
+  border-color: var(--spc-coral-hover);
+  background: var(--spc-coral-hover);
+  color: #ffffff;
+}
+
 body.navigation-topics .spc-home-login-cta {
   display: inline-flex;
   min-height: 40px;

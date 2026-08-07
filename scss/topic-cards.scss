@@ -90,3 +90,88 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
     object-fit: cover;
   }
 }
+
+/* ===================================================================
+   PROJECT SUBMISSIONS.
+
+   A project is a series — several photos, or a link to one — and it
+   used to arrive in the list looking exactly like a single photo: same
+   card, same one thumbnail, same plain grey subject tag. The only
+   thing that distinguished the two lived inside the post body, which a
+   topic list never reads, so there was nothing here to style.
+
+   What makes it visible is a `project` tag, added at submission time by
+   spc-project-form.gjs. That is deliberately data rather than a
+   presentation trick: it survives into the topic page and into search,
+   and it makes projects filterable at
+   /tags/c/photo-feedback/7/project/<tag-id> — a name-only tag PAGE is a
+   404, see the tag-id note in CLAUDE.md.
+
+   Both rules below key on the TAG, not on a category slug, which is why
+   they sit outside the loop above rather than in it. `project` is only
+   ever applied in the critique category, so the tag scopes them by
+   itself and emitting them once per slug would be five copies of the
+   same thing. `.topic-thumbnails-masonry` keeps them to the card lists.
+   =================================================================== */
+
+/* The chip. Core gives a .discourse-tag no background, no border and no
+   padding, so subject tags render here as plain grey text and a filled
+   navy chip is the only coloured thing in the footer.
+
+   MEASURED, because this is a masonry footer: font-size and
+   line-height are deliberately untouched and only the horizontal
+   padding, the colours and the weight change. The chip therefore
+   occupies the same 19.5px line box a plain tag does, and the footer
+   height, the row height and the component's thumbnail arithmetic are
+   all unaffected — no re-layout to desynchronise.
+
+   No !important: at (0,3,0) this beats core's .discourse-tag.simple on
+   specificity alone, confirmed by applying it to a live row. Square
+   corners are not declared because branding.scss's universal reset
+   already forces them, and an unqualified border-radius here would be
+   dead code. */
+.topic-thumbnails-masonry .discourse-tag[data-tag-name="project"] {
+  padding-inline: 0.45rem;
+  background: var(--spc-indigo);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* The stack mark: two offset frames in the photo's top-right corner,
+   the idiom a phone gallery uses for "more than one image". The footer
+   chip alone is legible but small, and the thing being scanned in this
+   layout is the photo, not the text under it.
+
+   ::before, NOT ::after. Something outside this theme already generates
+   a ::after on .topic-list-thumbnail — content "", position absolute,
+   and it is not in any stylesheet this document can read, so it belongs
+   to the plugin or to core. Redefining it would clobber whatever it
+   does. ::before computes to `none` on that element, so it is free.
+
+   Safe for masonry on all three counts the component cares about: the
+   mark is absolutely positioned inside a .topic-list-thumbnail that is
+   already position: relative, it adds height to nothing, and it hides
+   nothing. That box's own overflow: hidden clips it to the photo.
+
+   The second frame is a box-shadow rather than a second element,
+   because ::after is unavailable: a navy square first, the white ring
+   painted under it, then a soft drop shadow so the mark still reads
+   against a pale photo. :not(.no-thumbnail) keeps it off the grey
+   placeholder box that a link-only project gets. */
+.topic-thumbnails-masonry
+  .topic-list-item.tag-project
+  .topic-list-thumbnail:not(.no-thumbnail)::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0.65rem;
+  right: 0.65rem;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ffffff;
+  background: var(--spc-indigo);
+  box-shadow:
+    5px -5px 0 -2px var(--spc-indigo),
+    5px -5px 0 0 #ffffff,
+    0 1px 4px rgba(26, 39, 68, 0.35);
+}

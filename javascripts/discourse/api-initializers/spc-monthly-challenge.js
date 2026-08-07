@@ -736,8 +736,12 @@ function deadlineText(challenge, state) {
       date: formatDate(challenge.submission_deadline),
     });
     const deadline = validDate(challenge.submission_deadline);
+    // floor, not ceil: the deadline is 23:59 on the last day, so flooring
+    // the difference counts calendar days with today as day zero — on
+    // August 7 a deadline of August 31 reads "24 days left". ceil counted
+    // the rest of today as a full day and was one high all month.
     const daysLeft = deadline
-      ? Math.ceil((deadline.getTime() - Date.now()) / 86_400_000)
+      ? Math.floor((deadline.getTime() - Date.now()) / 86_400_000)
       : 0;
     if (daysLeft <= 0) {
       return dateText;

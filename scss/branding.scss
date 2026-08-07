@@ -332,6 +332,17 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* The Custom Header Links component's text links fit only the desktop bar.
+   On phones they push the logo out of the header entirely (logged-in view:
+   links + language switcher + search + chat + hamburger + avatar), and the
+   same destinations already sit in the hamburger menu, so mobile hides the
+   whole strip. Scaling rule: new links go in the component as usual and
+   stay desktop-only automatically. .mobile-view rides on <html>, set by
+   Discourse's device detection. */
+.mobile-view .custom-header-links {
+  display: none;
+}
+
 .d-header .custom-header-links .headerLink {
   min-width: auto;
   margin-inline: 0.35rem;

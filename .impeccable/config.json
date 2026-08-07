@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "open sans",
+        "createdAt": "2026-08-07T15:17:30.763Z",
+        "reason": "SPC brand typeface, shipped as theme assets"
+      }
+    ]
+  }
+}

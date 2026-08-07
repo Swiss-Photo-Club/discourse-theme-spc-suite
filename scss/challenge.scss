@@ -246,8 +246,14 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 }
 
 /* Below ~900px the band collapses to one column, winner under the
-   challenge. The frame stays a real 3:2 via aspect-ratio, photograph
-   still contained. */
+   challenge. The frame stays a real 3:2, photograph still contained.
+
+   NOT aspect-ratio: with the photograph absolutely positioned, the frame
+   has no in-flow content, and iOS Safari then resolves aspect-ratio from
+   the empty height first — collapsing the frame to 0×0 (seen live
+   2026-08-07: zero-width caption wrapping one word per line over the CTA
+   buttons; Chromium renders the same CSS correctly). A padding-ratio
+   strut resolves against the frame's width in every engine. */
 @media (max-width: 900px) {
   .spc-hero--challenge,
   .spc-hero--challenge.spc-hero--with-winner {
@@ -257,7 +263,13 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   .spc-challenge-band__winner {
     height: auto;
     align-self: stretch;
-    aspect-ratio: 3 / 2;
+  }
+
+  .spc-challenge-band__winner::before {
+    content: "";
+    display: block;
+    width: 100%;
+    padding-top: 66.6667%;
   }
 }
 

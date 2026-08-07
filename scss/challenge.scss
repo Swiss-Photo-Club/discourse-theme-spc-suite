@@ -613,6 +613,24 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   letter-spacing: 0.06em;
 }
 
+/* renderComposer's relabels ride in data-spc-label and render here, because
+   the text nodes inside these labels are Glimmer's and rewriting one crashes
+   core's next re-render (same trap as the New Topic button — see
+   homepage.scss). font-size: 0 collapses the native text without touching it;
+   the ::before restores 1rem, which is what the native labels compute to. */
+#reply-control.spc-monthly-composer .form-template-field__label[data-spc-label],
+#reply-control.spc-monthly-composer .composer-actions-trigger .d-button-label[data-spc-label],
+#reply-control.spc-monthly-composer .save-or-cancel .create .d-button-label[data-spc-label] {
+  font-size: 0;
+}
+
+#reply-control.spc-monthly-composer .form-template-field__label[data-spc-label]::before,
+#reply-control.spc-monthly-composer .composer-actions-trigger .d-button-label[data-spc-label]::before,
+#reply-control.spc-monthly-composer .save-or-cancel .create .d-button-label[data-spc-label]::before {
+  content: attr(data-spc-label);
+  font-size: 1rem;
+}
+
 /* Responsive --------------------------------------------------------- */
 @media (max-width: 600px) {
   /* Written after hero.scss's own 600px block in the cascade, so the band

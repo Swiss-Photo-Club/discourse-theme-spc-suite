@@ -154,6 +154,9 @@ shown underneath. If a category is in both settings, it appears once in the high
 group. The renderer does not inject, substitute, or reorder either admin-controlled list.
 The Monthly Live Webinars card remains independent because it links to an events page rather
 than a category.
+The Critique feature card also uses that category's localized name, description, and
+Appearance background image. When no category background is uploaded, the card falls back
+to the SPC indigo gradient.
 
 `enable_local_featured_categories` is a temporary cutover switch. Keep it off while the
 external Featured Categories component is attached; detach that component and enable this

@@ -3,8 +3,9 @@ import { i18n } from "discourse-i18n";
 
 const MONTHLY_SELECTOR =
   '.featured-categories__category-link[data-spc-monthly-challenge="home"], .featured-categories__category-link[href="/c/monthly-challenge/6"]';
+const CRITIQUE_CATEGORY_ID = 7;
 const CRITIQUE_SELECTOR = [
-  '.featured-categories__category-container[data-spc-category-id="7"] > .featured-categories__category-link',
+  `.featured-categories__category-container[data-spc-category-id="${CRITIQUE_CATEGORY_ID}"] > .featured-categories__category-link`,
   '.featured-categories__category-link[href="/c/photo-feedback/7"]',
   '.featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]',
 ].join(", ");
@@ -52,6 +53,35 @@ function ensureFeatureDecoration(link, actionKey) {
     link.append(cta);
   }
   setText(cta, translated(`actions.${actionKey}`));
+}
+
+function syncCritiqueCategory(link, site) {
+  if (!link) {
+    return;
+  }
+
+  const category = site?.categories?.find(
+    ({ id }) => id === CRITIQUE_CATEGORY_ID
+  );
+  if (!category) {
+    return;
+  }
+
+  setText(link.querySelector(".badge-category__name"), category.name);
+  setText(
+    link.querySelector(".category-description"),
+    category.description_text || ""
+  );
+
+  const backgroundUrl = category.uploaded_background?.url;
+  if (backgroundUrl) {
+    link.style.setProperty(
+      "--spc-critique-cover",
+      `url(${JSON.stringify(backgroundUrl)})`
+    );
+  } else {
+    link.style.removeProperty("--spc-critique-cover");
+  }
 }
 
 function ensureSmallCardMeta(link, label = translated("view_category")) {
@@ -105,7 +135,7 @@ function ensureWebinarCard(list, feedbackContainer) {
   ensureSmallCardMeta(link, translated("webinars.meta"));
 }
 
-function enhanceCategories() {
+function enhanceCategories(site) {
   const root = document.querySelector(
     settings.enable_local_featured_categories
       ? '[data-spc-featured-categories="local"]'
@@ -127,6 +157,7 @@ function enhanceCategories() {
 
   const monthly = root.querySelector(MONTHLY_SELECTOR);
   const critique = root.querySelector(CRITIQUE_SELECTOR);
+  syncCritiqueCategory(critique, site);
   ensureFeatureDecoration(monthly, "challenge");
   ensureFeatureDecoration(critique, "critique");
 
@@ -310,6 +341,7 @@ function spcStartWhenReady(passedOwner, run) {
 
 const spcRun = (api) => {
   const currentUser = api.getCurrentUser();
+  const site = api.container.lookup("service:site");
   let queued = false;
 
   function render() {
@@ -318,7 +350,7 @@ const spcRun = (api) => {
       return;
     }
 
-    enhanceCategories();
+    enhanceCategories(site);
     enhanceTopicFeed();
     ensureGuestAction(currentUser);
   }

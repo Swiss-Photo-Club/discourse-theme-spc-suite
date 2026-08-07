@@ -488,7 +488,10 @@ body.navigation-topics
   [data-spc-home-feature="critique"] {
   background-image:
     var(--overlay-card),
-    url("/uploads/default/original/1X/8220fea23f9c1828678047c2fbdef88ee3680da0.jpeg") !important;
+    var(
+      --spc-critique-cover,
+      linear-gradient(135deg, var(--spc-indigo), var(--spc-indigo-600))
+    ) !important;
 }
 
 body.navigation-topics

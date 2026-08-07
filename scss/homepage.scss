@@ -1018,4 +1018,20 @@ body.navigation-topics .spc-home-pinned-badge {
   body.navigation-topics .topic-list-thumbnail .main-thumbnail {
     max-height: 380px;
   }
+
+  /* Bleed the homepage bands out of the wrap padding branding.scss owns at
+     this width. Explicit width because these boxes carry width: 100%, which
+     a negative margin alone would shift rather than widen. The heading gets
+     the padding back so its text keeps the page inset. */
+  body.navigation-topics #main-outlet > .spc-member-onboarding,
+  body.navigation-topics #main-outlet > .spc-non-member-banner,
+  body.navigation-topics #main-outlet > .spc-home-surface,
+  body.navigation-topics #main-outlet > .featured-categories {
+    width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
+    margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));
+  }
+
+  body.navigation-topics .featured-categories__heading {
+    padding-inline: var(--spc-wrap-pad, 0px);
+  }
 }

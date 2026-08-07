@@ -351,6 +351,26 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
+/* -------------------------------------------------
+   Phone-width page geometry. Core's #main-outlet-wrapper
+   keeps ~10.7px of side padding on mobile (a hardcoded
+   0.67em, not exposed as a variable), which insets every
+   band below the header. Owning that padding under one
+   variable lets the SPC bands bleed out of it by exactly
+   the same amount — the bleed rules live with their bands
+   (hero.scss, homepage.scss) and are keyed to this same
+   650px breakpoint.
+   ------------------------------------------------- */
+@media (max-width: 650px) {
+  :root {
+    --spc-wrap-pad: 12px;
+  }
+
+  #main-outlet-wrapper {
+    padding-inline: var(--spc-wrap-pad);
+  }
+}
+
 /* List headings — H1 44 Regular (not bold, per request).
    (Was also applied to the welcome-banner heading; those selectors were
    removed 2026-07-22 because the welcome banner is disabled.) */

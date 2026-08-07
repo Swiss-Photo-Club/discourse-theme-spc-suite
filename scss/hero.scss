@@ -292,3 +292,15 @@
     font-size: 15px;
   }
 }
+
+/* Keyed to the 650px wrap-padding override in branding.scss, not to this
+   file's 600px block: the surface bleeds out of the padding the wrapper
+   keeps, so the whole category stack (hero, introduction, sections,
+   leaderboard) runs edge to edge on phones. The 0px fallback means no
+   bleed unless the wrapper override is active. */
+@media (max-width: 650px) {
+  .spc-category-surface {
+    width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
+    margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));
+  }
+}

@@ -42,6 +42,23 @@ import SpcSubmitShell from "./spc-submit-shell";
 
 const SUBMISSION_TYPES = ["images", "link"];
 
+// The one thing that tells a project apart from a single image once it is in
+// the list. Everything else about the two posts is the same shape — same
+// category, same subject tags, one thumbnail each — and the difference is
+// otherwise only visible inside the post body, which a topic list never reads.
+//
+// A tag rather than anything derived from the post, so the distinction is data:
+// it shows on the topic page and in search, it is what scss/topic-cards.scss
+// keys the card treatment off (as `tag-project` on the row and
+// [data-tag-name="project"] on the chip), and it makes projects filterable.
+//
+// Not a setting. A setting here would be a rename away from silently detaching
+// the CSS from the tag it styles, with no visual symptom on either side until
+// someone looks for a chip that never appears — and there is nothing an admin
+// would want to change it to. Renaming it means editing both this file and
+// topic-cards.scss, and retagging the posts that already carry it.
+const PROJECT_TAG = "project";
+
 function withSelection(choices, current) {
   return choices.map((choice) => ({
     ...choice,
@@ -211,8 +228,12 @@ export default class SpcProjectForm extends SpcSubmitBase {
     this[name] = event.target.value;
   }
 
+  // The subject tag is what the category requires; PROJECT_TAG is what makes
+  // the submission recognisable as a series afterwards. Order matters only for
+  // display: Discourse renders tags in the order given, so the subject stays
+  // first and the chip reads as a qualifier on it rather than replacing it.
   async resolveTags() {
-    return [this.subject];
+    return [this.subject, PROJECT_TAG];
   }
 
   // Whichever mode is selected. The other modes keep their state, so switching

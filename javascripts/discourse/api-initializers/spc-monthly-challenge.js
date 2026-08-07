@@ -2,12 +2,7 @@ import { getOwnerWithFallback } from "discourse/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
-import {
-  categorySurface,
-  clearHero,
-  renderHero,
-  uploadUrl,
-} from "../lib/spc-hero";
+import { clearHero, ensureHero, uploadUrl } from "../lib/spc-hero";
 
 const COMPONENT_SELECTOR = "[data-spc-monthly-challenge]";
 const RENDER_THROTTLE_MS = 200;
@@ -119,27 +114,6 @@ function topicSummary(cooked) {
   return paragraph?.textContent.trim() || "";
 }
 
-// The first few text paragraphs of the brief, as plain strings. The section
-// is a teaser above the entry grid, not a mirror of the topic, so headings,
-// images and lists are deliberately dropped and the tail stays behind the
-// "read the full challenge" link. Signed out, cooked is empty (the post body
-// is members-only — see legacyTopicContent) and the caller falls back to the
-// public listing excerpt.
-const BODY_PREVIEW_PARAGRAPHS = 3;
-
-function topicBodyPreview(cooked) {
-  if (!cooked) {
-    return [];
-  }
-
-  const container = document.createElement("div");
-  container.innerHTML = cooked;
-  return Array.from(container.querySelectorAll("p"))
-    .map((element) => element.textContent.trim())
-    .filter(Boolean)
-    .slice(0, BODY_PREVIEW_PARAGRAPHS);
-}
-
 function topicCoverImage(cooked) {
   if (!cooked) {
     return "";
@@ -235,22 +209,6 @@ function challengeTitle(challenge) {
 
 function challengeSummary(challenge) {
   return challenge?.topic?.summary || localized(challenge, "summary") || "";
-}
-
-function categoryDescription(category) {
-  const value = category?.description || category?.description_excerpt;
-  if (!value) {
-    return "";
-  }
-  const container = document.createElement("div");
-  container.innerHTML = value;
-  return container.textContent.trim();
-}
-
-function categoryTopicUrl(category) {
-  return (
-    category?.topic_url || category?.topicUrl || settings.guide_topic_url || ""
-  );
 }
 
 function validDate(value) {
@@ -511,12 +469,15 @@ function tagListJsonUrl(tag) {
   )}/${encodeURIComponent(tag)}.json`;
 }
 
-function roundMonthLabel(tag) {
+// Month name alone ("July"), not month + year: it feeds the winner chip,
+// which reproduces the design's "JULY WINNER · CITYSCAPES" and has no room
+// for a year that is almost always the current one anyway.
+function roundMonthName(tag) {
   const match = /^(\d{4})-(\d{2})/.exec(tag || "");
   if (!match) {
     return "";
   }
-  return localizedDateFormat({ month: "long", year: "numeric" }).format(
+  return localizedDateFormat({ month: "long" }).format(
     new Date(Number(match[1]), Number(match[2]) - 1, 1)
   );
 }
@@ -556,6 +517,10 @@ function fetchWinnerTopic() {
         tagPage: tagPageUrl(roundTag),
         title: topic.title || topic.fancy_title || "",
         author: author?.name || author?.username || "",
+        // Topic Voting serializes vote_count onto the same listing the rest
+        // of this record comes from — no extra request. The admin panel's
+        // ranked list reads the identical field.
+        votes: Number(topic.vote_count) || 0,
         image: topic.image_url || "",
         url: topic.slug
           ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
@@ -576,13 +541,13 @@ async function resolveLatestWinner(challenges) {
     const override = challenges.find((c) => c.tag === tagged.tag);
     return {
       tag: tagged.tag,
-      month: roundMonthLabel(tagged.tag),
+      monthName: roundMonthName(tagged.tag),
       theme: roundThemeLabel(tagged.tag),
       title: override?.winner_title || tagged.title,
       author: override?.winner_author || tagged.author,
+      votes: tagged.votes,
       image: uploadUrl(override?.winner_image) || tagged.image,
       href: override?.gallery_url || tagged.url,
-      entriesUrl: tagged.tagPage,
       entryCount: Number(override?.entry_count) || 0,
     };
   }
@@ -596,21 +561,22 @@ async function resolveLatestWinner(challenges) {
     return null;
   }
   const hydrated = await hydrateChallenge(previous);
+  const startDate = validDate(previous.start_at);
   return {
     tag: previous.tag,
-    month: monthLabel(previous),
+    monthName: startDate
+      ? localizedDateFormat({ month: "long" }).format(startDate)
+      : roundMonthName(previous.tag),
     theme: challengeTitle(hydrated),
     title: previous.winner_title,
     author: previous.winner_author || "",
+    votes: 0,
     image: uploadUrl(previous.winner_image),
     href:
       previous.gallery_url ||
       previous.winner_topic_url ||
       hydrated.topic?.url ||
       categoryRoute(),
-    // The registry stores the tag as a bare string, so this falls back to the
-    // name-based URL, which browsers get redirected from.
-    entriesUrl: previous.tag ? tagPageUrl(previous.tag) : "",
     entryCount: Number(previous.entry_count) || 0,
   };
 }
@@ -766,9 +732,23 @@ function renderHomeCard(challenge) {
 
 function deadlineText(challenge, state) {
   if (state === "submissions-open" && challenge.submission_deadline) {
-    return translate("open_deadlines", {
+    const dateText = translate("open_deadlines", {
       date: formatDate(challenge.submission_deadline),
     });
+    const deadline = validDate(challenge.submission_deadline);
+    const daysLeft = deadline
+      ? Math.ceil((deadline.getTime() - Date.now()) / 86_400_000)
+      : 0;
+    if (daysLeft <= 0) {
+      return dateText;
+    }
+    // Two flat keys rather than a pluralized one: Discourse flattens theme
+    // translations, so one:/other: subkeys do not survive to the client.
+    const daysText =
+      daysLeft === 1
+        ? translate("days_left_one")
+        : translate("days_left", { count: daysLeft });
+    return `${daysText} · ${dateText}`;
   }
   if (state === "voting-open") {
     return translate("voting_until_winner");
@@ -776,217 +756,146 @@ function deadlineText(challenge, state) {
   return "";
 }
 
-// The hero is our own element inside SPC Suite's category surface. It used to
-// overwrite a core node, and later used Category Banners' hidden
-// `.category-title-header` as an insertion anchor. The former fought Ember on
-// navigation; the latter made an invisible third-party component load-bearing.
-// Owning both the element and its mount lets clearHero() simply delete it —
-// see findHomeCard() for the same lesson.
+// The band: one navy strip holding this month's challenge on the left and
+// last month's winner as a large photograph on the right (design handoff
+// 2026-08-07). It replaced the hero + current-round showcase + winner strip
+// stack, but it is still THE challenge hero — same element, same
+// "challenge" marker, same .spc-hero--challenge class and the same
+// .spc-hero__actions > .spc-button--primary structure, because
+// spc-photo-submit.js routes the primary button to /submit by exactly that
+// selector and clearHero()'s scoping keys off the marker. It goes through
+// ensureHero() rather than renderHero() only because the two-cell grid is
+// markup the generic slot renderer cannot express; the lifecycle is shared.
 //
-// Both of those functions now live in lib/spc-hero.js, shared with the four
-// category-specific overrides and the generic category fallback. This category
-// is NOT gated by enable_category_hero or handled by the generic initializer,
-// and must not be: the hero is part of the route-map, permalink and
-// route:new-topic stack behind /submit, and a half-enabled state breaks photo
-// submission. Sharing the renderer is not sharing a lifecycle.
-function renderChallengeHero(challenge) {
+// This category is NOT gated by enable_category_hero and must not be: the
+// band is part of the route-map, permalink and route:new-topic stack behind
+// /submit, and a half-enabled state breaks photo submission.
+function renderChallengeBand(challenge, winner) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
-  const category = Category.findById(Number(settings.monthly_category_id));
-  const cover = uploadUrl(category?.uploaded_background);
-  const description = categoryDescription(category);
-  const topicUrl = categoryTopicUrl(category);
-  const currentTitle = challengeTitle(challenge);
-
-  renderHero({
-    marker: HERO_MARKER,
-    variant: "challenge",
-    signature: [
-      challenge.tag,
-      challenge.topic?.updatedAt,
-      state,
-      localeCode(),
-      category?.name,
-      currentTitle,
-      cover,
-      description,
-      topicUrl,
-    ].join("-"),
-    eyebrow: monthLabel(challenge),
-    title: category?.name || translate("label"),
-    lead: translate("current_theme", { title: currentTitle }),
-    meta: deadlineText(challenge, state),
-    introduction: {
-      body: description,
-      href: topicUrl,
-      label: translate("read_more_category"),
-    },
-    cover,
-    shade: true,
-    actions: [
-      // Open: a <button> the capture-phase handler in spc-photo-submit.js
-      // intercepts and routes to /submit. Closed: a plain anchor down to the
-      // entry grid. The data attribute is what distinguishes them, and it is
-      // reproduced here verbatim.
-      isOpen
-        ? {
-            label: translate("submit_photo"),
-            style: "primary",
-            attribute: "data-spc-submit-photo",
-          }
-        : {
-            label: translate("view_entries"),
-            href: "#list-area",
-            style: "primary",
-          },
-      {
-        label: translate("how_voting_works"),
-        style: "secondary",
-        attribute: "data-spc-open-voting",
-      },
-      // The staff votes shortcut moved into the Challenge admin panel
-      // (components/spc-challenge-admin.gjs), which lists the ranked entries
-      // itself and links to the votes-ordered page.
-    ],
-  });
-}
-
-// The showcase treatment: the current round is what the page advertises, so
-// it gets the large media panel and the brief's own text, while the previous
-// winner below is a compact recognition strip. The two swapped treatments on
-// 2026-08-06 — the retrospective used to be the dominant section.
-function renderCurrentChallenge(challenge) {
-  const existing = document.querySelector(".spc-challenge-current");
   const title = challengeTitle(challenge);
-  const paragraphs = topicBodyPreview(challenge.topic?.cooked);
-  if (!paragraphs.length) {
-    const summary = challengeSummary(challenge);
-    if (summary) {
-      paragraphs.push(summary);
-    }
-  }
-  const image = uploadUrl(challenge.cover_image) || challenge.topic?.coverImage;
-  const href =
-    challenge.topic?.url || challenge.topic_url || settings.guide_topic_url;
+  const summary = challengeSummary(challenge);
   const month = monthLabel(challenge);
-  const signature = [
-    challenge.tag,
-    challenge.topic?.updatedAt,
-    localeCode(),
-    title,
-    paragraphs.join("|"),
-    image,
-    href,
-  ].join("-");
+  const deadline = deadlineText(challenge, state);
+  // Incomplete data shows nothing rather than something wrong: the winner
+  // cell waits for a winner-tagged topic with a photograph (or a completed
+  // registry record). Without one, the challenge cell spans the full band —
+  // the design's empty state, no placeholder frame.
+  const hasWinner = Boolean(winner?.title && winner.image);
 
-  if (existing?.dataset.spcChallengeSignature === signature) {
+  const hero = ensureHero(HERO_MARKER, "challenge");
+  if (!hero) {
     return;
   }
 
-  existing?.remove();
-  const section = document.createElement("section");
-  section.className = "spc-challenge-current";
-  section.dataset.spcMonthlyChallenge = "current";
-  section.dataset.spcChallengeSignature = signature;
-  section.setAttribute("aria-labelledby", "spc-challenge-current-title");
-  section.innerHTML = `
-    <div class="spc-challenge-current__media">
-      ${image ? `<img src="${escapeHtml(image)}" alt="">` : ""}
-    </div>
-    <div class="spc-challenge-current__content">
-      <span class="spc-eyebrow">${escapeHtml(translate("current"))}${
-        month ? ` · ${escapeHtml(month)}` : ""
-      }</span>
-      <h2 id="spc-challenge-current-title">${escapeHtml(title)}</h2>
-      ${paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("")}
-      ${
-        href
-          ? `<a class="spc-challenge-current__link" href="${escapeHtml(
-              href
-            )}">${escapeHtml(translate("read_full_challenge"))} →</a>`
-          : ""
-      }
-    </div>
-  `;
+  // A previous category's hero may hand this element over with its cover
+  // still applied; the band is flat indigo with no cover or shade.
+  hero.style.removeProperty("--spc-hero-cover");
+  hero.classList.remove("spc-hero--with-cover");
+  hero.classList.toggle("spc-hero--with-winner", hasWinner);
 
-  categorySurface()?.append(section);
+  const signature = [
+    challenge.tag,
+    challenge.topic?.updatedAt,
+    state,
+    localeCode(),
+    title,
+    summary,
+    deadline,
+    hasWinner
+      ? [
+          winner.tag,
+          winner.title,
+          winner.author,
+          winner.votes,
+          winner.entryCount,
+          winner.image,
+          winner.href,
+        ].join("|")
+      : "",
+  ].join("-");
+
+  if (hero.dataset.spcHeroSignature === signature) {
+    return;
+  }
+  hero.dataset.spcHeroSignature = signature;
+
+  // Open: a <button> the capture-phase handler in spc-photo-submit.js
+  // intercepts and routes to /submit. Closed: a plain anchor down to the
+  // entry grid. The data attribute is what distinguishes them.
+  const primaryAction = isOpen
+    ? `<button class="spc-button spc-button--primary" type="button" data-spc-submit-photo>${escapeHtml(
+        translate("submit_photo")
+      )}</button>`
+    : `<a class="spc-button spc-button--primary" href="#list-area">${escapeHtml(
+        translate("view_entries")
+      )}</a>`;
+
+  const winnerChip = hasWinner
+    ? winner.theme
+      ? translate("winner_chip", {
+          month: winner.monthName,
+          theme: winner.theme,
+        })
+      : translate("winner_chip_plain", { month: winner.monthName })
+    : "";
+  const winnerMeta = hasWinner
+    ? [
+        winner.author ? translate("by_author", { author: winner.author }) : "",
+        winner.votes > 0 && winner.entryCount > 0
+          ? translate("winner_votes_of_entries", {
+              votes: winner.votes,
+              entries: winner.entryCount,
+            })
+          : winner.votes > 0
+            ? translate("winner_votes", { count: winner.votes })
+            : winner.entryCount > 0
+              ? translate("entries", { count: winner.entryCount })
+              : "",
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
+
+  // The winner cell is a single link to the winning post — no separate text
+  // link, removed deliberately in the design.
+  hero.innerHTML = `
+    <div class="spc-hero__content spc-challenge-band__challenge">
+      <div class="spc-challenge-band__kicker">
+        <span class="spc-challenge-band__chip">${escapeHtml(translate("label"))}</span>
+        ${month ? `<span class="spc-challenge-band__month">${escapeHtml(month)}</span>` : ""}
+      </div>
+      <h1 id="spc-hero-title">${escapeHtml(title)}</h1>
+      ${summary ? `<p class="spc-challenge-band__summary">${escapeHtml(summary)}</p>` : ""}
+      ${deadline ? `<p class="spc-challenge-band__deadline">${escapeHtml(deadline)}</p>` : ""}
+      <div class="spc-hero__actions">
+        ${primaryAction}
+        <button class="spc-button spc-button--secondary" type="button" data-spc-open-voting>${escapeHtml(
+          translate("how_voting_works")
+        )}</button>
+      </div>
+    </div>
+    ${
+      hasWinner
+        ? `<a class="spc-challenge-band__winner" href="${escapeHtml(
+            winner.href || categoryRoute()
+          )}">
+      <img src="${escapeHtml(winner.image)}" alt="${escapeHtml(winner.title)}">
+      <span class="spc-challenge-band__winner-chip">${escapeHtml(winnerChip)}</span>
+      <span class="spc-challenge-band__winner-caption">
+        <span class="spc-challenge-band__winner-title">${escapeHtml(winner.title)}</span>
+        ${winnerMeta ? `<span class="spc-challenge-band__winner-meta">${escapeHtml(winnerMeta)}</span>` : ""}
+      </span>
+    </a>`
+        : ""
+    }
+  `;
 }
 
 function archivedChallenges(challenges) {
   return challenges
     .filter((challenge) => challenge.status === "archived")
     .sort((a, b) => (validDate(b.start_at)?.getTime() || 0) - (validDate(a.start_at)?.getTime() || 0));
-}
-
-function renderPreviousWinner(winner) {
-  const existing = document.querySelector(".spc-challenge-winner");
-
-  // Incomplete data shows nothing rather than something wrong: the section
-  // waits for a winner-tagged topic with a photograph (or a completed
-  // registry record) instead of guessing.
-  if (!winner?.title || !winner.image) {
-    existing?.remove();
-    return;
-  }
-
-  const eyebrow = winner.theme
-    ? translate("last_month_winner", { month: winner.month, theme: winner.theme })
-    : translate("last_month_winner_plain", { month: winner.month });
-  const meta = [
-    winner.author ? translate("by_author", { author: winner.author }) : "",
-    winner.entryCount > 0
-      ? translate("entries", { count: winner.entryCount })
-      : "",
-  ].filter(Boolean);
-  const signature = [
-    winner.tag,
-    localeCode(),
-    winner.title,
-    winner.author,
-    winner.entryCount,
-    winner.image,
-    winner.href,
-    winner.entriesUrl,
-  ].join("-");
-
-  if (existing?.dataset.spcChallengeSignature === signature) {
-    return;
-  }
-
-  existing?.remove();
-  const section = document.createElement("section");
-  section.className = "spc-challenge-winner";
-  section.dataset.spcMonthlyChallenge = "winner";
-  section.dataset.spcChallengeSignature = signature;
-  section.setAttribute("aria-labelledby", "spc-challenge-winner-title");
-  section.innerHTML = `
-    <div class="spc-challenge-winner__media">
-      <img src="${escapeHtml(winner.image)}" alt="${escapeHtml(winner.title)}">
-    </div>
-    <div class="spc-challenge-winner__content">
-      <span class="spc-eyebrow">${escapeHtml(eyebrow)}</span>
-      <h2 id="spc-challenge-winner-title">${escapeHtml(winner.title)}</h2>
-      ${meta.length ? `<p>${escapeHtml(meta.join(" · "))}</p>` : ""}
-      <div class="spc-challenge-winner__links">
-        ${
-          winner.href
-            ? `<a href="${escapeHtml(winner.href)}">${escapeHtml(
-                translate("winning_photo")
-              )} →</a>`
-            : ""
-        }
-        ${
-          winner.entriesUrl
-            ? `<a href="${escapeHtml(winner.entriesUrl)}">${escapeHtml(
-                translate("previous_entries", { month: winner.month })
-              )} →</a>`
-            : ""
-        }
-      </div>
-    </div>
-  `;
-
-  categorySurface()?.append(section);
 }
 
 function hideOfficialTopicRow(challenge) {
@@ -1267,17 +1176,15 @@ const spcRun = (api) => {
       return;
     }
 
-    // The category template shows only the latest winner. One tag-listing
-    // request resolves it (cached, TTL-expired) instead of fetching every
+    // The band shows only the latest winner. One tag-listing request
+    // resolves it (cached, TTL-expired) instead of fetching every
     // historical challenge topic on each visit to the category.
     const winner = await resolveLatestWinner(challenges);
     if (request !== renderRequest) {
       return;
     }
 
-    renderChallengeHero(active);
-    renderCurrentChallenge(active);
-    renderPreviousWinner(winner);
+    renderChallengeBand(active, winner);
     hideOfficialTopicRow(active);
   }
 

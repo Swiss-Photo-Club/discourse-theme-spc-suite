@@ -76,7 +76,14 @@ export function categorySurface() {
   return document.querySelector(SURFACE_SELECTOR);
 }
 
-function ensureHero(marker, variant) {
+/**
+ * Exported for the Monthly Challenge band, which owns markup renderHero()
+ * cannot express (the two-cell challenge/winner grid) but must keep sharing
+ * this element's lifecycle: the same [data-spc-hero] node is re-markered
+ * across category navigations, and clearHero()'s scoping only works if every
+ * hero renderer goes through here rather than creating elements of its own.
+ */
+export function ensureHero(marker, variant) {
   const existing = document.querySelector(HERO_SELECTOR);
 
   if (existing) {

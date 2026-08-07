@@ -176,7 +176,13 @@ fr:
     entries: '%{count} participations'
     by_author: par %{author}
     open_deadlines: Envoyez et votez jusqu’au %{date}
+    days_left_one: 1 jour restant
+    days_left: '%{count} jours restants'
     voting_until_winner: Envois terminés · Le vote reste ouvert jusqu’à l’annonce de la photo gagnante
+    winner_chip: 'Photo gagnante %{month} · %{theme}'
+    winner_chip_plain: 'Photo gagnante %{month}'
+    winner_votes: '%{count} votes'
+    winner_votes_of_entries: '%{votes} votes sur %{entries} participations'
     entries_by_votes: Photos par votes
     last_month_winner: Photo gagnante du mois dernier · %{month} — %{theme}
     last_month_winner_plain: Photo gagnante du mois dernier · %{month}

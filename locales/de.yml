@@ -180,7 +180,13 @@ de:
     entries: '%{count} Beiträge'
     by_author: von %{author}
     open_deadlines: Einreichen und abstimmen bis %{date}
+    days_left_one: Noch 1 Tag
+    days_left: 'Noch %{count} Tage'
     voting_until_winner: Einreichungen beendet · Abstimmung läuft bis zur Bekanntgabe des Gewinnerfotos
+    winner_chip: 'Gewinnerfoto %{month} · %{theme}'
+    winner_chip_plain: 'Gewinnerfoto %{month}'
+    winner_votes: '%{count} Stimmen'
+    winner_votes_of_entries: '%{votes} Stimmen bei %{entries} Beiträgen'
     entries_by_votes: Beiträge nach Stimmen
     last_month_winner: Gewinnerfoto des letzten Monats · %{month} — %{theme}
     last_month_winner_plain: Gewinnerfoto des letzten Monats · %{month}

@@ -979,9 +979,14 @@ function renderComposer(challenge, composerService) {
       <p>${escapeHtml(translate("upload_hint"))}</p>
     `;
 
+    // Every relabel below rides in data-spc-label, rendered by challenge.scss
+    // through ::before — the text nodes inside these labels belong to Glimmer,
+    // and replacing one detaches the node it tracks, so core's next re-render
+    // of the element dies in removeChild and aborts the whole render
+    // transaction (see updateCreateTopicButton in spc-category-hero.js).
     const uploadLabel = formWrapper.querySelector(".form-template-field__label");
-    if (uploadLabel) {
-      uploadLabel.textContent = translate("your_photo");
+    if (uploadLabel && uploadLabel.dataset.spcLabel !== translate("your_photo")) {
+      uploadLabel.dataset.spcLabel = translate("your_photo");
     }
   }
 
@@ -991,13 +996,14 @@ function renderComposer(challenge, composerService) {
     titleInput.setAttribute("aria-label", translate("photo_title"));
   }
 
+  const buttonLabel = translate("submit_photo");
   const actionLabel = composer.querySelector(".composer-actions-trigger .d-button-label");
   const submitLabel = composer.querySelector(".save-or-cancel .create .d-button-label");
-  if (actionLabel && actionLabel.textContent !== translate("submit_photo")) {
-    actionLabel.textContent = translate("submit_photo");
-  }
-  if (submitLabel && submitLabel.textContent !== translate("submit_photo")) {
-    submitLabel.textContent = translate("submit_photo");
+  for (const labelElement of [actionLabel, submitLabel]) {
+    if (labelElement && labelElement.dataset.spcLabel !== buttonLabel) {
+      labelElement.dataset.spcLabel = buttonLabel;
+      labelElement.closest("button")?.setAttribute("aria-label", buttonLabel);
+    }
   }
 }
 

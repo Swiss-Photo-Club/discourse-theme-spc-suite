@@ -90,8 +90,8 @@ transaction**, so the topic list froze showing the previous category's topics on
 after it (fixed 2026-08-07). Signed-in only, because anonymous pages render no `#create-topic`,
 and the crash surfaces nowhere near the code that caused it. A label on a core button rides in a
 `data-` attribute rendered through `::before` (see `updateCreateTopicButton`); the composer
-relabels in `renderComposer` (`spc-monthly-challenge.js`) still use `textContent` and are the
-same latent bug.
+relabels in `renderComposer` (`spc-monthly-challenge.js`) use the same `data-spc-label`
+pattern, rendered by `challenge.scss`.
 
 **Masonry is fragile.** Topic List Thumbnails (component 1) measures every `tr.topic-list-item`
 and sets `position: absolute`. Any DOM change altering a row's height desynchronises the layout

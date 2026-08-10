@@ -20,6 +20,12 @@ function baseStrokeWidth(width) {
 
 export function renderAnnotations(ctx, annotations, width, height, colors) {
   ctx.clearRect(0, 0, width, height);
+  paintAnnotations(ctx, annotations, width, height, colors);
+}
+
+// The non-clearing pass: used by the live overlay via renderAnnotations, and
+// directly by the posting composite, which paints over the photo itself.
+export function paintAnnotations(ctx, annotations, width, height, colors) {
   const line = baseStrokeWidth(width);
   for (const annotation of annotations) {
     drawOnce(ctx, annotation, width, height, colors.casing, line * 2.4);

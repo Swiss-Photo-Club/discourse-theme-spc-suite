@@ -290,6 +290,7 @@ de:
     tool_path: Freihand
     notes_undo: Letzte Notiz rückgängig machen
     notes_clear: Alle Notizen löschen
+    notes_post_label: Visuelle Notizen
     next_topic: Nächstes Thema
     request_of: Anfrage von %{name}
     feedback_requested: Gewünschtes Feedback

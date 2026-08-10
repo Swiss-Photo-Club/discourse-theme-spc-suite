@@ -329,6 +329,7 @@ en:
     tool_path: Freehand
     notes_undo: Undo last note
     notes_clear: Clear all notes
+    notes_post_label: Visual notes
     next_topic: Next topic
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested

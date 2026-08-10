@@ -286,6 +286,7 @@ fr:
     tool_path: Main levée
     notes_undo: Annuler la dernière note
     notes_clear: Effacer toutes les notes
+    notes_post_label: Notes visuelles
     next_topic: Sujet suivant
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé

@@ -21,6 +21,7 @@ import {
 } from "../lib/spc-parse-request";
 import {
   ANNOTATION_TOOLS,
+  paintAnnotations,
   renderAnnotations,
 } from "../lib/spc-annotate";
 
@@ -254,6 +255,60 @@ export default class SpcCritiqueWorkspace extends Component {
     this.redrawAnnotations();
   }
 
+  // Draws the reference image plus the notes at natural resolution (capped
+  // at 2048px on the long side - Discourse would downscale anything bigger
+  // anyway) and returns a JPEG blob. The stage <img> already holds the
+  // full-size original, and it is same-origin, so the canvas stays clean.
+  async compositeAnnotations() {
+    const stageImg =
+      this.annotationCanvas?.parentElement?.querySelector("img");
+    if (!stageImg?.naturalWidth) {
+      throw new Error("reference image not loaded");
+    }
+    const scale = Math.min(
+      1,
+      2048 / Math.max(stageImg.naturalWidth, stageImg.naturalHeight)
+    );
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(stageImg.naturalWidth * scale);
+    canvas.height = Math.round(stageImg.naturalHeight * scale);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(stageImg, 0, 0, canvas.width, canvas.height);
+    paintAnnotations(
+      ctx,
+      this.annotations,
+      canvas.width,
+      canvas.height,
+      this.annotationColors
+    );
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) =>
+          blob ? resolve(blob) : reject(new Error("composite failed")),
+        "image/jpeg",
+        0.9
+      );
+    });
+  }
+
+  async uploadVisualNotes(blob) {
+    const base = this.downloadFilename.replace(/\.[a-z0-9]+$/i, "");
+    const formData = new FormData();
+    formData.append("type", "composer");
+    formData.append("files[]", blob, `${base} (visual notes).jpg`);
+    const upload = await ajax("/uploads.json", {
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+    });
+    // getUploadMarkdown sizes the image from the thumbnail fields; back-fill
+    // them so a response without thumbnails cannot produce undefinedxundefined.
+    upload.thumbnail_width ||= upload.width;
+    upload.thumbnail_height ||= upload.height;
+    return upload;
+  }
+
   // The plain `download` attribute is not enough here: hosted uploads can
   // 302 to external object storage, and Firefox ignores the attribute on a
   // cross-origin redirect and navigates instead. Pulling the file through
@@ -295,9 +350,20 @@ export default class SpcCritiqueWorkspace extends Component {
     }
     this.posting = true;
     try {
-      // The label is in the critic's locale on purpose: the critique itself
-      // is written in that language, and nothing parses critique replies.
+      // The labels are in the critic's locale on purpose: the critique
+      // itself is written in that language, and nothing parses critique
+      // replies. If compositing or uploading the notes fails, the throw
+      // lands in the catch below and the drawer stays open with the draft
+      // and the drawn notes intact - never post without the notes the
+      // critic drew.
       let raw = this.value;
+      if (this.hasAnnotations) {
+        const blob = await this.compositeAnnotations();
+        const notesUpload = await this.uploadVisualNotes(blob);
+        raw += `\n\n**${i18n(
+          themePrefix("critique_workspace.notes_post_label")
+        )}:**\n\n${getUploadMarkdown(notesUpload)}`;
+      }
       if (this.processingUpload) {
         raw += `\n\n**${i18n(
           themePrefix("critique_workspace.example_post_label")

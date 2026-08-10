@@ -8,6 +8,7 @@ import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { getUploadMarkdown } from "discourse/lib/uploads";
+import DiscourseURL from "discourse/lib/url";
 import icon from "discourse/helpers/d-icon";
 import i18n from "discourse-common/helpers/i18n";
 import {
@@ -142,7 +143,7 @@ export default class SpcCritiqueWorkspace extends Component {
           themePrefix("critique_workspace.example_post_label")
         )}:**\n\n${getUploadMarkdown(this.processingUpload)}`;
       }
-      await ajax("/posts.json", {
+      const reply = await ajax("/posts.json", {
         type: "POST",
         data: {
           raw,
@@ -151,7 +152,16 @@ export default class SpcCritiqueWorkspace extends Component {
         },
       });
       this.args.closeModal();
-      window.location.reload();
+      // Same-topic routeTo with a post number refreshes the post stream from
+      // the server (which picks up the reply we just created) and jumps to
+      // it - no full page reload needed.
+      if (reply?.topic_id && reply?.post_number) {
+        DiscourseURL.routeTo(
+          `/t/${reply.topic_slug || "-"}/${reply.topic_id}/${reply.post_number}`
+        );
+      } else {
+        window.location.reload();
+      }
     } catch (error) {
       popupAjaxError(error);
     } finally {

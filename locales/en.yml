@@ -321,6 +321,7 @@ en:
     example_denied: The photographer asked for no processing examples on this image.
     download_reference: Download reference image
     example_post_label: Processing example
+    next_topic: Next topic
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested
     about_image: About this image

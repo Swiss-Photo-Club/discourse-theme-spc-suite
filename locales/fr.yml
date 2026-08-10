@@ -278,6 +278,7 @@ fr:
     example_denied: Le photographe ne souhaite pas d'exemples de retouche pour cette image.
     download_reference: Télécharger l'image de référence
     example_post_label: Exemple de retouche
+    next_topic: Sujet suivant
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé
     about_image: À propos de cette image

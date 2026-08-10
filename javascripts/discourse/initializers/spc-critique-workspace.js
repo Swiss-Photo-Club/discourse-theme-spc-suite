@@ -3,6 +3,7 @@ import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import I18n from "discourse-i18n";
 import SpcCritiqueWorkspace from "../components/spc-critique-workspace";
+import SpcNextTopic from "../components/spc-next-topic";
 import parseRequest from "../lib/spc-parse-request";
 
 const BANNER_CLASS = "spc-cw-banner";
@@ -16,6 +17,12 @@ export default {
     }
 
     withPluginApi("1.8.0", (api) => {
+      // Part of the critique flow on purpose: disabling the workspace also
+      // removes the next-topic queue button. The component gates itself on
+      // workspace_enabled_categories and hides when no same-category
+      // suggestion exists.
+      api.renderInOutlet("topic-above-post-stream", SpcNextTopic);
+
       const modal = owner.lookup("service:modal");
       const currentUser = owner.lookup("service:current-user");
       const siteSettings = owner.lookup("service:site-settings");

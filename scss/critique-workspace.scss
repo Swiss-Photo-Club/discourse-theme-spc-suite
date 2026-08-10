@@ -74,7 +74,7 @@
   max-height: 85vh;
   background: var(--secondary);
   border-top: 1px solid var(--primary-low);
-  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-composer);
 
   &__header {
     display: flex;

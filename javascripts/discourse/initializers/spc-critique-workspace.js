@@ -2,7 +2,9 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import I18n from "discourse-i18n";
-import SpcCritiqueWorkspace from "../components/spc-critique-workspace";
+import SpcCritiqueWorkspaceHost, {
+  OPEN_WORKSPACE_EVENT,
+} from "../components/spc-critique-workspace-host";
 import SpcNextTopic from "../components/spc-next-topic";
 import parseRequest from "../lib/spc-parse-request";
 
@@ -22,8 +24,12 @@ export default {
       // workspace_enabled_categories and hides when no same-category
       // suggestion exists.
       api.renderInOutlet("topic-above-post-stream", SpcNextTopic);
+      // The workspace drawer host. NOT the modal service: core modals the
+      // editor opens (insert link) would evict a service modal and the draft
+      // with it. The drawer sits under core's modal layer instead.
+      api.renderInOutlet("topic-above-post-stream", SpcCritiqueWorkspaceHost);
 
-      const modal = owner.lookup("service:modal");
+      const appEvents = owner.lookup("service:app-events");
       const currentUser = owner.lookup("service:current-user");
       const siteSettings = owner.lookup("service:site-settings");
 
@@ -85,15 +91,13 @@ export default {
               const data = await ajax(`/posts/${post.id}.json`, {
                 data: { include_raw: true },
               });
-              modal.show(SpcCritiqueWorkspace, {
-                model: {
-                  topicId: topic.id,
-                  topicTitle: topic.title,
-                  postId: post.id,
-                  authorName: post.name || post.username,
-                  imageUrl,
-                  request: parseRequest(data.raw),
-                },
+              appEvents.trigger(OPEN_WORKSPACE_EVENT, {
+                topicId: topic.id,
+                topicTitle: topic.title,
+                postId: post.id,
+                authorName: post.name || post.username,
+                imageUrl,
+                request: parseRequest(data.raw),
               });
             } catch (error) {
               popupAjaxError(error);

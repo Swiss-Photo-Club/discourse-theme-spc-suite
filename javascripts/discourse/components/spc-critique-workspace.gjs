@@ -2,7 +2,6 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
-import DModal from "discourse/components/d-modal";
 import DButton from "discourse/components/d-button";
 import DEditor from "discourse/components/d-editor";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
@@ -161,12 +160,24 @@ export default class SpcCritiqueWorkspace extends Component {
   }
 
   <template>
-    <DModal
-      @title={{i18n (themePrefix "critique_workspace.modal_title")}}
-      @closeModal={{@closeModal}}
-      class="spc-critique-workspace-modal"
+    <div
+      class="spc-cw-drawer"
+      role="dialog"
+      aria-label={{i18n (themePrefix "critique_workspace.modal_title")}}
     >
-      <:body>
+      <div class="spc-cw-drawer__header">
+        <h3 class="spc-cw-drawer__title">
+          {{i18n (themePrefix "critique_workspace.modal_title")}}
+        </h3>
+        <DButton
+          @icon="xmark"
+          @action={{@closeModal}}
+          @translatedAriaLabel={{i18n (themePrefix "critique_workspace.cancel")}}
+          class="btn-transparent spc-cw-drawer__close"
+        />
+      </div>
+
+      <div class="spc-cw-drawer__body">
         <div class="spc-cw">
           <div class="spc-cw__left">
             <h3 class="spc-cw__label">{{i18n (themePrefix "critique_workspace.reference_image")}}</h3>
@@ -278,9 +289,9 @@ export default class SpcCritiqueWorkspace extends Component {
             </div>
           </div>
         </div>
-      </:body>
+      </div>
 
-      <:footer>
+      <div class="spc-cw-drawer__footer">
         <DButton
           class="btn-primary"
           @action={{this.post}}
@@ -296,7 +307,7 @@ export default class SpcCritiqueWorkspace extends Component {
           @action={{@closeModal}}
           @translatedLabel={{i18n (themePrefix "critique_workspace.cancel")}}
         />
-      </:footer>
-    </DModal>
+      </div>
+    </div>
   </template>
 }

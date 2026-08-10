@@ -8,6 +8,15 @@
         "value": "open sans",
         "createdAt": "2026-08-07T15:17:30.763Z",
         "reason": "SPC brand typeface, shipped as theme assets"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "scss/critique-workspace.scss"
+        ],
+        "createdAt": "2026-08-10T14:40:43.194Z",
+        "reason": "User confirmed the left-accent callout style: matches Discourse core's quote/callout convention and the documented D7 banner decision in CLAUDE.md"
       }
     ]
   }

@@ -30,10 +30,21 @@ const TECH_HEADINGS = [
 function quoteValue(raw, keys) {
   for (const key of keys) {
     const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(`\\*\\*${escaped}\\s*:?\\s*\\*\\*\\s*:?\\s*(.+)`, "i");
+    // Stop at the first `*`: wizard-era posts carried further bold fields on
+    // the same line ("Both – **Presentation:** Web / Portfolio"), and none of
+    // the legitimate values contain an asterisk. The trailing strip removes
+    // the separator left behind ("Both – " → "Both").
+    const re = new RegExp(
+      `\\*\\*${escaped}\\s*:?\\s*\\*\\*\\s*:?\\s*([^*\\n]+)`,
+      "i"
+    );
     const match = raw.match(re);
     if (match) {
-      return match[1].replace(/^[:\s]+/, "").trim();
+      const value = match[1]
+        .replace(/^[:\s]+/, "")
+        .replace(/[\s:–—-]+$/, "")
+        .trim();
+      return value || null;
     }
   }
   return null;

@@ -63,12 +63,15 @@
 // The workspace drawer. Fixed to the bottom like the composer, and for the
 // same reason the composer is not a modal: core's modal service shows one
 // modal at a time, so the editor's own dialogs (insert link) were evicting
-// the workspace. z-index sits below core's header (1000) and far below the
-// modal layer, so stacked dialogs open above and return cleanly.
+// the workspace. The z-index must sit BELOW 300: float-kit portals the
+// editor's toolbar menus (text size, lists, emoji) at z("dropdown") = 300,
+// and a drawer above that layer swallows them invisibly - which is exactly
+// how "the Tt button does nothing" presented. 250 clears the timeline (100)
+// and chat drawer (200) while every popup layer stays on top.
 .spc-cw-drawer {
   position: fixed;
   inset: auto 0 0 0;
-  z-index: 999;
+  z-index: 250;
   display: flex;
   flex-direction: column;
   max-height: 85vh;

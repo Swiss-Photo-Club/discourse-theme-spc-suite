@@ -8,6 +8,7 @@ import DButton from "discourse/components/d-button";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
+import { getUploadMarkdown } from "discourse/lib/uploads";
 import { cook } from "discourse/lib/text";
 import icon from "discourse/helpers/d-icon";
 import i18n from "discourse-common/helpers/i18n";
@@ -150,10 +151,18 @@ export default class SpcCritiqueWorkspace extends Component {
     }
     this.posting = true;
     try {
+      // The label is in the critic's locale on purpose: the critique itself
+      // is written in that language, and nothing parses critique replies.
+      let raw = this.value;
+      if (this.processingUpload) {
+        raw += `\n\n**${i18n(
+          themePrefix("critique_workspace.example_post_label")
+        )}:**\n\n${getUploadMarkdown(this.processingUpload)}`;
+      }
       await ajax("/posts.json", {
         type: "POST",
         data: {
-          raw: this.value,
+          raw,
           topic_id: this.args.model.topicId,
           nested_post: true,
         },

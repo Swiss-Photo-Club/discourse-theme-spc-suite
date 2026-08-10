@@ -281,6 +281,7 @@ de:
     example_hint: Lade nur dann ein bearbeitetes Beispiel hoch, wenn es hilft, eine mögliche Richtung zu zeigen.
     example_denied: Die fotografierende Person möchte für dieses Bild keine Bearbeitungsbeispiele.
     download_reference: Referenzbild herunterladen
+    example_post_label: Bearbeitungsbeispiel
     request_of: Anfrage von %{name}
     feedback_requested: Gewünschtes Feedback
     about_image: Über dieses Bild

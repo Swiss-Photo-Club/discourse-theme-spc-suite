@@ -320,6 +320,7 @@ en:
     example_hint: Upload an edited example only when it helps show a possible direction.
     example_denied: The photographer asked for no processing examples on this image.
     download_reference: Download reference image
+    example_post_label: Processing example
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested
     about_image: About this image

@@ -277,6 +277,10 @@ de:
     modal_title: Kritik-Arbeitsplatz
     reference_image: Referenzbild
     view_full_size: In voller Grösse ansehen
+    example_title: Optionales Bearbeitungsbeispiel
+    example_hint: Lade nur dann ein bearbeitetes Beispiel hoch, wenn es hilft, eine mögliche Richtung zu zeigen.
+    example_denied: Die fotografierende Person möchte für dieses Bild keine Bearbeitungsbeispiele.
+    download_reference: Referenzbild herunterladen
     request_of: Anfrage von %{name}
     feedback_requested: Gewünschtes Feedback
     about_image: Über dieses Bild

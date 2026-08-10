@@ -316,6 +316,10 @@ en:
     modal_title: Critique Workspace
     reference_image: Reference image
     view_full_size: View full size
+    example_title: Optional processing example
+    example_hint: Upload an edited example only when it helps show a possible direction.
+    example_denied: The photographer asked for no processing examples on this image.
+    download_reference: Download reference image
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested
     about_image: About this image

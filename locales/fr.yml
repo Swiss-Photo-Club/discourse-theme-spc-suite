@@ -273,6 +273,10 @@ fr:
     modal_title: Espace de critique
     reference_image: Image de référence
     view_full_size: Voir en taille réelle
+    example_title: Exemple de retouche facultatif
+    example_hint: Téléverse un exemple retouché uniquement s'il aide à montrer une direction possible.
+    example_denied: Le photographe ne souhaite pas d'exemples de retouche pour cette image.
+    download_reference: Télécharger l'image de référence
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé
     about_image: À propos de cette image

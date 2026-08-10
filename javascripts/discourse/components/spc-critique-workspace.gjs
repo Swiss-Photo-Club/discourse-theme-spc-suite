@@ -5,11 +5,15 @@ import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DModal from "discourse/components/d-modal";
 import DButton from "discourse/components/d-button";
+import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { cook } from "discourse/lib/text";
 import i18n from "discourse-common/helpers/i18n";
-import { questionKeysFor } from "../lib/spc-parse-request";
+import {
+  processingExamplesDenied,
+  questionKeysFor,
+} from "../lib/spc-parse-request";
 
 export default class SpcCritiqueWorkspace extends Component {
   @service currentUser;
@@ -19,6 +23,7 @@ export default class SpcCritiqueWorkspace extends Component {
   @tracked value = "";
   @tracked previewHtml = null;
   @tracked posting = false;
+  @tracked processingUpload = null;
 
   get request() {
     return this.args.model.request || {};
@@ -53,9 +58,27 @@ export default class SpcCritiqueWorkspace extends Component {
     return this.previewHtml !== null;
   }
 
+  get processingDenied() {
+    return processingExamplesDenied(this.request.processingAllowed);
+  }
+
+  get processingImageUrl() {
+    return this.processingUpload?.url;
+  }
+
   @action
   updateValue(event) {
     this.value = event.target.value;
+  }
+
+  @action
+  processingUploadDone(upload) {
+    this.processingUpload = upload;
+  }
+
+  @action
+  processingUploadDeleted() {
+    this.processingUpload = null;
   }
 
   @action
@@ -114,6 +137,36 @@ export default class SpcCritiqueWorkspace extends Component {
                 rel="noopener noreferrer"
               >{{i18n (themePrefix "critique_workspace.view_full_size")}}</a>
             {{/if}}
+
+            <div class="spc-cw__example">
+              <h3 class="spc-cw__label">
+                {{i18n (themePrefix "critique_workspace.example_title")}}
+              </h3>
+              {{#if this.processingDenied}}
+                <p class="spc-cw__example-denied">
+                  {{i18n (themePrefix "critique_workspace.example_denied")}}
+                </p>
+              {{else}}
+                <p class="spc-cw__example-hint">
+                  {{i18n (themePrefix "critique_workspace.example_hint")}}
+                </p>
+                <UppyImageUploader
+                  @id="spc-cw-example-upload"
+                  @type="composer"
+                  @imageUrl={{this.processingImageUrl}}
+                  @onUploadDone={{this.processingUploadDone}}
+                  @onUploadDeleted={{this.processingUploadDeleted}}
+                  class="spc-cw__uploader"
+                />
+              {{/if}}
+              {{#if this.imageUrl}}
+                <a
+                  class="spc-cw__download"
+                  href={{this.imageUrl}}
+                  download
+                >{{i18n (themePrefix "critique_workspace.download_reference")}}</a>
+              {{/if}}
+            </div>
           </div>
 
           <div class="spc-cw__right">

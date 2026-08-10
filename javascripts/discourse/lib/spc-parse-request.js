@@ -66,6 +66,14 @@ export default function parseRequest(raw) {
   };
 }
 
+// The examples answer is in the POST's language, not the viewer's, so all
+// three forms must match. Only an explicit "no" denies: legacy posts without
+// the field (and free-form answers) keep the uploader available and leave the
+// judgement to the critic.
+export function processingExamplesDenied(value) {
+  return /^(nein|no|non)\b/i.test((value || "").trim());
+}
+
 export function questionKeysFor(focus) {
   const value = (focus || "").toLowerCase();
   if (/technik|technical|technique/.test(value) && !/\+|und|and|et/.test(value)) {

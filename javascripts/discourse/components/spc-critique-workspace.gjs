@@ -9,6 +9,7 @@ import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { cook } from "discourse/lib/text";
+import icon from "discourse/helpers/d-icon";
 import i18n from "discourse-common/helpers/i18n";
 import {
   processingExamplesDenied,
@@ -24,6 +25,7 @@ export default class SpcCritiqueWorkspace extends Component {
   @tracked previewHtml = null;
   @tracked posting = false;
   @tracked processingUpload = null;
+  @tracked downloading = false;
 
   get request() {
     return this.args.model.request || {};
@@ -81,6 +83,40 @@ export default class SpcCritiqueWorkspace extends Component {
     this.processingUpload = null;
   }
 
+  // The plain `download` attribute is not enough here: hosted uploads can
+  // 302 to external object storage, and Firefox ignores the attribute on a
+  // cross-origin redirect and navigates instead. Pulling the file through
+  // fetch and saving the blob downloads reliably; if the redirect target
+  // refuses CORS the fetch throws and we fall back to a new tab.
+  @action
+  async downloadReference() {
+    const url = this.imageUrl;
+    if (!url) {
+      return;
+    }
+    this.downloading = true;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download =
+        url.split("/").pop()?.split("?")[0] || "reference-image";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(url, "_blank", "noopener");
+    } finally {
+      this.downloading = false;
+    }
+  }
+
   @action
   async togglePreview() {
     if (this.inPreview) {
@@ -131,11 +167,16 @@ export default class SpcCritiqueWorkspace extends Component {
                 <img src={{this.imageUrl}} alt="" />
               </div>
               <a
-                class="spc-cw__fullsize"
+                class="btn spc-cw__fullsize"
                 href={{this.imageUrl}}
                 target="_blank"
                 rel="noopener noreferrer"
-              >{{i18n (themePrefix "critique_workspace.view_full_size")}}</a>
+              >
+                {{icon "up-right-from-square"}}
+                <span class="d-button-label">
+                  {{i18n (themePrefix "critique_workspace.view_full_size")}}
+                </span>
+              </a>
             {{/if}}
 
             <div class="spc-cw__example">
@@ -150,6 +191,20 @@ export default class SpcCritiqueWorkspace extends Component {
                 <p class="spc-cw__example-hint">
                   {{i18n (themePrefix "critique_workspace.example_hint")}}
                 </p>
+              {{/if}}
+              {{#if this.imageUrl}}
+                <div class="spc-cw__actions">
+                  <DButton
+                    @icon="download"
+                    @action={{this.downloadReference}}
+                    @disabled={{this.downloading}}
+                    @translatedLabel={{i18n
+                      (themePrefix "critique_workspace.download_reference")
+                    }}
+                  />
+                </div>
+              {{/if}}
+              {{#unless this.processingDenied}}
                 <UppyImageUploader
                   @id="spc-cw-example-upload"
                   @type="composer"
@@ -158,14 +213,7 @@ export default class SpcCritiqueWorkspace extends Component {
                   @onUploadDeleted={{this.processingUploadDeleted}}
                   class="spc-cw__uploader"
                 />
-              {{/if}}
-              {{#if this.imageUrl}}
-                <a
-                  class="spc-cw__download"
-                  href={{this.imageUrl}}
-                  download
-                >{{i18n (themePrefix "critique_workspace.download_reference")}}</a>
-              {{/if}}
+              {{/unless}}
             </div>
           </div>
 

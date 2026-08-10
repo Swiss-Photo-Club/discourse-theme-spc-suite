@@ -68,9 +68,7 @@
   }
 
   .spc-cw__fullsize {
-    display: inline-block;
-    margin-top: 0.6em;
-    font-size: 0.9em;
+    margin-top: 0.75em;
   }
 
   .spc-cw__example {
@@ -87,6 +85,13 @@
   .spc-cw__example-denied {
     border-left: 3px solid var(--primary-low-mid);
     padding-left: 0.9em;
+  }
+
+  .spc-cw__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-bottom: 0.8em;
   }
 
   // Compact version of the submit form's uploader treatment: same core
@@ -112,11 +117,6 @@
     }
   }
 
-  .spc-cw__download {
-    display: inline-block;
-    margin-top: 0.8em;
-    font-size: 0.9em;
-  }
 
   .spc-cw__chips {
     display: flex;

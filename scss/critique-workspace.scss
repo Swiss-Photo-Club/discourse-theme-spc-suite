@@ -33,6 +33,31 @@
   display: flex;
   justify-content: flex-end;
   margin: 0.5em 0;
+
+  // Header tokens, not a hardcoded navy: this file must survive a dark
+  // scheme. Hover keeps the same pair and lifts brightness instead of
+  // inventing a colour; core's .btn:hover outspecifies a bare class, so
+  // the pseudo states are declared explicitly.
+  .spc-next-topic__button {
+    background: var(--header_background);
+    color: var(--header_primary);
+    padding: 0.65em 1.2em;
+
+    .d-icon {
+      color: var(--header_primary);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--header_background);
+      color: var(--header_primary);
+      filter: brightness(1.25);
+
+      .d-icon {
+        color: var(--header_primary);
+      }
+    }
+  }
 }
 
 .spc-critique-workspace-modal {

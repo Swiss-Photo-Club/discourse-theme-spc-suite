@@ -1,7 +1,11 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { concat, fn } from "@ember/helper";
+import { on } from "@ember/modifier";
 import { service } from "@ember/service";
+import { modifier } from "ember-modifier";
+import { eq } from "truth-helpers";
 import DButton from "discourse/components/d-button";
 import DEditor from "discourse/components/d-editor";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
@@ -15,6 +19,10 @@ import {
   processingExamplesDenied,
   questionKeysFor,
 } from "../lib/spc-parse-request";
+import {
+  ANNOTATION_TOOLS,
+  renderAnnotations,
+} from "../lib/spc-annotate";
 
 export default class SpcCritiqueWorkspace extends Component {
   @service currentUser;
@@ -25,6 +33,28 @@ export default class SpcCritiqueWorkspace extends Component {
   @tracked posting = false;
   @tracked processingUpload = null;
   @tracked downloading = false;
+
+  @tracked annotations = [];
+  @tracked activeTool = null;
+
+  annotationTools = ANNOTATION_TOOLS;
+  annotationCanvas = null;
+  annotationDraft = null;
+  annotationColors = null;
+
+  // Sizes the canvas to the image box (backing store at devicePixelRatio for
+  // crisp strokes) and follows the box through drawer resizes. Coordinates
+  // are normalised, so a resize only needs a redraw.
+  setupAnnotationCanvas = modifier((canvas) => {
+    this.annotationCanvas = canvas;
+    const observer = new ResizeObserver(() => this.resizeAnnotationCanvas());
+    observer.observe(canvas.parentElement);
+    this.resizeAnnotationCanvas();
+    return () => {
+      observer.disconnect();
+      this.annotationCanvas = null;
+    };
+  });
 
   get request() {
     return this.args.model.request || {};
@@ -92,6 +122,136 @@ export default class SpcCritiqueWorkspace extends Component {
   @action
   processingUploadDeleted() {
     this.processingUpload = null;
+  }
+
+  get hasAnnotations() {
+    return this.annotations.length > 0;
+  }
+
+  resizeAnnotationCanvas() {
+    const canvas = this.annotationCanvas;
+    if (!canvas?.parentElement) {
+      return;
+    }
+    const box = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round(box.width * dpr));
+    canvas.height = Math.max(1, Math.round(box.height * dpr));
+    this.redrawAnnotations();
+  }
+
+  redrawAnnotations() {
+    const canvas = this.annotationCanvas;
+    if (!canvas) {
+      return;
+    }
+    // The accent/casing pair comes from the live palette so the notes keep
+    // working under a dark scheme; canvas cannot consume CSS vars directly.
+    if (!this.annotationColors) {
+      const styles = getComputedStyle(canvas);
+      this.annotationColors = {
+        accent: styles.getPropertyValue("--tertiary").trim() || "#0088cc",
+        casing: styles.getPropertyValue("--secondary").trim() || "#ffffff",
+      };
+    }
+    const list = this.annotationDraft
+      ? [...this.annotations, this.annotationDraft]
+      : this.annotations;
+    renderAnnotations(
+      canvas.getContext("2d"),
+      list,
+      canvas.width,
+      canvas.height,
+      this.annotationColors
+    );
+  }
+
+  annotationPoint(event) {
+    const rect = this.annotationCanvas.getBoundingClientRect();
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    return {
+      x: clamp((event.clientX - rect.left) / rect.width),
+      y: clamp((event.clientY - rect.top) / rect.height),
+    };
+  }
+
+  @action
+  selectAnnotationTool(toolId) {
+    this.activeTool = this.activeTool === toolId ? null : toolId;
+  }
+
+  @action
+  startAnnotation(event) {
+    if (!this.activeTool || !this.annotationCanvas) {
+      return;
+    }
+    event.preventDefault();
+    const point = this.annotationPoint(event);
+    if (this.activeTool === "point") {
+      this.annotations = [
+        ...this.annotations,
+        { tool: "point", points: [point] },
+      ];
+      this.redrawAnnotations();
+      return;
+    }
+    this.annotationDraft = { tool: this.activeTool, points: [point, point] };
+    event.target.setPointerCapture?.(event.pointerId);
+    this.redrawAnnotations();
+  }
+
+  @action
+  moveAnnotation(event) {
+    const draft = this.annotationDraft;
+    if (!draft) {
+      return;
+    }
+    const point = this.annotationPoint(event);
+    if (draft.tool === "path") {
+      const last = draft.points[draft.points.length - 1];
+      if (Math.abs(point.x - last.x) + Math.abs(point.y - last.y) > 0.002) {
+        draft.points.push(point);
+      }
+    } else {
+      draft.points[1] = point;
+    }
+    this.redrawAnnotations();
+  }
+
+  @action
+  endAnnotation() {
+    const draft = this.annotationDraft;
+    if (!draft) {
+      return;
+    }
+    this.annotationDraft = null;
+    const [a, b] = [draft.points[0], draft.points[draft.points.length - 1]];
+    const degenerate =
+      draft.tool !== "path" &&
+      Math.abs(a.x - b.x) < 0.004 &&
+      Math.abs(a.y - b.y) < 0.004;
+    if (!degenerate) {
+      this.annotations = [...this.annotations, draft];
+    }
+    this.redrawAnnotations();
+  }
+
+  @action
+  cancelAnnotation() {
+    this.annotationDraft = null;
+    this.redrawAnnotations();
+  }
+
+  @action
+  undoAnnotation() {
+    this.annotations = this.annotations.slice(0, -1);
+    this.redrawAnnotations();
+  }
+
+  @action
+  clearAnnotations() {
+    this.annotations = [];
+    this.redrawAnnotations();
   }
 
   // The plain `download` attribute is not enough here: hosted uploads can
@@ -193,7 +353,17 @@ export default class SpcCritiqueWorkspace extends Component {
             <h3 class="spc-cw__label">{{i18n (themePrefix "critique_workspace.reference_image")}}</h3>
             {{#if this.imageUrl}}
               <div class="spc-cw__image">
-                <img src={{this.imageUrl}} alt="" />
+                <div class="spc-cw__stage">
+                  <img src={{this.imageUrl}} alt="" />
+                  <canvas
+                    class="spc-cw__canvas {{if this.activeTool '--armed'}}"
+                    {{this.setupAnnotationCanvas}}
+                    {{on "pointerdown" this.startAnnotation}}
+                    {{on "pointermove" this.moveAnnotation}}
+                    {{on "pointerup" this.endAnnotation}}
+                    {{on "pointercancel" this.cancelAnnotation}}
+                  ></canvas>
+                </div>
               </div>
               <a
                 class="btn spc-cw__fullsize"
@@ -206,6 +376,49 @@ export default class SpcCritiqueWorkspace extends Component {
                   {{i18n (themePrefix "critique_workspace.view_full_size")}}
                 </span>
               </a>
+
+              <div class="spc-cw__notes">
+                <h3 class="spc-cw__label">
+                  {{i18n (themePrefix "critique_workspace.visual_notes")}}
+                </h3>
+                <p class="spc-cw__notes-hint">
+                  {{i18n (themePrefix "critique_workspace.notes_hint")}}
+                </p>
+                <div class="spc-cw__notes-toolbar">
+                  {{#each this.annotationTools as |tool|}}
+                    <DButton
+                      @icon={{tool.icon}}
+                      @action={{fn this.selectAnnotationTool tool.id}}
+                      @translatedAriaLabel={{i18n
+                        (themePrefix
+                          (concat "critique_workspace." tool.labelKey)
+                        )
+                      }}
+                      class="spc-cw__tool
+                        {{if (eq this.activeTool tool.id) '--active'}}"
+                    />
+                  {{/each}}
+                  <span class="spc-cw__notes-sep"></span>
+                  <DButton
+                    @icon="arrow-rotate-left"
+                    @action={{this.undoAnnotation}}
+                    @disabled={{unless this.hasAnnotations true}}
+                    @translatedAriaLabel={{i18n
+                      (themePrefix "critique_workspace.notes_undo")
+                    }}
+                    class="spc-cw__tool"
+                  />
+                  <DButton
+                    @icon="trash-can"
+                    @action={{this.clearAnnotations}}
+                    @disabled={{unless this.hasAnnotations true}}
+                    @translatedAriaLabel={{i18n
+                      (themePrefix "critique_workspace.notes_clear")
+                    }}
+                    class="spc-cw__tool"
+                  />
+                </div>
+              </div>
             {{/if}}
 
             <div class="spc-cw__example">

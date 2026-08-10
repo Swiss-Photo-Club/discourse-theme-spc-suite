@@ -278,6 +278,14 @@ fr:
     example_denied: Le photographe ne souhaite pas d'exemples de retouche pour cette image.
     download_reference: Télécharger l'image de référence
     example_post_label: Exemple de retouche
+    visual_notes: Notes visuelles facultatives
+    notes_hint: Choisis un outil, puis clique ou fais glisser sur l'image pour ajouter une note visuelle.
+    tool_point: Marqueur
+    tool_arrow: Flèche
+    tool_rect: Zone
+    tool_path: Main levée
+    notes_undo: Annuler la dernière note
+    notes_clear: Effacer toutes les notes
     next_topic: Sujet suivant
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé

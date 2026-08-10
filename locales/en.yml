@@ -321,6 +321,14 @@ en:
     example_denied: The photographer asked for no processing examples on this image.
     download_reference: Download reference image
     example_post_label: Processing example
+    visual_notes: Optional visual notes
+    notes_hint: Select a tool, then click or drag on the image to add a visual note.
+    tool_point: Point marker
+    tool_arrow: Arrow
+    tool_rect: Region
+    tool_path: Freehand
+    notes_undo: Undo last note
+    notes_clear: Clear all notes
     next_topic: Next topic
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested

@@ -142,6 +142,61 @@
     margin-top: 0.75em;
   }
 
+  // The canvas must cover exactly the image box: the stage shrink-wraps the
+  // img, and the canvas fills the stage. Pointer events stay off until a
+  // tool is armed, so an idle canvas never intercepts anything.
+  .spc-cw__stage {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+  }
+
+  .spc-cw__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    &.--armed {
+      pointer-events: auto;
+      cursor: crosshair;
+      touch-action: none;
+    }
+  }
+
+  .spc-cw__notes {
+    margin-top: 1.5em;
+  }
+
+  .spc-cw__notes-hint {
+    margin: 0 0 0.6em;
+    font-size: 0.9em;
+    color: var(--primary-medium);
+  }
+
+  .spc-cw__notes-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
+
+  .spc-cw__notes-sep {
+    width: 1px;
+    align-self: stretch;
+    margin: 0 0.4em;
+    background: var(--primary-low);
+  }
+
+  .spc-cw__tool.--active {
+    background: var(--tertiary);
+
+    .d-icon {
+      color: var(--secondary);
+    }
+  }
+
   .spc-cw__example {
     margin-top: 1.5em;
   }

@@ -15,14 +15,19 @@
   "modifiers": {
     "svg_icons": [
       "arrow-down",
+      "arrow-right",
+      "arrow-rotate-left",
       "arrow-up",
       "camera",
       "chevron-right",
       "cloud-arrow-up",
       "download",
+      "location-dot",
+      "pencil",
       "trash-can",
       "up-right-from-square",
       "user-plus",
+      "vector-square",
       "xmark"
     ]
   }

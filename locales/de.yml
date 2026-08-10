@@ -282,6 +282,14 @@ de:
     example_denied: Die fotografierende Person möchte für dieses Bild keine Bearbeitungsbeispiele.
     download_reference: Referenzbild herunterladen
     example_post_label: Bearbeitungsbeispiel
+    visual_notes: Optionale visuelle Notizen
+    notes_hint: Wähle ein Werkzeug und klicke oder ziehe auf dem Bild, um eine visuelle Notiz hinzuzufügen.
+    tool_point: Punktmarkierung
+    tool_arrow: Pfeil
+    tool_rect: Bereich
+    tool_path: Freihand
+    notes_undo: Letzte Notiz rückgängig machen
+    notes_clear: Alle Notizen löschen
     next_topic: Nächstes Thema
     request_of: Anfrage von %{name}
     feedback_requested: Gewünschtes Feedback

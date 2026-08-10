@@ -68,6 +68,22 @@ export default class SpcCritiqueWorkspace extends Component {
     return this.processingUpload?.url;
   }
 
+  // Uploads are stored under a checksum, so the URL's basename is a hash.
+  // Name the saved file after the topic - that is the image's title in this
+  // workflow - keeping the upload's real extension.
+  get downloadFilename() {
+    const url = this.imageUrl || "";
+    const basename = url.split("/").pop()?.split("?")[0] || "reference-image";
+    const safeTitle = (this.args.model.topicTitle || "")
+      .replace(/[\\/:*?"<>|]/g, "")
+      .trim();
+    if (!safeTitle) {
+      return basename;
+    }
+    const ext = basename.includes(".") ? basename.split(".").pop() : "jpg";
+    return `${safeTitle}.${ext}`;
+  }
+
   @action
   updateValue(event) {
     this.value = event.target.value;
@@ -104,8 +120,7 @@ export default class SpcCritiqueWorkspace extends Component {
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download =
-        url.split("/").pop()?.split("?")[0] || "reference-image";
+      link.download = this.downloadFilename;
       document.body.appendChild(link);
       link.click();
       link.remove();

@@ -81,6 +81,7 @@ export default {
               modal.show(SpcCritiqueWorkspace, {
                 model: {
                   topicId: topic.id,
+                  topicTitle: topic.title,
                   postId: post.id,
                   authorName: post.name || post.username,
                   imageUrl,

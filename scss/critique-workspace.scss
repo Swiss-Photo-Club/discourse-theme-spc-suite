@@ -193,17 +193,31 @@
     }
   }
 
-  .spc-cw__textarea {
-    width: 100%;
-    min-height: 180px;
-    resize: vertical;
-  }
+  // DEditor lays its live preview out beside the input (flex row), which is
+  // too cramped in the modal's half-width column: stack them instead. The
+  // preview hides itself while empty so an idle editor is just the input.
+  .spc-cw__editor {
+    .d-editor-container,
+    .d-editor {
+      flex-direction: column;
+    }
 
-  .spc-cw__preview {
-    min-height: 180px;
-    border: 1px solid var(--primary-low);
-    padding: 0.75em;
-    background: var(--secondary);
+    .d-editor-input {
+      min-height: 180px;
+    }
+
+    .d-editor-preview-wrapper {
+      margin-left: 0;
+      margin-top: 0.75em;
+      max-height: 240px;
+      border: 1px solid var(--primary-low);
+      padding: 0.75em;
+      background: var(--secondary);
+    }
+
+    .d-editor-preview-wrapper:has(.d-editor-preview:empty) {
+      display: none;
+    }
   }
 
   .spc-cw__questions {

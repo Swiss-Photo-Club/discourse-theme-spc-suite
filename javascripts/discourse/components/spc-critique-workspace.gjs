@@ -1,15 +1,14 @@
 import Component from "@glimmer/component";
-import { on } from "@ember/modifier";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DModal from "discourse/components/d-modal";
 import DButton from "discourse/components/d-button";
+import DEditor from "discourse/components/d-editor";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { getUploadMarkdown } from "discourse/lib/uploads";
-import { cook } from "discourse/lib/text";
 import icon from "discourse/helpers/d-icon";
 import i18n from "discourse-common/helpers/i18n";
 import {
@@ -23,7 +22,6 @@ export default class SpcCritiqueWorkspace extends Component {
   @service dialog;
 
   @tracked value = "";
-  @tracked previewHtml = null;
   @tracked posting = false;
   @tracked processingUpload = null;
   @tracked downloading = false;
@@ -55,10 +53,6 @@ export default class SpcCritiqueWorkspace extends Component {
       out.push(this.request.focus);
     }
     return out;
-  }
-
-  get inPreview() {
-    return this.previewHtml !== null;
   }
 
   get processingDenied() {
@@ -131,16 +125,6 @@ export default class SpcCritiqueWorkspace extends Component {
     } finally {
       this.downloading = false;
     }
-  }
-
-  @action
-  async togglePreview() {
-    if (this.inPreview) {
-      this.previewHtml = null;
-      return;
-    }
-    const cooked = await cook(this.value || "");
-    this.previewHtml = cooked;
   }
 
   @action
@@ -277,16 +261,11 @@ export default class SpcCritiqueWorkspace extends Component {
 
             <div class="spc-cw__editor">
               <h4>{{i18n (themePrefix "critique_workspace.your_critique")}}</h4>
-              {{#if this.inPreview}}
-                <div class="spc-cw__preview cooked">{{this.previewHtml}}</div>
-              {{else}}
-                <textarea
-                  class="spc-cw__textarea"
-                  placeholder={{i18n (themePrefix "critique_workspace.placeholder")}}
-                  value={{this.value}}
-                  {{on "input" this.updateValue}}
-                ></textarea>
-              {{/if}}
+              <DEditor
+                @value={{this.value}}
+                @change={{this.updateValue}}
+                @placeholder={{i18n (themePrefix "critique_workspace.placeholder")}}
+              />
             </div>
 
             <div class="spc-cw__questions">
@@ -310,14 +289,6 @@ export default class SpcCritiqueWorkspace extends Component {
             this.posting
             (i18n (themePrefix "critique_workspace.posting"))
             (i18n (themePrefix "critique_workspace.post"))
-          }}
-        />
-        <DButton
-          @action={{this.togglePreview}}
-          @translatedLabel={{if
-            this.inPreview
-            (i18n (themePrefix "critique_workspace.edit"))
-            (i18n (themePrefix "critique_workspace.preview"))
           }}
         />
         <DButton

@@ -179,6 +179,36 @@
     margin-top: 0.75em;
   }
 
+  // A photo lightbox is dark by convention regardless of colour scheme, so
+  // the scrim is a deliberate literal, not palette drift. Sits above the
+  // header (1000), below core's modal layer (1300+).
+  .spc-cw-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.88);
+    cursor: zoom-out;
+
+    img {
+      max-width: 96vw;
+      max-height: 94vh;
+      object-fit: contain;
+    }
+
+    .spc-cw-lightbox__close {
+      position: absolute;
+      top: 0.75em;
+      right: 0.75em;
+
+      .d-icon {
+        color: #fff;
+      }
+    }
+  }
+
   // The canvas must cover exactly the image box: the stage shrink-wraps the
   // img, and the canvas fills the stage. Pointer events stay off until a
   // tool is armed, so an idle canvas never intercepts anything.

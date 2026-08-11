@@ -41,13 +41,14 @@ export default class SpcCritiqueWorkspaceHost extends Component {
     this.model = null;
   }
 
-  // ESC closes the drawer - unless a real modal (the editor's link dialog,
-  // for instance) is stacked on top, in which case ESC belongs to it.
+  // ESC closes the drawer - unless a real modal (the editor's link dialog)
+  // or the workspace's own full-size lightbox is stacked on top, in which
+  // case ESC belongs to that layer.
   onKeydown = (event) => {
     if (
       event.key === "Escape" &&
       this.model &&
-      !document.querySelector(".d-modal")
+      !document.querySelector(".d-modal, .spc-cw-lightbox")
     ) {
       this.close();
     }

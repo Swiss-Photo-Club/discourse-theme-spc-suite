@@ -13,7 +13,6 @@ import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import DiscourseURL from "discourse/lib/url";
-import icon from "discourse/helpers/d-icon";
 import i18n from "discourse-common/helpers/i18n";
 import {
   processingExamplesDenied,
@@ -79,6 +78,7 @@ export default class SpcCritiqueWorkspace extends Component {
   @tracked annotations = [];
   @tracked activeTool = null;
   @tracked focusMode = false;
+  @tracked fullSize = false;
 
   annotationTools = ANNOTATION_TOOLS;
   annotationCanvas = null;
@@ -221,6 +221,33 @@ export default class SpcCritiqueWorkspace extends Component {
   @action
   toggleFocus() {
     this.focusMode = !this.focusMode;
+  }
+
+  // The full-size view is an in-drawer overlay, not a new tab: NPN behaviour,
+  // and it keeps the critic inside the workspace. The host's document-level
+  // ESC handler skips while .spc-cw-lightbox exists, so this listener owns
+  // ESC for the overlay's lifetime.
+  fullSizeKeydown = (event) => {
+    if (event.key === "Escape") {
+      this.closeFullSize();
+    }
+  };
+
+  @action
+  openFullSize() {
+    this.fullSize = true;
+    document.addEventListener("keydown", this.fullSizeKeydown);
+  }
+
+  @action
+  closeFullSize() {
+    this.fullSize = false;
+    document.removeEventListener("keydown", this.fullSizeKeydown);
+  }
+
+  willDestroy() {
+    super.willDestroy(...arguments);
+    document.removeEventListener("keydown", this.fullSizeKeydown);
   }
 
   @action
@@ -494,17 +521,14 @@ export default class SpcCritiqueWorkspace extends Component {
                   ></canvas>
                 </div>
               </div>
-              <a
-                class="btn spc-cw__fullsize"
-                href={{this.imageUrl}}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{icon "up-right-from-square"}}
-                <span class="d-button-label">
-                  {{i18n (themePrefix "critique_workspace.view_full_size")}}
-                </span>
-              </a>
+              <DButton
+                @icon="magnifying-glass-plus"
+                @action={{this.openFullSize}}
+                @translatedLabel={{i18n
+                  (themePrefix "critique_workspace.view_full_size")
+                }}
+                class="spc-cw__fullsize"
+              />
 
               <div class="spc-cw__notes">
                 <h3 class="spc-cw__label">
@@ -661,6 +685,24 @@ export default class SpcCritiqueWorkspace extends Component {
           @translatedLabel={{i18n (themePrefix "critique_workspace.cancel")}}
         />
       </div>
+
+      {{#if this.fullSize}}
+        {{! Clicking anywhere closes; the X is the visible affordance. }}
+        <div
+          class="spc-cw-lightbox"
+          role="dialog"
+          aria-label={{i18n (themePrefix "critique_workspace.view_full_size")}}
+          {{on "click" this.closeFullSize}}
+        >
+          <img src={{this.imageUrl}} alt="" />
+          <DButton
+            @icon="xmark"
+            @action={{this.closeFullSize}}
+            @translatedAriaLabel={{i18n (themePrefix "critique_workspace.cancel")}}
+            class="btn-transparent spc-cw-lightbox__close"
+          />
+        </div>
+      {{/if}}
     </div>
   </template>
 }

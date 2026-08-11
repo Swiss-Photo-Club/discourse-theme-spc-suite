@@ -223,10 +223,17 @@ export default class SpcCritiqueWorkspace extends Component {
     this.focusMode = !this.focusMode;
   }
 
-  // The full-size view is an in-drawer overlay, not a new tab: NPN behaviour,
-  // and it keeps the critic inside the workspace. The host's document-level
-  // ESC handler skips while .spc-cw-lightbox exists, so this listener owns
-  // ESC for the overlay's lifetime.
+  // The full-size view is an overlay, not a new tab: NPN behaviour, and it
+  // keeps the critic inside the workspace. It portals to document.body
+  // because the drawer is position:fixed with a z-index and therefore a
+  // stacking context - a child overlay could never rise above the header
+  // (1000) no matter its own z-index. The host's document-level ESC handler
+  // skips while .spc-cw-lightbox exists, so this listener owns ESC for the
+  // overlay's lifetime.
+  get lightboxTarget() {
+    return document.body;
+  }
+
   fullSizeKeydown = (event) => {
     if (event.key === "Escape") {
       this.closeFullSize();
@@ -687,21 +694,26 @@ export default class SpcCritiqueWorkspace extends Component {
       </div>
 
       {{#if this.fullSize}}
-        {{! Clicking anywhere closes; the X is the visible affordance. }}
-        <div
-          class="spc-cw-lightbox"
-          role="dialog"
-          aria-label={{i18n (themePrefix "critique_workspace.view_full_size")}}
-          {{on "click" this.closeFullSize}}
-        >
-          <img src={{this.imageUrl}} alt="" />
-          <DButton
-            @icon="xmark"
-            @action={{this.closeFullSize}}
-            @translatedAriaLabel={{i18n (themePrefix "critique_workspace.cancel")}}
-            class="btn-transparent spc-cw-lightbox__close"
-          />
-        </div>
+        {{! Clicking anywhere closes; the X is the visible affordance.
+            insertBefore=null appends to body without clearing it. }}
+        {{#in-element this.lightboxTarget insertBefore=null}}
+          <div
+            class="spc-cw-lightbox"
+            role="dialog"
+            aria-label={{i18n (themePrefix "critique_workspace.view_full_size")}}
+            {{on "click" this.closeFullSize}}
+          >
+            <img src={{this.imageUrl}} alt="" />
+            <DButton
+              @icon="xmark"
+              @action={{this.closeFullSize}}
+              @translatedAriaLabel={{i18n
+                (themePrefix "critique_workspace.cancel")
+              }}
+              class="btn-transparent spc-cw-lightbox__close"
+            />
+          </div>
+        {{/in-element}}
       {{/if}}
     </div>
   </template>

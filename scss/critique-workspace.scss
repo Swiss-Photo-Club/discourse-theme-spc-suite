@@ -60,6 +60,41 @@
   }
 }
 
+// The full-size lightbox. Top-level on purpose: it portals to document.body
+// to escape the drawer's stacking context (a fixed, z-indexed parent caps
+// every child below the header, X included), so a selector nested under
+// .spc-cw-drawer would never match it. A photo lightbox is dark by
+// convention regardless of colour scheme, so the scrim is a deliberate
+// literal, not palette drift. Sits above the header (1000), below core's
+// modal layer (1300+).
+.spc-cw-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
+
+  img {
+    max-width: 96vw;
+    max-height: 94vh;
+    object-fit: contain;
+  }
+
+  .spc-cw-lightbox__close {
+    position: absolute;
+    top: 0.75em;
+    right: 0.75em;
+
+    .d-icon {
+      color: #fff;
+      font-size: 1.6em;
+    }
+  }
+}
+
 // The workspace drawer. Fixed to the bottom like the composer, and for the
 // same reason the composer is not a modal: core's modal service shows one
 // modal at a time, so the editor's own dialogs (insert link) were evicting
@@ -179,35 +214,6 @@
     margin-top: 0.75em;
   }
 
-  // A photo lightbox is dark by convention regardless of colour scheme, so
-  // the scrim is a deliberate literal, not palette drift. Sits above the
-  // header (1000), below core's modal layer (1300+).
-  .spc-cw-lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 1150;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.88);
-    cursor: zoom-out;
-
-    img {
-      max-width: 96vw;
-      max-height: 94vh;
-      object-fit: contain;
-    }
-
-    .spc-cw-lightbox__close {
-      position: absolute;
-      top: 0.75em;
-      right: 0.75em;
-
-      .d-icon {
-        color: #fff;
-      }
-    }
-  }
 
   // The canvas must cover exactly the image box: the stage shrink-wraps the
   // img, and the canvas fills the stage. Pointer events stay off until a

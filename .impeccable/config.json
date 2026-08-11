@@ -17,6 +17,12 @@
         ],
         "createdAt": "2026-08-10T14:40:43.194Z",
         "reason": "User confirmed the left-accent callout style: matches Discourse core's quote/callout convention and the documented D7 banner decision in CLAUDE.md"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0, 0, 0, 0.88)",
+        "createdAt": "2026-08-11T07:39:46.222Z",
+        "reason": "User-approved photo lightbox scrim: dark by convention in any colour scheme, no core token expresses it"
       }
     ]
   }

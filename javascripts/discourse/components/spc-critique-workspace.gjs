@@ -14,6 +14,7 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import DiscourseURL from "discourse/lib/url";
 import i18n from "discourse-common/helpers/i18n";
+import I18n from "discourse-i18n";
 import {
   processingExamplesDenied,
   questionKeysFor,
@@ -223,20 +224,25 @@ export default class SpcCritiqueWorkspace extends Component {
     this.redrawAnnotations();
   }
 
-  redrawAnnotations() {
-    const canvas = this.annotationCanvas;
-    if (!canvas) {
-      return;
-    }
-    // The accent/casing pair comes from the live palette so the notes keep
-    // working under a dark scheme; canvas cannot consume CSS vars directly.
+  // The accent/casing pair comes from the live palette so the notes keep
+  // working under a dark scheme; canvas cannot consume CSS vars directly.
+  ensureAnnotationColors() {
     if (!this.annotationColors) {
-      const styles = getComputedStyle(canvas);
+      const styles = getComputedStyle(this.annotationCanvas || document.body);
       this.annotationColors = {
         accent: styles.getPropertyValue("--tertiary").trim() || "#0088cc",
         casing: styles.getPropertyValue("--secondary").trim() || "#ffffff",
       };
     }
+    return this.annotationColors;
+  }
+
+  redrawAnnotations() {
+    const canvas = this.annotationCanvas;
+    if (!canvas) {
+      return;
+    }
+    this.ensureAnnotationColors();
     const list = this.annotationDraft
       ? [...this.annotations, this.annotationDraft]
       : this.annotations;
@@ -391,31 +397,51 @@ export default class SpcCritiqueWorkspace extends Component {
     this.redrawAnnotations();
   }
 
-  // Draws the reference image plus the notes at natural resolution (capped
-  // at 2048px on the long side - Discourse would downscale anything bigger
-  // anyway) and returns a JPEG blob. The stage <img> already holds the
-  // full-size original, and it is same-origin, so the canvas stays clean.
-  async compositeAnnotations() {
-    const stageImg =
-      this.annotationCanvas?.parentElement?.querySelector("img");
-    if (!stageImg?.naturalWidth) {
-      throw new Error("reference image not loaded");
+  // Banks the visible image's notes, then returns every image's non-empty
+  // list in sequence order - the shape post() composites from.
+  allImageAnnotations() {
+    this.annotationStore.set(this.selectedImageIndex, this.annotations);
+    const out = [];
+    for (let index = 0; index < this.imageUrls.length; index++) {
+      const annotations = this.annotationStore.get(index) || [];
+      if (annotations.length) {
+        out.push({ index, annotations });
+      }
     }
+    return out;
+  }
+
+  loadImage(url) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error(`image load failed: ${url}`));
+      image.src = url;
+    });
+  }
+
+  // Draws one reference image plus its notes at natural resolution (capped
+  // at 2048px on the long side - Discourse would downscale anything bigger
+  // anyway) and returns a JPEG blob. Images are same-origin, so the canvas
+  // stays clean; non-displayed project images load fresh, the displayed one
+  // comes straight from the browser cache.
+  async compositeFor(url, annotations) {
+    const source = await this.loadImage(url);
     const scale = Math.min(
       1,
-      2048 / Math.max(stageImg.naturalWidth, stageImg.naturalHeight)
+      2048 / Math.max(source.naturalWidth, source.naturalHeight)
     );
     const canvas = document.createElement("canvas");
-    canvas.width = Math.round(stageImg.naturalWidth * scale);
-    canvas.height = Math.round(stageImg.naturalHeight * scale);
+    canvas.width = Math.round(source.naturalWidth * scale);
+    canvas.height = Math.round(source.naturalHeight * scale);
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(stageImg, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
     paintAnnotations(
       ctx,
-      this.annotations,
+      annotations,
       canvas.width,
       canvas.height,
-      this.annotationColors
+      this.ensureAnnotationColors()
     );
     return await new Promise((resolve, reject) => {
       canvas.toBlob(
@@ -427,11 +453,16 @@ export default class SpcCritiqueWorkspace extends Component {
     });
   }
 
-  async uploadVisualNotes(blob) {
-    const base = this.downloadFilename.replace(/\.[a-z0-9]+$/i, "");
+  async uploadVisualNotes(blob, index) {
+    const safeTitle =
+      (this.args.model.topicTitle || "")
+        .replace(/[\\/:*?"<>|]/g, "")
+        .trim() || "reference";
+    const suffix =
+      this.imageUrls.length > 1 ? ` - Image ${index + 1}` : "";
     const formData = new FormData();
     formData.append("type", "composer");
-    formData.append("files[]", blob, `${base} (visual notes).jpg`);
+    formData.append("files[]", blob, `${safeTitle}${suffix} (visual notes).jpg`);
     const upload = await ajax("/uploads.json", {
       type: "POST",
       data: formData,
@@ -493,12 +524,24 @@ export default class SpcCritiqueWorkspace extends Component {
       // and the drawn notes intact - never post without the notes the
       // critic drew.
       let raw = this.value;
-      if (this.hasAnnotations) {
-        const blob = await this.compositeAnnotations();
-        const notesUpload = await this.uploadVisualNotes(blob);
-        raw += `\n\n**${i18n(
+      const noteSets = this.allImageAnnotations();
+      const numbered = this.imageUrls.length > 1;
+      for (const { index, annotations } of noteSets) {
+        const blob = await this.compositeFor(
+          this.imageUrls[index],
+          annotations
+        );
+        const notesUpload = await this.uploadVisualNotes(blob, index);
+        let label = i18n(
           themePrefix("critique_workspace.notes_post_label")
-        )}:**\n\n${getUploadMarkdown(notesUpload)}`;
+        );
+        if (numbered) {
+          label += ` – ${I18n.t(
+            themePrefix("critique_workspace.image_n"),
+            { number: index + 1 }
+          )}`;
+        }
+        raw += `\n\n**${label}:**\n\n${getUploadMarkdown(notesUpload)}`;
       }
       if (this.processingUpload) {
         raw += `\n\n**${i18n(

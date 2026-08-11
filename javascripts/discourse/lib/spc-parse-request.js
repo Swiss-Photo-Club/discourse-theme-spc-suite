@@ -1,8 +1,53 @@
-// Parses a critique submission post (created by the SPC submit wizards) into
-// its structured parts. Works for the German, English and French templates.
+// Parses a critique submission post (created by the SPC submit forms) into
+// its structured parts. Works for the German, English and French templates,
+// for both the single-image critique and — via parseProjectRequest() — the
+// project critique.
+//
+// The project markers, keys and headings below mirror lib/spc-project.js the
+// same way the image-critique strings mirror lib/spc-critique.js: change a
+// heading there without changing it here and the workspace renders empty
+// sections with no error. The curly-apostrophe variants exist because a
+// photographer editing their post in Discourse's editor can end up with
+// typographic quotes; the wizard and the form both emit straight ones.
 
 const STYLE_KEYS = ["Kritik-Stil", "Critique style", "Style de critique"];
 const FOCUS_KEYS = ["Feedback-Fokus", "Feedback focus", "Focus du feedback"];
+const PRESENTATION_KEYS = ["Präsentation", "Presentation", "Présentation"];
+
+const PROJECT_MARKERS = [
+  "Projekt-Kritik",
+  "Project critique",
+  "Critique de projet",
+];
+
+const PROJECT_ABOUT = [
+  "Worum es geht",
+  "What it's about",
+  "What it’s about",
+  "De quoi il s'agit",
+  "De quoi il s’agit",
+];
+const PROJECT_DIRECTION = [
+  "Kreative Richtung",
+  "Creative direction",
+  "Direction créative",
+];
+const PROJECT_WORKING = [
+  "Was funktioniert, was noch nicht",
+  "What works, what doesn't yet",
+  "What works, what doesn’t yet",
+  "Ce qui fonctionne, ce qui ne fonctionne pas encore",
+];
+const PROJECT_HELP = [
+  "Wobei die Community helfen soll",
+  "Where the community can help",
+  "Où la communauté peut aider",
+];
+const PROJECT_DETAILS = [
+  "Weitere Details",
+  "Further details",
+  "Autres détails",
+];
 const EDIT_KEYS = [
   "Bearbeitungsbeispiele erlaubt",
   "Processing examples allowed",
@@ -74,6 +119,34 @@ export default function parseRequest(raw) {
     about: section(raw, ABOUT_HEADINGS),
     feedback: section(raw, FEEDBACK_HEADINGS),
     technical: section(raw, TECH_HEADINGS),
+  };
+}
+
+// A project post opens its blockquote with a bold marker in the post's
+// language — the one line every project post carries and no image post does.
+export function isProjectRequest(raw) {
+  if (!raw) {
+    return false;
+  }
+  return PROJECT_MARKERS.some((marker) => raw.includes(`**${marker}**`));
+}
+
+// Returns null for non-project posts. The focus rides on the same
+// "Feedback focus" key as the image critique, on the marker line; the
+// presentation follows it on that line too, so both go through quoteValue's
+// stop-at-asterisk capture.
+export function parseProjectRequest(raw) {
+  if (!isProjectRequest(raw)) {
+    return null;
+  }
+  return {
+    focus: quoteValue(raw, FOCUS_KEYS),
+    presentation: quoteValue(raw, PRESENTATION_KEYS),
+    about: section(raw, PROJECT_ABOUT),
+    direction: section(raw, PROJECT_DIRECTION),
+    working: section(raw, PROJECT_WORKING),
+    help: section(raw, PROJECT_HELP),
+    details: section(raw, PROJECT_DETAILS),
   };
 }
 

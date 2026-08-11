@@ -10,14 +10,11 @@
 // Read the wizard's template at /admin/wizards/wizard/<id>.json signed in as
 // admin — /w/<slug>.json does not carry it. See CLAUDE.md.
 //
-// Unlike the single-image critique, nothing parses these posts today:
-// spc-parse-request.js matches the image critique's headings and none of these.
-// It does match `**Feedback-Fokus:**`, which appears in the blockquote below,
-// so a project post opened in the Critique Workspace comes back with a focus of
-// "Künstlerisch / Konzeptionell – **Präsentation:** Druck / Buch" and nothing
-// else. That is what the wizard already produces and what every existing
-// project post already looks like. Reproducing it verbatim keeps new posts and
-// old posts reading the same; tidying the blockquote here would split them.
+// Since 2026-08-11 these posts ARE parsed: parseProjectRequest() in
+// lib/spc-parse-request.js detects the blockquote marker and matches every
+// heading below LITERALLY, exactly the way the image critique's strings are
+// matched. Changing a marker, key or heading here without changing it there
+// makes the Critique Workspace render empty sections with no error.
 //
 // Only the *descriptions* of the dropdown options are translatable — see the
 // `project_form.*` namespace in the locale files.

@@ -6,7 +6,9 @@ import SpcCritiqueWorkspaceHost, {
   OPEN_WORKSPACE_EVENT,
 } from "../components/spc-critique-workspace-host";
 import SpcNextTopic from "../components/spc-next-topic";
-import parseRequest from "../lib/spc-parse-request";
+import parseRequest, {
+  parseProjectRequest,
+} from "../lib/spc-parse-request";
 
 const BANNER_CLASS = "spc-cw-banner";
 
@@ -67,10 +69,22 @@ export default {
             return;
           }
 
-          const imageUrl =
-            element.querySelector("a.lightbox")?.getAttribute("href") ||
-            element.querySelector("img")?.getAttribute("src") ||
-            null;
+          // Every content image, in post order, for project critiques: the
+          // full-size lightbox href when there is one, the plain src for
+          // images below the lightbox threshold. Emojis and quoted posts
+          // are not content.
+          const imageUrls = [...element.querySelectorAll("img")]
+            .filter(
+              (img) =>
+                !img.classList.contains("emoji") && !img.closest(".quote")
+            )
+            .map(
+              (img) =>
+                img.closest("a.lightbox")?.getAttribute("href") ||
+                img.getAttribute("src")
+            )
+            .filter(Boolean);
+          const imageUrl = imageUrls[0] || null;
 
           const banner = document.createElement("div");
           banner.className = BANNER_CLASS;
@@ -97,7 +111,11 @@ export default {
                 postId: post.id,
                 authorName: post.name || post.username,
                 imageUrl,
+                imageUrls,
                 request: parseRequest(data.raw),
+                // null for single-image posts; commit B teaches the drawer
+                // to render the project shape.
+                project: parseProjectRequest(data.raw),
               });
             } catch (error) {
               popupAjaxError(error);

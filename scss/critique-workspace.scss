@@ -215,6 +215,28 @@
   }
 
 
+  .spc-cw__image-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    margin-bottom: 0.75em;
+  }
+
+  .spc-cw__image-chip {
+    background: var(--primary-very-low);
+    border: 1px solid var(--primary-low);
+    padding: 0.3em 0.9em;
+    font-size: 0.9em;
+    color: var(--primary);
+    cursor: pointer;
+
+    &.--active {
+      background: var(--tertiary);
+      border-color: var(--tertiary);
+      color: var(--secondary);
+    }
+  }
+
   // The canvas must cover exactly the image box: the stage shrink-wraps the
   // img, and the canvas fills the stage. Pointer events stay off until a
   // tool is armed, so an idle canvas never intercepts anything.

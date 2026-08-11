@@ -291,6 +291,14 @@ fr:
     focus_exit: Quitter le focus
     show_more: Afficher plus
     show_less: Afficher moins
+    image_n: Image %{number}
+    about_project: À propos de ce projet
+    project_direction: Direction créative
+    project_working: Ce qui fonctionne, ce qui ne fonctionne pas encore
+    project_details: Autres détails
+    q_project_1: Qu'est-ce qui tient le projet ensemble ?
+    q_project_2: Quelle image ou séquence semble la plus forte ?
+    q_project_3: Où le projet semble-t-il moins abouti ?
     next_topic: Sujet suivant
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé

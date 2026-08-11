@@ -79,11 +79,16 @@ export default class SpcCritiqueWorkspace extends Component {
   @tracked activeTool = null;
   @tracked focusMode = false;
   @tracked fullSize = false;
+  @tracked selectedImageIndex = 0;
 
   annotationTools = ANNOTATION_TOOLS;
   annotationCanvas = null;
   annotationDraft = null;
   annotationColors = null;
+  // Per-image note lists for project critiques, keyed by image index. The
+  // tracked `annotations` array is always the SELECTED image's list;
+  // selectImage() banks it here and swaps the next one in.
+  annotationStore = new Map();
 
   // Sizes the canvas to the image box (backing store at devicePixelRatio for
   // crisp strokes) and follows the box through drawer resizes. Coordinates
@@ -103,21 +108,53 @@ export default class SpcCritiqueWorkspace extends Component {
     return this.args.model.request || {};
   }
 
+  get project() {
+    return this.args.model.project || null;
+  }
+
   get authorName() {
     return this.args.model.authorName;
   }
 
+  get imageUrls() {
+    const urls = this.args.model.imageUrls;
+    if (urls?.length) {
+      return urls;
+    }
+    return this.args.model.imageUrl ? [this.args.model.imageUrl] : [];
+  }
+
+  // Everything downstream - stage, canvas, download, lightbox, composite -
+  // reads the selected image through this one getter.
   get imageUrl() {
-    return this.args.model.imageUrl;
+    return this.imageUrls[this.selectedImageIndex] || null;
+  }
+
+  get imageChips() {
+    if (this.imageUrls.length < 2) {
+      return [];
+    }
+    return this.imageUrls.map((url, index) => ({
+      index,
+      number: index + 1,
+    }));
   }
 
   get questions() {
-    return questionKeysFor(this.request.focus).map((key) =>
-      i18n(themePrefix(key))
-    );
+    const keys = this.project
+      ? [
+          "critique_workspace.q_project_1",
+          "critique_workspace.q_project_2",
+          "critique_workspace.q_project_3",
+        ]
+      : questionKeysFor(this.request.focus);
+    return keys.map((key) => i18n(themePrefix(key)));
   }
 
   get chips() {
+    if (this.project) {
+      return [this.project.focus, this.project.presentation].filter(Boolean);
+    }
     const out = [];
     if (this.request.style) {
       out.push(this.request.style);
@@ -138,7 +175,8 @@ export default class SpcCritiqueWorkspace extends Component {
 
   // Uploads are stored under a checksum, so the URL's basename is a hash.
   // Name the saved file after the topic - that is the image's title in this
-  // workflow - keeping the upload's real extension.
+  // workflow - keeping the upload's real extension, with an image number
+  // when the post carries several.
   get downloadFilename() {
     const url = this.imageUrl || "";
     const basename = url.split("/").pop()?.split("?")[0] || "reference-image";
@@ -149,7 +187,9 @@ export default class SpcCritiqueWorkspace extends Component {
       return basename;
     }
     const ext = basename.includes(".") ? basename.split(".").pop() : "jpg";
-    return `${safeTitle}.${ext}`;
+    const suffix =
+      this.imageUrls.length > 1 ? ` - ${this.selectedImageIndex + 1}` : "";
+    return `${safeTitle}${suffix}.${ext}`;
   }
 
   @action
@@ -216,6 +256,21 @@ export default class SpcCritiqueWorkspace extends Component {
       x: clamp((event.clientX - rect.left) / rect.width),
       y: clamp((event.clientY - rect.top) / rect.height),
     };
+  }
+
+  @action
+  selectImage(index) {
+    if (index === this.selectedImageIndex) {
+      return;
+    }
+    this.annotationStore.set(this.selectedImageIndex, this.annotations);
+    this.selectedImageIndex = index;
+    this.annotations = this.annotationStore.get(index) || [];
+    this.annotationDraft = null;
+    // The stage img swaps src reactively; if the new image's box differs the
+    // ResizeObserver redraws again, and normalised coordinates make both
+    // redraws correct.
+    this.redrawAnnotations();
   }
 
   @action
@@ -514,6 +569,24 @@ export default class SpcCritiqueWorkspace extends Component {
                 />
               {{/if}}
             </div>
+            {{#if this.imageChips}}
+              <div class="spc-cw__image-chips">
+                {{#each this.imageChips as |chip|}}
+                  <button
+                    type="button"
+                    class="spc-cw__image-chip
+                      {{if (eq chip.index this.selectedImageIndex) '--active'}}"
+                    {{on "click" (fn this.selectImage chip.index)}}
+                  >
+                    {{i18n
+                      (themePrefix "critique_workspace.image_n")
+                      number=chip.number
+                    }}
+                  </button>
+                {{/each}}
+              </div>
+            {{/if}}
+
             {{#if this.imageUrl}}
               <div class="spc-cw__image">
                 <div class="spc-cw__stage">
@@ -632,26 +705,63 @@ export default class SpcCritiqueWorkspace extends Component {
               </div>
             {{/if}}
 
-            {{#if this.request.feedback}}
-              <SpcCwBlock
-                @title={{i18n (themePrefix "critique_workspace.feedback_requested")}}
-                @text={{this.request.feedback}}
-                @variant="spc-cw__block--highlight"
-              />
-            {{/if}}
+            {{#if this.project}}
+              {{! "Where the community can help" IS the feedback request of a
+                  project post, so it takes the highlight slot. Titles are in
+                  the viewer's language; the text is the post's. }}
+              {{#if this.project.help}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.feedback_requested")}}
+                  @text={{this.project.help}}
+                  @variant="spc-cw__block--highlight"
+                />
+              {{/if}}
+              {{#if this.project.about}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.about_project")}}
+                  @text={{this.project.about}}
+                />
+              {{/if}}
+              {{#if this.project.direction}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.project_direction")}}
+                  @text={{this.project.direction}}
+                />
+              {{/if}}
+              {{#if this.project.working}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.project_working")}}
+                  @text={{this.project.working}}
+                />
+              {{/if}}
+              {{#if this.project.details}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.project_details")}}
+                  @text={{this.project.details}}
+                />
+              {{/if}}
+            {{else}}
+              {{#if this.request.feedback}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.feedback_requested")}}
+                  @text={{this.request.feedback}}
+                  @variant="spc-cw__block--highlight"
+                />
+              {{/if}}
 
-            {{#if this.request.about}}
-              <SpcCwBlock
-                @title={{i18n (themePrefix "critique_workspace.about_image")}}
-                @text={{this.request.about}}
-              />
-            {{/if}}
+              {{#if this.request.about}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.about_image")}}
+                  @text={{this.request.about}}
+                />
+              {{/if}}
 
-            {{#if this.request.technical}}
-              <SpcCwBlock
-                @title={{i18n (themePrefix "critique_workspace.technical")}}
-                @text={{this.request.technical}}
-              />
+              {{#if this.request.technical}}
+                <SpcCwBlock
+                  @title={{i18n (themePrefix "critique_workspace.technical")}}
+                  @text={{this.request.technical}}
+                />
+              {{/if}}
             {{/if}}
 
             <div class="spc-cw__editor">

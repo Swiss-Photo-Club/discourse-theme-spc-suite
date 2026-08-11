@@ -334,6 +334,14 @@ en:
     focus_exit: Exit focus
     show_more: Show more
     show_less: Show less
+    image_n: Image %{number}
+    about_project: About this project
+    project_direction: Creative direction
+    project_working: What works, what doesn't yet
+    project_details: Further details
+    q_project_1: What holds the project together?
+    q_project_2: Which image or sequence feels strongest?
+    q_project_3: Where does the project feel less resolved?
     next_topic: Next topic
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested

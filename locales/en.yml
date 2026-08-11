@@ -330,6 +330,10 @@ en:
     notes_undo: Undo last note
     notes_clear: Clear all notes
     notes_post_label: Visual notes
+    focus_image: Focus on image
+    focus_exit: Exit focus
+    show_more: Show more
+    show_less: Show less
     next_topic: Next topic
     request_of: '%{name}''s request'
     feedback_requested: Feedback requested

@@ -287,6 +287,10 @@ fr:
     notes_undo: Annuler la dernière note
     notes_clear: Effacer toutes les notes
     notes_post_label: Notes visuelles
+    focus_image: Focus sur l'image
+    focus_exit: Quitter le focus
+    show_more: Afficher plus
+    show_less: Afficher moins
     next_topic: Sujet suivant
     request_of: Demande de %{name}
     feedback_requested: Feedback demandé

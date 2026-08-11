@@ -114,6 +114,43 @@
     @media (max-width: 850px) {
       grid-template-columns: 1fr;
     }
+
+    // Focus mode: one wide column, image up to 75vh. The request pane and
+    // editor stack below and stay reachable by scrolling the drawer body.
+    &.--focus {
+      grid-template-columns: 1fr;
+
+      .spc-cw__image img {
+        max-height: 75vh;
+      }
+    }
+  }
+
+  .spc-cw__pane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    margin-bottom: 0.75em;
+
+    .spc-cw__label {
+      margin-bottom: 0;
+    }
+  }
+
+  .spc-cw__block p.--collapsed {
+    max-height: 9em;
+    overflow: hidden;
+  }
+
+  .spc-cw__block-more {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin-top: 0.3em;
+    color: var(--tertiary);
+    cursor: pointer;
+    font-size: 0.9em;
   }
 
   .spc-cw__label {

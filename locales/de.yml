@@ -291,6 +291,10 @@ de:
     notes_undo: Letzte Notiz rückgängig machen
     notes_clear: Alle Notizen löschen
     notes_post_label: Visuelle Notizen
+    focus_image: Bild fokussieren
+    focus_exit: Fokus beenden
+    show_more: Mehr anzeigen
+    show_less: Weniger anzeigen
     next_topic: Nächstes Thema
     request_of: Anfrage von %{name}
     feedback_requested: Gewünschtes Feedback

@@ -25,6 +25,47 @@ import {
   renderAnnotations,
 } from "../lib/spc-annotate";
 
+// One request block (feedback / about / technical) that collapses beyond
+// ~6 lines behind a Show-more toggle. The overflow check runs once, on
+// insert, while the block starts collapsed - so a short text never grows a
+// pointless toggle.
+class SpcCwBlock extends Component {
+  @tracked expanded = false;
+  @tracked overflowing = false;
+
+  measure = modifier((element) => {
+    this.overflowing = element.scrollHeight > element.clientHeight + 4;
+  });
+
+  @action
+  toggle() {
+    this.expanded = !this.expanded;
+  }
+
+  <template>
+    <div class="spc-cw__block {{@variant}}">
+      <h4>{{@title}}</h4>
+      <p
+        class={{unless this.expanded "--collapsed"}}
+        {{this.measure}}
+      >{{@text}}</p>
+      {{#if this.overflowing}}
+        <button
+          type="button"
+          class="spc-cw__block-more"
+          {{on "click" this.toggle}}
+        >
+          {{if
+            this.expanded
+            (i18n (themePrefix "critique_workspace.show_less"))
+            (i18n (themePrefix "critique_workspace.show_more"))
+          }}
+        </button>
+      {{/if}}
+    </div>
+  </template>
+}
+
 export default class SpcCritiqueWorkspace extends Component {
   @service currentUser;
   @service appEvents;
@@ -37,6 +78,7 @@ export default class SpcCritiqueWorkspace extends Component {
 
   @tracked annotations = [];
   @tracked activeTool = null;
+  @tracked focusMode = false;
 
   annotationTools = ANNOTATION_TOOLS;
   annotationCanvas = null;
@@ -174,6 +216,11 @@ export default class SpcCritiqueWorkspace extends Component {
       x: clamp((event.clientX - rect.left) / rect.width),
       y: clamp((event.clientY - rect.top) / rect.height),
     };
+  }
+
+  @action
+  toggleFocus() {
+    this.focusMode = !this.focusMode;
   }
 
   @action
@@ -414,9 +461,25 @@ export default class SpcCritiqueWorkspace extends Component {
       </div>
 
       <div class="spc-cw-drawer__body">
-        <div class="spc-cw">
+        <div class="spc-cw {{if this.focusMode '--focus'}}">
           <div class="spc-cw__left">
-            <h3 class="spc-cw__label">{{i18n (themePrefix "critique_workspace.reference_image")}}</h3>
+            <div class="spc-cw__pane-head">
+              <h3 class="spc-cw__label">
+                {{i18n (themePrefix "critique_workspace.reference_image")}}
+              </h3>
+              {{#if this.imageUrl}}
+                <DButton
+                  @icon={{if this.focusMode "compress" "expand"}}
+                  @action={{this.toggleFocus}}
+                  @translatedLabel={{if
+                    this.focusMode
+                    (i18n (themePrefix "critique_workspace.focus_exit"))
+                    (i18n (themePrefix "critique_workspace.focus_image"))
+                  }}
+                  class="btn-flat spc-cw__focus-toggle"
+                />
+              {{/if}}
+            </div>
             {{#if this.imageUrl}}
               <div class="spc-cw__image">
                 <div class="spc-cw__stage">
@@ -539,24 +602,25 @@ export default class SpcCritiqueWorkspace extends Component {
             {{/if}}
 
             {{#if this.request.feedback}}
-              <div class="spc-cw__block spc-cw__block--highlight">
-                <h4>{{i18n (themePrefix "critique_workspace.feedback_requested")}}</h4>
-                <p>{{this.request.feedback}}</p>
-              </div>
+              <SpcCwBlock
+                @title={{i18n (themePrefix "critique_workspace.feedback_requested")}}
+                @text={{this.request.feedback}}
+                @variant="spc-cw__block--highlight"
+              />
             {{/if}}
 
             {{#if this.request.about}}
-              <div class="spc-cw__block">
-                <h4>{{i18n (themePrefix "critique_workspace.about_image")}}</h4>
-                <p>{{this.request.about}}</p>
-              </div>
+              <SpcCwBlock
+                @title={{i18n (themePrefix "critique_workspace.about_image")}}
+                @text={{this.request.about}}
+              />
             {{/if}}
 
             {{#if this.request.technical}}
-              <div class="spc-cw__block">
-                <h4>{{i18n (themePrefix "critique_workspace.technical")}}</h4>
-                <p>{{this.request.technical}}</p>
-              </div>
+              <SpcCwBlock
+                @title={{i18n (themePrefix "critique_workspace.technical")}}
+                @text={{this.request.technical}}
+              />
             {{/if}}
 
             <div class="spc-cw__editor">

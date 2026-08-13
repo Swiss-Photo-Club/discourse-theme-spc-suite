@@ -257,11 +257,14 @@ ajax error handler `JSON.parse`s it, so the console shows `SyntaxError: Unexpect
 
 ## Expected noise — do not "fix" these
 
-- `[THEME NN 'SPC Suite'] TypeError: Cannot read properties of undefined (reading '__container__')`.
-  Discourse's own api-initializer wrapper calls `initialize(e)` with `e === undefined`. Every
-  initializer therefore uses a module-scope `spcStartWhenReady(null, spcRun)` top-level kick plus
-  a retrying `plugin-api:main` lookup. **Removing the top-level call to silence the error breaks
-  the initializer.** It sometimes cites theme 58 rather than 61.
+- ~~`[THEME NN 'SPC Suite'] TypeError: … (reading '__container__')`~~ — gone since 2026-08-13.
+  Four initializers used to work around it with a module-scope `spcStartWhenReady(null, spcRun)`
+  kick plus a retrying `plugin-api:main` lookup. Discourse v2026.8 removed the `plugin-api:main`
+  container registration, so that lookup returns `null` forever and the pattern **silently
+  disables the whole initializer** — no console error, the retry loop just gives up. All four
+  were converted to `export default apiInitializer(spcRun)`, the pattern the other ten always
+  used. Never reintroduce a `plugin-api:main` lookup; `apiInitializer` / `withPluginApi` are the
+  only supported entry points.
 - Wizard pages (`/w/<slug>/steps/step_1`) have no header and no sidebar. That is the Custom
   Wizard plugin, confirmed under `?safe_mode=no_custom`.
 - One opaque console error on category page load from the core bundle, pre-existing.

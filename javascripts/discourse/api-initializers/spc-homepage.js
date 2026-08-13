@@ -1,4 +1,4 @@
-import { getOwnerWithFallback } from "discourse/lib/get-owner";
+import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
 
 const MONTHLY_SELECTOR =
@@ -290,55 +290,6 @@ function ensureGuestAction(currentUser) {
 }
 
 
-let spcStarted = false;
-
-function spcStartWhenReady(passedOwner, run) {
-  const tryStart = () => {
-    if (spcStarted) {
-      return true;
-    }
-    let api = null;
-    try {
-      api = passedOwner?.lookup?.("plugin-api:main") || null;
-    } catch {}
-    if (!api) {
-      try {
-        const owner = getOwnerWithFallback(
-          document.querySelector("#main-outlet") || document.body
-        );
-        api = owner?.lookup?.("plugin-api:main") || null;
-      } catch {}
-    }
-    if (!api) {
-      return false;
-    }
-    spcStarted = true;
-    try {
-      run(api);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error("[SPC]", e);
-    }
-    return true;
-  };
-
-  if (tryStart()) {
-    return;
-  }
-
-  let attempts = 0;
-  const retry = () => {
-    if (!tryStart() && attempts++ < 20) {
-      setTimeout(retry, 500);
-    }
-  };
-  if (document.readyState === "complete") {
-    setTimeout(retry, 0);
-  } else {
-    window.addEventListener("load", () => setTimeout(retry, 0), { once: true });
-  }
-}
-
 const spcRun = (api) => {
   const currentUser = api.getCurrentUser();
   const site = api.container.lookup("service:site");
@@ -371,12 +322,4 @@ const spcRun = (api) => {
   scheduleRender();
 };
 
-spcStartWhenReady(null, spcRun);
-
-export default {
-  name: "spc-homepage",
-  after: "inject-objects",
-  initialize(passedOwner) {
-    spcStartWhenReady(passedOwner, spcRun);
-  },
-};
+export default apiInitializer(spcRun);

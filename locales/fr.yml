@@ -49,7 +49,7 @@ fr:
     subject_placeholder: Choisis un sujet…
     style_label: Style de critique
     focus_label: Focus du feedback
-    examples_label: Autoriser des exemples de retouche ?
+    examples_label: D'autres membres peuvent-ils retoucher ta photo ?
     about_label: À propos de cette image (optionnel)
     feedback_label: Où souhaites-tu du feedback ?
     feedback_placeholder: Qu’est-ce qui te laisse hésitant ? Que voulais-tu obtenir ?
@@ -67,7 +67,7 @@ fr:
       technical: Technique – netteté, exposition, mise au point, réglages, problèmes de retouche
       both: Artistique + Technique – les deux, en équilibre
     examples:
-      allowed: Oui – les versions retouchées de mon image sont bienvenues
+      allowed: Oui – ils peuvent télécharger ma photo et publier des versions retouchées
       denied: Non – uniquement du feedback écrit
     subjects:
       animal: Animaux
@@ -298,7 +298,7 @@ fr:
     view_full_size: Voir en taille réelle
     example_title: Exemple de retouche facultatif
     example_hint: Téléverse un exemple retouché uniquement s'il aide à montrer une direction possible.
-    example_denied: Le photographe ne souhaite pas d'exemples de retouche pour cette image.
+    example_denied: Le photographe ne souhaite pas que des versions retouchées de cette photo soient publiées – merci de donner uniquement du feedback écrit.
     download_reference: Télécharger l'image de référence
     example_post_label: Exemple de retouche
     visual_notes: Notes visuelles facultatives

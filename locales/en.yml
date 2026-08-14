@@ -92,7 +92,7 @@ en:
     subject_placeholder: Choose a subject…
     style_label: Critique style
     focus_label: Feedback focus
-    examples_label: Allow processing examples?
+    examples_label: May others edit your photo?
     about_label: About this image (optional)
     feedback_label: Where would feedback help most?
     feedback_placeholder: What are you unsure about? What were you trying to achieve?
@@ -110,7 +110,7 @@ en:
       technical: Technical — sharpness, exposure, focus, settings, processing issues
       both: Artistic + Technical — both in balance
     examples:
-      allowed: Yes — edited versions of my image are welcome
+      allowed: Yes — others may download my photo and post edited versions
       denied: No — written feedback only
     subjects:
       animal: Animals
@@ -341,7 +341,7 @@ en:
     view_full_size: View full size
     example_title: Optional processing example
     example_hint: Upload an edited example only when it helps show a possible direction.
-    example_denied: The photographer asked for no processing examples on this image.
+    example_denied: The photographer asked that no edited versions of this photo be posted — please give written feedback only.
     download_reference: Download reference image
     example_post_label: Processing example
     visual_notes: Optional visual notes

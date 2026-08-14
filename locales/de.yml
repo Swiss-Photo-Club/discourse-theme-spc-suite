@@ -53,7 +53,7 @@ de:
     subject_placeholder: Thema wählen…
     style_label: Kritik-Stil
     focus_label: Feedback-Fokus
-    examples_label: Bearbeitungsbeispiele erlauben?
+    examples_label: Dürfen andere dein Foto bearbeiten?
     about_label: Über dieses Bild (optional)
     feedback_label: Wo wünschst du dir Feedback?
     feedback_placeholder: Worüber bist du dir unsicher? Was wolltest du erreichen?
@@ -71,7 +71,7 @@ de:
       technical: Technik – Schärfe, Belichtung, Fokus, Einstellungen, Bearbeitungsprobleme
       both: Künstlerisch + Technik – beides in Balance
     examples:
-      allowed: Ja – bearbeitete Versionen meines Bildes sind willkommen
+      allowed: Ja – andere dürfen mein Foto herunterladen und bearbeitete Versionen posten
       denied: Nein – nur schriftliches Feedback
     subjects:
       animal: Tiere
@@ -302,7 +302,7 @@ de:
     view_full_size: In voller Grösse ansehen
     example_title: Optionales Bearbeitungsbeispiel
     example_hint: Lade nur dann ein bearbeitetes Beispiel hoch, wenn es hilft, eine mögliche Richtung zu zeigen.
-    example_denied: Die fotografierende Person möchte für dieses Bild keine Bearbeitungsbeispiele.
+    example_denied: Die fotografierende Person möchte keine bearbeiteten Versionen dieses Fotos – bitte gib nur schriftliches Feedback.
     download_reference: Referenzbild herunterladen
     example_post_label: Bearbeitungsbeispiel
     visual_notes: Optionale visuelle Notizen

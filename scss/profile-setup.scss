@@ -68,6 +68,13 @@
       resize: none;
     }
 
+    // The Locations plugin's place picker (rendered only when the plugin is
+    // installed); claim the field's full width like the other inputs. Its
+    // inner styling ships with the plugin's own stylesheet.
+    .location-selector-wrapper {
+      width: 100%;
+    }
+
     // Bio links rendering coral is a brand rule and lives in branding.scss
     // (--fg-action side of the colour boundary), not here: this file stays
     // on core palette tokens. A rule here once said var(--tertiary) on the

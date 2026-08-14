@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { fn } from "@ember/helper";
+import { array, fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { getOwner } from "@ember/owner";
@@ -14,6 +14,18 @@ import { extractError } from "discourse/lib/ajax-error";
 import DiscourseURL, { userPath } from "discourse/lib/url";
 import UppyUpload from "discourse/lib/uppy/uppy-upload";
 import { i18n } from "discourse-i18n";
+
+// The Locations plugin's geocoded place picker, resolved at runtime so the
+// theme keeps booting if the plugin is ever removed — a top-level import
+// would be a hard dependency and take the whole theme's JS down with it.
+// When the module is missing, the location field falls back to the plain
+// core text input below.
+let LocationSelector = null;
+try {
+  LocationSelector = require(
+    "discourse/plugins/discourse-locations/discourse/components/location-selector"
+  ).default;
+} catch {}
 
 // The friendly profile page behind /profile-setup: the four fields worth
 // asking a new member for (photo, website, location, bio), prefilled from and
@@ -40,10 +52,13 @@ export default class SpcProfileSetup extends Component {
   @tracked website = "";
   @tracked location = "";
   @tracked bio = "";
+  @tracked geoLocation = null;
   @tracked avatarTemplate = null;
   @tracked saving = false;
   @tracked saved = false;
   @tracked error = null;
+
+  hasLocationSelector = Boolean(LocationSelector);
 
   uppyUpload = this.currentUser
     ? new UppyUpload(getOwner(this), {
@@ -70,11 +85,30 @@ export default class SpcProfileSetup extends Component {
       this.website = user.website ?? "";
       this.location = user.location ?? "";
       this.bio = user.bio_raw ?? "";
+      this.geoLocation = this.parseGeoLocation(user.geo_location);
       this.avatarTemplate = user.avatar_template;
     } catch (e) {
       this.error = extractError(e);
     } finally {
       this.loading = false;
+    }
+  }
+
+  // The serializer hands geo_location back as an object or a JSON string
+  // depending on age of the data — same tolerance the plugin's own
+  // preferences connector applies.
+  parseGeoLocation(raw) {
+    if (!raw || raw === "{}") {
+      return null;
+    }
+    if (typeof raw === "object") {
+      return Object.keys(raw).length ? raw : null;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && Object.keys(parsed).length ? parsed : null;
+    } catch {
+      return null;
     }
   }
 
@@ -99,6 +133,20 @@ export default class SpcProfileSetup extends Component {
   @action
   updateField(name, event) {
     this[name] = event.target.value;
+  }
+
+  // The picker calls back with a location object, an empty object on clear
+  // (never undefined — the plugin notes undefined "won't stick"), and a
+  // provider-only display row is filtered out by the selector itself.
+  @action
+  updateGeoLocation(location) {
+    this.geoLocation =
+      location && Object.keys(location).length ? location : null;
+  }
+
+  @action
+  geoSearchError(error) {
+    this.error = extractError(error);
   }
 
   @action
@@ -148,13 +196,28 @@ export default class SpcProfileSetup extends Component {
     this.saved = false;
 
     try {
+      const data = {
+        website: this.website,
+        location: this.location,
+        bio_raw: this.bio,
+      };
+
+      // With the Locations plugin present, the picked place is the location:
+      // geo_location as a JSON string (the shape the plugin's own preferences
+      // save uses, empty string to clear), mirrored into core `location` so
+      // the profile header and user card keep their plain-text line.
+      if (this.hasLocationSelector) {
+        data.custom_fields = {
+          geo_location: this.geoLocation
+            ? JSON.stringify(this.geoLocation)
+            : "",
+        };
+        data.location = this.geoLocation?.address ?? "";
+      }
+
       await ajax(userPath(`${this.currentUser.username_lower}.json`), {
         type: "PUT",
-        data: {
-          website: this.website,
-          location: this.location,
-          bio_raw: this.bio,
-        },
+        data,
       });
       this.saved = true;
     } catch (e) {
@@ -231,22 +294,41 @@ export default class SpcProfileSetup extends Component {
             </div>
 
             <div class="spc-profile-setup__field">
-              <label for="spc-profile-location">
+              {{! A span like the bio's: the picker renders its own input. }}
+              <span class="spc-profile-setup__label">
                 {{i18n (themePrefix "profile_setup.location_label")}}
                 <span class="spc-profile-setup__optional">
                   {{i18n (themePrefix "form.optional")}}
                 </span>
-              </label>
+              </span>
               <p class="spc-profile-setup__hint">
-                {{i18n (themePrefix "profile_setup.location_hint")}}
+                {{#if this.hasLocationSelector}}
+                  {{i18n (themePrefix "profile_setup.location_hint_geo")}}
+                {{else}}
+                  {{i18n (themePrefix "profile_setup.location_hint")}}
+                {{/if}}
               </p>
-              <input
-                id="spc-profile-location"
-                type="text"
-                maxlength="255"
-                value={{this.location}}
-                {{on "input" (fn this.updateField "location")}}
-              />
+              {{#if this.hasLocationSelector}}
+                <LocationSelector
+                  @location={{this.geoLocation}}
+                  @onChangeCallback={{this.updateGeoLocation}}
+                  @searchError={{this.geoSearchError}}
+                  @geoAttrs={{array}}
+                  @showType={{false}}
+                  @placeholder={{i18n
+                    (themePrefix "profile_setup.location_placeholder")
+                  }}
+                  class="spc-profile-setup__location-selector"
+                />
+              {{else}}
+                <input
+                  id="spc-profile-location"
+                  type="text"
+                  maxlength="255"
+                  value={{this.location}}
+                  {{on "input" (fn this.updateField "location")}}
+                />
+              {{/if}}
             </div>
 
             <div class="spc-profile-setup__field">

@@ -206,6 +206,8 @@ en:
     website_hint: Can be a link to Instagram, Flickr, etc. if you don't have a website.
     location_label: Location
     location_hint: Where you're based, e.g. Zürich or Lausanne.
+    location_hint_geo: Start typing a place and pick a match. This also shows where members are based on the community map.
+    location_placeholder: Search for a city or place…
     bio_label: Your bio
     bio_hint: Tell us about yourself and your photography.
     save: Save profile

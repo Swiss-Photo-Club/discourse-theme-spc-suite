@@ -167,6 +167,8 @@ de:
     website_hint: Auch ein Link zu Instagram, Flickr usw. funktioniert, wenn du keine Website hast.
     location_label: Ort
     location_hint: Wo du zuhause bist, z. B. Zürich oder Lausanne.
+    location_hint_geo: Tippe einen Ort ein und wähle einen Treffer aus. So erscheinst du auch auf der Mitgliederkarte.
+    location_placeholder: Nach einer Stadt oder einem Ort suchen…
     bio_label: Über dich
     bio_hint: Erzähl uns etwas über dich und deine Fotografie.
     save: Profil speichern

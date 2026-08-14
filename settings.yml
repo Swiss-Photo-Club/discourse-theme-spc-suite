@@ -233,21 +233,6 @@ critique_intro_category_id:
   default: 12
   description: "Critique Submit: ID of the member introductions category. Used by /submit/introduction to post the introduction."
 
-critique_banner_background:
-  type: string
-  default: "#FFE8E8"
-  description: "Critique Submit: currently unread — kept so the old pink banner stays restorable without a commit. Delete rather than repurpose."
-
-critique_banner_text_color:
-  type: string
-  default: "#1A2744"
-  description: "Critique Submit: currently unread — kept with the banner background above. Delete rather than repurpose."
-
-critique_intro_banner_background:
-  type: string
-  default: "#E8F0F0"
-  description: "Critique Submit: currently unread — kept with the banner background above. Delete rather than repurpose."
-
 # -----------------------------------------------------------------------------
 # Leaderboard strip
 # -----------------------------------------------------------------------------

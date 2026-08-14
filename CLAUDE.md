@@ -218,9 +218,6 @@ does not govern `#create-topic`: logged-in members keep Discourse's New Topic bu
 list-controls bar whether or not the hero is enabled. Category-specific routes redirect that
 button to the appropriate SPC submission form.
 
-`critique_banner_background` is declared and unread. R4 keeps the pink banner restorable without a
-commit for one release; deleting the setting, not the rule, is what closes that door.
-
 **`min-height` on a flex/inline-flex button sizes the CONTENT box.** `.spc-button` set
 `min-height: 54px` with no `box-sizing` and rendered 76.8px on every desktop for as long as it
 existed — only the narrow-viewport block set `border-box`, so the geometry was right on mobile

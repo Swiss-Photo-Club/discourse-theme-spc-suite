@@ -91,11 +91,6 @@ challenge_category_id:
   default: 6
   description: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL). Keep in sync with monthly_category_id."
 
-challenge_category_slug:
-  type: string
-  default: monthly-challenge
-  description: "Monthly Challenge: slug of the challenge category, used to catch New Topic links. Keep in sync with monthly_category_slug."
-
 round_tag_mode:
   type: enum
   default: auto
@@ -124,10 +119,6 @@ challenge_max_entries_per_round:
   default: 1
   min: 0
   description: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."
-
-monthly_category_slug:
-  type: string
-  default: monthly-challenge
 
 monthly_category_id:
   type: integer
@@ -213,20 +204,10 @@ workspace_enabled_categories:
 # Critique Submit buttons
 # -----------------------------------------------------------------------------
 
-critique_category_slug:
-  type: string
-  default: "photo-feedback"
-  description: "Critique Submit: slug of the critique category."
-
 critique_category_id:
   type: integer
   default: 7
   description: "Critique Submit: ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
-
-critique_intro_category_slug:
-  type: string
-  default: "introductions"
-  description: "Critique Submit: slug of the member introductions category."
 
 critique_intro_category_id:
   type: integer

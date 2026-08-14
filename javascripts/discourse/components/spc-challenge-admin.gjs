@@ -8,6 +8,7 @@ import { service } from "@ember/service";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
 import { ajax } from "discourse/lib/ajax";
 import { extractError } from "discourse/lib/ajax-error";
+import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 import {
   clearPinnedBriefCache,
@@ -199,8 +200,12 @@ export default class SpcChallengeAdmin extends Component {
       this.entries = [];
       return;
     }
+    const slug = Category.findById(this.categoryId)?.slug;
+    const categoryPath = slug
+      ? `${slug}/${this.categoryId}`
+      : `${this.categoryId}`;
     const data = await ajax(
-      `/tags/c/${settings.monthly_category_slug}/${this.categoryId}/${encodeURIComponent(this.roundTag)}.json?order=votes`
+      `/tags/c/${categoryPath}/${encodeURIComponent(this.roundTag)}.json?order=votes`
     );
     // Top five only — enough to judge a tie, without turning the panel into
     // a second gallery. The votes page linked below has the rest.

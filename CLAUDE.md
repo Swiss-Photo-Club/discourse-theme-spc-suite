@@ -167,6 +167,13 @@ The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
 2 `feedback`, 12 `introductions`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
 name disagree, so match on id, never on slug-looks-like-the-name.
 
+**Category slugs are never settings.** Settings hold only category ids; every slug the theme
+needs is derived at runtime from `Category.findById(id)` (Discourse preloads all categories
+client-side), so a slug rename in category admin is followed automatically. Discourse resolves
+`/c/<id>` without a slug, so a failed lookup degrades to an id-only URL, not a broken one. Four
+slug settings used to exist and each was a trap: rename the category's slug in admin and the
+theme silently kept building URLs from the stale copy.
+
 ## Category heroes
 
 Every category renders `.spc-hero` through `lib/spc-hero.js`. The generic path reads the current

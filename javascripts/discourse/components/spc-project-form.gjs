@@ -94,7 +94,7 @@ export default class SpcProjectForm extends SpcSubmitBase {
   }
 
   get categoryUrl() {
-    return categoryUrlFor(settings.critique_category_slug, this.categoryId);
+    return categoryUrlFor(this.categoryId);
   }
 
   get heading() {

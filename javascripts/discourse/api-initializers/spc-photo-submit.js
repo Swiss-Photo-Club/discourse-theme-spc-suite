@@ -1,5 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 import DiscourseURL from "discourse/lib/url";
+import Category from "discourse/models/category";
 import SpcSubmitBanner from "../components/spc-submit-banner";
 
 const SUBMIT_PATH = "/submit";
@@ -8,9 +9,13 @@ const PROJECT_PATH = "/submit/project";
 const INTRODUCTION_PATH = "/submit/introduction";
 const PROFILE_SETUP_PATH = "/profile-setup";
 
-function isCategoryParam(params, id, slug) {
+function isCategoryParam(params, id) {
   const categoryId = String(parseInt(id, 10));
-  const categorySlug = (slug || "").trim();
+  // Derived, never a setting: a slug rename in category admin is followed
+  // automatically, and the id clauses below still match if the lookup misses.
+  const categorySlug = (
+    Category.findById(parseInt(id, 10))?.slug || ""
+  ).trim();
   const raw = params?.category || params?.category_id;
   if (!raw) {
     return false;
@@ -85,13 +90,7 @@ const spcRun = (api) => {
             return;
           }
 
-          if (
-            isCategoryParam(
-              params,
-              settings.challenge_category_id,
-              settings.challenge_category_slug
-            )
-          ) {
+          if (isCategoryParam(params, settings.challenge_category_id)) {
             this.router.replaceWith(SUBMIT_PATH);
             return;
           }
@@ -100,24 +99,12 @@ const spcRun = (api) => {
           // gated on critique_image_use_form so that turning the form off
           // restored the plain composer here too; with no wizard left to fall
           // back to, that switch is gone and the form is the only way in.
-          if (
-            isCategoryParam(
-              params,
-              settings.critique_category_id,
-              settings.critique_category_slug
-            )
-          ) {
+          if (isCategoryParam(params, settings.critique_category_id)) {
             this.router.replaceWith(CRITIQUE_PATH);
             return;
           }
 
-          if (
-            isCategoryParam(
-              params,
-              settings.critique_intro_category_id,
-              settings.critique_intro_category_slug
-            )
-          ) {
+          if (isCategoryParam(params, settings.critique_intro_category_id)) {
             this.router.replaceWith(INTRODUCTION_PATH);
             return;
           }

@@ -35,7 +35,7 @@ export default class SpcIntroductionForm extends SpcSubmitBase {
   }
 
   get categoryUrl() {
-    return categoryUrlFor(settings.critique_intro_category_slug, this.categoryId);
+    return categoryUrlFor(this.categoryId);
   }
 
   get heading() {

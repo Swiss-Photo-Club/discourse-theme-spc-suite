@@ -1,4 +1,5 @@
 import { ajax } from "discourse/lib/ajax";
+import Category from "discourse/models/category";
 import I18n from "discourse-i18n";
 
 // The subject tags the critique category will accept, fetched rather than
@@ -36,10 +37,13 @@ export function subjectOptions(tags, selected) {
 
 // Where a form's cancel button goes. Discourse resolves /c/<id> on its own, so
 // the slug is decoration — but it is the URL every other link on the site uses,
-// and landing on a different one makes the back button behave oddly.
-export function categoryUrlFor(slug, id) {
-  const trimmed = (slug || "").trim();
-  return trimmed ? `/c/${trimmed}/${id}` : `/c/${id}`;
+// and landing on a different one makes the back button behave oddly. The slug
+// comes from the live category, never from a setting, so a slug rename in
+// category admin is followed automatically.
+export function categoryUrlFor(id) {
+  const categoryId = parseInt(id, 10);
+  const slug = (Category.findById(categoryId)?.slug || "").trim();
+  return slug ? `/c/${slug}/${categoryId}` : `/c/${categoryId}`;
 }
 
 // Current month as YYYY-MM in the club's timezone

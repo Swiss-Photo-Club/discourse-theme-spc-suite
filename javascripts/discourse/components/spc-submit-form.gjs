@@ -147,12 +147,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
   }
 
   get categoryUrl() {
-    return this.isCritique
-      ? categoryUrlFor(settings.critique_category_slug, this.critiqueCategoryId)
-      : categoryUrlFor(
-          settings.challenge_category_slug,
-          parseInt(settings.challenge_category_id, 10)
-        );
+    return categoryUrlFor(this.categoryId);
   }
 
   get heading() {

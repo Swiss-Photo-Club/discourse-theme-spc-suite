@@ -460,13 +460,23 @@ export function clearWinnerCache() {
   winnerPromise = null;
 }
 
+// The challenge category's slug, derived from the live category so a slug
+// rename in category admin is followed automatically. Never a setting: the id
+// is the stable key, the slug is decoration Discourse can resolve without.
+function challengeCategorySlug() {
+  return (
+    Category.findById(Number(settings.monthly_category_id))?.slug || ""
+  ).trim();
+}
+
 // JSON ONLY. The name-based category+tag route survives solely for json/rss
 // formats on current Discourse; as an HTML page this path 404s. User-facing
 // hrefs go through tagPageUrl() instead.
 function tagListJsonUrl(tag) {
-  return `/tags/c/${settings.monthly_category_slug}/${Number(
-    settings.monthly_category_id
-  )}/${encodeURIComponent(tag)}.json`;
+  const categoryId = Number(settings.monthly_category_id);
+  const slug = challengeCategorySlug();
+  const categoryPath = slug ? `${slug}/${categoryId}` : `${categoryId}`;
+  return `/tags/c/${categoryPath}/${encodeURIComponent(tag)}.json`;
 }
 
 // Month name alone ("July"), not month + year: it feeds the winner chip,
@@ -592,7 +602,7 @@ function isChallengePage() {
 function isChallengeCategoryUrl(url) {
   const path = new URL(url, window.location.origin).pathname.replace(/\/+$/, "");
   const categoryId = Number(settings.monthly_category_id);
-  const categorySlug = settings.monthly_category_slug;
+  const categorySlug = challengeCategorySlug();
 
   return (
     path === `/c/${categoryId}` ||
@@ -1053,7 +1063,11 @@ function ensureVotingDialog() {
 }
 
 function repairLegacyCategoryLinks() {
-  const brokenPrefix = `/tags/c/${settings.monthly_category_slug}/`;
+  const slug = challengeCategorySlug();
+  if (!slug) {
+    return;
+  }
+  const brokenPrefix = `/tags/c/${slug}/`;
 
   document.querySelectorAll("a[href]").forEach((link) => {
     // [data-spc-hero] as well as our own components: the hero used to carry

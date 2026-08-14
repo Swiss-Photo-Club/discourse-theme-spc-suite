@@ -15,17 +15,26 @@ import DiscourseURL, { userPath } from "discourse/lib/url";
 import UppyUpload from "discourse/lib/uppy/uppy-upload";
 import { i18n } from "discourse-i18n";
 
-// The Locations plugin's geocoded place picker, resolved at runtime so the
-// theme keeps booting if the plugin is ever removed — a top-level import
-// would be a hard dependency and take the whole theme's JS down with it.
-// When the module is missing, the location field falls back to the plain
+// The Locations plugin's geocoded place picker. Resolved lazily — at
+// component construction, i.e. when /profile-setup first renders — and NOT
+// at module scope: the theme bundle can evaluate before the plugin's
+// modules are registered with the loader, and an eval-time require then
+// fails once and sticks as null even though the plugin is present.
+// Verified live 2026-08-14: the served bundle carried an eval-time
+// try/require and rendered the text fallback while the identical require
+// succeeded from the console. A top-level import stays out for the same
+// reason it always did — a hard dependency takes the whole theme's JS down
+// if the plugin is ever removed; missing plugin here just means the plain
 // core text input below.
-let LocationSelector = null;
-try {
-  LocationSelector = require(
-    "discourse/plugins/discourse-locations/discourse/components/location-selector"
-  ).default;
-} catch {}
+function resolveLocationSelector() {
+  try {
+    return require(
+      "discourse/plugins/discourse-locations/discourse/components/location-selector"
+    ).default;
+  } catch {
+    return null;
+  }
+}
 
 // The friendly profile page behind /profile-setup: the four fields worth
 // asking a new member for (photo, website, location, bio), prefilled from and
@@ -58,7 +67,11 @@ export default class SpcProfileSetup extends Component {
   @tracked saved = false;
   @tracked error = null;
 
-  hasLocationSelector = Boolean(LocationSelector);
+  locationSelector = resolveLocationSelector();
+
+  get hasLocationSelector() {
+    return Boolean(this.locationSelector);
+  }
 
   uppyUpload = this.currentUser
     ? new UppyUpload(getOwner(this), {
@@ -309,7 +322,7 @@ export default class SpcProfileSetup extends Component {
                 {{/if}}
               </p>
               {{#if this.hasLocationSelector}}
-                <LocationSelector
+                <this.locationSelector
                   @location={{this.geoLocation}}
                   @onChangeCallback={{this.updateGeoLocation}}
                   @searchError={{this.geoSearchError}}

@@ -83,6 +83,16 @@ button's camera was invisible from the day that form shipped until 2026-07-26. D
 Check one against the live sprite before trusting it:
 `[...document.querySelectorAll("symbol[id]")].map(s => s.id).includes("camera")`.
 
+**A `require()` of a plugin module must run lazily, never at theme module scope.** The theme
+bundle can evaluate before the plugin's modules are registered with the loader, so an eval-time
+`try { require("discourse/plugins/…") } catch {}` fails once and sticks as null — with the plugin
+installed and the same `require` succeeding from the console, which is exactly what makes it
+confusing. Resolve inside the component (constructor/instance field) instead; by first render
+everything is registered. Bit the Locations picker on 2026-08-14: served bundle had the eval-time
+require, page rendered the fallback, console said the module was fine. (A top-level `import` of a
+plugin module is worse still: a hard dependency that takes the whole theme's JS down when the
+plugin is absent.)
+
 **Never decorate a DOM element core owns.** Core re-renders its own nodes on navigation and the
 two will fight — the symptom is a correct first paint followed by a broken flash on reload.
 Create your own element, or position absolutely.

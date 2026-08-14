@@ -194,10 +194,12 @@
 }
 
 // The plugin appends a provider-attribution row whose markup arrives escaped
-// and renders as literal "<a href=...>" text (upstream bug). It is always the
-// last geo row. Hidden here; the page shows its own attribution line under
-// the field instead. Drop this when the plugin renders the row properly.
+// and renders as literal "<a href=...>" text (upstream bug). It has its own
+// class — .location-provider, distinct from the .location-form-result rows —
+// which an earlier revision of this rule missed by guessing :last-child.
+// Hidden here; the page shows its own attribution line under the field
+// instead. Drop this when the plugin renders the row properly.
 [data-identifier="d-multi-select"]
-  .d-multi-select__result:has(.location-form-result):last-child {
+  .d-multi-select__result:has(.location-provider) {
   display: none;
 }

@@ -163,7 +163,7 @@ fr:
     website_hint: Un lien vers Instagram, Flickr, etc. convient aussi si tu n'as pas de site.
     location_label: Localisation
     location_hint: Où tu es basé·e, par ex. Zurich ou Lausanne.
-    location_hint_geo: Commence à taper un lieu et choisis une correspondance. Tu apparaîtras aussi sur la carte des membres.
+    location_hint_geo: Commence à taper un lieu et choisis une correspondance. Cela permet de montrer où se trouvent les membres. La ville suffit – merci de ne pas indiquer d'adresse précise.
     location_placeholder: Rechercher une ville ou un lieu…
     bio_label: Ta bio
     bio_hint: Parle-nous de toi et de ta photographie.

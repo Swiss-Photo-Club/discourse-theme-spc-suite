@@ -115,13 +115,16 @@ challenge_max_entries_per_round:
 challenge_timezone:
   type: string
   default: Europe/Zurich
+  description: "Monthly Challenge: timezone used for challenge dates and deadlines."
 
 guide_topic_url:
   type: string
   default: /t/monatliche-foto-challenge-so-funktioniert-es/8
+  description: "Monthly Challenge: link to the complete entry and voting guide."
 
 challenges:
   type: objects
+  description: "Monthly Challenge: one row per official challenge topic. Keep exactly one row active; archive it after recording the winner."
   default:
     - topic_id: 37
       tag: 2026-07-cityscapes
@@ -177,6 +180,7 @@ challenges:
 webinars_url:
   type: string
   default: "/upcoming-events"
+  description: "Homepage: destination for the Monthly Live Webinars card."
 
 # -----------------------------------------------------------------------------
 # Critique Workspace
@@ -233,14 +237,17 @@ onboarding_member_groups:
   list_type: group
   default: "40"
   resolve_group_membership: true
+  description: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group."
 
 onboarding_profile_url:
   type: string
   default: "/profile-setup"
+  description: "Member Onboarding: destination for the Profile step."
 
 onboarding_dismissal_version:
   type: string
   default: "3"
+  description: "Member Onboarding: change this value to reset progress and dismissal for every member."
 
 # -----------------------------------------------------------------------------
 # Profile setup page
@@ -249,6 +256,7 @@ onboarding_dismissal_version:
 profile_setup_replaces_preferences:
   type: bool
   default: true
+  description: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
 
 # -----------------------------------------------------------------------------
 # Non-member homepage banner
@@ -259,23 +267,29 @@ nonmember_member_groups:
   list_type: group
   default: "40|1|2"
   resolve_group_membership: true
+  description: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ group."
 
 nonmember_join_url_de:
   type: string
   default: "https://swissphotoclub.com/mitglied-werden"
+  description: "Non-Member Banner: membership-button destination for the German interface."
 
 nonmember_join_url_en:
   type: string
   default: "https://swissphotoclub.com/en-ch/become-a-member"
+  description: "Non-Member Banner: membership-button destination for the English interface."
 
 nonmember_join_url_fr:
   type: string
   default: "https://swissphotoclub.com/fr-ch/devenir-membre"
+  description: "Non-Member Banner: membership-button destination for the French interface."
 
 nonmember_categories_url:
   type: string
   default: "/categories"
+  description: "Non-Member Banner: destination for the browse-categories button."
 
 nonmember_show_categories_button:
   type: bool
   default: true
+  description: "Non-Member Banner: show the browse-categories button."

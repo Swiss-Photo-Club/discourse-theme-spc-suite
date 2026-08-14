@@ -2,9 +2,27 @@ en:
   theme_metadata:
     description: SPC homepage using native categories, filters, and a three-column topic-card feed.
     settings:
+      enable_critique_workspace: "Critique Workspace: side-by-side critique modal on first posts in the critique categories."
+      enable_leaderboard: "Leaderboard Strip: compact gamification leaderboard above the topic list."
+      enable_onboarding: "Member Onboarding: three-step progress panel on the homepage for signed-in members."
+      enable_nonmember_banner: "Non-Member Banner: join call-to-action on the homepage for visitors who are not members."
+      enable_category_hero: "Category Hero: shared hero header on every category page. Turning it off restores the native category header and background. Native list controls remain available in either state. The Monthly Challenge hero remains enabled because it is part of the photo-submission workflow."
+      enable_locale_cookie: "Locale Cookie: mirrors the forum interface language into a cookie on swissphotoclub.com so the main site can match it."
+      enable_local_featured_categories: "Homepage: migration switch — render homepage categories locally. Default navigation menu categories are the highlighted cards. Enable only when the external Featured Categories component is detached."
+      homepage_secondary_categories: "Homepage: compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
+      challenge_category_id: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL)."
+      round_tag: "Monthly Challenge: fixed round tag applied to submissions (e.g. 2026-07-cityscapes). Leave empty for automatic mode: the category tag starting with the current month is used."
+      show_banner: "Monthly Challenge: show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)."
+      replace_new_topic_button: "Monthly Challenge: in the challenge category, the New Topic button opens the photo submission page instead of the composer."
       challenge_timezone: "Monthly Challenge: timezone used for challenge dates and deadlines."
       guide_topic_url: "Monthly Challenge: link to the complete entry and voting guide."
       challenge_max_entries_per_round: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."
+      workspace_enabled_categories: "Critique Workspace: categories where the critique workspace banner is offered on the first post."
+      critique_category_id: "Critique Submit: ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
+      critique_intro_category_id: "Critique Submit: ID of the member introductions category. Used by /submit/introduction to post the introduction."
+      leaderboard_id: "Leaderboard: the Gamification leaderboard to display."
+      leaderboard_leader_count: "Leaderboard: number of ranked members to show in the compact strip."
+      leaderboard_show_on_homepage: "Leaderboard: show the strip on the community homepage."
       challenges:
         description: "Monthly Challenge: one row per official challenge topic. Keep exactly one row active; archive it after recording the winner."
         schema:

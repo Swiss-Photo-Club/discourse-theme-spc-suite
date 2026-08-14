@@ -54,7 +54,14 @@ any plain `border-radius` anywhere else in the component is dead code. Exception
 class selector carrying `!important`, and they live in `branding.scss` next to the reset.
 
 **Renaming a setting has THREE edit sites** — `settings.yml`, the JS (`settings.foo`) and the
-SCSS (`$foo`). `scss/critique-submit.scss` is the one partial that interpolates settings.
+SCSS (`$foo`). `scss/category-hero.scss` is the one partial that interpolates a setting
+(`@if $enable_category_hero`).
+
+**Setting descriptions live in TWO layers, deliberately.** `locales/*.yml`
+`theme_metadata.settings` wins for the admin's interface language; the `settings.yml`
+`description:` is the fallback and what a developer reads in the repo. Every setting carries
+both, with de/fr translated — a new setting therefore adds its description in four places
+(`settings.yml`, `en.yml`, `de.yml`, `fr.yml`).
 
 **Renaming a CSS class can break behaviour with no visual symptom.**
 `spc-photo-submit.js` matches `.spc-hero__actions .spc-button--primary` to route the hero's

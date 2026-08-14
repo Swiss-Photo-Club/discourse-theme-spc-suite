@@ -2,6 +2,61 @@ fr:
   theme_metadata:
     description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
     settings:
+      enable_critique_workspace: "Espace de critique : fenêtre de critique côte à côte sur le premier message des catégories de critique."
+      enable_leaderboard: "Classement : classement de gamification compact au-dessus de la liste des sujets."
+      enable_onboarding: "Onboarding : panneau de progression en trois étapes sur la page d’accueil pour les membres connectés."
+      enable_nonmember_banner: "Bannière non-membres : appel à l’adhésion sur la page d’accueil pour les visiteurs qui ne sont pas membres."
+      enable_category_hero: "Hero de catégorie : en-tête hero partagé sur chaque page de catégorie. Le désactiver rétablit l’en-tête et l’arrière-plan natifs de la catégorie. Les commandes natives de la liste restent disponibles dans les deux états. Le hero du Challenge mensuel reste actif, car il fait partie du flux d’envoi de photos."
+      enable_locale_cookie: "Cookie de langue : reflète la langue de l’interface du forum dans un cookie sur swissphotoclub.com afin que le site principal puisse s’y aligner."
+      enable_local_featured_categories: "Page d’accueil : interrupteur de migration — afficher les catégories de la page d’accueil localement. Les catégories du menu de navigation par défaut sont les cartes mises en avant. À activer uniquement lorsque le composant externe Featured Categories est détaché."
+      homepage_secondary_categories: "Page d’accueil : cartes de catégories compactes affichées après les catégories mises en avant du menu de navigation par défaut. Une catégorie sélectionnée dans les deux réglages apparaît une seule fois comme carte mise en avant."
+      challenge_category_id: "Challenge mensuel : ID de la catégorie du challenge (Admin > Catégories, le numéro dans l’URL)."
+      round_tag: "Challenge mensuel : tag de manche fixe appliqué aux participations (p. ex. 2026-07-cityscapes). Laisser vide pour le mode automatique : le tag de la catégorie commençant par le mois en cours est utilisé."
+      show_banner: "Challenge mensuel : afficher une bannière « Envoyer une photo » supplémentaire en haut de la liste des sujets de la catégorie du challenge (désactivée par défaut, car le hero du challenge a déjà un bouton d’envoi)."
+      replace_new_topic_button: "Challenge mensuel : dans la catégorie du challenge, le bouton Nouveau sujet ouvre la page d’envoi de photo au lieu de l’éditeur."
+      challenge_timezone: "Challenge mensuel : fuseau horaire utilisé pour les dates et les échéances du challenge."
+      guide_topic_url: "Challenge mensuel : lien vers le guide complet de participation et de vote."
+      challenges:
+        description: "Challenge mensuel : une ligne par sujet officiel de challenge. Garder exactement une ligne active ; l’archiver après avoir enregistré le gagnant."
+        schema:
+          properties:
+            topic_id:
+              label: ID du sujet officiel du challenge
+              description: ID numérique du sujet Discourse officiel. Son titre localisé, son premier paragraphe, son message complet et sa première image fournissent le contenu du challenge.
+            tag:
+              label: Tag du challenge
+              description: Tag interne servant à filtrer et à taguer automatiquement les participations, par exemple 2026-07-cityscapes.
+            status:
+              label: Statut
+            start_at:
+              label: Date de début
+              description: Date ISO avec fuseau horaire, par exemple 2026-07-01T00:00:00+02:00.
+            submission_deadline:
+              label: Date limite d’envoi
+            voting_deadline:
+              label: Date limite de vote
+            gallery_url:
+              label: URL de la galerie des participations
+              description: URL stable facultative pour la galerie du mois. Les cartes archivées se rabattent sur le sujet officiel.
+            cover_image:
+              label: Image de couverture du challenge (remplacement)
+              description: Facultatif. Si vide, la première image non-emoji du sujet officiel est utilisée.
+            winner_title:
+              label: Titre de la photo gagnante
+            winner_author:
+              label: Nom du gagnant ou de la gagnante
+            winner_topic_url:
+              label: URL de la participation gagnante
+            winner_image:
+              label: Image gagnante
+            entry_count:
+              label: Nombre final de participations
+      workspace_enabled_categories: "Espace de critique : catégories où la bannière de l’espace de critique est proposée sur le premier message."
+      critique_category_id: "Envoi de critique : ID de la catégorie de critique. Utilisé par /submit/critique pour publier la demande et demander à Discourse quels tags de sujet cette catégorie accepte."
+      critique_intro_category_id: "Envoi de critique : ID de la catégorie des présentations des membres. Utilisé par /submit/introduction pour publier la présentation."
+      leaderboard_id: "Classement : le classement de gamification à afficher."
+      leaderboard_leader_count: "Classement : nombre de membres classés à afficher dans la bande compacte."
+      leaderboard_show_on_homepage: "Classement : afficher la bande sur la page d’accueil de la communauté."
       webinars_url: "Page d’accueil : destination de la carte Webinaires mensuels en direct."
       homepage_banner_image: "Page d’accueil : image de la bannière de la page d’accueil des membres. Un format paysage proche de 2:1 est recommandé."
       homepage_about_url_de: "Page d’accueil : destination du lien d’information sur la communauté pour l’interface allemande."

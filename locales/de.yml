@@ -2,6 +2,61 @@ de:
   theme_metadata:
     description: SPC-Homepage mit nativen Kategorien, Filtern und einer dreispaltigen Themen-Kartenansicht.
     settings:
+      enable_critique_workspace: "Kritik-Arbeitsplatz: Seite-an-Seite-Kritikfenster auf dem ersten Beitrag in den Kritik-Kategorien."
+      enable_leaderboard: "Bestenliste: kompakte Gamification-Bestenliste über der Themenliste."
+      enable_onboarding: "Onboarding: dreistufiges Fortschritts-Panel auf der Startseite für angemeldete Mitglieder."
+      enable_nonmember_banner: "Nichtmitglieder-Banner: Beitritts-Aufruf auf der Startseite für Besucher, die keine Mitglieder sind."
+      enable_category_hero: "Kategorie-Hero: gemeinsamer Hero-Header auf jeder Kategorieseite. Ausschalten stellt den nativen Kategorie-Header und -Hintergrund wieder her. Die nativen Listen-Bedienelemente bleiben in beiden Zuständen verfügbar. Der Hero der Monats-Challenge bleibt aktiv, weil er Teil des Foto-Einreichungs-Workflows ist."
+      enable_locale_cookie: "Sprach-Cookie: spiegelt die Forumssprache in ein Cookie auf swissphotoclub.com, damit die Hauptseite sie übernehmen kann."
+      enable_local_featured_categories: "Startseite: Migrationsschalter — Startseiten-Kategorien lokal rendern. Die Kategorien des Standard-Navigationsmenüs sind die hervorgehobenen Karten. Nur aktivieren, wenn die externe Featured-Categories-Komponente entfernt ist."
+      homepage_secondary_categories: "Startseite: kompakte Kategorie-Karten nach den hervorgehobenen Kategorien des Standard-Navigationsmenüs. Eine in beiden Einstellungen gewählte Kategorie erscheint einmal als hervorgehobene Karte."
+      challenge_category_id: "Monats-Challenge: ID der Challenge-Kategorie (Admin > Kategorien, die Nummer in der URL)."
+      round_tag: "Monats-Challenge: fester Runden-Tag für Einreichungen (z. B. 2026-07-cityscapes). Leer lassen für den Automatikmodus: Der Kategorie-Tag, der mit dem aktuellen Monat beginnt, wird verwendet."
+      show_banner: "Monats-Challenge: zusätzliches «Foto einreichen»-Banner oben in der Themenliste der Challenge-Kategorie anzeigen (standardmässig aus, weil der Challenge-Hero bereits einen Einreichen-Button hat)."
+      replace_new_topic_button: "Monats-Challenge: In der Challenge-Kategorie öffnet der Button «Neues Thema» die Foto-Einreichungsseite statt des Editors."
+      challenge_timezone: "Monats-Challenge: Zeitzone für Challenge-Daten und Fristen."
+      guide_topic_url: "Monats-Challenge: Link zur vollständigen Anleitung für Teilnahme und Abstimmung."
+      challenges:
+        description: "Monats-Challenge: eine Zeile pro offiziellem Challenge-Thema. Genau eine Zeile aktiv halten; nach dem Eintragen des Gewinners archivieren."
+        schema:
+          properties:
+            topic_id:
+              label: ID des offiziellen Challenge-Themas
+              description: Numerische ID des offiziellen Discourse-Themas. Sein lokalisierter Titel, erster Absatz, vollständiger Beitrag und das erste Bild liefern den Challenge-Inhalt.
+            tag:
+              label: Challenge-Tag
+              description: Interner Tag zum Filtern und automatischen Taggen der Einreichungen, zum Beispiel 2026-07-cityscapes.
+            status:
+              label: Status
+            start_at:
+              label: Startdatum
+              description: ISO-Datum mit Zeitzone, zum Beispiel 2026-07-01T00:00:00+02:00.
+            submission_deadline:
+              label: Einreichefrist
+            voting_deadline:
+              label: Abstimmungsfrist
+            gallery_url:
+              label: URL der Einreichungsgalerie
+              description: Optionale stabile URL für die Galerie dieses Monats. Archivierte Karten fallen auf das offizielle Thema zurück.
+            cover_image:
+              label: Challenge-Titelbild (Override)
+              description: Optional. Wenn leer, wird das erste Nicht-Emoji-Bild des offiziellen Themas verwendet.
+            winner_title:
+              label: Titel des Gewinnerfotos
+            winner_author:
+              label: Name der Gewinnerin oder des Gewinners
+            winner_topic_url:
+              label: URL des Gewinnerbeitrags
+            winner_image:
+              label: Gewinnerbild
+            entry_count:
+              label: Finale Anzahl Einreichungen
+      workspace_enabled_categories: "Kritik-Arbeitsplatz: Kategorien, in denen das Arbeitsplatz-Banner auf dem ersten Beitrag angeboten wird."
+      critique_category_id: "Kritik-Einreichung: ID der Kritik-Kategorie. Wird von /submit/critique verwendet, um die Anfrage zu posten und Discourse nach den akzeptierten Thema-Tags dieser Kategorie zu fragen."
+      critique_intro_category_id: "Kritik-Einreichung: ID der Vorstellungs-Kategorie. Wird von /submit/introduction verwendet, um die Vorstellung zu posten."
+      leaderboard_id: "Bestenliste: die anzuzeigende Gamification-Bestenliste."
+      leaderboard_leader_count: "Bestenliste: Anzahl der platzierten Mitglieder in der kompakten Leiste."
+      leaderboard_show_on_homepage: "Bestenliste: die Leiste auf der Community-Startseite anzeigen."
       webinars_url: "Startseite: Ziel der Karte «Monatliche Live-Webinare»."
       homepage_banner_image: "Startseite: Bannerbild der Mitglieder-Startseite. Empfohlenes Bildformat ungefähr 2:1."
       homepage_about_url_de: "Startseite: Ziel des Community-Informationslinks für die deutsche Oberfläche."

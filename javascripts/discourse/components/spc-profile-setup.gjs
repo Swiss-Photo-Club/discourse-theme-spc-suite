@@ -89,7 +89,10 @@ export default class SpcProfileSetup extends Component {
   }
 
   get profileUrl() {
-    return userPath(this.currentUser.username_lower);
+    // Explicitly /summary: the bare /u/<username> resolves to the Activity
+    // tab, and the summary is the page that actually shows bio, location and
+    // website — the things this form just saved.
+    return userPath(`${this.currentUser.username_lower}/summary`);
   }
 
   @action

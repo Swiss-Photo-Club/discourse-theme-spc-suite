@@ -128,6 +128,19 @@ export default class SpcProfileSetup extends Component {
     DiscourseURL.routeTo("/login");
   }
 
+  // Core collapses the profile header when you view your own summary, and
+  // its Expand button just flips forceExpand on the (singleton) user
+  // controller. Flip the same flag before navigating so the page arrives
+  // expanded — this link exists to show the person what they saved. If core
+  // ever renames the flag the set is inert and the page merely arrives
+  // collapsed again.
+  @action
+  viewProfile(event) {
+    event.preventDefault();
+    getOwner(this).lookup("controller:user")?.set("forceExpand", true);
+    DiscourseURL.routeTo(this.profileUrl);
+  }
+
   @action
   async save() {
     this.saving = true;
@@ -269,7 +282,10 @@ export default class SpcProfileSetup extends Component {
             {{#if this.saved}}
               <div class="spc-profile-setup__saved alert alert-success">
                 {{i18n (themePrefix "profile_setup.saved")}}
-                <a href={{this.profileUrl}}>
+                {{! Still a real link (open-in-new-tab keeps working); the
+                    click handler only adds the expand flag on same-tab
+                    navigation. }}
+                <a href={{this.profileUrl}} {{on "click" this.viewProfile}}>
                   {{i18n (themePrefix "profile_setup.view_profile")}}
                 </a>
               </div>

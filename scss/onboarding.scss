@@ -249,17 +249,17 @@ body.navigation-topics #main-outlet > .spc-member-onboarding {
 }
 
 @media (max-width: 600px) {
-  .spc-member-onboarding:not(.spc-member-onboarding--show-mobile) {
-    display: none;
-  }
-
-  .spc-member-onboarding--show-mobile {
-    width: 100%;
+  .spc-member-onboarding {
     margin-top: 12px;
   }
 
   .spc-member-onboarding__header {
-    padding: 20px 48px 20px 18px;
+    padding: 18px 48px 18px 18px;
+  }
+
+  .spc-member-onboarding__dismiss {
+    top: 12px;
+    right: 10px;
   }
 
   .spc-member-onboarding__intro h2 {

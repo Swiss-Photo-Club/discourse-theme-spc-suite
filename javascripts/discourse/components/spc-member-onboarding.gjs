@@ -190,7 +190,7 @@ export default class SpcMemberOnboarding extends Component {
   <template>
     {{#if this.shouldShow}}
       <section
-        class="spc-member-onboarding spc-member-onboarding--progress-{{this.completedCount}} {{if settings.onboarding_show_on_mobile 'spc-member-onboarding--show-mobile'}}"
+        class="spc-member-onboarding spc-member-onboarding--progress-{{this.completedCount}}"
         aria-labelledby="spc-member-onboarding-title"
       >
         <div class="spc-member-onboarding__header">

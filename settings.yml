@@ -278,10 +278,6 @@ onboarding_profile_url:
   type: string
   default: "/profile-setup"
 
-onboarding_show_on_mobile:
-  type: bool
-  default: false
-
 onboarding_dismissal_version:
   type: string
   default: "3"

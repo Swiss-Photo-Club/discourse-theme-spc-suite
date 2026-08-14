@@ -48,7 +48,6 @@ en:
       homepage_about_url_fr: Destination of the community information link for the French interface.
       onboarding_member_groups: Groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group.
       onboarding_profile_url: Destination for the Profile step.
-      onboarding_show_on_mobile: Show the onboarding panel on mobile devices.
       onboarding_dismissal_version: Change this value to reset progress and dismissal for every member.
       nonmember_member_groups: Groups whose members should not see the banner. This defaults to the SPC ‘members’ group.
       nonmember_join_url_de: Membership-button destination for the German interface.

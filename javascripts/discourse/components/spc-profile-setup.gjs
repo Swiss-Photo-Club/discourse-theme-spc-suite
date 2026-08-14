@@ -143,6 +143,16 @@ export default class SpcProfileSetup extends Component {
     return userPath(`${this.currentUser.username_lower}/summary`);
   }
 
+  get fullEditorUrl() {
+    // ?full=1 is the escape hatch through the takeover in
+    // api-initializers/spc-profile-setup.js: without it this link would
+    // bounce straight back here. It matters even with the takeover off —
+    // the native page owns the fields this form deliberately skips.
+    return userPath(
+      `${this.currentUser.username_lower}/preferences/profile?full=1`
+    );
+  }
+
   @action
   updateField(name, event) {
     this[name] = event.target.value;
@@ -411,6 +421,13 @@ export default class SpcProfileSetup extends Component {
                 class="btn-primary spc-profile-setup__save"
               />
             </div>
+
+            <p class="spc-profile-setup__full-editor">
+              {{i18n (themePrefix "profile_setup.full_editor_lead")}}
+              <a href={{this.fullEditorUrl}}>
+                {{i18n (themePrefix "profile_setup.full_editor_link")}}
+              </a>
+            </p>
           </ConditionalLoadingSpinner>
         {{else}}
           <div class="spc-profile-setup__login">

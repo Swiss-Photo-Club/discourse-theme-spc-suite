@@ -10,6 +10,7 @@ fr:
       onboarding_member_groups: Groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members ».
       onboarding_profile_url: Destination de l’étape Profil.
       onboarding_dismissal_version: Modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres.
+      profile_setup_replaces_preferences: Ouvrir ses propres Préférences → Profil mène à la page conviviale /profile-setup. L'éditeur complet reste accessible via un lien sur cette page.
       nonmember_member_groups: Groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut.
       nonmember_join_url_de: Destination du bouton d’adhésion pour l’interface allemande.
       nonmember_join_url_en: Destination du bouton d’adhésion pour l’interface anglaise.
@@ -172,6 +173,8 @@ fr:
     saving: Enregistrement…
     saved: Ton profil est enregistré.
     view_profile: Voir ton profil →
+    full_editor_lead: Tu cherches plus ? Sujet à la une, anniversaire et autres détails se trouvent dans
+    full_editor_link: les réglages complets du profil.
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois

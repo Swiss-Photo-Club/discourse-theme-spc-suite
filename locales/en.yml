@@ -49,6 +49,7 @@ en:
       onboarding_member_groups: Groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group.
       onboarding_profile_url: Destination for the Profile step.
       onboarding_dismissal_version: Change this value to reset progress and dismissal for every member.
+      profile_setup_replaces_preferences: Opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page.
       nonmember_member_groups: Groups whose members should not see the banner. This defaults to the SPC ‘members’ group.
       nonmember_join_url_de: Membership-button destination for the German interface.
       nonmember_join_url_en: Membership-button destination for the English interface.
@@ -215,6 +216,8 @@ en:
     saving: Saving…
     saved: Your profile is saved.
     view_profile: View your profile →
+    full_editor_lead: Looking for more? Featured topic, birthday and other details live in
+    full_editor_link: the full profile settings.
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month

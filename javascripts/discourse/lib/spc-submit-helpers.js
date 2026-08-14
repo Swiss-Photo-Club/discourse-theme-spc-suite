@@ -45,7 +45,7 @@ export function categoryUrlFor(slug, id) {
 // Current month as YYYY-MM in the club's timezone
 export function currentMonthYM() {
   const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Zurich",
+    timeZone: settings.challenge_timezone || "Europe/Zurich",
     year: "numeric",
     month: "2-digit",
   }).formatToParts(new Date());

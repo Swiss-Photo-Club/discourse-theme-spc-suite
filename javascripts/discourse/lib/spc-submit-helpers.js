@@ -59,7 +59,7 @@ export function currentMonthYM() {
 }
 
 // Resolve the active round tag:
-// 1. fixed setting wins
+// 1. a non-empty round_tag setting wins (the fixed override)
 // 2. otherwise the pinned brief's round tag, when it belongs to the current
 //    month — the hero resolves the round from the pinned brief, so the form
 //    must read the same source or the two can disagree whenever several tags
@@ -68,7 +68,7 @@ export function currentMonthYM() {
 //    the current month (e.g. "2026-07-cityscapes")
 // 4. fall back to plain YYYY-MM
 export async function resolveRoundTag(settings) {
-  if (settings.round_tag_mode === "fixed" && settings.round_tag?.trim()) {
+  if (settings.round_tag?.trim()) {
     return settings.round_tag.trim();
   }
 

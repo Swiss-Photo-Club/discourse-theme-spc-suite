@@ -91,18 +91,10 @@ challenge_category_id:
   default: 6
   description: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL)."
 
-round_tag_mode:
-  type: enum
-  default: auto
-  choices:
-    - auto
-    - fixed
-  description: "Monthly Challenge: how the round tag is chosen. auto = find the category tag starting with the current month (e.g. 2026-07-cityscapes). fixed = always use the round_tag setting below."
-
 round_tag:
   type: string
   default: ""
-  description: "Monthly Challenge: round tag applied to submissions when round_tag_mode is 'fixed' (e.g. 2026-07)"
+  description: "Monthly Challenge: fixed round tag applied to submissions (e.g. 2026-07-cityscapes). Leave empty for automatic mode: the category tag starting with the current month is used."
 
 show_banner:
   type: bool

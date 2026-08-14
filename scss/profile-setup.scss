@@ -68,14 +68,11 @@
       resize: none;
     }
 
-    // SPC shows links by colour alone — the coral the rest of the site uses,
-    // which is --tertiary here (the token btn-primary wears). The editor's
-    // rich mode paints links like body text otherwise. Both modes covered:
-    // the contenteditable input and the markdown preview pane.
-    .d-editor-input a,
-    .d-editor-preview a {
-      color: var(--tertiary);
-    }
+    // Bio links rendering coral is a brand rule and lives in branding.scss
+    // (--fg-action side of the colour boundary), not here: this file stays
+    // on core palette tokens. A rule here once said var(--tertiary) on the
+    // strength of a stale comment claiming tertiary was the coral — the live
+    // palette's tertiary is the brand navy, so it painted links like text.
   }
 
   &__optional {

@@ -20,12 +20,15 @@
    Swiss Photo Club — Discourse Theme Component (v2, minimal)
 
    Most brand coloring is now handled by Admin → Customize → Colors →
-   "SPC color palette" (primary=#333333, tertiary=#FF5B5D coral,
-   quaternary=#1A2744 indigo, etc.) — Discourse derives its internal
-   --d-* link/sidebar/badge tokens from those automatically, so this
-   file only covers what the palette genuinely cannot: shape, button
-   typography, heading scale, and one deliberate style choice on
-   muted topic titles.
+   "SPC color palette" (primary=#333333, tertiary=#1A2744 navy,
+   quaternary=#FF5B5D coral — verified against the live palette
+   2026-08-14; an earlier version of this comment had tertiary and
+   quaternary swapped, which made "colour links with var(--tertiary)"
+   look right when it painted them navy). Discourse derives its
+   internal --d-* link/sidebar/badge tokens from those automatically,
+   so this file only covers what the palette genuinely cannot: shape,
+   button typography, heading scale, and one deliberate style choice
+   on muted topic titles.
 
    HOW TO USE:
    Discourse Admin → Customize → Themes → (your theme) → Edit CSS/HTML
@@ -290,6 +293,25 @@ button.btn-primary:active {
   background: var(--spc-indigo-800);
   color: #FFFFFF;
   border-color: var(--spc-indigo-800);
+}
+
+/* -------------------------------------------------
+   Member-written links render coral — the SPC link
+   convention. The palette keeps Discourse's own link
+   token (tertiary) on brand navy so core chrome stays
+   quiet; coral rides on the design-system token
+   instead. Scoped to the profile bio where it is
+   displayed (user page) and the /profile-setup editor
+   where it is written (rich input + markdown preview).
+   ------------------------------------------------- */
+.user-main .bio a,
+.spc-profile-setup__field .d-editor-input a,
+.spc-profile-setup__field .d-editor-preview a {
+  color: var(--fg-action);
+
+  &:hover {
+    color: var(--spc-coral-hover);
+  }
 }
 
 /* -------------------------------------------------

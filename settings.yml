@@ -119,6 +119,12 @@ replace_new_topic_button:
   default: true
   description: "In the challenge category, the New Topic button opens the photo submission page instead of the composer"
 
+challenge_max_entries_per_round:
+  type: integer
+  default: 1
+  min: 0
+  description: "How many photos one member may enter per challenge round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form limit, not server-side enforcement."
+
 monthly_category_slug:
   type: string
   default: monthly-challenge

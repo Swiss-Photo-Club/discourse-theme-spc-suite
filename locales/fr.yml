@@ -37,6 +37,9 @@ fr:
     error_no_photo: Merci de téléverser une photo.
     discard_confirm: Abandonner cette participation ?
     tag_warning: Ta photo a été publiée, mais le tag de la manche n’a pas pu être appliqué. Merci de prévenir un administrateur.
+    entry_limit_notice:
+      one: "Tu as déjà envoyé une photo pour cette manche — une participation par membre. Ta prochaine photo sera parfaite pour le challenge du mois prochain !"
+      other: "Tu as déjà envoyé %{count} photos pour cette manche — c’est la limite par membre. Ta prochaine photo sera parfaite pour le challenge du mois prochain !"
   critique_form:
     heading: Soumettre une image pour critique
     intro_title: Avant de soumettre

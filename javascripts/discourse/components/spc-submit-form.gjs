@@ -1,7 +1,9 @@
 import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
 import UppyImageUploader from "discourse/components/uppy-image-uploader";
+import { ajax } from "discourse/lib/ajax";
 import { getUploadMarkdown } from "discourse/lib/uploads";
 import { i18n } from "discourse-i18n";
 import {
@@ -45,8 +47,14 @@ function withSelection(choices, current) {
 // output has to stay byte-compatible with that wizard.
 
 export default class SpcSubmitForm extends SpcSubmitBase {
+  @service currentUser;
+
   @tracked description = "";
   @tracked resolvedTag = null;
+  // null = unknown (not yet counted, or the count failed). The entry limit
+  // only ever engages on a real number, so a failed count degrades to the
+  // pre-limit behaviour instead of locking members out.
+  @tracked roundEntryCount = null;
 
   // critique mode only
   @tracked subjects = [];
@@ -66,8 +74,56 @@ export default class SpcSubmitForm extends SpcSubmitBase {
     if (this.isCritique) {
       this.loadSubjects();
     } else {
-      resolveRoundTag(settings).then((tag) => (this.resolvedTag = tag));
+      resolveRoundTag(settings).then((tag) => {
+        this.resolvedTag = tag;
+        this.countRoundEntries(tag);
+      });
     }
+  }
+
+  // How many entries the signed-in member already has in the current round:
+  // their own recent topics, filtered to the challenge category and the round
+  // tag. /topics/created-by/ is the right listing because it is one page of at
+  // most 30 for exactly this user — a member with 30+ topics in a single month
+  // is not a case this nudge needs to survive. Any failure leaves the count at
+  // null, which keeps the form usable (see roundEntryCount above).
+  async countRoundEntries(tag) {
+    if (!tag || !this.currentUser || this.maxRoundEntries <= 0) {
+      return;
+    }
+    try {
+      const username = encodeURIComponent(this.currentUser.username);
+      const result = await ajax(`/topics/created-by/${username}.json`);
+      const topics = result?.topic_list?.topics || [];
+      this.roundEntryCount = topics.filter(
+        (topic) =>
+          topic.category_id === this.categoryId &&
+          (topic.tags || [])
+            .map((t) => (typeof t === "string" ? t : t?.name || ""))
+            .includes(tag)
+      ).length;
+    } catch {
+      this.roundEntryCount = null;
+    }
+  }
+
+  get maxRoundEntries() {
+    return parseInt(settings.challenge_max_entries_per_round, 10) || 0;
+  }
+
+  get entryLimitReached() {
+    return (
+      !this.isCritique &&
+      this.maxRoundEntries > 0 &&
+      this.roundEntryCount !== null &&
+      this.roundEntryCount >= this.maxRoundEntries
+    );
+  }
+
+  get entryLimitNotice() {
+    return i18n(themePrefix("form.entry_limit_notice"), {
+      count: this.roundEntryCount,
+    });
   }
 
   get isCritique() {
@@ -225,6 +281,11 @@ export default class SpcSubmitForm extends SpcSubmitBase {
   }
 
   validate() {
+    // The shell already disables the button when the limit is reached; this
+    // covers the button press that races the count's arrival.
+    if (this.entryLimitReached) {
+      return this.entryLimitNotice;
+    }
     const problem = super.validate();
     if (problem) {
       return problem;
@@ -248,6 +309,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
       @heading={{this.heading}}
       @submitLabel={{this.submitLabel}}
       @submitting={{this.submitting}}
+      @submitDisabled={{this.entryLimitReached}}
       @error={{this.error}}
       @onSubmit={{this.submit}}
       @onCancel={{this.cancel}}
@@ -267,6 +329,12 @@ export default class SpcSubmitForm extends SpcSubmitBase {
             <h2>{{i18n (themePrefix "critique_form.intro_title")}}</h2>
             <p>{{i18n (themePrefix "critique_form.intro_exchange")}}</p>
             <p>{{i18n (themePrefix "critique_form.intro_limit")}}</p>
+          </div>
+        {{/if}}
+
+        {{#if this.entryLimitReached}}
+          <div class="spc-submit-page__notice" role="alert">
+            {{this.entryLimitNotice}}
           </div>
         {{/if}}
 

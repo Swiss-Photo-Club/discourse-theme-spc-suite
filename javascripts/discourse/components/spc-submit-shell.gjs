@@ -4,6 +4,7 @@ import { service } from "@ember/service";
 import DButton from "discourse/components/d-button";
 import DiscourseURL from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
+import { or } from "truth-helpers";
 
 // The chrome every /submit/* page shares: the page shell, the header with its
 // close button, the signed-out gate, the error slot and the actions row. It
@@ -68,7 +69,7 @@ export default class SpcSubmitShell extends Component {
                 @submitLabel
               }}
               @action={{@onSubmit}}
-              @disabled={{@submitting}}
+              @disabled={{or @submitting @submitDisabled}}
               @isLoading={{@submitting}}
               class="btn-primary btn-large spc-submit-page__submit"
             />

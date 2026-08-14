@@ -168,6 +168,15 @@
     }
   }
 
+  // Same callout treatment as __intro on purpose (one callout shape per D7).
+  &__notice {
+    margin: 0 0 2em;
+    padding: 1em 1.25em;
+    border-left: 3px solid var(--tertiary);
+    background: var(--tertiary-very-low);
+    color: var(--primary-high);
+  }
+
   &__hint {
     margin: 0 0 0.75em;
     color: var(--primary-medium);

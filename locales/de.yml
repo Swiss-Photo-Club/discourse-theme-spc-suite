@@ -41,6 +41,9 @@ de:
     error_no_photo: Bitte lade ein Foto hoch.
     discard_confirm: Einreichung verwerfen?
     tag_warning: Dein Foto wurde veröffentlicht, aber der Runden-Tag konnte nicht gesetzt werden. Bitte informiere einen Admin.
+    entry_limit_notice:
+      one: "Du hast in dieser Runde bereits ein Foto eingereicht — ein Beitrag pro Mitglied. Dein nächstes Foto passt perfekt in die Challenge des nächsten Monats!"
+      other: "Du hast in dieser Runde bereits %{count} Fotos eingereicht — mehr sind pro Mitglied nicht vorgesehen. Dein nächstes Foto passt perfekt in die Challenge des nächsten Monats!"
   critique_form:
     heading: Bild zur Kritik einreichen
     intro_title: Bevor du einreichst

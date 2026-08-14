@@ -1,9 +1,13 @@
 # SPC Suite — working notes for Claude Code
 
 One Discourse **theme component**, id **61**, "SPC Suite", attached to Foundation + Horizon on
-`community.swissphotoclub.com`. Hosted install: **no server access, no git on the host, admin
-panel only.** This repo is the source of truth. Ten features live in this one component because
-`about.json` must sit at the repo root.
+`community.swissphotoclub.com`. **Self-hosted: Oğuzhan runs the standard Docker install on his
+own server with SSH access** (corrected 2026-08-14 — this file long claimed a hosted install
+with admin panel only, and two decisions were wrongly parked on "ask the host"). Server-side
+changes (plugin list in `containers/app.yml`, `./launcher rebuild app`) are therefore
+self-service, at the cost of a few minutes' downtime per rebuild. Theme work still never needs
+SSH: this repo is the source of truth and the admin-panel Update loop below is the whole cycle.
+Ten features live in this one component because `about.json` must sit at the repo root.
 
 ## The iteration loop
 
@@ -392,8 +396,9 @@ step, three locale-suffixed settings deep, which nothing else would have caught.
 **The Custom Wizard plugin can now be uninstalled.** Nothing in this theme references it. It is
 the source of the `discourse.html-safe-helper`, `native-array-extensions`, `template-action` and
 `select-kit-resolved-components` admin notices, none of which come from this theme — expect all
-four to disappear with it. On a hosted install that is a change to the plugin list at the host,
-not something the admin panel can do.
+four to disappear with it. That is a server-side change: remove its clone line from
+`containers/app.yml` and rebuild — worth bundling with the next planned rebuild, since every
+rebuild costs a few minutes of downtime.
 
 The seven disabled components (3, 12, 19, 20, 23, 36, 37) are the rollback path for the
 merged-in features; their settings are intact in the database. Do not delete them yet.

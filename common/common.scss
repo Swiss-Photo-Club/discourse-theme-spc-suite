@@ -37,6 +37,11 @@
 
 // --- the original Suite stack ------------------------------------------------
 @import "submit";
+
+// The /profile-setup card. Selectors are all .spc-profile-setup*, shared with
+// nothing, so its position carries no cascade weight — it sits by submit
+// because the two are siblings in spirit (full-page theme-owned forms).
+@import "profile-setup";
 @import "challenge";
 
 // The card treatment for categories 7 and 12. After challenge so that a

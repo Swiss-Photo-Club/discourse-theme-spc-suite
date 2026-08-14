@@ -709,20 +709,18 @@ export default class SpcCritiqueWorkspace extends Component {
                 <p class="spc-cw__example-hint">
                   {{i18n (themePrefix "critique_workspace.example_hint")}}
                 </p>
-              {{/if}}
-              {{#if this.imageUrl}}
-                <div class="spc-cw__actions">
-                  <DButton
-                    @icon="download"
-                    @action={{this.downloadReference}}
-                    @disabled={{this.downloading}}
-                    @translatedLabel={{i18n
-                      (themePrefix "critique_workspace.download_reference")
-                    }}
-                  />
-                </div>
-              {{/if}}
-              {{#unless this.processingDenied}}
+                {{#if this.imageUrl}}
+                  <div class="spc-cw__actions">
+                    <DButton
+                      @icon="download"
+                      @action={{this.downloadReference}}
+                      @disabled={{this.downloading}}
+                      @translatedLabel={{i18n
+                        (themePrefix "critique_workspace.download_reference")
+                      }}
+                    />
+                  </div>
+                {{/if}}
                 <UppyImageUploader
                   @id="spc-cw-example-upload"
                   @type="composer"
@@ -731,7 +729,7 @@ export default class SpcCritiqueWorkspace extends Component {
                   @onUploadDeleted={{this.processingUploadDeleted}}
                   class="spc-cw__uploader"
                 />
-              {{/unless}}
+              {{/if}}
             </div>
           </div>
 

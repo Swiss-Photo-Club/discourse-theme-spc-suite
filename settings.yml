@@ -54,7 +54,7 @@ enable_locale_cookie:
 enable_local_featured_categories:
   type: bool
   default: false
-  description: "Migration switch: render homepage categories locally. Default navigation menu categories are the highlighted cards. Enable only when the external Featured Categories component is detached."
+  description: "Homepage: migration switch — render homepage categories locally. Default navigation menu categories are the highlighted cards. Enable only when the external Featured Categories component is detached."
 
 # -----------------------------------------------------------------------------
 # Monthly challenge, homepage and /submit page (original Suite stack)
@@ -64,37 +64,37 @@ homepage_secondary_categories:
   type: list
   list_type: category
   default: "12|8|4|2"
-  description: "Compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
+  description: "Homepage: compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
 
 homepage_banner_image:
   type: upload
   default: ""
-  description: "Member-homepage banner image. A landscape image around 2:1 works best."
+  description: "Homepage: member-homepage banner image. A landscape image around 2:1 works best."
 
 homepage_about_url_de:
   type: string
   default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Destination of the community information link for the German interface."
+  description: "Homepage: destination of the community information link for the German interface."
 
 homepage_about_url_en:
   type: string
   default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Destination of the community information link for the English interface."
+  description: "Homepage: destination of the community information link for the English interface."
 
 homepage_about_url_fr:
   type: string
   default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Destination of the community information link for the French interface."
+  description: "Homepage: destination of the community information link for the French interface."
 
 challenge_category_id:
   type: integer
   default: 6
-  description: "ID of the Monthly Challenge category (Admin > Categories, the number in the URL)"
+  description: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL). Keep in sync with monthly_category_id."
 
 challenge_category_slug:
   type: string
   default: monthly-challenge
-  description: "Slug of the Monthly Challenge category, used to catch New Topic links"
+  description: "Monthly Challenge: slug of the challenge category, used to catch New Topic links. Keep in sync with monthly_category_slug."
 
 round_tag_mode:
   type: enum
@@ -102,28 +102,28 @@ round_tag_mode:
   choices:
     - auto
     - fixed
-  description: "How the challenge round tag is chosen. auto = find the category tag starting with the current month (e.g. 2026-07-cityscapes). fixed = always use the round_tag setting below."
+  description: "Monthly Challenge: how the round tag is chosen. auto = find the category tag starting with the current month (e.g. 2026-07-cityscapes). fixed = always use the round_tag setting below."
 
 round_tag:
   type: string
   default: ""
-  description: "Round tag applied to submissions when round_tag_mode is 'fixed' (e.g. 2026-07)"
+  description: "Monthly Challenge: round tag applied to submissions when round_tag_mode is 'fixed' (e.g. 2026-07)"
 
 show_banner:
   type: bool
   default: false
-  description: "Show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)"
+  description: "Monthly Challenge: show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)"
 
 replace_new_topic_button:
   type: bool
   default: true
-  description: "In the challenge category, the New Topic button opens the photo submission page instead of the composer"
+  description: "Monthly Challenge: in the challenge category, the New Topic button opens the photo submission page instead of the composer"
 
 challenge_max_entries_per_round:
   type: integer
   default: 1
   min: 0
-  description: "How many photos one member may enter per challenge round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form limit, not server-side enforcement."
+  description: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."
 
 monthly_category_slug:
   type: string
@@ -207,7 +207,7 @@ workspace_enabled_categories:
   type: list
   list_type: category
   default: "7"
-  description: "Categories where the critique workspace banner is offered on the first post."
+  description: "Critique Workspace: categories where the critique workspace banner is offered on the first post."
 
 # -----------------------------------------------------------------------------
 # Critique Submit buttons
@@ -216,37 +216,37 @@ workspace_enabled_categories:
 critique_category_slug:
   type: string
   default: "photo-feedback"
-  description: "Slug of the critique category."
+  description: "Critique Submit: slug of the critique category."
 
 critique_category_id:
   type: integer
   default: 7
-  description: "ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
+  description: "Critique Submit: ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
 
 critique_intro_category_slug:
   type: string
   default: "introductions"
-  description: "Slug of the member introductions category."
+  description: "Critique Submit: slug of the member introductions category."
 
 critique_intro_category_id:
   type: integer
   default: 12
-  description: "ID of the member introductions category. Used by /submit/introduction to post the introduction."
+  description: "Critique Submit: ID of the member introductions category. Used by /submit/introduction to post the introduction."
 
 critique_banner_background:
   type: string
   default: "#FFE8E8"
-  description: "Background colour of the critique category banner."
+  description: "Critique Submit: currently unread — kept so the old pink banner stays restorable without a commit. Delete rather than repurpose."
 
 critique_banner_text_color:
   type: string
   default: "#1A2744"
-  description: "Text colour of the critique and introductions category banners."
+  description: "Critique Submit: currently unread — kept with the banner background above. Delete rather than repurpose."
 
 critique_intro_banner_background:
   type: string
   default: "#E8F0F0"
-  description: "Background colour of the introductions category banner."
+  description: "Critique Submit: currently unread — kept with the banner background above. Delete rather than repurpose."
 
 # -----------------------------------------------------------------------------
 # Leaderboard strip
@@ -256,19 +256,19 @@ leaderboard_id:
   type: integer
   default: 1
   min: 1
-  description: "The Gamification leaderboard to display."
+  description: "Leaderboard: the Gamification leaderboard to display."
 
 leaderboard_leader_count:
   type: integer
   default: 3
   min: 1
   max: 5
-  description: "Number of ranked members to show in the compact strip."
+  description: "Leaderboard: number of ranked members to show in the compact strip."
 
 leaderboard_show_on_homepage:
   type: bool
   default: false
-  description: "Show the strip on the community homepage."
+  description: "Leaderboard: show the strip on the community homepage."
 
 # -----------------------------------------------------------------------------
 # Member onboarding progress panel

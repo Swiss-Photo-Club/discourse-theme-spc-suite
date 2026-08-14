@@ -2,21 +2,22 @@ fr:
   theme_metadata:
     description: Page d’accueil SPC avec catégories, filtres et flux natifs de sujets en trois colonnes.
     settings:
-      webinars_url: Destination de la carte Webinaires mensuels en direct.
-      homepage_banner_image: Image de la bannière de la page d’accueil des membres. Un format paysage proche de 2:1 est recommandé.
-      homepage_about_url_de: Destination du lien d’information sur la communauté pour l’interface allemande.
-      homepage_about_url_en: Destination du lien d’information sur la communauté pour l’interface anglaise.
-      homepage_about_url_fr: Destination du lien d’information sur la communauté pour l’interface française.
-      onboarding_member_groups: Groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members ».
-      onboarding_profile_url: Destination de l’étape Profil.
-      onboarding_dismissal_version: Modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres.
-      profile_setup_replaces_preferences: Ouvrir ses propres Préférences → Profil mène à la page conviviale /profile-setup. L'éditeur complet reste accessible via un lien sur cette page.
-      nonmember_member_groups: Groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut.
-      nonmember_join_url_de: Destination du bouton d’adhésion pour l’interface allemande.
-      nonmember_join_url_en: Destination du bouton d’adhésion pour l’interface anglaise.
-      nonmember_join_url_fr: Destination du bouton d’adhésion pour l’interface française.
-      nonmember_categories_url: Destination du bouton permettant de parcourir les catégories.
-      nonmember_show_categories_button: Afficher le bouton permettant de parcourir les catégories.
+      webinars_url: "Page d’accueil : destination de la carte Webinaires mensuels en direct."
+      homepage_banner_image: "Page d’accueil : image de la bannière de la page d’accueil des membres. Un format paysage proche de 2:1 est recommandé."
+      homepage_about_url_de: "Page d’accueil : destination du lien d’information sur la communauté pour l’interface allemande."
+      homepage_about_url_en: "Page d’accueil : destination du lien d’information sur la communauté pour l’interface anglaise."
+      homepage_about_url_fr: "Page d’accueil : destination du lien d’information sur la communauté pour l’interface française."
+      challenge_max_entries_per_round: "Challenge mensuel : combien de photos un membre peut envoyer par manche. Une fois la limite atteinte, le formulaire affiche un message amical et désactive le bouton d’envoi. 0 désactive la vérification. Simple rappel dans le formulaire, sans blocage côté serveur."
+      onboarding_member_groups: "Onboarding : groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit du groupe SPC « members »."
+      onboarding_profile_url: "Onboarding : destination de l’étape Profil."
+      onboarding_dismissal_version: "Onboarding : modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres."
+      profile_setup_replaces_preferences: "Configuration du profil : ouvrir ses propres Préférences → Profil mène à la page conviviale /profile-setup. L'éditeur complet reste accessible via un lien sur cette page."
+      nonmember_member_groups: "Bannière non-membres : groupes dont les membres ne doivent pas voir la bannière. Le groupe SPC « members » est sélectionné par défaut."
+      nonmember_join_url_de: "Bannière non-membres : destination du bouton d’adhésion pour l’interface allemande."
+      nonmember_join_url_en: "Bannière non-membres : destination du bouton d’adhésion pour l’interface anglaise."
+      nonmember_join_url_fr: "Bannière non-membres : destination du bouton d’adhésion pour l’interface française."
+      nonmember_categories_url: "Bannière non-membres : destination du bouton permettant de parcourir les catégories."
+      nonmember_show_categories_button: "Bannière non-membres : afficher le bouton permettant de parcourir les catégories."
   form:
     optional: (optionnel)
     required: (obligatoire)

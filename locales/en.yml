@@ -2,12 +2,13 @@ en:
   theme_metadata:
     description: SPC homepage using native categories, filters, and a three-column topic-card feed.
     settings:
-      monthly_category_slug: Slug of the Discourse category used for monthly challenges.
-      monthly_category_id: Numeric ID of the monthly challenge category.
-      challenge_timezone: Timezone used for challenge dates and deadlines.
-      guide_topic_url: Link to the complete entry and voting guide.
+      monthly_category_slug: "Monthly Challenge: slug of the Discourse category used for monthly challenges. Keep in sync with challenge_category_slug."
+      monthly_category_id: "Monthly Challenge: numeric ID of the monthly challenge category. Keep in sync with challenge_category_id."
+      challenge_timezone: "Monthly Challenge: timezone used for challenge dates and deadlines."
+      guide_topic_url: "Monthly Challenge: link to the complete entry and voting guide."
+      challenge_max_entries_per_round: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."
       challenges:
-        description: One row per official challenge topic. Keep exactly one row active; archive it after recording the winner.
+        description: "Monthly Challenge: one row per official challenge topic. Keep exactly one row active; archive it after recording the winner."
         schema:
           properties:
             topic_id:
@@ -41,21 +42,21 @@ en:
               label: Winning image
             entry_count:
               label: Final entry count
-      webinars_url: Destination for the Monthly Live Webinars card.
-      homepage_banner_image: Member-homepage banner image. A landscape image around 2:1 works best.
-      homepage_about_url_de: Destination of the community information link for the German interface.
-      homepage_about_url_en: Destination of the community information link for the English interface.
-      homepage_about_url_fr: Destination of the community information link for the French interface.
-      onboarding_member_groups: Groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group.
-      onboarding_profile_url: Destination for the Profile step.
-      onboarding_dismissal_version: Change this value to reset progress and dismissal for every member.
-      profile_setup_replaces_preferences: Opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page.
-      nonmember_member_groups: Groups whose members should not see the banner. This defaults to the SPC ‘members’ group.
-      nonmember_join_url_de: Membership-button destination for the German interface.
-      nonmember_join_url_en: Membership-button destination for the English interface.
-      nonmember_join_url_fr: Membership-button destination for the French interface.
-      nonmember_categories_url: Destination for the browse-categories button.
-      nonmember_show_categories_button: Show the browse-categories button.
+      webinars_url: "Homepage: destination for the Monthly Live Webinars card."
+      homepage_banner_image: "Homepage: member-homepage banner image. A landscape image around 2:1 works best."
+      homepage_about_url_de: "Homepage: destination of the community information link for the German interface."
+      homepage_about_url_en: "Homepage: destination of the community information link for the English interface."
+      homepage_about_url_fr: "Homepage: destination of the community information link for the French interface."
+      onboarding_member_groups: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group."
+      onboarding_profile_url: "Member Onboarding: destination for the Profile step."
+      onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
+      profile_setup_replaces_preferences: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
+      nonmember_member_groups: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ group."
+      nonmember_join_url_de: "Non-Member Banner: membership-button destination for the German interface."
+      nonmember_join_url_en: "Non-Member Banner: membership-button destination for the English interface."
+      nonmember_join_url_fr: "Non-Member Banner: membership-button destination for the French interface."
+      nonmember_categories_url: "Non-Member Banner: destination for the browse-categories button."
+      nonmember_show_categories_button: "Non-Member Banner: show the browse-categories button."
   banner:
     title: Monthly photo challenge
     subtitle: Share your best shot for this month's theme and vote for your favorites.

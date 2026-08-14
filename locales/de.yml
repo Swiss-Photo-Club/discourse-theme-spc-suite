@@ -2,21 +2,22 @@ de:
   theme_metadata:
     description: SPC-Homepage mit nativen Kategorien, Filtern und einer dreispaltigen Themen-Kartenansicht.
     settings:
-      webinars_url: Ziel der Karte «Monatliche Live-Webinare».
-      homepage_banner_image: Bannerbild der Mitglieder-Startseite. Empfohlenes Bildformat ungefähr 2:1.
-      homepage_about_url_de: Ziel des Community-Informationslinks für die deutsche Oberfläche.
-      homepage_about_url_en: Ziel des Community-Informationslinks für die englische Oberfläche.
-      homepage_about_url_fr: Ziel des Community-Informationslinks für die französische Oberfläche.
-      onboarding_member_groups: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.
-      onboarding_profile_url: Ziel des Schritts ‚Profil‘.
-      onboarding_dismissal_version: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen.
-      profile_setup_replaces_preferences: Die eigene Seite Einstellungen → Profil führt stattdessen zur freundlichen Seite /profile-setup. Der vollständige Editor bleibt über einen Link auf dieser Seite erreichbar.
-      nonmember_member_groups: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘.
-      nonmember_join_url_de: Ziel des Mitgliedschafts-Buttons für die deutsche Oberfläche.
-      nonmember_join_url_en: Ziel des Mitgliedschafts-Buttons für die englische Oberfläche.
-      nonmember_join_url_fr: Ziel des Mitgliedschafts-Buttons für die französische Oberfläche.
-      nonmember_categories_url: Ziel des Buttons zum Durchsuchen der Kategorien.
-      nonmember_show_categories_button: Den Button zum Durchsuchen der Kategorien anzeigen.
+      webinars_url: "Startseite: Ziel der Karte «Monatliche Live-Webinare»."
+      homepage_banner_image: "Startseite: Bannerbild der Mitglieder-Startseite. Empfohlenes Bildformat ungefähr 2:1."
+      homepage_about_url_de: "Startseite: Ziel des Community-Informationslinks für die deutsche Oberfläche."
+      homepage_about_url_en: "Startseite: Ziel des Community-Informationslinks für die englische Oberfläche."
+      homepage_about_url_fr: "Startseite: Ziel des Community-Informationslinks für die französische Oberfläche."
+      challenge_max_entries_per_round: "Monats-Challenge: Wie viele Fotos ein Mitglied pro Runde einreichen kann. Ist das Limit erreicht, zeigt das Formular einen freundlichen Hinweis und deaktiviert den Absenden-Button. 0 schaltet die Prüfung ab. Nur ein Hinweis im Formular, keine serverseitige Durchsetzung."
+      onboarding_member_groups: "Onboarding: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘."
+      onboarding_profile_url: "Onboarding: Ziel des Schritts ‚Profil‘."
+      onboarding_dismissal_version: "Onboarding: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen."
+      profile_setup_replaces_preferences: "Profil-Einrichtung: Die eigene Seite Einstellungen → Profil führt stattdessen zur freundlichen Seite /profile-setup. Der vollständige Editor bleibt über einen Link auf dieser Seite erreichbar."
+      nonmember_member_groups: "Nichtmitglieder-Banner: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig ist dies die SPC-Gruppe ‚members‘."
+      nonmember_join_url_de: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die deutsche Oberfläche."
+      nonmember_join_url_en: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die englische Oberfläche."
+      nonmember_join_url_fr: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die französische Oberfläche."
+      nonmember_categories_url: "Nichtmitglieder-Banner: Ziel des Buttons zum Durchsuchen der Kategorien."
+      nonmember_show_categories_button: "Nichtmitglieder-Banner: Den Button zum Durchsuchen der Kategorien anzeigen."
   banner:
     title: Monatliche Foto-Challenge
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.

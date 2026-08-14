@@ -67,22 +67,24 @@ body.navigation-topics #main-outlet > .spc-member-onboarding {
 
 .spc-member-onboarding__progress-fill {
   display: block;
-  width: 0;
+  width: 100%;
   height: 100%;
   background: var(--spc-coral);
-  transition: width 180ms ease;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
 }
 
 .spc-member-onboarding--progress-1 .spc-member-onboarding__progress-fill {
-  width: 33.333%;
+  transform: scaleX(0.33333);
 }
 
 .spc-member-onboarding--progress-2 .spc-member-onboarding__progress-fill {
-  width: 66.666%;
+  transform: scaleX(0.66666);
 }
 
 .spc-member-onboarding--progress-3 .spc-member-onboarding__progress-fill {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 .spc-member-onboarding__steps {

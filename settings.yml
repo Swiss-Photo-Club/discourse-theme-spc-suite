@@ -276,7 +276,7 @@ onboarding_member_groups:
 
 onboarding_profile_url:
   type: string
-  default: "/my/preferences/profile"
+  default: "/profile-setup"
 
 onboarding_show_on_mobile:
   type: bool

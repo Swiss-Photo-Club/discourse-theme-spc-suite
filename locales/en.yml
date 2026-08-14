@@ -2,7 +2,6 @@ en:
   theme_metadata:
     description: SPC homepage using native categories, filters, and a three-column topic-card feed.
     settings:
-      monthly_category_id: "Monthly Challenge: numeric ID of the monthly challenge category. Keep in sync with challenge_category_id."
       challenge_timezone: "Monthly Challenge: timezone used for challenge dates and deadlines."
       guide_topic_url: "Monthly Challenge: link to the complete entry and voting guide."
       challenge_max_entries_per_round: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."

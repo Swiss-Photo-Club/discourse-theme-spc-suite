@@ -115,7 +115,7 @@ export default class SpcChallengeAdmin extends Component {
   @tracked formUpload = null;
 
   get categoryId() {
-    return Number(settings.monthly_category_id);
+    return Number(settings.challenge_category_id);
   }
 
   get visible() {

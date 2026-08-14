@@ -275,12 +275,12 @@ function challengeState(challenge) {
 }
 
 function categoryRoute() {
-  return `/c/${Number(settings.monthly_category_id)}`;
+  return `/c/${Number(settings.challenge_category_id)}`;
 }
 
 function composerRoute(challenge) {
   const query = new URLSearchParams({
-    category: String(settings.monthly_category_id),
+    category: String(settings.challenge_category_id),
     tags: challenge.tag,
   });
   return `/new-topic?${query.toString()}`;
@@ -465,7 +465,7 @@ export function clearWinnerCache() {
 // is the stable key, the slug is decoration Discourse can resolve without.
 function challengeCategorySlug() {
   return (
-    Category.findById(Number(settings.monthly_category_id))?.slug || ""
+    Category.findById(Number(settings.challenge_category_id))?.slug || ""
   ).trim();
 }
 
@@ -473,7 +473,7 @@ function challengeCategorySlug() {
 // formats on current Discourse; as an HTML page this path 404s. User-facing
 // hrefs go through tagPageUrl() instead.
 function tagListJsonUrl(tag) {
-  const categoryId = Number(settings.monthly_category_id);
+  const categoryId = Number(settings.challenge_category_id);
   const slug = challengeCategorySlug();
   const categoryPath = slug ? `${slug}/${categoryId}` : `${categoryId}`;
   return `/tags/c/${categoryPath}/${encodeURIComponent(tag)}.json`;
@@ -601,7 +601,7 @@ function isChallengePage() {
 
 function isChallengeCategoryUrl(url) {
   const path = new URL(url, window.location.origin).pathname.replace(/\/+$/, "");
-  const categoryId = Number(settings.monthly_category_id);
+  const categoryId = Number(settings.challenge_category_id);
   const categorySlug = challengeCategorySlug();
 
   return (
@@ -1190,7 +1190,7 @@ const spcRun = (api) => {
         return;
       }
 
-      const category = Category.findById(Number(settings.monthly_category_id));
+      const category = Category.findById(Number(settings.challenge_category_id));
       if (composerService?.openNewTopic && category) {
         try {
           await composerService.openNewTopic({

@@ -188,7 +188,7 @@ function activeHeroCategory(category) {
 
   // The Monthly Challenge has a data-backed hero with its own lifecycle. It
   // deliberately shares renderHero(), but it does not use this generic path.
-  if (!id || id === Number(settings.monthly_category_id)) {
+  if (!id || id === Number(settings.challenge_category_id)) {
     return null;
   }
 
@@ -202,7 +202,7 @@ function activeHeroCategory(category) {
 function categoryCreateLabel(category) {
   const id = Number(category?.id);
 
-  if (id === Number(settings.monthly_category_id)) {
+  if (id === Number(settings.challenge_category_id)) {
     return i18n(themePrefix("monthly_challenge.submit_photo"));
   }
   if (id === Number(settings.critique_category_id)) {

@@ -89,7 +89,7 @@ homepage_about_url_fr:
 challenge_category_id:
   type: integer
   default: 6
-  description: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL). Keep in sync with monthly_category_id."
+  description: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL)."
 
 round_tag_mode:
   type: enum
@@ -119,10 +119,6 @@ challenge_max_entries_per_round:
   default: 1
   min: 0
   description: "Monthly Challenge: how many photos one member may enter per round. When reached, the submission form shows a friendly notice and disables its submit button. 0 turns the check off. This is an in-form nudge, not server-side enforcement."
-
-monthly_category_id:
-  type: integer
-  default: 6
 
 challenge_timezone:
   type: string

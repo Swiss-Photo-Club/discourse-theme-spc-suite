@@ -208,6 +208,7 @@ en:
     location_hint: Where you're based, e.g. Zürich or Lausanne.
     location_hint_geo: Start typing a place and pick a match. This is used to show where members are based. City level is sufficient. Please don't enter a street address.
     location_placeholder: Search for a city or place…
+    location_attribution: Locations provided by
     bio_label: Your bio
     bio_hint: Tell us about yourself and your photography.
     save: Save profile

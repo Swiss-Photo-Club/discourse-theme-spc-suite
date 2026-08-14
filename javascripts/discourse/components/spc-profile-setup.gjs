@@ -333,6 +333,18 @@ export default class SpcProfileSetup extends Component {
                   }}
                   class="spc-profile-setup__location-selector"
                 />
+                {{! Stands in for the plugin's provider row, which renders
+                    its markup escaped and is hidden in profile-setup.scss.
+                    Names Nominatim's data source; update if the
+                    location_geocoding_provider setting ever changes. }}
+                <p class="spc-profile-setup__attribution">
+                  {{i18n (themePrefix "profile_setup.location_attribution")}}
+                  <a
+                    href="https://www.openstreetmap.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >OpenStreetMap</a>
+                </p>
               {{else}}
                 <input
                   id="spc-profile-location"

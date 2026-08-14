@@ -68,6 +68,12 @@
       resize: none;
     }
 
+    // Bio links rendering coral is a brand rule and lives in branding.scss
+    // (--fg-action side of the colour boundary), not here: this file stays
+    // on core palette tokens. A rule here once said var(--tertiary) on the
+    // strength of a stale comment claiming tertiary was the coral — the live
+    // palette's tertiary is the brand navy, so it painted links like text.
+
     // The Locations plugin's place picker (rendered only when the plugin is
     // installed); claim the field's full width like the other inputs. Its
     // inner styling ships with the plugin's own stylesheet.
@@ -75,11 +81,24 @@
       width: 100%;
     }
 
-    // Bio links rendering coral is a brand rule and lives in branding.scss
-    // (--fg-action side of the colour boundary), not here: this file stays
-    // on core palette tokens. A rule here once said var(--tertiary) on the
-    // strength of a stale comment claiming tertiary was the coral — the live
-    // palette's tertiary is the brand navy, so it painted links like text.
+    // Restyle the picker's trigger to sit with the plain inputs above it —
+    // same surface, border and type size.
+    .d-multi-select-trigger {
+      box-sizing: border-box;
+      width: 100%;
+      background: var(--secondary);
+      border: 1px solid var(--primary-medium);
+      padding: 0.45em 0.6em;
+      font-size: var(--font-up-1);
+    }
+  }
+
+  // Attribution for the geocoder, rendered by the page itself — see the
+  // hidden provider row at the end of this file.
+  &__attribution {
+    margin: 0.5em 0 0;
+    font-size: var(--font-down-1);
+    color: var(--primary-medium);
   }
 
   &__optional {
@@ -151,4 +170,34 @@
   .spc-profile-setup__avatar {
     flex-wrap: wrap;
   }
+}
+
+// ---------- Locations picker dropdown (renders in a DMenu portal) -----------
+// The picker's results float at the document root, outside .spc-profile-setup,
+// so these rules cannot be page-scoped. They are plugin-scoped instead: only
+// the geo picker renders .location-form-result inside a d-multi-select, so
+// core multi-selects are untouched. Wherever the plugin's picker appears
+// (this page, native preferences), the same calm rows apply.
+
+// Result rows: body-size regular text, not the shouty bold the global label
+// styling gives the <li><label> markup the plugin uses.
+[data-identifier="d-multi-select"]
+  .d-multi-select__result:has(.location-form-result) {
+  font-size: var(--font-0);
+
+  .location-form-result label {
+    margin: 0;
+    padding: 0.35em 0.25em;
+    font-weight: 400;
+    cursor: pointer;
+  }
+}
+
+// The plugin appends a provider-attribution row whose markup arrives escaped
+// and renders as literal "<a href=...>" text (upstream bug). It is always the
+// last geo row. Hidden here; the page shows its own attribution line under
+// the field instead. Drop this when the plugin renders the row properly.
+[data-identifier="d-multi-select"]
+  .d-multi-select__result:has(.location-form-result):last-child {
+  display: none;
 }

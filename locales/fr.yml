@@ -165,6 +165,7 @@ fr:
     location_hint: Où tu es basé·e, par ex. Zurich ou Lausanne.
     location_hint_geo: Commence à taper un lieu et choisis une correspondance. Cela permet de montrer où se trouvent les membres. La ville suffit – merci de ne pas indiquer d'adresse précise.
     location_placeholder: Rechercher une ville ou un lieu…
+    location_attribution: Localisations fournies par
     bio_label: Ta bio
     bio_hint: Parle-nous de toi et de ta photographie.
     save: Enregistrer le profil

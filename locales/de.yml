@@ -160,6 +160,19 @@ de:
     heading: Richte dein Profil ein
     lead: Hilf den anderen, dich kennenzulernen. Alles ist optional – füll jetzt aus, was du magst, und ergänze den Rest jederzeit.
     login_required: Bitte melde dich an, um dein Profil einzurichten.
+    photo_label: Profilfoto
+    photo_hint: Am besten ein Porträt – aber für deinen Avatar funktioniert alles.
+    photo_button: Foto hochladen
+    website_label: Deine Website
+    website_hint: Auch ein Link zu Instagram, Flickr usw. funktioniert, wenn du keine Website hast.
+    location_label: Ort
+    location_hint: Wo du zuhause bist, z. B. Zürich oder Lausanne.
+    bio_label: Über dich
+    bio_hint: Erzähl uns etwas über dich und deine Fotografie.
+    save: Profil speichern
+    saving: Wird gespeichert…
+    saved: Dein Profil ist gespeichert.
+    view_profile: Zu deinem Profil →
   monthly_challenge:
     label: Monatliche Challenge
     current: Challenge des Monats

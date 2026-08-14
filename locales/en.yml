@@ -199,6 +199,19 @@ en:
     heading: Set up your profile
     lead: Help everyone get to know you. These are all optional — add what you'd like now and update the rest any time.
     login_required: Please log in to set up your profile.
+    photo_label: Profile photo
+    photo_hint: Ideally a headshot, but anything works for your avatar.
+    photo_button: Upload a photo
+    website_label: Your website
+    website_hint: Can be a link to Instagram, Flickr, etc. if you don't have a website.
+    location_label: Location
+    location_hint: Where you're based, e.g. Zürich or Lausanne.
+    bio_label: Your bio
+    bio_hint: Tell us about yourself and your photography.
+    save: Save profile
+    saving: Saving…
+    saved: Your profile is saved.
+    view_profile: View your profile →
   monthly_challenge:
     label: Monthly challenge
     current: Challenge of the month

@@ -156,6 +156,19 @@ fr:
     heading: Configure ton profil
     lead: Aide les autres à faire ta connaissance. Tout est facultatif – remplis ce que tu veux maintenant et complète le reste quand tu veux.
     login_required: Merci de te connecter pour configurer ton profil.
+    photo_label: Photo de profil
+    photo_hint: Idéalement un portrait – mais tout convient pour ton avatar.
+    photo_button: Télécharger une photo
+    website_label: Ton site web
+    website_hint: Un lien vers Instagram, Flickr, etc. convient aussi si tu n'as pas de site.
+    location_label: Localisation
+    location_hint: Où tu es basé·e, par ex. Zurich ou Lausanne.
+    bio_label: Ta bio
+    bio_hint: Parle-nous de toi et de ta photographie.
+    save: Enregistrer le profil
+    saving: Enregistrement…
+    saved: Ton profil est enregistré.
+    view_profile: Voir ton profil →
   monthly_challenge:
     label: Challenge du mois
     current: Challenge du mois

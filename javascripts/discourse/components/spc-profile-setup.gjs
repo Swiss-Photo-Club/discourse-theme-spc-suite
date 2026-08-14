@@ -8,6 +8,7 @@ import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { service } from "@ember/service";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DButton from "discourse/components/d-button";
+import DEditor from "discourse/components/d-editor";
 import { ajax } from "discourse/lib/ajax";
 import { extractError } from "discourse/lib/ajax-error";
 import DiscourseURL, { userPath } from "discourse/lib/url";
@@ -236,20 +237,27 @@ export default class SpcProfileSetup extends Component {
             </div>
 
             <div class="spc-profile-setup__field">
-              <label for="spc-profile-bio">
+              {{! A span, not a label: DEditor renders its own textarea with
+                  its own id, so a for= would point at nothing. }}
+              <span class="spc-profile-setup__label">
                 {{i18n (themePrefix "profile_setup.bio_label")}}
                 <span class="spc-profile-setup__optional">
                   {{i18n (themePrefix "form.optional")}}
                 </span>
-              </label>
+              </span>
               <p class="spc-profile-setup__hint">
                 {{i18n (themePrefix "profile_setup.bio_hint")}}
               </p>
-              <textarea
-                id="spc-profile-bio"
-                rows="6"
-                {{on "input" (fn this.updateField "bio")}}
-              >{{this.bio}}</textarea>
+              {{! The same markdown editor core uses for "About me" in
+                  preferences, so the bio stays plain profile markdown.
+                  Toolbar edits reach @change too: text manipulation
+                  dispatches a synthetic bubbling "input" event on the
+                  textarea, so saving right after a toolbar click loses
+                  nothing. }}
+              <DEditor
+                @value={{this.bio}}
+                @change={{fn this.updateField "bio"}}
+              />
             </div>
 
             {{#if this.error}}

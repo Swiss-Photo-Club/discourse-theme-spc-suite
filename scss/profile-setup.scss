@@ -39,7 +39,10 @@
   &__field {
     margin-bottom: 1.75em;
 
-    label {
+    // __label is the bio's heading — a span, because DEditor renders its own
+    // textarea and a label's for= would point at nothing.
+    label,
+    .spc-profile-setup__label {
       display: block;
       font-weight: 700;
       margin-bottom: 0.25em;
@@ -56,6 +59,13 @@
     textarea {
       resize: vertical;
       min-height: 14em;
+    }
+
+    // The bio's DEditor. Its input is a textarea inside this field, so the
+    // generic rules above reach it; resizing is the editor wrapper's job,
+    // and hand-resizing the inner textarea would overflow it.
+    .d-editor-input {
+      resize: none;
     }
   }
 

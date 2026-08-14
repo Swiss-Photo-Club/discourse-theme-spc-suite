@@ -156,6 +156,7 @@ de:
     error_no_title: Bitte gib deiner Vorstellung einen Titel.
     error_no_about: Bitte erzähl uns etwas über dich.
   profile_setup:
+    menu_item: Dein Profil bearbeiten
     heading: Richte dein Profil ein
     lead: Hilf den anderen, dich kennenzulernen. Alles ist optional – füll jetzt aus, was du magst, und ergänze den Rest jederzeit.
     login_required: Bitte melde dich an, um dein Profil einzurichten.

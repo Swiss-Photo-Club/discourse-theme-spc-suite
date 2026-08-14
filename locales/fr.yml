@@ -152,6 +152,7 @@ fr:
     error_no_title: Merci de donner un titre à ta présentation.
     error_no_about: Merci de nous parler un peu de toi.
   profile_setup:
+    menu_item: Modifier ton profil
     heading: Configure ton profil
     lead: Aide les autres à faire ta connaissance. Tout est facultatif – remplis ce que tu veux maintenant et complète le reste quand tu veux.
     login_required: Merci de te connecter pour configurer ton profil.

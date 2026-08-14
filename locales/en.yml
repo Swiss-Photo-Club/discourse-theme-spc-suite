@@ -195,6 +195,7 @@ en:
     error_no_title: Please give your introduction a title.
     error_no_about: Please tell us a little about yourself.
   profile_setup:
+    menu_item: Edit your profile
     heading: Set up your profile
     lead: Help everyone get to know you. These are all optional — add what you'd like now and update the rest any time.
     login_required: Please log in to set up your profile.

@@ -73,6 +73,8 @@ de:
       nonmember_join_url_fr: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die französische Oberfläche."
       nonmember_categories_url: "Nichtmitglieder-Banner: Ziel des Buttons zum Durchsuchen der Kategorien."
       nonmember_show_categories_button: "Nichtmitglieder-Banner: Den Button zum Durchsuchen der Kategorien anzeigen."
+      nonmember_trial_mode: "Nichtmitglieder-Banner: Launch-Modus für die offene Testphase. Solange aktiv, sehen ausgeloggte Besucher die Einladung zur kostenlosen Testphase und einen Button ‚Anmelden und kostenlos testen‘, der zu /login führt (die Testphase startet automatisch bei der ersten Anmeldung); eingeloggte Nichtmitglieder behalten den Mitgliedschafts-Aufruf. Nur einschalten, solange spc-be die offene Testphase gewährt; ausgeschaltet gilt wieder der normale Beitritts-Text."
+      nonmember_trial_days: "Nichtmitglieder-Banner: Dauer der Testphase in Tagen, die in der Einladung genannt wird. Muss zu trial_days in spc-be passen (Nova → Community Trial Settings). 0 lässt die Dauer im Text weg, z. B. solange sie sich je nach Land unterscheidet."
   banner:
     title: Monatliche Foto-Challenge
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.

@@ -73,6 +73,8 @@ fr:
       nonmember_join_url_fr: "Bannière non-membres : destination du bouton d’adhésion pour l’interface française."
       nonmember_categories_url: "Bannière non-membres : destination du bouton permettant de parcourir les catégories."
       nonmember_show_categories_button: "Bannière non-membres : afficher le bouton permettant de parcourir les catégories."
+      nonmember_trial_mode: "Bannière non-membres : mode lancement de l’essai ouvert. Tant qu’il est activé, les visiteurs non connectés voient l’invitation à l’essai gratuit et un bouton « Se connecter pour démarrer votre essai gratuit » menant à /login (l’essai démarre automatiquement à la première connexion) ; les non-membres connectés gardent l’appel à l’adhésion. À activer seulement pendant que spc-be accorde l’essai ouvert ; désactivé, le texte d’adhésion habituel revient."
+      nonmember_trial_days: "Bannière non-membres : durée de l’essai en jours mentionnée dans l’invitation. À garder en accord avec trial_days dans spc-be (Nova → Community Trial Settings). 0 omet la durée dans le texte, p. ex. tant qu’elle varie selon le pays."
   form:
     optional: (optionnel)
     required: (obligatoire)

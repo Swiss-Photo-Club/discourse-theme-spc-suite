@@ -293,3 +293,14 @@ nonmember_show_categories_button:
   type: bool
   default: true
   description: "Non-Member Banner: show the browse-categories button."
+
+nonmember_trial_mode:
+  type: bool
+  default: false
+  description: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
+
+nonmember_trial_days:
+  type: integer
+  default: 30
+  min: 0
+  description: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."

@@ -1116,12 +1116,15 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
     display: none;
   }
 
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper,
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper > a,
+  // The photo keeps the size Discourse cooked it at (the max_image_width /
+  // max_image_height site settings, 690x500 by default) and the lightbox is
+  // the "expand" affordance — the same compact look a stock topic has. This
+  // rule used to force the wrapper, link and image to width: 100% so the photo
+  // filled the full-bleed column, which rendered a 333x500 portrait at
+  // ~1500x2250, several screens tall. The max-height is only a guard for the
+  // day the site setting is raised: it shrinks, never scales up.
   body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper img {
-    display: block;
-    width: 100% !important;
-    max-width: none !important;
+    max-height: 75vh;
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .post__menu-area {

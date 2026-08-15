@@ -436,6 +436,13 @@ en:
     description: Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.
     join: Join the community
     browse_categories: Browse categories
+    trial:
+      eyebrow: Swiss Photo Club · Community · Free trial
+      description: "Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with. Log in with your Swiss Photo Club account — or create one — and your free trial starts automatically."
+      description_with_days:
+        one: "Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with. Log in with your Swiss Photo Club account — or create one — and your free %{count}-day trial starts automatically."
+        other: "Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with. Log in with your Swiss Photo Club account — or create one — and your free %{count}-day trial starts automatically."
+      login: Log in to start your free trial
   hero:
     generic:
       eyebrow: Community category

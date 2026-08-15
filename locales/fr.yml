@@ -432,6 +432,13 @@ fr:
     description: Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous.
     join: Rejoindre la communauté
     browse_categories: Parcourir les catégories
+    trial:
+      eyebrow: Swiss Photo Club · Community · Essai gratuit
+      description: "Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous. Connectez-vous avec votre compte Swiss Photo Club — ou créez-en un — et votre essai gratuit démarre automatiquement."
+      description_with_days:
+        one: "Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous. Connectez-vous avec votre compte Swiss Photo Club — ou créez-en un — et votre essai gratuit de %{count} jour démarre automatiquement."
+        other: "Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous. Connectez-vous avec votre compte Swiss Photo Club — ou créez-en un — et votre essai gratuit de %{count} jours démarre automatiquement."
+      login: Se connecter pour démarrer votre essai gratuit
   hero:
     generic:
       eyebrow: Catégorie de la communauté

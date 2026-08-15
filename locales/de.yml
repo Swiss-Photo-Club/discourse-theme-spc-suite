@@ -436,6 +436,13 @@ de:
     description: Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst.
     join: Community beitreten
     browse_categories: Kategorien durchsuchen
+    trial:
+      eyebrow: Swiss Photo Club · Community · Kostenlos testen
+      description: "Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst. Melde dich mit deinem Swiss-Photo-Club-Konto an — oder erstelle eines — und deine kostenlose Testphase startet automatisch."
+      description_with_days:
+        one: "Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst. Melde dich mit deinem Swiss-Photo-Club-Konto an — oder erstelle eines — und deine kostenlose Testphase von einem Tag startet automatisch."
+        other: "Teile deine Fotos, gib und erhalte konstruktives Feedback, nimm an der monatlichen Challenge teil und finde Menschen in deiner Nähe, mit denen du fotografieren kannst. Melde dich mit deinem Swiss-Photo-Club-Konto an — oder erstelle eines — und deine kostenlose Testphase von %{count} Tagen startet automatisch."
+      login: Anmelden und kostenlos testen
   hero:
     generic:
       eyebrow: Community-Kategorie

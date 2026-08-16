@@ -22,6 +22,14 @@ read from `nonmember_member_groups` — the banner uses it too now. Discourse's 
 permissions remain the real enforcement; this only stops people walking into a hidden button
 or a 403.
 
+## Unreleased — Trial access parity
+
+The SPC `trial` group now counts as a member group in the theme defaults. Trial users see the
+member onboarding panel and no longer see the non-member join banner, matching paid members
+during their trial. The live Discourse category permissions and Category Lockdown allowlists
+must include the same group so topic access, replies and new-topic creation stay aligned with
+the theme experience.
+
 ## Unreleased — Challenge admin panel
 
 Running a round previously meant four different hidden Discourse menus (tag groups page,

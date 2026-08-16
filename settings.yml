@@ -235,9 +235,9 @@ leaderboard_show_on_homepage:
 onboarding_member_groups:
   type: list
   list_type: group
-  default: "40"
+  default: "40|44"
   resolve_group_membership: true
-  description: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ group."
+  description: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ and ‘trial’ groups."
 
 onboarding_profile_url:
   type: string
@@ -265,9 +265,9 @@ profile_setup_replaces_preferences:
 nonmember_member_groups:
   type: list
   list_type: group
-  default: "40|1|2"
+  default: "40|44|1|2"
   resolve_group_membership: true
-  description: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ group."
+  description: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ and ‘trial’ groups, plus administrators and moderators."
 
 nonmember_join_url_de:
   type: string

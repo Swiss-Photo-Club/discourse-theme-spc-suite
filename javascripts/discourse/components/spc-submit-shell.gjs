@@ -5,9 +5,10 @@ import DButton from "discourse/components/d-button";
 import DiscourseURL from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
 import { or } from "truth-helpers";
+import { isSpcMember, membersOnlyUrl } from "../lib/spc-membership";
 
 // The chrome every /submit/* page shares: the page shell, the header with its
-// close button, the signed-out gate, the error slot and the actions row. It
+// close button, the members-only gate, the error slot and the actions row. It
 // owns no form state — the fields and everything that validates or posts them
 // live in the calling component, which extends lib/spc-submit-base.
 //
@@ -15,11 +16,14 @@ import { or } from "truth-helpers";
 //
 //   <:meta>   optional, sits in the header beside the heading. Only the
 //             challenge form uses it, for the round tag.
-//   <:fields> the form body, rendered only when someone is signed in.
+//   <:fields> the form body, rendered only for community members.
 //
-// The signed-out gate is here rather than in the base class because it is the
-// one piece of this that is purely markup: a form with no fields rendered has
-// nothing to validate, so no mode needs to know about it.
+// The gate is here rather than in the base class because it is the one piece
+// of this that is purely markup: a form with no fields rendered has nothing to
+// validate, so no mode needs to know about it. Normally nobody sees it — the
+// /submit/* routes already send non-members to the members-only page in
+// beforeModel — it is the fallback for a shell rendered any other way, and it
+// keeps a signed-in non-member from filling in a form Discourse will 403.
 
 export default class SpcSubmitShell extends Component {
   @service currentUser;
@@ -28,9 +32,32 @@ export default class SpcSubmitShell extends Component {
     return this.args.submitIcon ?? "camera";
   }
 
+  get canPost() {
+    return isSpcMember(this.currentUser);
+  }
+
+  get gateMessage() {
+    return this.currentUser
+      ? i18n(themePrefix("form.members_only"))
+      : i18n(themePrefix("form.login_required"));
+  }
+
+  get gateButton() {
+    return this.currentUser
+      ? i18n(themePrefix("form.members_only_button"))
+      : i18n(themePrefix("form.login_button"));
+  }
+
   @action
-  goToLogin() {
-    DiscourseURL.routeTo("/login");
+  goToGate() {
+    // Members-only page when configured (it offers sign-in, trial and
+    // membership per visitor state); Discourse's own login otherwise.
+    const url = membersOnlyUrl();
+    if (url) {
+      DiscourseURL.redirectTo(url);
+    } else {
+      DiscourseURL.routeTo("/login");
+    }
   }
 
   <template>
@@ -51,7 +78,7 @@ export default class SpcSubmitShell extends Component {
           />
         </div>
 
-        {{#if this.currentUser}}
+        {{#if this.canPost}}
           {{yield to="fields"}}
 
           {{#if @error}}
@@ -81,10 +108,10 @@ export default class SpcSubmitShell extends Component {
           </div>
         {{else}}
           <div class="spc-submit-page__login">
-            <p>{{i18n (themePrefix "form.login_required")}}</p>
+            <p>{{this.gateMessage}}</p>
             <DButton
-              @translatedLabel={{i18n (themePrefix "form.login_button")}}
-              @action={{this.goToLogin}}
+              @translatedLabel={{this.gateButton}}
+              @action={{this.goToGate}}
               class="btn-primary"
             />
           </div>

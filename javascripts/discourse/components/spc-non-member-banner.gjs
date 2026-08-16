@@ -2,6 +2,7 @@ import Component from "@glimmer/component";
 import { service } from "@ember/service";
 import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
+import { isSpcMember } from "../lib/spc-membership";
 
 // With DiscourseConnect on, /login hands straight over to the SSO provider
 // (api.swissphotoclub.com/login), which is where the trial actually starts:
@@ -24,22 +25,7 @@ export default class SpcNonMemberBanner extends Component {
   }
 
   get isMember() {
-    if (Object.hasOwn(settings, "user_in_nonmember_member_groups")) {
-      return settings.user_in_nonmember_member_groups;
-    }
-
-    if (!this.currentUser) {
-      return false;
-    }
-
-    const memberGroupIds = String(settings.nonmember_member_groups || "")
-      .split("|")
-      .filter(Boolean)
-      .map(Number);
-
-    return (this.currentUser.groups || []).some((group) =>
-      memberGroupIds.includes(group.id)
-    );
+    return isSpcMember(this.currentUser);
   }
 
   get shouldShow() {

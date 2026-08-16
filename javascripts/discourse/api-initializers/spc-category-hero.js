@@ -2,6 +2,7 @@ import { apiInitializer } from "discourse/lib/api";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 import { clearHero, renderHero, uploadUrl } from "../lib/spc-hero";
+import { gatePostingHref } from "../lib/spc-membership";
 
 const RENDER_THROTTLE_MS = 200;
 
@@ -317,7 +318,16 @@ export default apiInitializer((api) => {
     const { id, entry, category } = active;
     const cover = uploadUrl(category.uploaded_background);
     const locale = document.documentElement.lang || "en";
-    const actions = entry.actions(category, currentUser);
+    // Posting actions (/submit/*, /new-topic) go to the members-only page for
+    // visitors who cannot post — Discourse would only hide the button or 403
+    // the composer, and the /submit routes redirect anyway; rewriting here
+    // makes the hero honest about where the click ends up. Browse links stay.
+    const actions = entry
+      .actions(category, currentUser)
+      .map((entryAction) => ({
+        ...entryAction,
+        href: gatePostingHref(entryAction.href, currentUser),
+      }));
     const description = categoryDescription(category);
     const topicUrl = categoryTopicUrl(category);
 

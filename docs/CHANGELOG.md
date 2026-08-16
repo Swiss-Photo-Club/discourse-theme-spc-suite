@@ -4,6 +4,24 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Members-only gate on posting
+
+Non-members could reach every `/submit/*` form: signed-out visitors met a "log in" gate, but a
+signed-in non-member (ineligible or expired trial) saw the whole form, filled it in and only
+learned on submit that Discourse refuses the post (403 — `jeder` has no Create right in the
+locked categories), losing their work. The category-7 hero also offered its two form buttons to
+everyone, and the category-8 hero its "propose a meetup" composer link.
+
+All of it now goes where a locked topic already goes: the spc-be members-only page
+(`https://api.swissphotoclub.com/community/members-only`, setting `members_only_url`), which
+branches per visitor — sign in, start the trial, trial ended, become a member. The four
+`/submit/*` routes redirect in `beforeModel`, so no form ever renders; the shell keeps a
+members-only gate as the fallback; category heroes rewrite `/submit/*` and `/new-topic` hrefs
+for non-members and leave browse links alone. "Member" is one definition, `lib/spc-membership.js`,
+read from `nonmember_member_groups` — the banner uses it too now. Discourse's category
+permissions remain the real enforcement; this only stops people walking into a hidden button
+or a 403.
+
 ## Unreleased — Challenge admin panel
 
 Running a round previously meant four different hidden Discourse menus (tag groups page,

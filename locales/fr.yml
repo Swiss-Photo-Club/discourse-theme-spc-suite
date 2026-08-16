@@ -75,6 +75,7 @@ fr:
       nonmember_show_categories_button: "Bannière non-membres : afficher le bouton permettant de parcourir les catégories."
       nonmember_trial_mode: "Bannière non-membres : mode lancement de l’essai ouvert. Tant qu’il est activé, les visiteurs non connectés voient l’invitation à l’essai gratuit et un bouton « Se connecter pour démarrer votre essai gratuit » menant à /login (l’essai démarre automatiquement à la première connexion) ; les non-membres connectés gardent l’appel à l’adhésion. À activer seulement pendant que spc-be accorde l’essai ouvert ; désactivé, le texte d’adhésion habituel revient."
       nonmember_trial_days: "Bannière non-membres : durée de l’essai en jours mentionnée dans l’invitation. À garder en accord avec trial_days dans spc-be (Nova → Community Trial Settings). 0 omet la durée dans le texte, p. ex. tant qu’elle varie selon le pays."
+      members_only_url: "Page réservée aux membres : destination des non-membres qui ouvrent un formulaire /submit ou un bouton de publication dans une catégorie où ils ne peuvent pas publier — la même page spc-be vers laquelle le plugin Category Lockdown redirige les sujets verrouillés. Vide : retour au /login de Discourse."
   form:
     optional: (optionnel)
     required: (obligatoire)
@@ -91,6 +92,8 @@ fr:
     submitting: Envoi en cours…
     login_required: Connecte-toi pour envoyer une photo.
     login_button: Se connecter
+    members_only: Publier ici est réservé aux membres de la communauté. Connecte-toi en tant que membre, démarre ton essai ou deviens membre pour continuer.
+    members_only_button: Voir tes options
     error_no_title: Merci de donner un titre à ta photo.
     error_no_photo: Merci de téléverser une photo.
     discard_confirm: Abandonner cette participation ?

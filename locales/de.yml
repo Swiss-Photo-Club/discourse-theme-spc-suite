@@ -75,6 +75,7 @@ de:
       nonmember_show_categories_button: "Nichtmitglieder-Banner: Den Button zum Durchsuchen der Kategorien anzeigen."
       nonmember_trial_mode: "Nichtmitglieder-Banner: Launch-Modus für die offene Testphase. Solange aktiv, sehen ausgeloggte Besucher die Einladung zur kostenlosen Testphase und einen Button ‚Anmelden und kostenlos testen‘, der zu /login führt (die Testphase startet automatisch bei der ersten Anmeldung); eingeloggte Nichtmitglieder behalten den Mitgliedschafts-Aufruf. Nur einschalten, solange spc-be die offene Testphase gewährt; ausgeschaltet gilt wieder der normale Beitritts-Text."
       nonmember_trial_days: "Nichtmitglieder-Banner: Dauer der Testphase in Tagen, die in der Einladung genannt wird. Muss zu trial_days in spc-be passen (Nova → Community Trial Settings). 0 lässt die Dauer im Text weg, z. B. solange sie sich je nach Land unterscheidet."
+      members_only_url: "Nur-für-Mitglieder-Seite: Ziel für Nichtmitglieder, die ein /submit-Formular oder einen Beitrags-Button in einer Kategorie ohne Schreibrecht öffnen — dieselbe spc-be-Seite, auf die das Category-Lockdown-Plugin gesperrte Themen umleitet. Leer fällt auf Discourse’ /login zurück."
   banner:
     title: Monatliche Foto-Challenge
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.
@@ -95,6 +96,8 @@ de:
     submitting: Wird eingereicht…
     login_required: Bitte melde dich an, um ein Foto einzureichen.
     login_button: Anmelden
+    members_only: Beiträge sind hier den Community-Mitgliedern vorbehalten. Melde dich als Mitglied an, starte deine Testphase oder werde Mitglied, um weiterzumachen.
+    members_only_button: Deine Möglichkeiten ansehen
     error_no_title: Bitte gib deinem Foto einen Titel.
     error_no_photo: Bitte lade ein Foto hoch.
     discard_confirm: Einreichung verwerfen?

@@ -304,3 +304,12 @@ nonmember_trial_days:
   default: 30
   min: 0
   description: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
+
+# -----------------------------------------------------------------------------
+# Members-only access
+# -----------------------------------------------------------------------------
+
+members_only_url:
+  type: string
+  default: "https://api.swissphotoclub.com/community/members-only"
+  description: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."

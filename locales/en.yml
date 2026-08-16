@@ -75,6 +75,7 @@ en:
       nonmember_show_categories_button: "Non-Member Banner: show the browse-categories button."
       nonmember_trial_mode: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
       nonmember_trial_days: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
+      members_only_url: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."
   banner:
     title: Monthly photo challenge
     subtitle: Share your best shot for this month's theme and vote for your favorites.
@@ -95,6 +96,8 @@ en:
     submitting: Submitting…
     login_required: Please log in to submit a photo.
     login_button: Log in
+    members_only: Posting here is for community members. Sign in as a member, start your trial or become a member to continue.
+    members_only_button: See your options
     error_no_title: Please give your photo a title.
     error_no_photo: Please upload a photograph.
     discard_confirm: Discard this submission?

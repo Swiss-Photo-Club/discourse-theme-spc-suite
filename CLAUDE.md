@@ -252,6 +252,11 @@ Tag ids ride on the tag objects `{id, name, slug}` that topic listings serialize
 `tagPageUrl()` in `spc-monthly-challenge.js` builds hrefs from them; `tagListJsonUrl()` is
 for fetches only.
 
+**Localized tag `name` values are display labels, not API route keys.** In German the August
+round serializes as `{ name: "2026-08-tiere", slug: "2026-08-animals" }`: the localized-name
+JSON route 404s while the canonical-slug route succeeds. Use `tagName()` for rendered copy and
+date-prefix matching, and `tagSlug()` for tag URL paths and tag mutation payloads.
+
 **Permalinks match the full request path, query string included.** `submit` matches `/submit`
 and nothing else. Every query-param variant of a theme-owned route needs its own permalink row,
 which is why modes are carried by the **category** in the destination rather than an extra param.
@@ -272,6 +277,11 @@ any new networked renderer must too.
 3. Never clear a cache in a failure handler without a cool-off. `FAILURE_COOL_OFF_MS = 60000`.
 4. Gate on "does this page need the data" **before** awaiting it (`needsChallengeData()`).
 5. Expire caches on a TTL, not on every `onPageChange`. `CACHE_TTL_MS = 5 min`.
+
+The challenge initializer and staff panel also share the cached in-flight category-listing
+promise from `fetchChallengeCategoryTopics()`. Do not put an independent
+`/c/<challenge-id>/l/latest.json` request back in the panel: both mount together, and the duplicate
+was enough for the panel to intermittently receive a 429 on page load.
 
 Regression baselines: a Meetups or Announcements page makes **zero** challenge requests; the
 critique page requests `/leaderboard/1.json` **exactly once**.

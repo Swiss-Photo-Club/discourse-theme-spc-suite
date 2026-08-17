@@ -308,6 +308,14 @@ export function tagName(tag) {
   return typeof tag === "string" ? tag : tag?.name || "";
 }
 
+// Localized tags expose their translated label as `name` but retain the
+// canonical, routable value as `slug`. German therefore serializes the active
+// round as { name: "2026-08-tiere", slug: "2026-08-animals" }. Use the name
+// for display and date-prefix matching, and this value for URL/API paths.
+export function tagSlug(tag) {
+  return typeof tag === "string" ? tag : tag?.slug || tag?.name || "";
+}
+
 export function findRoundTag(tags) {
   return (tags || []).find((tag) => /^\d{4}-\d{2}/.test(tagName(tag)));
 }
@@ -331,17 +339,28 @@ export function tagPageUrl(tag) {
     : `/tag/${encodeURIComponent(name)}`;
 }
 
+let categoryTopicsPromise = null;
 let pinnedBriefPromise = null;
 
 export function clearPinnedBriefCache() {
+  categoryTopicsPromise = null;
   pinnedBriefPromise = null;
+}
+
+// The challenge renderer and the staff panel mount during the same page load
+// and both need this listing. Sharing the in-flight promise prevents two
+// identical requests from racing each other into Discourse's rate limiter.
+export function fetchChallengeCategoryTopics() {
+  categoryTopicsPromise ||= ajax(`${categoryRoute()}/l/latest.json`).then(
+    (data) => data?.topic_list?.topics || []
+  );
+  return categoryTopicsPromise;
 }
 
 function fetchPinnedBrief() {
   pinnedBriefPromise ||= (async () => {
     try {
-      const data = await ajax(`${categoryRoute()}/l/latest.json`);
-      const topics = data?.topic_list?.topics || [];
+      const topics = await fetchChallengeCategoryTopics();
       // topic.pinned is PER-USER: Discourse auto-unpins a pinned topic for
       // anyone who has read it to the bottom (a user preference, on by
       // default), and the listing then serves pinned:false to that reader -
@@ -1084,6 +1103,24 @@ function repairLegacyCategoryLinks() {
   });
 }
 
+function repairChallengeHeaderLink() {
+  // The separate Custom Header Links component owns this navigation item and
+  // currently emits target="_blank". Keep the repair narrowly scoped to its
+  // same-origin Monthly Challenge link; external header links may still be
+  // intended to open in a new tab.
+  document
+    .querySelectorAll('.custom-header-links a[target="_blank"][href]')
+    .forEach((link) => {
+      const url = new URL(link.href, window.location.origin);
+      if (
+        url.origin === window.location.origin &&
+        isChallengeCategoryUrl(url.href)
+      ) {
+        link.removeAttribute("target");
+      }
+    });
+}
+
 const spcRun = (api) => {
   const composerService = api.container.lookup("service:composer");
   let renderQueued = false;
@@ -1120,6 +1157,7 @@ const spcRun = (api) => {
 
     // Needs no challenge data, so it runs before the gate below.
     repairLegacyCategoryLinks();
+    repairChallengeHeaderLink();
 
     if (!needsChallengeData()) {
       clearChallengeSections();

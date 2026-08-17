@@ -13,9 +13,11 @@ import { i18n } from "discourse-i18n";
 import {
   clearPinnedBriefCache,
   clearWinnerCache,
+  fetchChallengeCategoryTopics,
   findRoundTag,
   tagName,
   tagPageUrl,
+  tagSlug,
   WINNER_TAG,
 } from "../api-initializers/spc-monthly-challenge";
 import { currentMonthYM } from "../lib/spc-submit-helpers";
@@ -162,15 +164,19 @@ export default class SpcChallengeAdmin extends Component {
   }
 
   @action
-  async refresh() {
+  async refresh(event) {
     if (this.loading) {
       return;
+    }
+    // didInsert shares the initializer's in-flight request. An explicit click
+    // is a real refresh and must replace the cached listing first.
+    if (event?.type === "click") {
+      clearPinnedBriefCache();
     }
     this.loading = true;
     this.error = null;
     try {
-      const data = await ajax(`/c/${this.categoryId}/l/latest.json`);
-      const topics = data?.topic_list?.topics || [];
+      const topics = await fetchChallengeCategoryTopics();
       const byRoundDesc = (a, b) =>
         tagName(findRoundTag(b.tags)).localeCompare(
           tagName(findRoundTag(a.tags))
@@ -196,7 +202,9 @@ export default class SpcChallengeAdmin extends Component {
   }
 
   async loadEntries() {
-    if (!this.roundTag) {
+    const roundTag = findRoundTag(this.roundBrief?.tags);
+    const roundTagSlug = tagSlug(roundTag);
+    if (!roundTagSlug) {
       this.entries = [];
       return;
     }
@@ -205,7 +213,7 @@ export default class SpcChallengeAdmin extends Component {
       ? `${slug}/${this.categoryId}`
       : `${this.categoryId}`;
     const data = await ajax(
-      `/tags/c/${categoryPath}/${encodeURIComponent(this.roundTag)}.json?order=votes`
+      `/tags/c/${categoryPath}/${encodeURIComponent(roundTagSlug)}.json?order=votes`
     );
     // Top five only — enough to judge a tie, without turning the panel into
     // a second gallery. The votes page linked below has the rest.
@@ -213,7 +221,10 @@ export default class SpcChallengeAdmin extends Component {
       .filter((topic) => topic.id !== this.roundBrief?.id)
       .slice(0, 5)
       .map((topic) => {
-        const names = (topic.tags || []).map(tagName);
+        // Mutation endpoints need canonical tag values too. Sending the
+        // localized label would otherwise fail (or create a duplicate tag)
+        // when staff crown an entry from a translated interface.
+        const names = (topic.tags || []).map(tagSlug);
         return {
           id: topic.id,
           slug: topic.slug,

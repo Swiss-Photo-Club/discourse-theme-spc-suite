@@ -257,6 +257,11 @@ round serializes as `{ name: "2026-08-tiere", slug: "2026-08-animals" }`: the lo
 JSON route 404s while the canonical-slug route succeeds. Use `tagName()` for rendered copy and
 date-prefix matching, and `tagSlug()` for tag URL paths and tag mutation payloads.
 
+**Custom Header Links defaults missing targets to a new tab.** Its renderer sets `_blank` unless
+the saved target is exactly `self`, while the target field itself has no default; migrated and
+newly incomplete rows therefore open new tabs. `repairInternalHeaderLinks()` removes `_blank`
+from every same-origin link in that component and deliberately leaves external links alone.
+
 **Permalinks match the full request path, query string included.** `submit` matches `/submit`
 and nothing else. Every query-param variant of a theme-owned route needs its own permalink row,
 which is why modes are carried by the **category** in the destination rather than an extra param.

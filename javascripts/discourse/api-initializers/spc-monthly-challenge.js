@@ -1103,19 +1103,16 @@ function repairLegacyCategoryLinks() {
   });
 }
 
-function repairChallengeHeaderLink() {
-  // The separate Custom Header Links component owns this navigation item and
-  // currently emits target="_blank". Keep the repair narrowly scoped to its
-  // same-origin Monthly Challenge link; external header links may still be
-  // intended to open in a new tab.
+function repairInternalHeaderLinks() {
+  // The separate Custom Header Links component emits target="_blank" for any
+  // row whose target is not exactly "self", including legacy rows where the
+  // setting is missing. Internal navigation should stay in this Discourse tab;
+  // external header links keep the component's configured new-tab behaviour.
   document
     .querySelectorAll('.custom-header-links a[target="_blank"][href]')
     .forEach((link) => {
       const url = new URL(link.href, window.location.origin);
-      if (
-        url.origin === window.location.origin &&
-        isChallengeCategoryUrl(url.href)
-      ) {
+      if (url.origin === window.location.origin) {
         link.removeAttribute("target");
       }
     });
@@ -1157,7 +1154,7 @@ const spcRun = (api) => {
 
     // Needs no challenge data, so it runs before the gate below.
     repairLegacyCategoryLinks();
-    repairChallengeHeaderLink();
+    repairInternalHeaderLinks();
 
     if (!needsChallengeData()) {
       clearChallengeSections();

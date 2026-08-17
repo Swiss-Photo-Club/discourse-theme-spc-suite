@@ -13,7 +13,16 @@ export async function fetchSubjectTags(categoryId) {
     const result = await ajax("/tags/filter/search.json", {
       data: { q: "", categoryId, filterForInput: true },
     });
-    return (result?.results || []).map((tag) => tag.name).filter(Boolean);
+    return (result?.results || [])
+      .map((tag) => ({
+        // `name` follows the interface locale (for example `tier` in German),
+        // while `slug` remains the stable tag identifier (`animal`). Keep both:
+        // the form submits the name Discourse returned, but translations must
+        // be looked up with a locale-independent key.
+        name: tag.name || tag.text || tag.slug,
+        slug: tag.slug || tag.name || tag.text,
+      }))
+      .filter((tag) => tag.name && tag.slug);
   } catch {
     return [];
   }
@@ -25,12 +34,15 @@ export async function fetchSubjectTags(categoryId) {
 // describe exactly these tags.
 export function subjectOptions(tags, selected) {
   return tags.map((tag) => {
-    const key = themePrefix(`critique_form.subjects.${tag}`);
-    const label = I18n.t(key);
+    // Accept strings too so this helper remains compatible with callers or
+    // cached data created before fetchSubjectTags started returning both parts.
+    const value = typeof tag === "string" ? tag : tag.name;
+    const slug = typeof tag === "string" ? tag : tag.slug;
+    const key = themePrefix(`critique_form.subjects.${slug}`);
     return {
-      value: tag,
-      label: label && label !== key ? label : tag,
-      selected: tag === selected,
+      value,
+      label: I18n.t(key, { defaultValue: value }),
+      selected: value === selected,
     };
   });
 }

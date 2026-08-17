@@ -146,6 +146,7 @@ de:
       architecture: Architektur
       travel: Reise
       abstract: Abstrakt
+      project: Projekt
   project_form:
     heading: Projekt zur Kritik einreichen
     lead: Zeig eine zusammenhängende Arbeit und sag den Mitgliedern, wo Feedback dir am meisten hilft.

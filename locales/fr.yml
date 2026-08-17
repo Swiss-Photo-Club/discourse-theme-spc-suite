@@ -142,6 +142,7 @@ fr:
       architecture: Architecture
       travel: Voyage
       abstract: Abstrait
+      project: Projet
   project_form:
     heading: Soumettre un projet pour critique
     lead: Partage un travail cohérent et indique aux membres où le feedback te serait le plus utile.

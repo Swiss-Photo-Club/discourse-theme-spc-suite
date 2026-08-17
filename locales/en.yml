@@ -146,6 +146,7 @@ en:
       architecture: Architecture
       travel: Travel
       abstract: Abstract
+      project: Project
   project_form:
     heading: Submit a project for critique
     lead: Share a cohesive body of work and let members know where feedback would help most.

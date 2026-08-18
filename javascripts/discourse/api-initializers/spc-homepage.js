@@ -186,17 +186,12 @@ function enhanceCategories(site) {
       }
     });
 
+  // The feedback card keeps the category's own localised name and
+  // description, like every other compact card. It used to be relabelled
+  // "Site Feedback / Help shape the community." from the locale files, a
+  // leftover from before the category carried real copy — the card only
+  // matters here as the anchor the webinars card is inserted before.
   const feedback = root.querySelector(FEEDBACK_SELECTOR);
-  if (feedback) {
-    setText(
-      feedback.querySelector(".badge-category__name"),
-      translated("site_feedback.title")
-    );
-    setText(
-      feedback.querySelector(".category-description"),
-      translated("site_feedback.description")
-    );
-  }
 
   ensureWebinarCard(list, feedback?.closest(".featured-categories__category-container"));
 }

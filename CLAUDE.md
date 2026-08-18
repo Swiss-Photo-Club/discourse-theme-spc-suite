@@ -183,6 +183,15 @@ The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
 2 `feedback`, 12 `introductions`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
 name disagree, so match on id, never on slug-looks-like-the-name.
 
+**Category 2's "Feedback Type" tags are hardcoded in `lib/spc-feedback.js`.** The category
+requires one tag from that group (min 1) and `FEEDBACK_TYPES = ["idea", "problem", "question"]`
+is what the form's cards post. Rename or remove a tag in that group and the form still renders
+perfectly and every submission 422s at `/posts.json` — the tag list is data, so it is *not*
+fetched the way the critique subject tags are, on purpose: those three names are also what the
+About topic and the status workflow talk about. "Feedback Status" (planned · in-progress ·
+done · not-planned) is staff-only and nothing in the theme reads it. Both groups were created
+2026-08-18 alongside the form.
+
 **Category slugs are never settings.** Settings hold only category ids; every slug the theme
 needs is derived at runtime from `Category.findById(id)` (Discourse preloads all categories
 client-side), so a slug rename in category admin is followed automatically. Discourse resolves

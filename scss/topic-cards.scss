@@ -36,8 +36,8 @@
    unread title at SPC charcoal and raises the read title to gray-600. That
    retains a visible state change while bringing both states comfortably
    above normal-text contrast. We set the variables rather than fighting
-   core's (0,4,1) visited selector, and deliberately leave all typography
-   properties alone.
+   core's (0,4,1) visited selector. The title size below is one restrained
+   step down from core's live 18.38px; font family and weight remain untouched.
 
    MASONRY. These categories are JS-positioned by Topic List Thumbnails
    (component 1), which measures every row. Nothing below sets position,
@@ -65,6 +65,13 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
 .topic-thumbnails-masonry {
   --title-color: var(--spc-charcoal);
   --title-color--read: var(--spc-gray-600);
+}
+
+/* Open Sans has a larger visual presence than NPN's typeface at the same
+   computed size. Reduce only the card title from 18.38px to 17px; metadata,
+   font family and weight continue to come from SPC/core. */
+.topic-thumbnails-masonry .main-link a.title {
+  font-size: 1.0625rem;
 }
 
 @each $slug in $spc-card-slugs {

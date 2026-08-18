@@ -793,10 +793,10 @@ body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
 }
 
 /* The entry title used to be restyled here — charcoal, 16px, 700. Those
-   direct declarations remain gone: topic-cards.scss now adjusts only core's
-   title colour variables across the masonry view. Unread and read topics still
-   differ, but the read state no longer fades to low-contrast #999. Font
-   family, size and weight continue to come from SPC/core.
+   category-specific declarations remain gone. The shared treatment in
+   topic-cards.scss now improves the read/unread colours and gives every
+   masonry title the same restrained 17px size. Font family and weight continue
+   to come from SPC/core.
 
    The pinned card's white title below is deliberate and still here — it sits
    on the indigo footer, carries an extra class, and wins on specificity. */

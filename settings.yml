@@ -211,6 +211,11 @@ critique_intro_category_id:
   default: 12
   description: "Critique Submit: ID of the member introductions category. Used by /submit/introduction to post the introduction."
 
+feedback_category_id:
+  type: integer
+  default: 2
+  description: "Feedback Form: ID of the website feedback category. /submit/feedback posts there, and its hero and New Topic button open the form."
+
 # -----------------------------------------------------------------------------
 # Leaderboard strip
 # -----------------------------------------------------------------------------

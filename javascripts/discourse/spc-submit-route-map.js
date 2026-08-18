@@ -10,6 +10,7 @@ export default function () {
 
   this.route("spc-submit-project", { path: "/submit/project" });
   this.route("spc-submit-introduction", { path: "/submit/introduction" });
+  this.route("spc-submit-feedback", { path: "/submit/feedback" });
 
   // Not a /submit form — the friendly profile page. It rides in this file so
   // the theme keeps a single route map; the file's name predates it.

@@ -54,6 +54,7 @@ fr:
       workspace_enabled_categories: "Espace de critique : catégories où la bannière de l’espace de critique est proposée sur le premier message."
       critique_category_id: "Envoi de critique : ID de la catégorie de critique. Utilisé par /submit/critique pour publier la demande et demander à Discourse quels tags de sujet cette catégorie accepte."
       critique_intro_category_id: "Envoi de critique : ID de la catégorie des présentations des membres. Utilisé par /submit/introduction pour publier la présentation."
+      feedback_category_id: "Formulaire de feedback : ID de la catégorie de feedback sur le site. /submit/feedback y publie, et le hero et le bouton « Nouveau sujet » de cette catégorie ouvrent le formulaire."
       leaderboard_id: "Classement : le classement de gamification à afficher."
       leaderboard_leader_count: "Classement : nombre de membres classés à afficher dans la bande compacte."
       leaderboard_show_on_homepage: "Classement : afficher la bande sur la page d’accueil de la communauté."
@@ -218,6 +219,46 @@ fr:
     submit: Publier la présentation
     error_no_title: Merci de donner un titre à ta présentation.
     error_no_about: Merci de nous parler un peu de toi.
+  feedback_form:
+    heading: Donner un feedback
+    lead: Idées, problèmes et questions sur cette plateforme. Une demande par publication – pour que les autres puissent voter et qu'on puisse en suivre l'avancement.
+    type_label: Quel type de feedback ?
+    types:
+      idea:
+        title: Idée
+        description: Quelque chose que la plateforme devrait faire – ou faire mieux.
+      problem:
+        title: Problème
+        description: Quelque chose ne fonctionne pas, ou pas comme tu t'y attends.
+      question:
+        title: Question
+        description: Tu ne sais pas comment quelque chose fonctionne et tu veux de l'aide.
+    title_label: Titre
+    title_hint: Court et précis – c'est pour ça que les autres votent dans la liste.
+    title_placeholder: p. ex. Afficher mes votes sur mon profil
+    details:
+      generic:
+        label: Détails
+        hint: Dis-nous ce que tu as en tête. Choisis un type ci-dessus pour une question plus précise.
+      idea:
+        label: Que souhaites-tu, et pourquoi ?
+        hint: Décris ce que tu aimerais pouvoir faire et en quoi ça t'aiderait. Si tu l'as vu bien fait ailleurs, dis où.
+      problem:
+        label: Que s'est-il passé ?
+        hint: Qu'as-tu fait, que s'est-il passé, et à quoi t'attendais-tu ? Préciser le navigateur ou le téléphone aide si ça ressemble à un problème d'affichage.
+      question:
+        label: Que veux-tu savoir ?
+        hint: Dis ce que tu essaies de faire et où tu bloques.
+    where_label: Où sur le site ?
+    where_hint: Un nom de page ou un lien – par exemple « page Monthly Challenge » ou l'adresse de ton navigateur.
+    where_placeholder: p. ex. catégorie Critique photo
+    screenshot_label: Capture d'écran
+    screenshot_hint: Une image de ce que tu vois épargne beaucoup de mots à tout le monde.
+    outro: On lit tout. Ce qui est réalisé en premier dépend de l'effort, de l'utilité pour la communauté – et de vos votes.
+    submit: Publier le feedback
+    error_no_type: Merci de choisir le type de feedback.
+    error_no_title: Merci de donner un titre à ton feedback.
+    error_no_details: Merci d'ajouter quelques détails.
   profile_setup:
     menu_item: Modifier ton profil
     heading: Configure ton profil

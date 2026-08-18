@@ -20,6 +20,7 @@ en:
       workspace_enabled_categories: "Critique Workspace: categories where the critique workspace banner is offered on the first post."
       critique_category_id: "Critique Submit: ID of the critique category. Used by /submit/critique to post the request and to ask Discourse which subject tags that category accepts."
       critique_intro_category_id: "Critique Submit: ID of the member introductions category. Used by /submit/introduction to post the introduction."
+      feedback_category_id: "Feedback Form: ID of the website feedback category. /submit/feedback posts there, and its hero and New Topic button open the form."
       leaderboard_id: "Leaderboard: the Gamification leaderboard to display."
       leaderboard_leader_count: "Leaderboard: number of ranked members to show in the compact strip."
       leaderboard_show_on_homepage: "Leaderboard: show the strip on the community homepage."
@@ -222,6 +223,46 @@ en:
     submit: Post introduction
     error_no_title: Please give your introduction a title.
     error_no_about: Please tell us a little about yourself.
+  feedback_form:
+    heading: Share feedback
+    lead: Ideas, problems and questions about this platform. One thing per post — that way others can vote for it and we can track it.
+    type_label: What kind of feedback is this?
+    types:
+      idea:
+        title: Idea
+        description: Something you'd like this platform to do, or do better.
+      problem:
+        title: Problem
+        description: Something that doesn't work, or not the way you'd expect.
+      question:
+        title: Question
+        description: You're not sure how something works and would like help.
+    title_label: Title
+    title_hint: Short and specific — it's what people vote for in the list.
+    title_placeholder: e.g. Show my votes on my profile
+    details:
+      generic:
+        label: Details
+        hint: Tell us what you have in mind. Choose a type above to get a more specific prompt.
+      idea:
+        label: What would you like, and why?
+        hint: Describe what you'd like to be able to do and what it would help you with. If you've seen it done well elsewhere, say where.
+      problem:
+        label: What happened?
+        hint: What did you do, what happened, and what did you expect instead? Browser or phone details help if it looks like a display problem.
+      question:
+        label: What would you like to know?
+        hint: Say what you're trying to do and where you got stuck.
+    where_label: Where on the site?
+    where_hint: A page name or link — for example "Monthly Challenge page" or the address from your browser.
+    where_placeholder: e.g. Photo Feedback category
+    screenshot_label: Screenshot
+    screenshot_hint: A picture of what you see saves everyone a lot of words.
+    outro: We read everything. What gets built first depends on effort, benefit for the community — and your votes.
+    submit: Post feedback
+    error_no_type: Please choose what kind of feedback this is.
+    error_no_title: Please give your feedback a title.
+    error_no_details: Please add a few details.
   profile_setup:
     menu_item: Edit your profile
     heading: Set up your profile

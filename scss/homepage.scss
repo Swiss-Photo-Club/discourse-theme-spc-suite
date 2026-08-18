@@ -213,15 +213,21 @@ body.navigation-topics .featured-categories__heading > a:focus-visible {
   color: var(--spc-coral-hover);
 }
 
+/* A wrapping flex row rather than a fixed 10-column grid, so the compact
+   cards share whatever width the highlighted pair leaves them: four cards
+   fill the container at a quarter each, five at a fifth, and a category
+   added or hidden in admin redistributes the row instead of leaving a hole
+   at the end. The basis is the narrowest a compact card may be before the
+   row wraps; the highlighted pair claims half the row each. */
 body.navigation-topics .featured-categories__list-container {
-  display: grid !important;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  display: flex !important;
+  flex-wrap: wrap;
   gap: 18px 14px;
 }
 
 body.navigation-topics .featured-categories__category-container {
   display: block;
-  grid-column: span 2;
+  flex: 1 1 160px;
   min-width: 0;
   min-height: 154px;
   padding: 0 !important;
@@ -258,7 +264,7 @@ body.navigation-topics
   .featured-categories__category-container:has(
     > [data-spc-home-feature="critique"]
   ) {
-  grid-column: span 5 !important;
+  flex: 1 1 calc(50% - 7px) !important;
   min-height: 248px;
   background: var(--spc-indigo);
 }
@@ -875,27 +881,8 @@ body.navigation-topics .spc-home-pinned-badge {
 
 /* Tablet ------------------------------------------------------------- */
 @media (max-width: 1050px) {
-  body.navigation-topics .featured-categories__list-container {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
   body.navigation-topics .featured-categories__category-container {
-    grid-column: span 2;
-  }
-
-  body.navigation-topics
-    .featured-categories__category-container:has(
-      > .spc-monthly-card
-    ),
-  body.navigation-topics
-    .featured-categories__category-container:has(
-      > .featured-categories__category-link[href="/c/monthly-challenge/6"]
-    ),
-  body.navigation-topics
-    .featured-categories__category-container:has(
-      > [data-spc-home-feature="critique"]
-    ) {
-    grid-column: span 3 !important;
+    flex-basis: 200px;
   }
 
   body:is(.navigation-topics, .navigation-category) .navigation-container {
@@ -970,7 +957,6 @@ body.navigation-topics .spc-home-pinned-badge {
   }
 
   body.navigation-topics .featured-categories__list-container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     padding: 0;
   }
@@ -988,7 +974,7 @@ body.navigation-topics .spc-home-pinned-badge {
     .featured-categories__category-container:has(
       > [data-spc-home-feature="critique"]
     ) {
-    grid-column: 1 / -1 !important;
+    flex: 1 1 100% !important;
   }
 
   body.navigation-topics

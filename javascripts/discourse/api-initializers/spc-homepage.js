@@ -1,5 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
+import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
+import { categoryUrlFor } from "../lib/spc-submit-helpers";
 
 const MONTHLY_SELECTOR =
   '.featured-categories__category-link[data-spc-monthly-challenge="home"], .featured-categories__category-link[href="/c/monthly-challenge/6"]';
@@ -97,6 +99,19 @@ function ensureSmallCardMeta(link, label = translated("view_category")) {
   setText(meta, label);
 }
 
+// The card links to the webinar category when webinars_category_id resolves to
+// one — slug taken from the live category, never from a setting, so a slug
+// rename in category admin is followed automatically. webinars_url is only the
+// fallback for an unset or deleted category, which is what it was before the
+// category existed.
+function webinarsUrl() {
+  const categoryId = Number(settings.webinars_category_id);
+  if (categoryId > 0 && Category.findById(categoryId)) {
+    return categoryUrlFor(categoryId);
+  }
+  return settings.webinars_url || "/upcoming-events";
+}
+
 function ensureWebinarCard(list, feedbackContainer) {
   let container = list.querySelector('[data-spc-home-card="webinars"]');
   if (!container) {
@@ -123,7 +138,7 @@ function ensureWebinarCard(list, feedbackContainer) {
   }
 
   const link = container.querySelector("a");
-  const targetUrl = settings.webinars_url || "/upcoming-events";
+  const targetUrl = webinarsUrl();
   if (link.getAttribute("href") !== targetUrl) {
     link.setAttribute("href", targetUrl);
   }

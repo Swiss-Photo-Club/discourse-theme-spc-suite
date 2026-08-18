@@ -177,10 +177,15 @@ challenges:
       entry_count:
         type: integer
 
+webinars_category_id:
+  type: integer
+  default: 13
+  description: "Live Webinars: ID of the webinar category (Admin > Categories, the number in the URL). The homepage Monthly Live Webinars card links to it, and it gets the webinar hero. 0 falls back to webinars_url."
+
 webinars_url:
   type: string
   default: "/upcoming-events"
-  description: "Homepage: destination for the Monthly Live Webinars card."
+  description: "Homepage: fallback destination for the Monthly Live Webinars card when webinars_category_id is 0 or does not resolve to a category."
 
 # -----------------------------------------------------------------------------
 # Critique Workspace

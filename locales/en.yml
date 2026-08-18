@@ -58,7 +58,8 @@ en:
               label: Winning image
             entry_count:
               label: Final entry count
-      webinars_url: "Homepage: destination for the Monthly Live Webinars card."
+      webinars_category_id: "Live Webinars: ID of the webinar category (Admin > Categories, the number in the URL). The homepage Monthly Live Webinars card links to it, and it gets the webinar hero. 0 falls back to webinars_url."
+      webinars_url: "Homepage: fallback destination for the Monthly Live Webinars card when webinars_category_id is 0 or does not resolve to a category."
       homepage_banner_image: "Homepage: member-homepage banner image. A landscape image around 2:1 works best."
       homepage_about_url_de: "Homepage: destination of the community information link for the German interface."
       homepage_about_url_en: "Homepage: destination of the community information link for the English interface."

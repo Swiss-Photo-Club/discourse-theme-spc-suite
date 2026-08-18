@@ -13,6 +13,10 @@ import parseRequest, {
 } from "../lib/spc-parse-request";
 
 const BANNER_CLASS = "spc-cw-banner";
+// Body class and custom property critique-workspace.scss uses to relabel the
+// Reply controls that open the workspace.
+const BODY_CLASS = "spc-cw-topic";
+const LABEL_VAR = "--spc-cw-start-label";
 
 // Every content image, in post order, for project critiques: the full-size
 // lightbox href when there is one, the plain src for images below the
@@ -95,6 +99,22 @@ export default {
         });
       }
 
+      // The topic-level Reply of a topic that passes this becomes the
+      // critique: it opens the workspace and is labelled like the banner's
+      // button. Draft-holding topics are excluded here, not only at click
+      // time, so a button never promises the workspace and delivers the
+      // composer.
+      function topicOffersWorkspace(topic) {
+        return Boolean(
+          topic?.details?.can_create_post &&
+            !topic.draft &&
+            offersWorkspace(
+              topic,
+              topic.details?.created_by?.id ?? topic.user_id
+            )
+        );
+      }
+
       // In a critique category the topic-level Reply IS the critique, so the
       // footer Reply, the timeline Reply, shift+R and the first post's own
       // Reply open the workspace instead of the composer. Replies to later
@@ -113,19 +133,15 @@ export default {
             async replyToPost(post) {
               const topic = post ? post.topic : this.model;
               const composerModel = this.composer?.model;
-              const authorId =
-                topic?.details?.created_by?.id ?? topic?.user_id;
               const interceptable =
                 (!post || post.post_number === 1) &&
-                topic?.details?.can_create_post &&
-                !topic.draft &&
                 !this.quoteState?.postId &&
                 !(
                   composerModel &&
-                  composerModel.topic?.id === topic.id &&
+                  composerModel.topic?.id === topic?.id &&
                   composerModel.composeState !== Composer.CLOSED
                 ) &&
-                offersWorkspace(topic, authorId);
+                topicOffersWorkspace(topic);
 
               if (!interceptable) {
                 return super.replyToPost(post);
@@ -148,6 +164,79 @@ export default {
           }
       );
 
+      // Relabel the intercepted Reply controls with the banner button's own
+      // string, so the two never disagree. The visible text is CSS: a body
+      // class plus a custom property holding the label, rendered by
+      // critique-workspace.scss through ::before over a font-size: 0 span -
+      // never textContent, which detaches the node Glimmer tracks and kills
+      // the next render transaction. The class/variable are page state, so
+      // they need no element to exist yet; title and aria-label are set
+      // directly and restored only if still ours, since the footer and
+      // timeline buttons are reused across topics while the post-1 menu is
+      // not.
+      const router = owner.lookup("service:router");
+      const relabelTimers = [];
+      const RELABEL_SELECTORS = [
+        "#topic-footer-buttons .topic-footer-main-buttons .create",
+        ".timeline-footer-controls .reply-to-post",
+        "#post_1 .post-controls .reply",
+      ];
+
+      function relabelReplyControls() {
+        const onTopic = router.currentRouteName?.startsWith("topic.");
+        const topic = onTopic ? owner.lookup("controller:topic")?.model : null;
+        const offers = topicOffersWorkspace(topic);
+        const label = I18n.t(themePrefix("critique_workspace.start"));
+
+        document.body.classList.toggle(BODY_CLASS, offers);
+        if (offers) {
+          document.body.style.setProperty(LABEL_VAR, JSON.stringify(label));
+        } else {
+          document.body.style.removeProperty(LABEL_VAR);
+        }
+
+        document
+          .querySelectorAll(RELABEL_SELECTORS.join(","))
+          .forEach((button) => {
+            if (offers) {
+              if (button.dataset.spcOrigTitle === undefined) {
+                button.dataset.spcOrigTitle = button.getAttribute("title") ?? "";
+                button.dataset.spcOrigAria =
+                  button.getAttribute("aria-label") ?? "";
+              }
+              button.setAttribute("title", label);
+              button.setAttribute("aria-label", label);
+            } else if (button.dataset.spcOrigTitle !== undefined) {
+              // Restore only what is still ours: if Glimmer already
+              // re-rendered the attribute for the new topic, leave it.
+              if (button.getAttribute("title") === label) {
+                button.setAttribute("title", button.dataset.spcOrigTitle);
+              }
+              if (button.getAttribute("aria-label") === label) {
+                if (button.dataset.spcOrigAria) {
+                  button.setAttribute("aria-label", button.dataset.spcOrigAria);
+                } else {
+                  button.removeAttribute("aria-label");
+                }
+              }
+              delete button.dataset.spcOrigTitle;
+              delete button.dataset.spcOrigAria;
+            }
+          });
+      }
+
+      // The footer, timeline and post menu render at different moments after
+      // page:changed; a few fixed retries cover them without an observer.
+      function scheduleRelabel() {
+        relabelTimers.splice(0).forEach(clearTimeout);
+        relabelReplyControls();
+        [300, 1200].forEach((ms) =>
+          relabelTimers.push(setTimeout(relabelReplyControls, ms))
+        );
+      }
+
+      api.onPageChange(scheduleRelabel);
+
       api.decorateCookedElement(
         (element, helper) => {
           if (!helper) {
@@ -166,6 +255,9 @@ export default {
           }
 
           const imageUrls = collectImageUrls(element);
+          // The post-1 menu is in the DOM by now; label it without waiting
+          // for the page-change retries.
+          scheduleRelabel();
 
           const banner = document.createElement("div");
           banner.className = BANNER_CLASS;

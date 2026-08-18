@@ -29,6 +29,27 @@
   }
 }
 
+// On a topic whose Reply opens the workspace (body.spc-cw-topic, set by
+// initializers/spc-critique-workspace.js), the footer Reply and post 1's
+// Reply take the banner button's own label. The string rides in
+// --spc-cw-start-label on <body> and renders through ::before, because the
+// span's text node is Glimmer's and rewriting it crashes core's next
+// re-render (see updateCreateTopicButton in spc-category-hero.js).
+// font-size: 0 collapses the native text without touching it; the ::before
+// restores 1rem, which is what both buttons compute to. The timeline reply
+// is icon-only and gets title/aria-label from the JS instead.
+body.spc-cw-topic {
+  #topic-footer-buttons .topic-footer-main-buttons .create .d-button-label,
+  #post_1 .post-controls .reply .d-button-label {
+    font-size: 0;
+
+    &::before {
+      content: var(--spc-cw-start-label);
+      font-size: 1rem;
+    }
+  }
+}
+
 .spc-next-topic {
   display: flex;
   justify-content: flex-end;

@@ -188,18 +188,17 @@ const DEFAULT_CATEGORY_HERO = {
 };
 
 /**
- * Category.canCreateTopic is the right Discourse API once `permission` has
- * loaded. On this site the category surface can render first, leaving
- * `permission` temporarily null and the computed getter false even for a
- * signed-in member. Keep the member action during that indeterminate state;
- * an explicit non-FULL permission still suppresses it, and Discourse remains
- * the authority when the destination route opens.
+ * Category.canCreateTopic (permission === FULL) is the only signal there is.
+ * Site#categories serialises `permission` as FULL for categories the viewer
+ * may create topics in and omits it otherwise — a Reply/See or See-only member
+ * therefore gets exactly the `null` a not-yet-loaded category would. Until
+ * 2026-08-18 this treated null as "still loading, keep the button", which
+ * showed a create action to every signed-in member in every category they
+ * could not post in (Announcements, Live Webinars). There is no non-FULL value
+ * to distinguish the two states, so null has to mean no.
  */
 function canOfferCreateTopic(category, currentUser) {
-  if (!currentUser) {
-    return false;
-  }
-  return category.permission == null || category.canCreateTopic;
+  return Boolean(currentUser) && Boolean(category?.canCreateTopic);
 }
 
 function heroText(key, suffix) {

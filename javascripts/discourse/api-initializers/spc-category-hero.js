@@ -330,6 +330,20 @@ export default apiInitializer((api) => {
   let renderQueued = false;
   let renderedMarker = null;
 
+  // Core renders its list-controls New Topic button for any member with
+  // global create rights even inside a category they cannot post in — the
+  // controller computes createTopicDisabled from Category.canCreateTopic and
+  // then only honours it behind hide_disabled_create_topic_button, a hidden
+  // site setting with no admin UI. Same decision, made through the value
+  // transformer core applies right after that check. Categories where the
+  // viewer can post are untouched: createTopicDisabled is false there and the
+  // value passes through. This is core's own button and its own flag; the
+  // theme still never touches the element.
+  api.registerValueTransformer(
+    "can-create-topic-button",
+    ({ value, context }) => (context?.createTopicDisabled ? false : value)
+  );
+
   /**
    * Clear only the category hero this initializer last rendered.
    *

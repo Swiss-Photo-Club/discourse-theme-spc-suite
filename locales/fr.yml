@@ -459,6 +459,11 @@ fr:
       actions:
         upcoming: Événements à venir
         propose: Proposer une sortie
+    webinars:
+      eyebrow: Apprendre en direct
+      actions:
+        upcoming: Webinaires à venir
+        announce: Annoncer un webinaire
     critique:
       eyebrow: Retours & progression
     introductions:

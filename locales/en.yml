@@ -463,6 +463,11 @@ en:
       actions:
         upcoming: See upcoming events
         propose: Propose a meetup
+    webinars:
+      eyebrow: Learn live
+      actions:
+        upcoming: See upcoming webinars
+        announce: Announce a webinar
     critique:
       eyebrow: Feedback & growth
     introductions:

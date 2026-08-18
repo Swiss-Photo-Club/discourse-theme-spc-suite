@@ -53,9 +53,10 @@ const CATEGORY_HEROES = {
   // Browse before create, which inverts the other heroes on purpose: far more
   // members want to find a meetup than to organise one. /upcoming-events is
   // hardcoded rather than read from webinars_url as the spec suggested —
-  // that setting is the homepage Monthly Live Webinars card's destination and
-  // only happens to share this default, so pointing the hero at it would mean
-  // retargeting the webinars card silently moved the meetups hero too.
+  // that setting is the homepage Monthly Live Webinars card's fallback
+  // destination and only happens to share this default, so pointing the hero
+  // at it would mean retargeting the webinars card silently moved the meetups
+  // hero too.
   8: {
     key: "meetups",
     variant: "category",
@@ -132,6 +133,45 @@ const CATEGORY_HEROES = {
   },
 };
 
+// Live Webinars — matched on the webinars_category_id setting rather than a
+// literal id because, unlike the categories above, this one was created after
+// the theme and its id is an admin fact the theme should not have to know. It
+// is not in CATEGORY_HEROES because that literal is evaluated at module load,
+// and settings are read lazily everywhere else in this theme on purpose. A
+// stock list category: no masonry exposure.
+//
+// Browse before create, like meetups: every member wants to find the next
+// webinar; only instructors and staff announce one, and Category.permission is
+// what says who. The category has no scoped calendar route (the plugin 404s
+// /c/<slug>/<id>/l/calendar), so the browse action goes to the site-wide
+// /upcoming-events like the meetups hero. Recordings need no action of their
+// own — they are the topic list directly under this hero.
+const WEBINARS_HERO = {
+  key: "webinars",
+  variant: "category",
+  actions: (category, currentUser) => [
+    {
+      label: heroText("webinars", "actions.upcoming"),
+      href: "/upcoming-events",
+      style: "primary",
+    },
+    ...(canOfferCreateTopic(category, currentUser)
+      ? [
+          {
+            label: heroText("webinars", "actions.announce"),
+            href: `/new-topic?category=${category.slug}`,
+            style: "secondary",
+          },
+        ]
+      : []),
+  ],
+};
+
+function isWebinarsCategory(id) {
+  const webinarsId = Number(settings.webinars_category_id);
+  return webinarsId > 0 && id === webinarsId;
+}
+
 const DEFAULT_CATEGORY_HERO = {
   key: "generic",
   variant: "category",
@@ -196,7 +236,9 @@ function activeHeroCategory(category) {
   return {
     id,
     category,
-    entry: CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
+    entry: isWebinarsCategory(id)
+      ? WEBINARS_HERO
+      : CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
   };
 }
 
@@ -214,6 +256,9 @@ function categoryCreateLabel(category) {
   }
   if (id === 8) {
     return heroText("meetups", "actions.propose");
+  }
+  if (isWebinarsCategory(id)) {
+    return heroText("webinars", "actions.announce");
   }
   if (id === 10) {
     return i18n(themePrefix("category_actions.ask_question"));

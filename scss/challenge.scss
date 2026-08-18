@@ -792,19 +792,11 @@ body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
   box-sizing: border-box;
 }
 
-/* The entry title used to be restyled here — charcoal, 16px, 700. All four
-   declarations are gone and none is replaced, because core already has an
-   opinion about a topic title and it is a better one than ours was.
-
-   The colour was the costly part. Core sets `color: var(--title-color)` and,
-   for a row carrying .visited, `var(--title-color--read)` — #333 against #999.
-   That pair IS the read/unread cue, and overriding it here flattened the whole
-   list to one colour, so a member could not tell which entries they had
-   already looked at. It won that fight by source order rather than by
-   specificity: the visited selector is (0,4,1) and so was this one.
-
-   Which is also the note for anyone who does want to change a title here:
-   set the variable, do not out-specify it, and never reach for !important.
+/* The entry title used to be restyled here — charcoal, 16px, 700. Those
+   direct declarations remain gone: topic-cards.scss now adjusts only core's
+   title colour variables across the masonry view. Unread and read topics still
+   differ, but the read state no longer fades to low-contrast #999. Font
+   family, size and weight continue to come from SPC/core.
 
    The pinned card's white title below is deliberate and still here — it sits
    on the indigo footer, carries an extra class, and wins on specificity. */

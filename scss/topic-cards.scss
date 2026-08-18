@@ -24,22 +24,20 @@
    slug. That makes this the second place slugs must be right, after
    category-hero.scss — get one wrong and the rules silently never apply.
 
-   THE TITLE IS NOT STYLED HERE, ON PURPOSE. Core sets it through
-   custom properties:
+   TITLE COLOUR. Core sets it through custom properties:
 
      .topic-list .main-link a.title             color: var(--title-color)
                                                 font-weight: var(--topic-title-font-weight)
      .topic-list-item.visited a.title:not(...)  color: var(--title-color--read)
                                                 font-weight: var(--topic-title-font-weight--visited)
 
-   so #333 against #999 is the read/unread cue, and on a critique
-   category "have I already given feedback on this one?" is exactly what
-   members are scanning for. Category 6 used to override that colour and
-   lost the cue for as long as it did. Note the visited selector is
-   (0,4,1) — the same specificity a body-scoped rule reaches, which is
-   how it was beaten by source order rather than on merit — so anything
-   that does want to change a title here should set the variables rather
-   than out-specify, and never reach for !important.
+   Core's #333 against #999 preserves the read/unread cue, but #999 is too
+   faint on these pale card footers. The masonry container below keeps the
+   unread title at SPC charcoal and raises the read title to gray-600. That
+   retains a visible state change while bringing both states comfortably
+   above normal-text contrast. We set the variables rather than fighting
+   core's (0,4,1) visited selector, and deliberately leave all typography
+   properties alone.
 
    MASONRY. These categories are JS-positioned by Topic List Thumbnails
    (component 1), which measures every row. Nothing below sets position,
@@ -60,6 +58,14 @@
    same three rules the other two get. */
 $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
   "photo-feedback", "vorstellungen", "introductions";
+
+/* NPN-like title contrast on the mixed homepage and category masonry views,
+   without flattening the useful read/unread cue. Against the live #ebebeb
+   footer these resolve to approximately 10.6:1 and 6.3:1. */
+.topic-thumbnails-masonry {
+  --title-color: var(--spc-charcoal);
+  --title-color--read: var(--spc-gray-600);
+}
 
 @each $slug in $spc-card-slugs {
   /* A card rather than a list row: white, lifted, and clipping its photo

@@ -179,9 +179,13 @@ That conversion took five attempts on the live site, and every wrong turn is wri
 three notes above. Read them before touching this layout again.
 
 The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
-8 `meetups-photowalks`, 10 `support` (displayed "Post Processing"), 5 `announcements-club-news`,
-2 `feedback`, 12 `introductions`, 4 `general`, 1 `uncategorized`. Note 10's slug and its display
-name disagree, so match on id, never on slug-looks-like-the-name.
+8 `meetups-photowalks` (**hidden on purpose since 2026-08-18**, to be re-enabled later),
+5 `announcements-club-news`, 2 `feedback`, 12 `introductions`, 13 `live-webinare`, 4 `general`,
+1 `uncategorized`. **Category 10 (`support`, displayed "Post Processing") was deleted on
+2026-08-18**; a replacement may be created later under a new id. The `10:` entry in
+`CATEGORY_HEROES` and the `id === 10` label branch are therefore dead until then — harmless,
+left in place so a re-created category can be pointed at them by id. When 10 existed, its slug
+and display name disagreed, which is why matching is by id, never by slug-looks-like-the-name.
 
 **Category 2's "Feedback Type" tags are hardcoded in `lib/spc-feedback.js`.** The category
 requires one tag from that group (min 1) and `FEEDBACK_TYPES = ["idea", "problem", "question"]`

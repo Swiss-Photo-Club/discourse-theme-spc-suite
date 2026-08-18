@@ -172,6 +172,30 @@ function isWebinarsCategory(id) {
   return webinarsId > 0 && id === webinarsId;
 }
 
+// Website Feedback & Ideas — settings-matched like webinars, for the same
+// reason: the destination is a setting everywhere else the form is wired
+// (spc-photo-submit.js reads feedback_category_id), and a hero keyed by a
+// literal here would go on pointing at category 2 after the setting moved.
+// The one action opens the /submit/feedback form; the category's own
+// description under the title already explains voting and status, so no
+// browse action competes with it. List mode, no masonry exposure.
+const FEEDBACK_HERO = {
+  key: "feedback",
+  variant: "category",
+  actions: () => [
+    {
+      label: heroText("feedback", "actions.share"),
+      href: "/submit/feedback",
+      style: "primary",
+    },
+  ],
+};
+
+function isFeedbackCategory(id) {
+  const feedbackId = Number(settings.feedback_category_id);
+  return feedbackId > 0 && id === feedbackId;
+}
+
 const DEFAULT_CATEGORY_HERO = {
   key: "generic",
   variant: "category",
@@ -237,7 +261,9 @@ function activeHeroCategory(category) {
     category,
     entry: isWebinarsCategory(id)
       ? WEBINARS_HERO
-      : CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
+      : isFeedbackCategory(id)
+        ? FEEDBACK_HERO
+        : CATEGORY_HEROES[id] || DEFAULT_CATEGORY_HERO,
   };
 }
 
@@ -258,6 +284,9 @@ function categoryCreateLabel(category) {
   }
   if (isWebinarsCategory(id)) {
     return heroText("webinars", "actions.announce");
+  }
+  if (isFeedbackCategory(id)) {
+    return heroText("feedback", "actions.share");
   }
   if (id === 10) {
     return i18n(themePrefix("category_actions.ask_question"));

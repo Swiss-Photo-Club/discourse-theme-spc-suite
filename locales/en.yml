@@ -513,3 +513,7 @@ en:
       eyebrow: Feedback & growth
     introductions:
       eyebrow: New members
+    feedback:
+      eyebrow: Ideas & feedback
+      actions:
+        share: Share feedback

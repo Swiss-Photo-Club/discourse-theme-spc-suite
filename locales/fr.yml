@@ -509,3 +509,7 @@ fr:
       eyebrow: Retours & progression
     introductions:
       eyebrow: Nouveaux membres
+    feedback:
+      eyebrow: Idées & feedback
+      actions:
+        share: Donner un feedback

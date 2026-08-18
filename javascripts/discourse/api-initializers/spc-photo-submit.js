@@ -7,6 +7,7 @@ const SUBMIT_PATH = "/submit";
 const CRITIQUE_PATH = "/submit/critique";
 const PROJECT_PATH = "/submit/project";
 const INTRODUCTION_PATH = "/submit/introduction";
+const FEEDBACK_PATH = "/submit/feedback";
 const PROFILE_SETUP_PATH = "/profile-setup";
 
 function isCategoryParam(params, id) {
@@ -52,6 +53,7 @@ const spcRun = (api) => {
   //   submit?type=critique   → /new-topic?category=photo-feedback
   //   submit/project         → /new-topic?category=photo-feedback&spc_form=project
   //   submit/introduction    → /new-topic?category=introductions
+  //   submit/feedback        → /new-topic?category=feedback
   //   profile-setup          → /new-topic?spc_form=profile
   //
   // The third only keeps links shared before July 2026 alive; they land on
@@ -109,6 +111,11 @@ const spcRun = (api) => {
             return;
           }
 
+          if (isCategoryParam(params, settings.feedback_category_id)) {
+            this.router.replaceWith(FEEDBACK_PATH);
+            return;
+          }
+
           return super.beforeModel(transition);
         }
       }
@@ -124,6 +131,7 @@ const spcRun = (api) => {
     settings.critique_intro_category_id,
     10
   );
+  const feedbackCategoryId = parseInt(settings.feedback_category_id, 10);
 
   // Scoped to .spc-hero--challenge, and it has to stay that way. This selector
   // used to be ".spc-hero__actions .spc-button--primary", which was correct
@@ -162,6 +170,8 @@ const spcRun = (api) => {
         destination = CRITIQUE_PATH;
       } else if (routeCategoryId === introductionCategoryId) {
         destination = INTRODUCTION_PATH;
+      } else if (routeCategoryId === feedbackCategoryId) {
+        destination = FEEDBACK_PATH;
       }
     }
 

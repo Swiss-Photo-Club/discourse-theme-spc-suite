@@ -513,3 +513,7 @@ de:
       eyebrow: Feedback & Weiterentwicklung
     introductions:
       eyebrow: Neue Mitglieder
+    feedback:
+      eyebrow: Ideen & Feedback
+      actions:
+        share: Feedback geben

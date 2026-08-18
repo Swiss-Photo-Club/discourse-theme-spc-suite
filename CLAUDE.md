@@ -100,6 +100,15 @@ require, page rendered the fallback, console said the module was fine. (A top-le
 plugin module is worse still: a hard dependency that takes the whole theme's JS down when the
 plugin is absent.)
 
+**`api.modifyClass` refuses any class already instantiated at boot — `service:composer` in
+particular.** `spc-monthly-challenge.js` looks the composer service up at api-initializer time,
+so a `modifyClass("service:composer", …)` from any other initializer logs "Attempted to modify …
+but it was already initialized" and does nothing. Intercept per-route behaviour on the
+route/controller instead: every Reply entry point on a topic (footer, timeline, shift+R, post
+menu) funnels through `controller:topic#replyToPost`, which is what
+`initializers/spc-critique-workspace.js` overrides. Keep the `@action` decorator on the
+override, or the template-bound copy loses `this`.
+
 **Never decorate a DOM element core owns.** Core re-renders its own nodes on navigation and the
 two will fight — the symptom is a correct first paint followed by a broken flash on reload.
 Create your own element, or position absolutely.

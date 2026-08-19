@@ -18,7 +18,10 @@ import {
   currentMonthYM,
   fetchSubjectTags,
   resolveRoundTag,
+  sameTag,
   subjectOptions,
+  tagCanonicalName,
+  tagDisplayName,
 } from "../lib/spc-submit-helpers";
 import SpcSubmitShell from "./spc-submit-shell";
 
@@ -88,7 +91,11 @@ export default class SpcSubmitForm extends SpcSubmitBase {
   // is not a case this nudge needs to survive. Any failure leaves the count at
   // null, which keeps the form usable (see roundEntryCount above).
   async countRoundEntries(tag) {
-    if (!tag || !this.currentUser || this.maxRoundEntries <= 0) {
+    if (
+      !tagCanonicalName(tag) ||
+      !this.currentUser ||
+      this.maxRoundEntries <= 0
+    ) {
       return;
     }
     try {
@@ -98,9 +105,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
       this.roundEntryCount = topics.filter(
         (topic) =>
           topic.category_id === this.categoryId &&
-          (topic.tags || [])
-            .map((t) => (typeof t === "string" ? t : t?.name || ""))
-            .includes(tag)
+          (topic.tags || []).some((topicTag) => sameTag(topicTag, tag))
       ).length;
     } catch {
       this.roundEntryCount = null;
@@ -164,7 +169,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
 
   get roundLabel() {
     if (this.resolvedTag) {
-      return this.resolvedTag;
+      return tagDisplayName(this.resolvedTag);
     }
     if (window.moment) {
       return window.moment(`${currentMonthYM()}-01`).format("MMMM YYYY");
@@ -251,7 +256,8 @@ export default class SpcSubmitForm extends SpcSubmitBase {
     }
     // The constructor's lookup normally has an answer by now; if it does not,
     // ask again rather than posting an untagged entry into the round.
-    return [this.resolvedTag || (await resolveRoundTag(settings))];
+    const tag = this.resolvedTag || (await resolveRoundTag(settings));
+    return [tagCanonicalName(tag)];
   }
 
   buildRaw() {

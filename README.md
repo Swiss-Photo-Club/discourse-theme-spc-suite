@@ -254,7 +254,8 @@ Both components check `Object.hasOwn` first and fall back to comparing
 derived key name follows the setting name, so a rename breaks the fast path silently.
 
 **Tag lookups**: `/tags/filter/search.json?q=YYYY-MM&categoryId=6` — do not pass a `limit`
-parameter, it returns a 400.
+parameter, it returns a 400. A localized result keeps both its display `name` and canonical
+`slug`; show the former, but send and compare the latter.
 
 ## `/submit` has two modes
 

@@ -277,7 +277,9 @@ for fetches only.
 **Localized tag `name` values are display labels, not API route keys.** In German the August
 round serializes as `{ name: "2026-08-tiere", slug: "2026-08-animals" }`: the localized-name
 JSON route 404s while the canonical-slug route succeeds. Use `tagName()` for rendered copy and
-date-prefix matching, and `tagSlug()` for tag URL paths and tag mutation payloads.
+date-prefix matching, and `tagSlug()` for tag URL paths and tag mutation payloads. The submit
+form follows the same split through `tagDisplayName()` and `tagCanonicalName()`; do not flatten
+`resolveRoundTag()` back to a string, or localized users will submit a disallowed tag again.
 
 **Custom Header Links defaults missing targets to a new tab.** Its renderer sets `_blank` unless
 the saved target is exactly `self`, while the target field itself has no default; migrated and

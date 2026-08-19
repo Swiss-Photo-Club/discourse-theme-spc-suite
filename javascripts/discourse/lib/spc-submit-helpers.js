@@ -58,6 +58,40 @@ export function categoryUrlFor(id) {
   return slug ? `/c/${slug}/${categoryId}` : `/c/${categoryId}`;
 }
 
+// Discourse localizes a tag's display name but keeps its stable API identity in
+// `slug`. For example, German serializes the August round as
+// { name: "2026-08-tiere", slug: "2026-08-animals" }. Keep both values all the
+// way to the form: the name is user-facing, while posts and comparisons must use
+// the slug or Discourse rejects the localized name against category tag rules.
+export function tagDisplayName(tag) {
+  if (typeof tag === "string") {
+    return tag;
+  }
+  return tag?.name || tag?.text || tag?.slug || "";
+}
+
+export function tagCanonicalName(tag) {
+  if (typeof tag === "string") {
+    return tag;
+  }
+  return (
+    tag?.slug ||
+    (typeof tag?.id === "string" ? tag.id : "") ||
+    tag?.name ||
+    tag?.text ||
+    ""
+  );
+}
+
+export function sameTag(left, right) {
+  const leftNames = new Set(
+    [tagCanonicalName(left), tagDisplayName(left)].filter(Boolean)
+  );
+  return [tagCanonicalName(right), tagDisplayName(right)].some((name) =>
+    leftNames.has(name)
+  );
+}
+
 // Current month as YYYY-MM in the club's timezone
 export function currentMonthYM() {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -79,23 +113,28 @@ export function currentMonthYM() {
 // 3. otherwise search the challenge category's tags for one starting with
 //    the current month (e.g. "2026-07-cityscapes")
 // 4. fall back to plain YYYY-MM
+//
+// Returns the tag object when Discourse supplied one. Its localized `name` is
+// for display; callers that write or compare tags must use tagCanonicalName().
 export async function resolveRoundTag(settings) {
   if (settings.round_tag?.trim()) {
     return settings.round_tag.trim();
   }
 
   const base = currentMonthYM();
-  const readTagName = (tag) =>
-    typeof tag === "string" ? tag : tag?.name || "";
+  const belongsToRound = (tag) =>
+    [tagDisplayName(tag), tagCanonicalName(tag)].some((name) =>
+      name.startsWith(base)
+    );
 
   try {
     const data = await ajax(
       `/c/${parseInt(settings.challenge_category_id, 10)}/l/latest.json`
     );
     const pinnedTag = (data?.topic_list?.topics || [])
-      .filter((topic) => topic.pinned)
-      .flatMap((topic) => (topic.tags || []).map(readTagName))
-      .find((tag) => tag.startsWith(base));
+      .filter((topic) => topic.pinned || topic.unpinned)
+      .flatMap((topic) => topic.tags || [])
+      .find(belongsToRound);
     if (pinnedTag) {
       return pinnedTag;
     }
@@ -110,12 +149,17 @@ export async function resolveRoundTag(settings) {
         categoryId: parseInt(settings.challenge_category_id, 10),
       },
     });
-    const names = (res.results || [])
-      .map((r) => r.name || r.id)
-      .filter((n) => typeof n === "string" && n.startsWith(base))
-      .sort();
-    if (names.length) {
-      return names.find((n) => n === base) || names[0];
+    const tags = (res.results || [])
+      .filter(belongsToRound)
+      .sort((a, b) =>
+        tagCanonicalName(a).localeCompare(tagCanonicalName(b))
+      );
+    if (tags.length) {
+      return (
+        tags.find((tag) =>
+          [tagDisplayName(tag), tagCanonicalName(tag)].includes(base)
+        ) || tags[0]
+      );
     }
   } catch {
     // fall through to base

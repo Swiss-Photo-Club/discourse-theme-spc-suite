@@ -280,6 +280,11 @@ JSON route 404s while the canonical-slug route succeeds. Use `tagName()` for ren
 date-prefix matching, and `tagSlug()` for tag URL paths and tag mutation payloads. The submit
 form follows the same split through `tagDisplayName()` and `tagCanonicalName()`; do not flatten
 `resolveRoundTag()` back to a string, or localized users will submit a disallowed tag again.
+The critique/project subject dropdowns hit the same wall a day after the challenge form did:
+`subjectOptions()` used the localized `name` as the option value, `resolveTags()` posted it, and
+category 7's required-tag-group check 422'd for every German-locale user (andy.fuchs's report,
+2026-08-20). Any `<option value>` or payload that ends up in `data.tags` must be
+`tagCanonicalName()`; localized names are labels only.
 
 **Custom Header Links defaults missing targets to a new tab.** Its renderer sets `_blank` unless
 the saved target is exactly `self`, while the target field itself has no default; migrated and

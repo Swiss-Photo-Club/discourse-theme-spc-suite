@@ -17,8 +17,10 @@ export async function fetchSubjectTags(categoryId) {
       .map((tag) => ({
         // `name` follows the interface locale (for example `tier` in German),
         // while `slug` remains the stable tag identifier (`animal`). Keep both:
-        // the form submits the name Discourse returned, but translations must
-        // be looked up with a locale-independent key.
+        // the slug is what a submission must send — /posts.json validates tags
+        // against the group's canonical names, so a localized name 422s — and
+        // it is also the locale-independent translation key. The name is only
+        // a display fallback for a tag the theme has no translation for.
         name: tag.name || tag.text || tag.slug,
         slug: tag.slug || tag.name || tag.text,
       }))
@@ -34,14 +36,15 @@ export async function fetchSubjectTags(categoryId) {
 // describe exactly these tags.
 export function subjectOptions(tags, selected) {
   return tags.map((tag) => {
-    // Accept strings too so this helper remains compatible with callers or
-    // cached data created before fetchSubjectTags started returning both parts.
-    const value = typeof tag === "string" ? tag : tag.name;
-    const slug = typeof tag === "string" ? tag : tag.slug;
-    const key = themePrefix(`critique_form.subjects.${slug}`);
+    // The option's value is the canonical slug because it is what resolveTags()
+    // posts: /posts.json checks tags against the required group by canonical
+    // name, so a localized `name` (German "landschaft" for slug "landscape")
+    // fails the min_count check and the whole submission 422s.
+    const value = tagCanonicalName(tag);
+    const key = themePrefix(`critique_form.subjects.${value}`);
     return {
       value,
-      label: I18n.t(key, { defaultValue: value }),
+      label: I18n.t(key, { defaultValue: tagDisplayName(tag) }),
       selected: value === selected,
     };
   });

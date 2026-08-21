@@ -9,6 +9,8 @@ import SpcCritiqueWorkspaceHost, {
 } from "../components/spc-critique-workspace-host";
 import SpcNextTopic from "../components/spc-next-topic";
 import parseRequest, {
+  parseCookedProjectRequest,
+  parseCookedRequest,
   parseProjectRequest,
 } from "../lib/spc-parse-request";
 
@@ -82,9 +84,37 @@ export default {
       }
 
       // `postData` is the /posts/:id.json payload (raw included), which is
-      // what the parsers need; the drawer's model is built here and nowhere
-      // else, so the banner button and Reply hand it the same shape.
+      // what the parsers need. Discourse keeps `raw` in the author's original
+      // language and puts the viewer's active translation in `cooked`, so a
+      // localized post must be parsed from cooked. The drawer's model is
+      // built here and nowhere else, so the banner button and Reply hand it
+      // the same shape.
       function openWorkspace(topic, postData, imageUrls) {
+        let request = parseRequest(postData.raw);
+        let project = parseProjectRequest(postData.raw);
+
+        if (postData.is_localized && postData.cooked) {
+          const localizedRequest = parseCookedRequest(postData.cooked, request);
+          const localizedProject = project
+            ? parseCookedProjectRequest(postData.cooked, project)
+            : null;
+          // A stale or manually edited localization may no longer carry the
+          // complete structured shape. Overlay each usable translated value
+          // separately so the request panel never loses original content.
+          for (const [key, value] of Object.entries(localizedRequest)) {
+            if (value) {
+              request[key] = value;
+            }
+          }
+          if (localizedProject) {
+            for (const [key, value] of Object.entries(localizedProject)) {
+              if (value) {
+                project[key] = value;
+              }
+            }
+          }
+        }
+
         appEvents.trigger(OPEN_WORKSPACE_EVENT, {
           topicId: topic.id,
           topicTitle: topic.title,
@@ -92,10 +122,10 @@ export default {
           authorName: postData.name || postData.username,
           imageUrl: imageUrls[0] || null,
           imageUrls,
-          request: parseRequest(postData.raw),
+          request,
           // null for single-image posts; the drawer renders the project
           // shape when it is present.
-          project: parseProjectRequest(postData.raw),
+          project,
         });
       }
 

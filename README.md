@@ -270,15 +270,18 @@ straight through to `SpcSubmitForm`:
 Critique mode replaces the Custom Wizard `bild-zur-kritik-einreichen`. The **project** and
 **introduction** wizards are untouched and still live — only the single-image flow moved.
 
-**Critique posts must stay byte-compatible with the wizard.** The Critique Workspace modal
-does not read structured data; `lib/spc-parse-request.js` parses the post *markdown*, looking
-for `**Kritik-Stil:**`, `## Über dieses Bild`, `## Wo ich mir Feedback wünsche` and
-`## Technische Details` in all three languages. `lib/spc-critique.js` reproduces the wizard's
-Liquid `post_template` exactly, including the French space before the colon (`Style de
-critique :`) and the omission of empty optional sections. Those strings deliberately live in
-JS rather than in `locales/*.yml`, so that translating the UI cannot silently break the
-parser — only the dropdown *descriptions* are translatable. If you change a heading, change
-it in `spc-critique.js`, in `spc-parse-request.js`, **and** in the three wizard definitions.
+**Critique posts must stay byte-compatible with the wizard.** For an untranslated post,
+`lib/spc-parse-request.js` parses the original post *markdown*, looking for
+`**Kritik-Stil:**`, `## Über dieses Bild`, `## Wo ich mir Feedback wünsche` and
+`## Technische Details` in all three languages. When Discourse is showing a post localization,
+`raw` still contains the author's original language while `cooked` contains the visible
+translation; the workspace therefore parses the cooked blockquote and sections by their stable
+form order, using the raw parse to identify omitted optional sections. `lib/spc-critique.js`
+reproduces the wizard's Liquid `post_template` exactly, including the French space before the
+colon (`Style de critique :`) and the omission of empty optional sections. The source strings
+deliberately live in JS rather than in `locales/*.yml`, so that translating the UI cannot
+silently break the raw parser. If you change the source structure, change it in
+`spc-critique.js` **and** in `spc-parse-request.js`.
 
 **The subject dropdown is fetched, not hard-coded.** The critique category requires at least
 one tag from the **Critique Subjects** tag group and `/posts.json` enforces that server-side,

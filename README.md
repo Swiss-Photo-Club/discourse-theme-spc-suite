@@ -40,7 +40,7 @@ its prefix.
 | Branding (fonts, colours) | — | `scss/branding.scss` | — | — | — |
 | Category heroes | `enable_category_hero` | `scss/hero.scss`, `scss/category-hero.scss` | `api-initializers/spc-category-surface.js`, `api-initializers/spc-category-hero.js`, `components/spc-category-surface.gjs`, `lib/spc-hero.js` | `hero.*` | — |
 | Homepage design | `enable_local_featured_categories` (migration only) | `scss/homepage.scss` | `api-initializers/spc-home-identity.js`, `components/spc-home-identity.gjs`, `api-initializers/spc-featured-categories.js`, `components/spc-featured-categories.gjs`, `api-initializers/spc-homepage.js` | `homepage.*` | `homepage_*` |
-| Monthly challenge | — | `scss/challenge.scss`, `scss/challenge-staff.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js`, `components/spc-challenge-admin.gjs` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
+| Monthly challenge | — | `scss/challenge.scss` | `api-initializers/spc-monthly-challenge.js`, `spc-challenge-vote-mover.js`, `components/spc-challenge-admin.gjs` | `monthly_challenge.*` | `challenge_*`, `monthly_*`, `challenges` |
 | `/submit` photo form | — | `scss/submit.scss` | `spc-submit-route-map.js`, `{routes,controllers,templates}/spc-submit.*`, `components/spc-submit-form.gjs`, `components/spc-submit-banner.gjs`, `lib/spc-submit-helpers.js`, `lib/spc-membership.js`, `lib/spc-critique.js`, `api-initializers/spc-photo-submit.js` | `form.*`, `critique_form.*`, `banner.*` | `round_tag*`, `show_banner`, `replace_new_topic_button`, `members_only_url` |
 | Critique Workspace | `enable_critique_workspace` | `scss/critique-workspace.scss` | `initializers/spc-critique-workspace.js`, `components/spc-critique-workspace.gjs`, `lib/spc-parse-request.js` | `critique_workspace.*` | `workspace_*` |
 | Critique Submit buttons | `enable_critique_submit` | `scss/critique-submit.scss` | `connectors/discovery-list-container-top/spc-critique-submit.gjs` | `critique_submit.*` | `critique_*` |
@@ -81,9 +81,10 @@ comment instead of 67KB of rules — i.e. the entire site loses its styling, sil
 admin-UI error. If the site ever goes unstyled after an update, fetch
 `common_theme_61_*.css` and look at the first line.
 
-`scss/challenge-staff.scss` must stay **last**. The challenge rules blanket-hide the topic
-footer's `__actions`; that final block re-shows only the wrench so staff can pin the brief,
-and it works purely by being later in the cascade.
+Monthly Challenge entry topics intentionally use Discourse's standard topic layout and the
+Topic Voting plugin's real widget, with one deliberate exception: the theme moves that widget
+into the first post's action row. Challenge-specific page-shell styling is limited to the
+category, submission and administration surfaces.
 
 ## The monthly challenge workflow
 

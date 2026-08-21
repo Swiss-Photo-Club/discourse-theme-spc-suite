@@ -41,12 +41,22 @@ fetch([...document.querySelectorAll('link[rel=stylesheet]')]
 Healthy is ~75KB starting with `@font-face`.
 
 **The import order in `common/common.scss` is load-bearing** and reproduces the cascade the
-seven original components used to produce. Two positions are load-bearing at the ends.
-**`challenge-staff` must stay last** — it re-shows the staff topic-admin wrench purely by being
-later in the cascade than the rules that hide the footer actions. **`hero` must stay second,
+seven original components used to produce. **`hero` must stay second,
 right after `branding`** — it holds the shared primitives, and everything that overrides them
 (`challenge`'s contextual eyebrow rules, `non-member-banner`'s `--invitation` variant) does so
 by importing later rather than by out-specifying them.
+
+**Challenge entry topics are stock Discourse topic pages.** Until 2026-08-21 `challenge.scss`
+forced every `category-monthly-challenge.archetype-regular` page onto a `calc(100vw - 3rem)`
+canvas with ~90 override rules (title band, grid post row, hidden timeline/footer/topic map,
+mobile REPLY relabel) plus a last-in-cascade `challenge-staff` partial that re-showed the wrench
+those rules had hidden. All of it is gone: an entry topic keeps the 1110px wrapper, timeline,
+footer buttons and the header's scrolled topic info exactly like a Photo Feedback topic, and the
+only challenge-specific styling left is the Topic Voting widget that
+`spc-challenge-vote-mover.js` moves into post 1's action row. The header swapping to the topic
+title on scroll is core behaviour on every topic, not something the challenge CSS does — do not
+"fix" it in `challenge.scss`; the one thing that was wrong there (category name invisible on the
+navy bar) is handled site-wide in `branding.scss`.
 
 **`branding.scss` opens with `* { border-radius: 0 !important }`.** An `!important` declaration
 on the universal selector beats an unqualified one regardless of specificity or source order, so

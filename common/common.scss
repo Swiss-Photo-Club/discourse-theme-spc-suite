@@ -10,9 +10,8 @@
 // 20 Critique Submit, 23 Leaderboard, 36 Onboarding, 37 Non-Member Banner,
 // 61 SPC Suite).
 //
-// Do not reorder these imports. In particular challenge-staff must
-// stay last: it re-shows the topic admin wrench that the earlier challenge
-// rules blanket-hide, and it only works as an override.
+// Do not reorder these imports: several feature partials intentionally rely on
+// the cascade established here.
 // =============================================================================
 
 // --- merged-in components, in their original component-id order --------------
@@ -49,4 +48,3 @@
 // not: this file names only the other two slugs.
 @import "topic-cards";
 @import "homepage";
-@import "challenge-staff";

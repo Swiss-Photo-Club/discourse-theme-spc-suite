@@ -681,7 +681,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
    challenge surface.
    ================================================================== */
 
-body.category-monthly-challenge #main-outlet {
+body.navigation-category.category-monthly-challenge #main-outlet {
   position: relative;
   padding-top: 0;
   background: var(--spc-wild-sand);
@@ -937,596 +937,102 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 }
 
 /* ==================================================================
-   Challenge ENTRY TOPIC pages — desktop & mobile
-   Moved here from SPC Branding (phase 4, 2026-07-22): one owner for
-   every Monthly Challenge surface. The companion vote-mover initializer
-   (spc-challenge-vote-mover.js) relocates the Topic Voting widget into
-   the first post's action row; these rules style it.
+   Challenge ENTRY TOPIC pages
+   Entry topics use Discourse's standard topic layout on every width — the
+   1110px wrapper, title, timeline, post stream, footer buttons and the
+   header's scrolled topic info all stay core, exactly as on a Photo
+   Feedback topic. Until 2026-08-21 this block forced a full-bleed
+   `calc(100vw - 3rem)` canvas with ~90 override rules and a last-in-cascade
+   `challenge-staff` partial to re-show the wrench it had hidden; do not
+   bring that back. The one intentional exception is voting:
+   spc-challenge-vote-mover.js moves the plugin's real widget into the first
+   post's action row, and the rules below style only that widget.
    ================================================================== */
 
-@media (min-width: 601px) {
-  body.category-monthly-challenge.archetype-regular .d-header .header-title-voting { display: none !important; }
-  body.category-monthly-challenge.archetype-regular #topic-footer-buttons { width: 100%; max-width: none; }
-  body.category-monthly-challenge.archetype-regular .topic-notifications-button.notifications-button-footer { display: none !important; }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote {
+  order: -1;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  height: 54px;
+  margin-right: auto;
+  border: 1px solid var(--spc-coral);
+  background: var(--spc-coral);
 }
 
-/* =====================================================================
-   Monthly Challenge entry topic — desktop
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button,
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
 
-   Discourse normally reserves a wide right column for the topic timeline
-   and caps post bodies at reading-column width. Photo entries instead use
-   the available viewport and keep the real voting widget with the photo.
-   ===================================================================== */
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button {
+  min-width: 105px;
+  padding: 0 1rem;
+}
 
-@media (min-width: 601px) {
-  body.category-monthly-challenge.archetype-regular {
-    background: var(--spc-wild-sand);
-  }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button .d-icon {
+  margin-right: 0.5rem;
+}
 
-  body.category-monthly-challenge.archetype-regular #main-outlet-wrapper {
-    width: calc(100vw - 3rem) !important;
-    max-width: none !important;
-  }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button::after {
+  content: "VOTE";
+  letter-spacing: 0.07em;
+}
 
-  body.category-monthly-challenge.archetype-regular #main-outlet {
-    width: 100% !important;
-    padding: 0 !important;
-    background: var(--spc-wild-sand);
-  }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[aria-label="Remove vote"]::after,
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[title="Remove vote"]::after {
+  content: "VOTED";
+}
 
-  body.category-monthly-challenge.archetype-regular #topic-title {
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 2.25rem 3rem 2rem;
-    border-bottom: 4px solid var(--spc-coral);
-    background: #ffffff;
-    box-sizing: border-box;
-  }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
+  min-width: 48px;
+  padding: 0 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+}
 
-  body.category-monthly-challenge.archetype-regular #topic-title .title-wrapper {
-    float: none;
-    width: 100%;
-  }
+body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count::before {
+  margin-right: 0.3rem;
+  content: "·";
+}
 
-  body.category-monthly-challenge.archetype-regular #topic-title h1 {
-    margin: 0 0 0.85rem;
-    color: var(--spc-indigo);
-    font-size: clamp(2.1rem, 3vw, 3rem);
-    font-weight: 800;
-    line-height: 1.08;
-  }
+/* Topic Voting also renders a vote control in the header's scrolled topic
+   info. The widget already lives in the first post's action row on every
+   width, and the Photo Feedback topics the entry pages should match carry no
+   header voting at all, so hide the header copy at every width. */
+body.category-monthly-challenge.archetype-regular .d-header .header-title-voting {
+  display: none !important;
+}
 
-  body.category-monthly-challenge.archetype-regular #topic-title h1 a {
-    color: inherit;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .topic-category {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.7rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .badge-category__name {
-    color: #676b75;
-    font-weight: 600;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .topic-header-extra,
-  body.category-monthly-challenge.archetype-regular #topic-title .list-tags {
-    display: contents;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .discourse-tags {
-    margin: 0;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .discourse-tag {
-    padding: 0.55rem 0.75rem;
-    background: #f4f4f4;
-    color: var(--spc-gray-400);
-    font-size: 0.82rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .title-voting,
-  body.category-monthly-challenge.archetype-regular .topic-navigation {
-    display: none !important;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic,
-  body.category-monthly-challenge.archetype-regular .posts-wrapper,
-  body.category-monthly-challenge.archetype-regular .post-stream,
-  body.category-monthly-challenge.archetype-regular .container.posts,
-  body.category-monthly-challenge.archetype-regular .topic-area,
-  body.category-monthly-challenge.archetype-regular .topic-post,
-  body.category-monthly-challenge.archetype-regular .topic-post article {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0;
-  }
-
-  body.category-monthly-challenge.archetype-regular .container.posts {
-    display: block !important;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-post {
-    border-bottom: 1px solid #e2e4e9;
-    background: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-notice.new-user {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-post .post__row {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    align-items: start;
-    width: 100%;
-    padding: 2rem 3rem 0;
-    box-sizing: border-box;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-post .topic-avatar {
-    width: 64px;
-    padding-top: 0;
-    border: 0;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-post .topic-body {
-    float: none;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0;
-    border: 0;
-    box-sizing: border-box;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .names .username a {
-    color: var(--spc-charcoal);
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-info.edits,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-info.post-language,
-  body.category-monthly-challenge.archetype-regular #post_1 .read-state {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 1.1rem 0 0;
-    padding: 0;
-    color: var(--spc-charcoal);
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked > h3:first-child,
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked > p:empty {
-    display: none;
-  }
-
-  // The photo keeps the size Discourse cooked it at (the max_image_width /
-  // max_image_height site settings, 690x500 by default) and the lightbox is
-  // the "expand" affordance — the same compact look a stock topic has. This
-  // rule used to force the wrapper, link and image to width: 100% so the photo
-  // filled the full-bleed column, which rendered a 333x500 portrait at
-  // ~1500x2250, several screens tall. The max-height is only a guard for the
-  // day the site setting is raised: it shrinks, never scales up.
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper img {
-    max-height: 75vh;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post__menu-area {
-    width: 100%;
-    margin: 0;
-    padding: 1rem 0 1.5rem;
-    border-top: 1px solid #e2e4e9;
-    box-sizing: border-box;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions {
-    width: 100%;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
+@media (max-width: 600px) {
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote {
-    order: -1;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch;
-    height: 54px;
-    margin-right: auto;
-    border: 1px solid var(--spc-coral);
-    background: var(--spc-coral);
+    height: 52px;
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button,
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 52px;
-    border: 0;
-    background: transparent;
-    color: #ffffff;
-    font-size: 0.8rem;
-    font-weight: 800;
+    height: 50px;
+    font-size: 0.78rem;
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button {
-    min-width: 105px;
-    padding: 0 1rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button .d-icon {
-    margin-right: 0.5rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button::after {
-    content: "VOTE";
-    letter-spacing: 0.07em;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[aria-label="Remove vote"]::after,
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[title="Remove vote"]::after {
-    content: "VOTED";
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
-    min-width: 48px;
-    padding: 0 0.75rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.35);
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count::before {
-    margin-right: 0.3rem;
-    content: "·";
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions > .btn,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .reaction-button {
-    width: 48px;
-    height: 54px;
-    color: var(--spc-gray-400);
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-action-menu__reply,
-  body.category-monthly-challenge.archetype-regular #post_1 .post__topic-map,
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons__actions {
-    display: none !important;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin: 0;
-    padding: 1.5rem 3rem;
-    background: #ffffff;
-    box-sizing: border-box;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons > .create {
-    min-width: 180px;
-    min-height: 54px;
-    margin: 0;
-    border: 1px solid var(--spc-coral);
-    background: var(--spc-coral);
-    color: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular .more-topics__container {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 2rem 3rem 3rem;
-    background: var(--spc-wild-sand);
-    box-sizing: border-box;
-  }
-}
-
-/* =====================================================================
-   Monthly Challenge entry topic — mobile
-
-   `common.js` moves the existing Topic Voting widget into the first post's
-   action row on screens up to 600px. These rules style the real widget and
-   the standard Discourse topic/post markup; no voting state is duplicated.
-   ===================================================================== */
-
-@media (max-width: 600px) {
-  body.category-monthly-challenge.archetype-regular {
-    background: #f4f4f4;
-  }
-
-  body.category-monthly-challenge.archetype-regular #main-outlet {
-    padding: 0 !important;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title {
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 1.35rem 1.25rem 1.1rem;
-    border-bottom: 1px solid #e2e4e9;
-    background: #ffffff;
-    box-sizing: border-box;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .title-wrapper {
-    float: none;
-    width: 100%;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title h1 {
-    margin: 0 0 0.75rem;
-    color: var(--spc-indigo);
-    font-size: 1.75rem;
-    font-weight: 800;
-    line-height: 1.15;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title h1 a {
-    color: inherit;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .topic-category {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.55rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .badge-category__name {
-    color: #676b75;
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .badge-category .emoji {
-    width: 14px;
-    height: 14px;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .topic-header-extra,
-  body.category-monthly-challenge.archetype-regular #topic-title .list-tags {
-    display: contents;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .discourse-tags {
-    margin: 0;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic-title .discourse-tag {
-    padding: 0.45rem 0.6rem;
-    background: #f4f4f4;
-    color: #8a909e;
-    font-size: 0.8rem;
-  }
-
-  /* The JS leaves this shell empty after moving the live voting widget. */
-  body.category-monthly-challenge.archetype-regular #topic-title .title-voting {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #topic,
-  body.category-monthly-challenge.archetype-regular .posts-wrapper,
-  body.category-monthly-challenge.archetype-regular .post-stream {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 {
-    margin: 0;
-    border: 0;
-    background: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-notice.new-user {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post__row {
-    padding-inline: 1.25rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .topic-avatar,
-  body.category-monthly-challenge.archetype-regular #post_1 .topic-body {
-    padding-top: 1rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .topic-avatar .avatar {
-    width: 48px;
-    height: 48px;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .names .username a {
-    color: var(--spc-charcoal);
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-info.edits,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-info.post-language,
-  body.category-monthly-challenge.archetype-regular #post_1 .read-state {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-date {
-    color: #8a909e;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked {
-    margin-top: 1rem;
-    color: var(--spc-charcoal);
-    font-size: 1rem;
-    line-height: 1.55;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked > h3:first-child,
-  body.category-monthly-challenge.archetype-regular #post_1 .cooked > p:empty {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper,
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper > a,
-  body.category-monthly-challenge.archetype-regular #post_1 .lightbox-wrapper img {
-    display: block;
-    width: 100%;
-    max-width: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post__menu-area {
-    margin: 0;
-    padding: 0.85rem 1.25rem;
-    border-top: 1px solid #e2e4e9;
-    background: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions {
-    width: 100%;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions {
-    display: flex;
-    align-items: center;
-    gap: 0.2rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote {
-    order: -1;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch;
-    height: 52px;
-    margin-right: auto;
-    border: 1px solid var(--spc-coral);
-    background: var(--spc-coral);
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-width: 90px;
-    height: 50px;
     padding: 0 0.85rem;
-    border: 0;
-    background: transparent;
-    color: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button .d-icon {
-    margin-right: 0.45rem;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button::after {
-    content: "VOTE";
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[aria-label="Remove vote"]::after,
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button[title="Remove vote"]::after {
-    content: "VOTED";
   }
 
   body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-width: 42px;
-    height: 50px;
     padding: 0 0.65rem;
-    border: 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.35);
-    background: transparent;
-    color: #ffffff;
-    font-size: 0.78rem;
-    font-weight: 800;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count::before {
-    margin-right: 0.3rem;
-    content: "·";
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .actions > .btn,
-  body.category-monthly-challenge.archetype-regular #post_1 .post-controls .reaction-button {
-    width: 42px;
-    height: 52px;
-    color: #8a909e;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post-action-menu__reply {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular #post_1 .post__topic-map {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons__actions {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons > .create {
-    min-width: 112px;
-    min-height: 52px;
-    margin-left: auto;
-    border: 1px solid var(--spc-coral);
-    background: var(--spc-coral);
-    color: #ffffff;
   }
 }
 
-
-/* Mobile challenge topic: keep the footer focused on replying */
-@media (max-width: 600px) {
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons__actions,
-  body.category-monthly-challenge.archetype-regular .topic-navigation {
-    display: none !important;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons {
-    display: flex;
-    width: 100%;
-    margin: 0;
-    padding: 1rem 1.25rem;
-    background: #ffffff;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons > .create {
-    width: 100%;
-    min-height: 52px;
-    margin: 0;
-  }
-}
-
-
-@media (max-width: 600px) {
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons > .create .d-icon {
-    display: none;
-  }
-
-  body.category-monthly-challenge.archetype-regular .topic-footer-main-buttons > .create::after {
-    content: "REPLY";
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-  }
-}
 
 /* Legacy migration fallback: when the external Featured Categories component
    is active, the challenge initializer owns its Monthly Challenge slot. The

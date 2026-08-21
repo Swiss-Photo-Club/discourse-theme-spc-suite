@@ -384,6 +384,14 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
+/* Core's scrolled topic info recolours the category badge to
+   --header_primary-high, but the badge NAME keeps its category title colour
+   (--category-badge-title-color), which is dark for every SPC category and
+   so vanishes on the navy bar. Give the name the same header colour. */
+.d-header .extra-info-wrapper .badge-category__name {
+  color: var(--header_primary-high);
+}
+
 /* -------------------------------------------------
    Phone-width page geometry. Core's #main-outlet-wrapper
    keeps ~10.7px of side padding on mobile (a hardcoded

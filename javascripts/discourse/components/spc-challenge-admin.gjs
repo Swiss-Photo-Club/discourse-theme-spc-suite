@@ -326,16 +326,34 @@ export default class SpcChallengeAdmin extends Component {
       // needed. Failure here is not fatal: the post attempt below surfaces
       // any real problem.
       try {
+        // The index serializer stopped shipping each group's tags
+        // (observed 2026-09), and the show endpoint answers with
+        // tags: [{name, slug}] rather than the old tag_names strings, so
+        // groups without an inline tag list are fetched one by one and both
+        // shapes are read. Canonical slugs, not localized names, go back in
+        // the PUT.
         const groups = await ajax("/tag_groups.json");
-        const roundGroup = (groups?.tag_groups || []).find((group) =>
-          (group.tag_names || []).some((name) => /^\d{4}-\d{2}/.test(name))
-        );
-        if (roundGroup && !roundGroup.tag_names.includes(roundTagName)) {
+        let roundGroup;
+        let roundTagNames;
+        for (const group of groups?.tag_groups || []) {
+          const detail = group.tag_names
+            ? group
+            : (await ajax(`/tag_groups/${group.id}.json`)).tag_group || group;
+          const names =
+            detail.tag_names ||
+            (detail.tags || []).map((tag) => tag.slug || tag.name);
+          if (names.some((name) => /^\d{4}-\d{2}/.test(name))) {
+            roundGroup = detail;
+            roundTagNames = names;
+            break;
+          }
+        }
+        if (roundGroup && !roundTagNames.includes(roundTagName)) {
           await ajax(`/tag_groups/${roundGroup.id}.json`, {
             type: "PUT",
             data: {
               name: roundGroup.name,
-              tag_names: [...roundGroup.tag_names, roundTagName],
+              tag_names: [...roundTagNames, roundTagName],
               one_per_topic: roundGroup.one_per_topic,
             },
           });

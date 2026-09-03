@@ -69,10 +69,9 @@ body.navigation-topics .spc-home-identity {
   position: relative;
   isolation: isolate;
   display: flex;
-  min-height: 250px;
   box-sizing: border-box;
   align-items: center;
-  padding: 42px 32px;
+  padding: 24px 32px;
   overflow: hidden;
   border-bottom: 4px solid var(--spc-coral);
   background: linear-gradient(120deg, var(--spc-indigo), #35466a);
@@ -132,26 +131,23 @@ body.navigation-topics .spc-home-identity__tagline {
 
 body.navigation-topics .spc-home-introduction {
   box-sizing: border-box;
-  padding: 22px 32px 24px;
+  padding: 16px 32px;
   border-bottom: 1px solid var(--stroke-1);
   background: #ffffff;
 }
 
 body.navigation-topics .spc-home-introduction p {
-  max-width: 78ch;
-  margin: 0 0 10px;
+  margin: 0;
   color: var(--spc-gray-700);
   font-size: 16px;
   line-height: 1.7;
 }
 
 body.navigation-topics .spc-home-introduction a {
-  display: inline-block;
   border-bottom: 2px solid var(--spc-coral);
   color: var(--spc-indigo);
-  font-size: 13px;
   font-weight: var(--fw-bold);
-  line-height: 1.5;
+  white-space: nowrap;
 }
 
 body.navigation-topics .spc-home-introduction a:hover,
@@ -229,7 +225,6 @@ body.navigation-topics .featured-categories__category-container {
   display: block;
   flex: 1 1 160px;
   min-width: 0;
-  min-height: 154px;
   padding: 0 !important;
   overflow: hidden;
   border: 0 !important;
@@ -265,7 +260,6 @@ body.navigation-topics
     > [data-spc-home-feature="critique"]
   ) {
   flex: 1 1 calc(50% - 7px) !important;
-  min-height: 248px;
   background: var(--spc-indigo);
 }
 
@@ -274,7 +268,6 @@ body.navigation-topics .featured-categories__category-link {
   position: relative;
   display: flex;
   width: 100%;
-  min-height: 154px;
   box-sizing: border-box;
   flex-direction: column;
   justify-content: flex-start;
@@ -308,7 +301,6 @@ body.navigation-topics
     [href="/c/monthly-challenge/6"],
     [data-spc-home-feature="critique"]
   ) {
-  min-height: 154px !important;
   justify-content: flex-start !important;
   background: #ffffff !important;
   background-image: none !important;
@@ -438,15 +430,6 @@ body.navigation-topics
   -webkit-line-clamp: 2;
 }
 
-body.navigation-topics .spc-home-category-meta {
-  display: block;
-  margin-top: auto;
-  padding-top: 8px;
-  color: var(--fg-3);
-  font-size: var(--fs-detail);
-  line-height: 1.35;
-}
-
 /* The two currently selected categories keep their established highlight
    treatment. `.spc-monthly-card` remains only for the migration fallback. */
 body.navigation-topics
@@ -460,8 +443,7 @@ body.navigation-topics
   isolation: isolate;
   display: flex !important;
   width: 100% !important;
-  height: 248px !important;
-  min-height: 248px !important;
+  min-height: 176px;
   box-sizing: border-box;
   flex-direction: column;
   align-items: flex-start;
@@ -525,22 +507,6 @@ body.navigation-topics
   [data-spc-home-feature="critique"]
   > .category-logo {
   display: none;
-}
-
-body.navigation-topics .spc-home-feature-badge {
-  position: absolute;
-  z-index: 3;
-  top: 14px;
-  left: 14px;
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--spc-coral);
-  color: #ffffff;
-  font-size: var(--fs-detail);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.04em;
-  line-height: 20px;
-  text-transform: uppercase;
 }
 
 body.navigation-topics .spc-monthly-card__content {
@@ -920,8 +886,7 @@ body.navigation-topics .spc-home-pinned-badge {
   }
 
   body.navigation-topics .spc-home-identity {
-    min-height: 220px;
-    padding: 34px 20px;
+    padding: 24px 20px;
   }
 
   body.navigation-topics .spc-home-identity__overlay {
@@ -933,7 +898,7 @@ body.navigation-topics .spc-home-pinned-badge {
   }
 
   body.navigation-topics .spc-home-introduction {
-    padding: 20px;
+    padding: 16px 20px;
   }
 
   body.navigation-topics .spc-home-introduction p {
@@ -985,8 +950,6 @@ body.navigation-topics .spc-home-pinned-badge {
     .featured-categories__category-container:has(
       > .featured-categories__category-link[href="/c/monthly-challenge/6"]
     ) {
-    height: 224px !important;
-    min-height: 224px !important;
     margin: 0 !important;
   }
 
@@ -997,8 +960,58 @@ body.navigation-topics .spc-home-pinned-badge {
     .featured-categories__category-link[href="/c/monthly-challenge/6"],
   body.navigation-topics
     [data-spc-home-feature="critique"] {
-    height: 224px !important;
-    min-height: 224px !important;
+    min-height: 160px;
+  }
+
+  /* Compact categories become name-only chips that wrap into rows instead of
+     taking a full-width card each. */
+  body.navigation-topics
+    .featured-categories__category-container:not(
+      :has(
+        > .spc-monthly-card,
+        > .featured-categories__category-link[href="/c/monthly-challenge/6"],
+        > [data-spc-home-feature="critique"]
+      )
+    ) {
+    flex: 0 1 auto !important;
+  }
+
+  body.navigation-topics
+    .featured-categories__category-container:not(
+      :has(
+        > .spc-monthly-card,
+        > .featured-categories__category-link[href="/c/monthly-challenge/6"],
+        > [data-spc-home-feature="critique"]
+      )
+    )
+    > .featured-categories__category-link {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+  }
+
+  body.navigation-topics
+    .featured-categories__category-container:not(
+      :has(
+        > .spc-monthly-card,
+        > .featured-categories__category-link[href="/c/monthly-challenge/6"],
+        > [data-spc-home-feature="critique"]
+      )
+    )
+    > .featured-categories__category-link::before {
+    margin: 0 8px 0 0;
+  }
+
+  body.navigation-topics
+    .featured-categories__category-container:not(
+      :has(
+        > .spc-monthly-card,
+        > .featured-categories__category-link[href="/c/monthly-challenge/6"],
+        > [data-spc-home-feature="critique"]
+      )
+    )
+    .category-description {
+    display: none;
   }
 
 

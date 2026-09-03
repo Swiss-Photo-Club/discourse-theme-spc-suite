@@ -73,13 +73,14 @@ export default class SpcHomeIdentity extends Component {
           class="spc-home-introduction"
           aria-label={{i18n (themePrefix "homepage.introduction.label")}}
         >
-          <p>{{i18n (themePrefix "homepage.introduction.body")}}</p>
-
-          {{#if this.readMoreUrl}}
-            <a href={{this.readMoreUrl}}>
-              {{i18n (themePrefix "homepage.introduction.read_more")}}
-            </a>
-          {{/if}}
+          <p>
+            {{i18n (themePrefix "homepage.introduction.body")}}
+            {{#if this.readMoreUrl}}
+              <a href={{this.readMoreUrl}}>
+                {{i18n (themePrefix "homepage.introduction.read_more")}}
+              </a>
+            {{/if}}
+          </p>
         </section>
       </div>
     {{/if}}

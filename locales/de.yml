@@ -380,11 +380,9 @@ de:
     introduction:
       label: Über die Swiss Photo Club Community
       body: Teile deine Fotos, erhalte ehrliches und konstruktives Feedback, nimm an der monatlichen Challenge teil und lerne Fotografinnen und Fotografen in deiner Nähe kennen. Die Community wird vom Swiss Photo Club betrieben und ist für alle Erfahrungsstufen offen.
-      read_more: Mehr über diese Community erfahren →
+      read_more: Mehr erfahren →
     popular_categories: Beliebte Kategorien
     all_categories: Alle Kategorien
-    highlight: Highlight
-    view_category: Kategorie ansehen →
     latest: Neueste Beiträge
     login_to_post: Zum Posten anmelden
     monthly_prompt: Das Thema dieses Monats
@@ -396,7 +394,6 @@ de:
     webinars:
       title: Monatliche Live-Webinare
       description: Live-Fototrainings mit unseren Instruktoren – oder die Aufzeichnung ansehen.
-      meta: Zuschauen & fragen →
   critique_workspace:
     banner_title: Kritik-Arbeitsplatz
     banner_text: Öffne einen eigenen Arbeitsbereich für deine Kritik – mit Bild, Anfrage und den Notizen der fotografierenden Person direkt daneben.

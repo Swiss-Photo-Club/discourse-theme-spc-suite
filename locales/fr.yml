@@ -376,11 +376,9 @@ fr:
     introduction:
       label: À propos de la communauté Swiss Photo Club
       body: Partagez vos photos, recevez des avis honnêtes et constructifs, participez au challenge mensuel et rencontrez des photographes près de chez vous. Animée par Swiss Photo Club, la communauté est ouverte aux photographes de tous niveaux.
-      read_more: En savoir plus sur cette communauté →
+      read_more: En savoir plus →
     popular_categories: Catégories populaires
     all_categories: Toutes les catégories
-    highlight: À la une
-    view_category: Voir la catégorie →
     latest: Derniers sujets
     login_to_post: Se connecter pour publier
     monthly_prompt: Le thème du mois
@@ -392,7 +390,6 @@ fr:
     webinars:
       title: Webinaires mensuels en direct
       description: Formations photo en direct avec nos instructeurs – ou en replay.
-      meta: Regarder et poser des questions →
   critique_workspace:
     banner_title: Espace de critique
     banner_text: Ouvre un espace dédié à ta critique – avec l'image, la demande et les notes du photographe juste à côté.

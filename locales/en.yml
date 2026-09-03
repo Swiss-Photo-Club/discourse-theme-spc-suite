@@ -380,11 +380,9 @@ en:
     introduction:
       label: About the Swiss Photo Club Community
       body: Share your photos, get honest and constructive feedback, take part in the monthly challenge, and meet photographers near you. Run by Swiss Photo Club and open to photographers of every level.
-      read_more: Read more about this community →
+      read_more: Read more →
     popular_categories: Popular Categories
     all_categories: All categories
-    highlight: Highlight
-    view_category: View category →
     latest: Latest
     login_to_post: Log in to post
     monthly_prompt: This month's prompt
@@ -396,7 +394,6 @@ en:
     webinars:
       title: Monthly Live Webinars
       description: Live photo trainings with our instructors — or catch the recording.
-      meta: Watch & ask →
   critique_workspace:
     banner_title: Critique Workspace
     banner_text: Open a dedicated space for your critique — with the image, the request and the photographer's notes right beside you.

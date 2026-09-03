@@ -42,13 +42,6 @@ function ensureFeatureDecoration(link, actionKey) {
 
   link.dataset.spcHomeFeature = actionKey;
 
-  let badge = link.querySelector(":scope > .spc-home-feature-badge");
-  if (!badge) {
-    badge = makeElement("span", "spc-home-feature-badge");
-    link.prepend(badge);
-  }
-  setText(badge, translated("highlight"));
-
   let cta = link.querySelector(":scope > .spc-home-feature-cta");
   if (!cta) {
     cta = makeElement("span", "spc-home-feature-cta");
@@ -84,19 +77,6 @@ function syncCritiqueCategory(link, site) {
   } else {
     link.style.removeProperty("--spc-critique-cover");
   }
-}
-
-function ensureSmallCardMeta(link, label = translated("view_category")) {
-  if (!link) {
-    return;
-  }
-
-  let meta = link.querySelector(":scope > .spc-home-category-meta");
-  if (!meta) {
-    meta = makeElement("span", "spc-home-category-meta");
-    link.append(meta);
-  }
-  setText(meta, label);
 }
 
 // The card links to the webinar category when webinars_category_id resolves to
@@ -147,7 +127,6 @@ function ensureWebinarCard(list, feedbackContainer) {
     link.querySelector(".category-description"),
     translated("webinars.description")
   );
-  ensureSmallCardMeta(link, translated("webinars.meta"));
 }
 
 function enhanceCategories(site) {
@@ -175,16 +154,6 @@ function enhanceCategories(site) {
   syncCritiqueCategory(critique, site);
   ensureFeatureDecoration(monthly, "challenge");
   ensureFeatureDecoration(critique, "critique");
-
-  root
-    .querySelectorAll(
-      ".featured-categories__category-link[href]:not(.spc-home-webinar-link)"
-    )
-    .forEach((link) => {
-      if (link !== monthly && link !== critique) {
-        ensureSmallCardMeta(link);
-      }
-    });
 
   // The feedback card keeps the category's own localised name and
   // description, like every other compact card. It used to be relabelled

@@ -312,7 +312,7 @@ de:
     open_deadlines: Einreichen und abstimmen bis %{date}
     days_left_one: Noch 1 Tag
     days_left: 'Noch %{count} Tage'
-    voting_until_winner: Einreichungen beendet · Abstimmung läuft bis zur Bekanntgabe des Gewinnerfotos
+    voting_closed: Einreichungen und Abstimmung beendet · Die nächste Challenge folgt
     winner_chip: 'Gewinnerfoto %{month} · %{theme}'
     winner_chip_plain: 'Gewinnerfoto %{month}'
     winner_votes: '%{count} Stimmen'
@@ -325,7 +325,7 @@ de:
     vote_step_one_title: Neue Beiträge entdecken
     vote_step_one_body: Neue Fotos erscheinen während der Einreichungszeit und können sofort Stimmen erhalten.
     vote_step_two_title: Favoriten wählen
-    vote_step_two_body: Öffne einen Beitrag und nutze den Abstimmungsbutton. Deine Wahl kannst du bis zur Bekanntgabe des Gewinnerfotos ändern.
+    vote_step_two_body: Öffne einen Beitrag und nutze den Abstimmungsbutton. Die Abstimmung endet mit der nächsten Challenge oder zum Monatsende. Danach erhältst du dein Stimmenkontingent zurück; bisherige Ergebnisse bleiben erhalten.
     vote_step_three_title: Die Community entscheidet
     vote_step_three_body: Das Foto mit den meisten gültigen Stimmen wird als Monatsgewinner präsentiert.
     full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen
@@ -370,7 +370,7 @@ de:
       need_photo: Füge ein Titelfoto hinzu.
       task_heading: Die Aufgabe
       rules_heading: Einreichen und Abstimmen
-      rules_body: Reiche über den Foto-einreichen-Button ein selbst fotografiertes Bild passend zur Aufgabe ein. Einsendeschluss ist der %{date}. Stimme ab, indem du einen Beitrag öffnest und den Abstimmungsbutton nutzt — die Abstimmung läuft bis zur Bekanntgabe des Gewinnerfotos.
+      rules_body: Reiche über den Foto-einreichen-Button ein selbst fotografiertes Bild passend zur Aufgabe ein. Einsendeschluss ist der %{date}. Stimme ab, indem du einen Beitrag öffnest und den Abstimmungsbutton nutzt. Die Abstimmung endet mit der nächsten Challenge oder zum Monatsende; abgeschlossene Beiträge werden geschlossen und dein Stimmenkontingent wird zurückgegeben. Die Ergebnisse bleiben sichtbar.
       manage_tags: Runden-Tags verwalten
   homepage:
     identity:

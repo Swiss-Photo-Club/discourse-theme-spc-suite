@@ -3,6 +3,7 @@ import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 import { clearHero, ensureHero, uploadUrl } from "../lib/spc-hero";
+import { currentMonthYM } from "../lib/spc-submit-helpers";
 
 const COMPONENT_SELECTOR = "[data-spc-monthly-challenge]";
 const RENDER_THROTTLE_MS = 200;
@@ -256,22 +257,23 @@ function monthLabel(challenge) {
   }).format(date);
 }
 
-// A round has two live phases and no dead one. Submissions close at the end of
-// the month, but voting has no fixed deadline: it stays open until staff
-// announce the winner and pin the next brief, at which point this round simply
-// stops being the pinned one. There is deliberately no "closed" state — the
-// current round is always either accepting photos or accepting votes, so the
-// category never shows a dead end between rounds.
+// The server closes completed rounds and returns their voting allowance when
+// the next brief is pinned, or at month rollover in the challenge timezone.
 function challengeState(challenge) {
   if (challenge?.status === "archived") {
     return "archived";
+  }
+
+  const roundMonth = /^(\d{4}-\d{2})(?:-|$)/.exec(challenge?.tag || "")?.[1];
+  if (roundMonth && roundMonth < currentMonthYM()) {
+    return "closed";
   }
 
   const submissionDeadline = validDate(challenge?.submission_deadline)?.getTime();
   if (!submissionDeadline || Date.now() <= submissionDeadline) {
     return "submissions-open";
   }
-  return "voting-open";
+  return "closed";
 }
 
 function categoryRoute() {
@@ -432,7 +434,7 @@ function deriveChallengeFromBrief(brief) {
     status: "active",
     start_at: `${year}-${pad(month)}-01T00:00:00+02:00`,
     submission_deadline: `${year}-${pad(month)}-${pad(lastDay)}T23:59:00+02:00`,
-    // Voting has no fixed deadline — see challengeState().
+    // The round's calendar month controls voting — see challengeState().
     voting_deadline: "",
     gallery_url: "",
     winner_title: "",
@@ -783,8 +785,8 @@ function deadlineText(challenge, state) {
         : translate("days_left", { count: daysLeft });
     return `${daysText} · ${dateText}`;
   }
-  if (state === "voting-open") {
-    return translate("voting_until_winner");
+  if (state === "closed") {
+    return translate("voting_closed");
   }
   return "";
 }

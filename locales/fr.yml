@@ -308,7 +308,7 @@ fr:
     open_deadlines: Envoyez et votez jusqu’au %{date}
     days_left_one: 1 jour restant
     days_left: '%{count} jours restants'
-    voting_until_winner: Envois terminés · Le vote reste ouvert jusqu’à l’annonce de la photo gagnante
+    voting_closed: Envois et votes terminés · Le prochain challenge arrive
     winner_chip: 'Photo gagnante %{month} · %{theme}'
     winner_chip_plain: 'Photo gagnante %{month}'
     winner_votes: '%{count} votes'
@@ -321,7 +321,7 @@ fr:
     vote_step_one_title: Découvrez les nouvelles participations
     vote_step_one_body: Les nouvelles photos apparaissent pendant la période d’envoi et peuvent recevoir des votes immédiatement.
     vote_step_two_title: Votez pour vos préférées
-    vote_step_two_body: Ouvrez une participation et utilisez le bouton de vote. Vous pouvez modifier votre choix jusqu’à l’annonce de la photo gagnante.
+    vote_step_two_body: Ouvrez une participation et utilisez le bouton de vote. Le vote se termine au début du prochain challenge ou à la fin du mois. Votre quota de votes est alors restitué ; les résultats précédents sont conservés.
     vote_step_three_title: La communauté choisit
     vote_step_three_body: La photographie qui obtient le plus de votes valides devient la gagnante du mois.
     full_rules: Lire le guide complet de participation et de vote
@@ -366,7 +366,7 @@ fr:
       need_photo: Ajoutez une photo de couverture.
       task_heading: La mission
       rules_heading: Participation et vote
-      rules_body: Envoyez une photo prise par vous-même correspondant à la mission via le bouton d’envoi de photo. Clôture des envois le %{date}. Votez en ouvrant une participation et en utilisant le bouton de vote — le vote reste ouvert jusqu’à l’annonce de la photo gagnante.
+      rules_body: Envoyez une photo prise par vous-même correspondant à la mission via le bouton d’envoi de photo. Clôture des envois le %{date}. Votez en ouvrant une participation et en utilisant le bouton de vote. Le vote se termine au début du prochain challenge ou à la fin du mois ; les participations terminées sont fermées et votre quota de votes est restitué. Les résultats restent visibles.
       manage_tags: Gérer les tags de manche
   homepage:
     identity:

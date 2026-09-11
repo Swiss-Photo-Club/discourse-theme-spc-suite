@@ -91,10 +91,12 @@ category, submission and administration surfaces.
 The **pinned topic in the Monthly Challenge category is the current challenge.** Nothing is
 inferred from post dates or authorship, so posting normally in the category is safe.
 
-A round runs on one rhythm: **submissions and voting are both open all month, then voting
-alone stays open until staff announce the winner and pin the next brief.** There is no fixed
-voting deadline and no closed state — the current round is always either accepting photos or
-accepting votes, so the category never shows a dead end between rounds.
+A round runs on one rhythm: **submissions and voting are open during its calendar month.**
+When the next challenge is pinned, or the month ends in `challenge_timezone`, completed
+round topics close and Discourse returns their votes to members' available allowance.
+Recorded vote totals, winner tags and photographs remain visible; closed entries no longer
+accept replies. The server checks every five minutes, including challenges started manually.
+See [the server reset runbook](server/README.md): this runs separately from theme updates.
 
 **One-time setup:** create a tag named `winner` in a tag group that everyone can see but only
 staff may apply (Admin → Customize → Tags → Tag Groups → permissions). The theme finds the
@@ -110,7 +112,8 @@ the dashed staff-only box on the challenge category page
 2. **Start a new round.** The panel's form takes a theme title, a one-sentence summary, the
    templated brief sections and a cover photo, then in one click creates the
    `YYYY-MM-theme` tag inside the round tag group, posts the brief, pins it until the 8th
-   of the following month, and unpins the previous brief. The brief posts in the language
+   of the following month, and unpins the previous brief. The server then closes previous rounds
+   and returns their voting allowance. The brief posts in the language
    the admin is using; add the other languages afterwards with the post translation tool.
 
 The panel also warns when no brief is pinned (with a one-click re-pin) and when an old

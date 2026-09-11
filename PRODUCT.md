@@ -54,14 +54,16 @@ challenge gives the club a shared, dated rhythm that an open forum has no way to
 ## Operating Context
 
 - The whole product is **one Discourse theme component, id 61, "SPC Suite"**, attached to the
-  Foundation and Horizon themes on a **hosted** Discourse install.
+  Foundation and Horizon themes on a **self-hosted** Discourse Docker install.
 - Ten previously separate components were merged into this one, which is why `about.json` and
   therefore everything else sits at the repository root.
 - **Monthly challenge round:** staff create a `YYYY-MM-theme` tag in the Challenge Round tag
   group, post the brief as a normal topic with a photo, and pin it. The pinned topic *is* the
-  current challenge — nothing is inferred from dates or authorship. Voting runs alongside
-  submissions all month and stays open until staff apply the staff-only `winner` tag to the
-  winning entry and pin the next brief; the winner showcase derives from that tag. The
+  current challenge — nothing is inferred from authorship. Voting runs alongside submissions
+  during the round's month. A server timer closes completed round topics and returns voting
+  allowance when a new brief is pinned, with month rollover as a fallback; recorded totals
+  remain visible. Staff apply the staff-only `winner` tag to the winning entry, and the winner
+  showcase derives from that tag. The
   `challenges` setting is an archive and override, not the source of truth.
 - **Homepage highlights** come from core's *Default navigation menu categories*, so the same
   admin choice seeds the anonymous sidebar. `homepage_secondary_categories` controls the
@@ -74,15 +76,17 @@ challenge gives the club a shared, dated rhythm that an open forum has no way to
 
 ## Capabilities and Constraints
 
-- **No server access, no git on the host, admin panel only.** This repository is the source of
-  truth; the ship loop is commit → push → Update in Admin → Components → verify on the live site.
+- **Self-hosted Docker, with SSH access.** This repository is the source of truth; the theme
+  ship loop is commit → push → Update in Admin → Components → verify on the live site.
+  The challenge vote reset is a separate server-side Rails runner and systemd timer in `server/`.
   Anything edited in the admin CSS editor is overwritten on the next Update.
 - **No CI and no test suite.** Verification is a local dart-sass compile, a `content-tag` /
   `@glimmer/syntax` / `@babel/parser` parse pass, and then looking at — and clicking — the live
   site.
 - Everything the theme can do is bounded by what a Discourse **theme component** may do: SCSS,
   JS initializers, `.gjs` components, outlet connectors, route maps, settings and locales. No
-  server-side code, no migrations, no plugin.
+  server-side code loaded by the theme, no migrations, no plugin. The separately installed
+  challenge reset uses Discourse's native close and vote-return operations.
 - The theme shares a page with other components. **Topic List Thumbnails** (masonry on
   categories 6, 7, 8, 12) measures every topic row and positions it absolutely, so any change to
   a row's height desynchronises the layout. Category 10 is list mode.

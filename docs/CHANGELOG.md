@@ -4,6 +4,22 @@ Why things are the way they are. Current-state documentation lives in `README.md
 Claude project docs; this file is the archive, kept so nobody re-litigates a decision or
 re-introduces a fixed bug. Newest first.
 
+## Unreleased — Return voting allowance after each challenge
+
+The round workflow created/pinned the next brief but never closed the previous entries.
+Topic Voting counts votes on open topics against a member's allowance across all rounds;
+on September 11, 33 August votes were still active across 15 old topics.
+
+The server-side reset in `server/` checks every five minutes, closing round-tagged topics in
+the configured challenge category when another challenge takes over or their month ends in
+the configured timezone. It uses Discourse's native close operation and vote-release job:
+results and winner tags are retained, allowance is returned, and old entries stop accepting
+replies. It catches manual round changes, all matching topics (not just a listing page),
+missed runs, and incomplete releases. The theme's closed-state copy and new brief templates
+now describe the same monthly deadline in English, German and French.
+
+Installation is separate from the theme Update button; see `server/README.md`.
+
 ## Unreleased — Members-only gate on posting
 
 Non-members could reach every `/submit/*` form: signed-out visitors met a "log in" gate, but a

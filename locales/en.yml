@@ -312,7 +312,7 @@ en:
     open_deadlines: Submit and vote until %{date}
     days_left_one: 1 day left
     days_left: '%{count} days left'
-    voting_until_winner: Submissions closed · Voting stays open until the winner is announced
+    voting_closed: Submissions and voting closed · Awaiting the next challenge
     winner_chip: '%{month} winner · %{theme}'
     winner_chip_plain: '%{month} winner'
     winner_votes: '%{count} votes'
@@ -325,7 +325,7 @@ en:
     vote_step_one_title: Browse entries as they arrive
     vote_step_one_body: New photographs appear throughout the submission period and can be voted on immediately.
     vote_step_two_title: Vote for your favourites
-    vote_step_two_body: Open an entry and use the vote button. Votes can be changed until the winner is announced.
+    vote_step_two_body: Open an entry and use the vote button. Voting ends when the next challenge starts or at month end. Your voting allowance is then returned; past results are preserved.
     vote_step_three_title: The community chooses
     vote_step_three_body: The photograph with the most valid votes is featured as the monthly winner.
     full_rules: Read the full entry and voting guide
@@ -370,7 +370,7 @@ en:
       need_photo: Attach a cover photo.
       task_heading: The task
       rules_heading: Submission and voting
-      rules_body: Submit one self-photographed image that fits the task, using the Submit a photo button. Submissions close on %{date}. Vote by opening an entry and pressing the vote button — voting stays open until the winner is announced.
+      rules_body: Submit one self-photographed image that fits the task, using the Submit a photo button. Submissions close on %{date}. Vote by opening an entry and pressing the vote button. Voting ends when the next challenge starts or at month end; completed entries are closed and your voting allowance is returned, while results remain visible.
       manage_tags: Manage round tags
   homepage:
     identity:

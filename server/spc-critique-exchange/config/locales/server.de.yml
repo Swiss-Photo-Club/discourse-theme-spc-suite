@@ -1,0 +1,8 @@
+de:
+  site_settings:
+    spc_critique_exchange_enabled: "Vor einem weiteren Bild Feedback für andere Mitglieder verlangen"
+    spc_critique_exchange_category_id: "Kategorie-ID für Foto-Feedback"
+  spc_critique_exchange:
+    needs_feedback:
+      one: "Gib für jedes eingereichte Bild Feedback zu zwei Bildern anderer Mitglieder. Bitte kommentiere noch %{count} weiteres Bild, bevor du wieder einreichst."
+      other: "Gib für jedes eingereichte Bild Feedback zu zwei Bildern anderer Mitglieder. Bitte kommentiere noch %{count} weitere Bilder, bevor du wieder einreichst."

@@ -1,0 +1,8 @@
+fr:
+  site_settings:
+    spc_critique_exchange_enabled: "Exiger des retours avant une nouvelle image à critiquer"
+    spc_critique_exchange_category_id: "ID de la catégorie Photo Feedback"
+  spc_critique_exchange:
+    needs_feedback:
+      one: "Pour chaque image publiée, donne ton avis sur deux images d'autres membres. Commente encore %{count} image avant d'en publier une autre."
+      other: "Pour chaque image publiée, donne ton avis sur deux images d'autres membres. Commente encore %{count} images avant d'en publier une autre."

@@ -1,0 +1,8 @@
+en:
+  site_settings:
+    spc_critique_exchange_enabled: "Require reciprocal feedback before another Photo Feedback submission"
+    spc_critique_exchange_category_id: "Photo Feedback category ID"
+  spc_critique_exchange:
+    needs_feedback:
+      one: "For every image you submit, give feedback on two other members' images. Please critique %{count} more image before submitting again."
+      other: "For every image you submit, give feedback on two other members' images. Please critique %{count} more images before submitting again."

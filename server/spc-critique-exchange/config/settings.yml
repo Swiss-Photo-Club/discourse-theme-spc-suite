@@ -1,0 +1,5 @@
+plugins:
+  spc_critique_exchange_enabled:
+    default: false
+  spc_critique_exchange_category_id:
+    default: 7

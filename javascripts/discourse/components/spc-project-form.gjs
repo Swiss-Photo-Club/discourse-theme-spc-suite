@@ -160,6 +160,12 @@ export default class SpcProjectForm extends SpcSubmitBase {
       .join("\n\n");
   }
 
+  // A nudge, not a gate: one image is still submittable (a project can grow
+  // later), but it is almost always a single photo in the wrong form.
+  get singleImage() {
+    return this.projectImages.length === 1;
+  }
+
   // Labels are resolved here rather than in the list component, so that the
   // component carries no strings of its own and the introduction form can reuse
   // it with its own.
@@ -313,10 +319,15 @@ export default class SpcProjectForm extends SpcSubmitBase {
       @onCancel={{this.cancel}}
     >
       <:fields>
-        <details class="spc-submit-page__guidance">
-          <summary>{{i18n (themePrefix "project_form.guidance_title")}}</summary>
-          <p>{{i18n (themePrefix "project_form.guidance_body")}}</p>
-        </details>
+        {{! Members kept posting one photo here because "project" read as
+            "my photo". Up front and not collapsible, so it is seen before
+            anything is filled in. }}
+        <p class="spc-submit-page__notice">
+          {{i18n (themePrefix "project_form.single_photo_notice")}}
+          <a href="/submit/critique">
+            {{i18n (themePrefix "project_form.single_photo_link")}}
+          </a>
+        </p>
 
         <SpcFormSection
           @title={{i18n (themePrefix "project_form.section_submission")}}
@@ -370,6 +381,14 @@ export default class SpcProjectForm extends SpcSubmitBase {
                 @moveDownLabel={{this.imageListLabels.moveDownLabel}}
                 @removeLabel={{this.imageListLabels.removeLabel}}
               />
+              {{#if this.singleImage}}
+                <p class="spc-submit-page__notice">
+                  {{i18n (themePrefix "project_form.single_image_hint")}}
+                  <a href="/submit/critique">
+                    {{i18n (themePrefix "project_form.single_photo_link")}}
+                  </a>
+                </p>
+              {{/if}}
             {{else}}
               <input
                 id="spc-project-link"

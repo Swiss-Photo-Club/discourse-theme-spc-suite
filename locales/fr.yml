@@ -148,8 +148,9 @@ fr:
   project_form:
     heading: Soumettre un projet pour critique
     lead: Partage un travail cohérent et indique aux membres où le feedback te serait le plus utile.
-    guidance_title: Conseils pour le projet
-    guidance_body: Un travail cohérent – une série photo, un projet de livre ou un portfolio. Markdown, liens et @mentions sont pris en charge.
+    single_photo_notice: Un projet, ce sont plusieurs photos qui vont ensemble – une série, un livre ou un portfolio. Tu veux un feedback sur une seule photo ?
+    single_photo_link: Soumets plutôt une image
+    single_image_hint: Une seule image pour l'instant. Un projet demande plusieurs photos qui vont ensemble.
     section_submission: Ton envoi
     section_direction: Orientation de la critique
     section_direction_intro: Aide les membres à comprendre comment réagir au projet.
@@ -446,7 +447,7 @@ fr:
     q_general_3: Qu'essaierais-tu toi-même – et pourquoi ?
   critique_submit:
     image_button: Soumettre une image
-    project_button: Soumettre un projet
+    project_button: Soumettre une série photo
     intro_button: Présente-toi
   category_actions:
     new_topic: Nouveau sujet

@@ -152,8 +152,9 @@ en:
   project_form:
     heading: Submit a project for critique
     lead: Share a cohesive body of work and let members know where feedback would help most.
-    guidance_title: Project guidance
-    guidance_body: A cohesive body of work — a photo series, a book project or a portfolio. Markdown, links and @mentions are supported.
+    single_photo_notice: A project is several photos that belong together — a series, a book or a portfolio. Want feedback on one photo?
+    single_photo_link: Submit an image instead
+    single_image_hint: Only one image so far. A project needs several photos that belong together.
     section_submission: Your submission
     section_direction: Critique direction
     section_direction_intro: Help members understand how to respond to the project.
@@ -450,7 +451,7 @@ en:
     q_general_3: What would you try yourself — and why?
   critique_submit:
     image_button: Submit an image
-    project_button: Submit a project
+    project_button: Submit a photo series
     intro_button: Introduce yourself
   category_actions:
     new_topic: New topic

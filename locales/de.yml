@@ -152,8 +152,9 @@ de:
   project_form:
     heading: Projekt zur Kritik einreichen
     lead: Zeig eine zusammenhängende Arbeit und sag den Mitgliedern, wo Feedback dir am meisten hilft.
-    guidance_title: Hinweise zum Projekt
-    guidance_body: Eine zusammenhängende Arbeit – zum Beispiel eine Fotoserie, ein Buchprojekt oder ein Portfolio. Markdown, Links und @-Erwähnungen werden unterstützt.
+    single_photo_notice: Ein Projekt besteht aus mehreren Fotos, die zusammengehören – eine Serie, ein Buch oder ein Portfolio. Du möchtest Feedback zu einem einzelnen Foto?
+    single_photo_link: Reiche stattdessen ein Bild ein
+    single_image_hint: Bisher nur ein Bild. Ein Projekt braucht mehrere Fotos, die zusammengehören.
     section_submission: Deine Einreichung
     section_direction: Kritik-Richtung
     section_direction_intro: Hilf den Mitgliedern zu verstehen, worauf sie eingehen sollen.
@@ -450,7 +451,7 @@ de:
     q_general_3: Was würdest du selbst ausprobieren – und warum?
   critique_submit:
     image_button: Bild einreichen
-    project_button: Projekt einreichen
+    project_button: Fotoserie einreichen
     intro_button: Stell dich vor
   category_actions:
     new_topic: Neues Thema

@@ -69,6 +69,7 @@ de:
       onboarding_profile_url: "Onboarding: Ziel des Schritts ‚Profil‘."
       onboarding_dismissal_version: "Onboarding: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen."
       profile_setup_replaces_preferences: "Profil-Einrichtung: Die eigene Seite Einstellungen → Profil führt stattdessen zur freundlichen Seite /profile-setup. Der vollständige Editor bleibt über einen Link auf dieser Seite erreichbar."
+      account_closure_request_group: "Kontoschließung: Gruppenname für Anträge zur Schließung ausschließlich des Community-Kontos. Die Gruppe muss Nachrichten von Mitgliedern erlauben; zuständige Admins sollten ihren Posteingang beobachten."
       nonmember_member_groups: "Nichtmitglieder-Banner: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig sind dies die SPC-Gruppen ‚members‘ und ‚trial‘ sowie Administratoren und Moderatoren."
       nonmember_join_url_de: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die deutsche Oberfläche."
       nonmember_join_url_en: "Nichtmitglieder-Banner: Ziel des Mitgliedschafts-Buttons für die englische Oberfläche."
@@ -78,6 +79,23 @@ de:
       nonmember_trial_mode: "Nichtmitglieder-Banner: Launch-Modus für die offene Testphase. Solange aktiv, sehen ausgeloggte Besucher die Einladung zur kostenlosen Testphase und einen Button ‚Anmelden und kostenlos testen‘, der zu /login führt (die Testphase startet automatisch bei der ersten Anmeldung); eingeloggte Nichtmitglieder behalten den Mitgliedschafts-Aufruf. Nur einschalten, solange spc-be die offene Testphase gewährt; ausgeschaltet gilt wieder der normale Beitritts-Text."
       nonmember_trial_days: "Nichtmitglieder-Banner: Dauer der Testphase in Tagen, die in der Einladung genannt wird. Muss zu trial_days in spc-be passen (Nova → Community Trial Settings). 0 lässt die Dauer im Text weg, z. B. solange sie sich je nach Land unterscheidet."
       members_only_url: "Nur-für-Mitglieder-Seite: Ziel für Nichtmitglieder, die ein /submit-Formular oder einen Beitrags-Button in einer Kategorie ohne Schreibrecht öffnen — dieselbe spc-be-Seite, auf die das Category-Lockdown-Plugin gesperrte Themen umleitet. Leer fällt auf Discourse’ /login zurück."
+  account_closure:
+    title: "Community-Konto schließen"
+    description: "Bitte die Admins, dein Community-Konto zu schließen. Dein Konto auf der SPC-Website und deine Mitgliedschaft bleiben unverändert."
+    export_reminder: "Exportiere vor dem Absenden deines Antrags deine Daten auf dieser Seite und lade sie herunter, sobald sie bereit sind. Speichere Fotos, die du behalten möchtest, separat."
+    request: "Kontoschließung beantragen"
+    request_help: "Eine private Nachricht an die Admins wird geöffnet. Prüfe sie und wähle Senden, um deinen Antrag abzuschicken. Ein Admin antwortet dir; es wird nichts automatisch gelöscht."
+    messaging_unavailable: "Private Nachrichten sind für dein Konto nicht verfügbar. Kontaktiere das Team über die Über-uns-Seite, um die Schließung zu beantragen."
+    contact: "Team kontaktieren"
+    message_title: "Antrag zur Schließung meines Community-Kontos"
+    message_body: |
+      Hallo,
+
+      bitte schließt mein Community-Konto (@%{username}) und entfernt meine Beiträge, Fotos und die von mir erstellten Themen. Mir ist bewusst, dass beim Löschen meiner Themen auch die Antworten anderer Mitglieder in diesen Themen gelöscht werden.
+
+      Dieser Antrag betrifft nur die Community. Mein Konto auf der SPC-Website und meine Mitgliedschaft sollen unverändert bleiben.
+
+      Bitte antwortet mir mit den nächsten Schritten, bevor ihr mein Konto entfernt.
   banner:
     title: Monatliche Foto-Challenge
     subtitle: Teile dein bestes Bild zum Monatsthema und stimme für deine Favoriten ab.

@@ -268,6 +268,11 @@ profile_setup_replaces_preferences:
   default: true
   description: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
 
+account_closure_request_group:
+  type: string
+  default: "admins"
+  description: "Account Closure: group name receiving community-only closure requests. The group must allow messages from members; receiving admins should watch its inbox."
+
 # -----------------------------------------------------------------------------
 # Non-member homepage banner
 # -----------------------------------------------------------------------------

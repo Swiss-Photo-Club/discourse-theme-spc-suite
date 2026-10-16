@@ -47,9 +47,10 @@ its prefix.
 | Leaderboard strip | `enable_leaderboard` | `scss/leaderboard.scss` | `api-initializers/spc-leaderboard-strip.js` | — | `leaderboard_*` |
 | Member onboarding panel | `enable_onboarding` | `scss/onboarding.scss` | `api-initializers/spc-member-onboarding.js`, `components/spc-member-onboarding.gjs` | `onboarding.*` | `onboarding_*` |
 | Non-member join banner | `enable_nonmember_banner` | `scss/non-member-banner.scss` | `api-initializers/spc-non-member-banner.js`, `components/spc-non-member-banner.gjs` | `nonmember_banner.*` | `nonmember_*` |
+| Account closure requests | — | — | `api-initializers/spc-account-closure.js`, `components/spc-account-closure.gjs` | `account_closure.*` | `account_closure_request_group` |
 | Locale cookie | `enable_locale_cookie` | — | `api-initializers/spc-locale-cookie.js` | — | — |
 
-**Four features have no toggle, deliberately.** Branding is pure CSS with no JS entry point
+**Branding, the homepage, monthly challenge and `/submit` have no toggles, deliberately.** Branding is pure CSS with no JS entry point
 to gate. The homepage, monthly challenge and `/submit` features are one interlinked stack —
 the route map, the `submit` permalink and the `route:new-topic` override depend on each
 other — so a half-enabled state would break `/submit` rather than degrade gracefully. If you
@@ -194,6 +195,33 @@ uses the same shared shell and intentionally has no post-count status line in it
 The external **Category Banners** theme component is not required and should remain detached
 from both Foundation and Horizon. During a cutover it is safe for both components to be attached:
 SPC Suite hides the old banner and core heading while its hero is enabled.
+
+## Community account closure requests
+
+Your own **Preferences → Account** page includes **Request account closure**. It opens
+Discourse’s normal private-message composer with a translated request to the
+`account_closure_request_group` (default: `admins`). The user must review and send it.
+The reminder asks them to download their data export and save photos first. Users who
+cannot send private messages get a link to the About page to contact the team instead.
+This uses the supported `user-preferences-account` outlet and changes no core permissions.
+
+Before enabling the updated component, configure the receiving group:
+
+1. Open **Groups → admins → Manage → Interaction** (or the group named in the setting).
+   Allow messages from all signed-in members, and make sure the group is visible to them.
+2. Receiving admins should set the group’s notification level to **Watching**. Requests
+   appear in **Messages → the group inbox**, with normal Discourse notifications and email
+   according to each admin’s notification preferences. They do not create a Review Queue item.
+3. Reply in the message to agree the closure steps, then archive the completed request.
+   Keep contact details on the About page available for users without messaging permission.
+
+This is a request for **community-only** closure: it does not invoke the SPC website’s
+whole-account deactivation flow or change membership billing. Deactivate Account in
+Discourse resets email activation; use suspension to block an existing community account.
+Deleting a Discourse account alone can allow SPC single sign-on to create a new profile if
+the person later signs in again. A permanent community login block requires a corresponding
+SPC-side restriction. Delete/anonymize actions and any necessary access restriction remain
+staff decisions; the request button performs none of them automatically.
 
 ## Rolling back
 

@@ -69,6 +69,7 @@ en:
       onboarding_profile_url: "Member Onboarding: destination for the Profile step."
       onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
       profile_setup_replaces_preferences: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
+      account_closure_request_group: "Account Closure: group name receiving community-only closure requests. The group must allow messages from members; receiving admins should watch its inbox."
       nonmember_member_groups: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ and ‘trial’ groups, plus administrators and moderators."
       nonmember_join_url_de: "Non-Member Banner: membership-button destination for the German interface."
       nonmember_join_url_en: "Non-Member Banner: membership-button destination for the English interface."
@@ -78,6 +79,23 @@ en:
       nonmember_trial_mode: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
       nonmember_trial_days: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
       members_only_url: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."
+  account_closure:
+    title: "Close your community account"
+    description: "Ask the admins to close your community account. Your SPC website account and membership will remain unchanged."
+    export_reminder: "Before sending your request, use the data export on this page and download it when it is ready. Save any photos you want to keep separately."
+    request: "Request account closure"
+    request_help: "This opens a private message to the admins. Review it and select Send to submit your request. An admin will reply; nothing is deleted automatically."
+    messaging_unavailable: "Private messaging is not available for your account. Contact the team through the About page to request closure."
+    contact: "Contact the team"
+    message_title: "Community account closure request"
+    message_body: |
+      Hello,
+
+      Please close my community account (@%{username}) and remove my posts, photos and the topics I started. I understand that deleting my topics also removes other members' replies in those topics.
+
+      This request is for the community only. My SPC website account and membership should remain unchanged.
+
+      Please reply with the next steps before removing my account.
   banner:
     title: Monthly photo challenge
     subtitle: Share your best shot for this month's theme and vote for your favorites.

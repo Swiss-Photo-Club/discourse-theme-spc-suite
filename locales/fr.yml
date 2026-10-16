@@ -69,6 +69,7 @@ fr:
       onboarding_profile_url: "Onboarding : destination de l’étape Profil."
       onboarding_dismissal_version: "Onboarding : modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres."
       profile_setup_replaces_preferences: "Configuration du profil : ouvrir ses propres Préférences → Profil mène à la page conviviale /profile-setup. L'éditeur complet reste accessible via un lien sur cette page."
+      account_closure_request_group: "Fermeture de compte : nom du groupe recevant les demandes concernant uniquement le compte communautaire. Le groupe doit autoriser les messages des membres ; les admins responsables doivent surveiller sa boîte de réception."
       nonmember_member_groups: "Bannière non-membres : groupes dont les membres ne doivent pas voir la bannière. Les groupes SPC « members » et « trial », ainsi que les administrateurs et modérateurs, sont sélectionnés par défaut."
       nonmember_join_url_de: "Bannière non-membres : destination du bouton d’adhésion pour l’interface allemande."
       nonmember_join_url_en: "Bannière non-membres : destination du bouton d’adhésion pour l’interface anglaise."
@@ -78,6 +79,23 @@ fr:
       nonmember_trial_mode: "Bannière non-membres : mode lancement de l’essai ouvert. Tant qu’il est activé, les visiteurs non connectés voient l’invitation à l’essai gratuit et un bouton « Se connecter pour démarrer votre essai gratuit » menant à /login (l’essai démarre automatiquement à la première connexion) ; les non-membres connectés gardent l’appel à l’adhésion. À activer seulement pendant que spc-be accorde l’essai ouvert ; désactivé, le texte d’adhésion habituel revient."
       nonmember_trial_days: "Bannière non-membres : durée de l’essai en jours mentionnée dans l’invitation. À garder en accord avec trial_days dans spc-be (Nova → Community Trial Settings). 0 omet la durée dans le texte, p. ex. tant qu’elle varie selon le pays."
       members_only_url: "Page réservée aux membres : destination des non-membres qui ouvrent un formulaire /submit ou un bouton de publication dans une catégorie où ils ne peuvent pas publier — la même page spc-be vers laquelle le plugin Category Lockdown redirige les sujets verrouillés. Vide : retour au /login de Discourse."
+  account_closure:
+    title: "Fermer votre compte communautaire"
+    description: "Demandez aux admins de fermer votre compte communautaire. Votre compte sur le site SPC et votre adhésion resteront inchangés."
+    export_reminder: "Avant d’envoyer votre demande, exportez vos données sur cette page et téléchargez-les dès qu’elles sont prêtes. Sauvegardez séparément les photos que vous souhaitez conserver."
+    request: "Demander la fermeture du compte"
+    request_help: "Un message privé aux admins s’ouvrira. Vérifiez-le et sélectionnez Envoyer pour soumettre votre demande. Un admin vous répondra ; rien n’est supprimé automatiquement."
+    messaging_unavailable: "Les messages privés ne sont pas disponibles pour votre compte. Contactez l’équipe depuis la page À propos pour demander sa fermeture."
+    contact: "Contacter l’équipe"
+    message_title: "Demande de fermeture de mon compte communautaire"
+    message_body: |
+      Bonjour,
+
+      Veuillez fermer mon compte communautaire (@%{username}) et supprimer mes publications, mes photos et les sujets que j’ai créés. Je comprends que la suppression de mes sujets supprime également les réponses des autres membres dans ces sujets.
+
+      Cette demande concerne uniquement la communauté. Mon compte sur le site SPC et mon adhésion doivent rester inchangés.
+
+      Merci de me répondre avec les prochaines étapes avant de supprimer mon compte.
   form:
     optional: (optionnel)
     required: (obligatoire)

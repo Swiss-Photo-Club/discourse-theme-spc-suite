@@ -29,6 +29,29 @@ is unchanged, and resets renamed ones to their new default. Every default in `se
 is the value that was live in production when the seven components were merged in, so a
 fresh install reproduces the site as it stood at merge time.
 
+## Local preview
+
+On this Mac, the matching Discourse installation and production snapshot live in
+`../discourse-local`, outside this theme repository. Start **SPC Discourse PostgreSQL 18**
+in DBngin and the existing Homebrew Redis service, then run:
+
+```sh
+./server/local-preview
+```
+
+Open <http://localhost:3000>. To sign in as the local admin, open
+<http://localhost:3000/session/osan/become>. Saving theme files synchronizes them to the
+local SPC Suite component through Theme CLI. Stop the preview and watcher with **Ctrl+C**.
+Ruby plugin changes require restarting the preview.
+
+The initial snapshot includes the production database and photos from **25 October 2026**;
+it is a separate copy, with no continuous database synchronization. Outgoing email, SSO,
+webhooks, group mail integrations, automatic theme updates, and background workers are
+disabled locally. Password-free development login is enabled only on this localhost
+instance. Environment settings and the local API key stay in `../discourse-local`, outside
+Git. Refreshing production data requires restoring a new snapshot and reapplying this local
+configuration before starting the server.
+
 ## Feature map
 
 Each feature is self-contained: one SCSS partial, its own JS entry point, its own locale

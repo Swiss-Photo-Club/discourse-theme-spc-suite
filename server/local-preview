@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euo pipefail
+
+local_root="$(cd "$(dirname "$0")/../.." && pwd)/discourse-local"
+source "$local_root/env.sh"
+pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" >/dev/null || {
+  echo 'Start SPC Discourse PostgreSQL 18 in DBngin first.' >&2
+  exit 1
+}
+redis-cli -h "$DISCOURSE_REDIS_HOST" -n "$DISCOURSE_REDIS_DB" ping >/dev/null
+
+cd "$local_root/discourse"
+bundle exec rails server -b 127.0.0.1 -p 3000 &
+web_pid=$!
+bin/dev --only ember &
+frontend_pid=$!
+watch_pid=
+cleanup() {
+  kill "$web_pid" "$frontend_pid" ${watch_pid:+"$watch_pid"} 2>/dev/null || true
+  wait "$web_pid" "$frontend_pid" ${watch_pid:+"$watch_pid"} 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+for ((attempt=0; attempt<120; attempt++)); do
+  kill -0 "$web_pid" 2>/dev/null || { wait "$web_pid"; exit 1; }
+  if curl --fail --silent --max-time 2 http://localhost:3000/srv/status >/dev/null; then
+    echo 'Preview: http://localhost:3000 — local admin: http://localhost:3000/session/osan/become'
+    ruby "$local_root/watch-theme.rb" &
+    watch_pid=$!
+    wait "$web_pid"
+    exit $?
+  fi
+  sleep 1
+done
+echo 'Preview did not become ready within two minutes.' >&2
+exit 1

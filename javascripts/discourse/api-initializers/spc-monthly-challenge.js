@@ -513,7 +513,12 @@ function roundMonthName(tag) {
   );
 }
 
-function roundThemeLabel(tag) {
+function roundThemeLabel(tag, challenge) {
+  const title = localized(challenge, "title") || challenge?.title;
+  if (title?.trim()) {
+    return title.trim();
+  }
+
   const suffix = (tag || "")
     .replace(/^\d{4}-\d{2}-?/, "")
     .replaceAll("-", " ")
@@ -573,7 +578,7 @@ async function resolveLatestWinner(challenges) {
     return {
       tag: tagged.tag,
       monthName: roundMonthName(tagged.tag),
-      theme: roundThemeLabel(tagged.tag),
+      theme: roundThemeLabel(tagged.tag, override),
       title: override?.winner_title || tagged.title,
       author: override?.winner_author || tagged.author,
       votes: tagged.votes,

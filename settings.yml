@@ -147,6 +147,8 @@ challenges:
       tag:
         type: string
         required: true
+      title:
+        type: string
       status:
         type: enum
         required: true

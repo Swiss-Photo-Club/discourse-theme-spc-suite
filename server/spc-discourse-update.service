@@ -1,0 +1,12 @@
+[Unit]
+Description=Back up and update SPC Discourse
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+OnFailure=spc-discourse-update-alert.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/spc-discourse-update
+TimeoutStartSec=2h
+UMask=0077

@@ -1,0 +1,14 @@
+[Unit]
+Description=Email the SPC Discourse update failure alert
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=1h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/spc-discourse-alert
+TimeoutStartSec=3min
+Restart=on-failure
+RestartSec=5min
+UMask=0077

@@ -513,8 +513,8 @@ function roundMonthName(tag) {
   );
 }
 
-function roundThemeLabel(tag, challenge) {
-  const title = localized(challenge, "title") || challenge?.title;
+function roundThemeLabel(tag, challenge, briefTitle) {
+  const title = localized(challenge, "title") || challenge?.title || briefTitle;
   if (title?.trim()) {
     return title.trim();
   }
@@ -543,6 +543,17 @@ function fetchWinnerTopic() {
         return null;
       }
       const { topic, roundTag } = latest;
+      let briefTitle = "";
+      try {
+        // The brief starts the round before entries are submitted. Read its
+        // public listing title even after staff have unpinned the old round.
+        const round = await ajax(
+          `${tagListJsonUrl(tagSlug(roundTag))}?order=created&ascending=true`
+        );
+        briefTitle = round?.topic_list?.topics?.[0]?.title || "";
+      } catch {
+        // Keep the winner visible if the round listing is unavailable.
+      }
       const authorId =
         (topic.posters || []).find((poster) =>
           (poster.description || "").toLowerCase().includes("original")
@@ -550,6 +561,7 @@ function fetchWinnerTopic() {
       const author = users.find((user) => user.id === authorId);
       return {
         tag: tagName(roundTag),
+        briefTitle,
         tagPage: tagPageUrl(roundTag),
         title: topic.title || topic.fancy_title || "",
         author: author?.name || author?.username || "",
@@ -578,7 +590,7 @@ async function resolveLatestWinner(challenges) {
     return {
       tag: tagged.tag,
       monthName: roundMonthName(tagged.tag),
-      theme: roundThemeLabel(tagged.tag, override),
+      theme: roundThemeLabel(tagged.tag, override, tagged.briefTitle),
       title: override?.winner_title || tagged.title,
       author: override?.winner_author || tagged.author,
       votes: tagged.votes,

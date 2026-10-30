@@ -736,8 +736,9 @@ body.category-monthly-challenge .spc-category-surface > :last-child {
    here. It moved to topic-cards.scss, which emits the identical selectors for
    this category and for 7 and 12 from one slug list, so there is one card
    treatment on the site instead of three drifting copies. What stayed in this
-   file is what is genuinely about the challenge: the vote control, the pinned
-   guide card, and the author/time placement in the footer. */
+   file is what is genuinely about the challenge: hiding the vote control and
+   round tag from the footer, and the pinned guide card. The footer itself is
+   the shared card format in topic-cards.scss. */
 body.category-monthly-challenge .topic-list-header {
   display: none;
 }
@@ -770,28 +771,6 @@ body.category-monthly-challenge .topic-list-header {
    assumed. That is fixed at source too, but cover is what makes the whole
    class of mismatch harmless rather than this one instance of it. */
 
-/* Card body.
-
-   No min-height. It used to be 94px, against the roughly 76px the component
-   budgets for a footer when it computes a row's height — so the row came out
-   18px shorter than the photo needed and the thumbnail track absorbed the
-   difference. Under the old fixed-height grid that was invisible; under
-   masonry it is the gap. The padding still sets the footer's real height, and
-   the 5.5rem on the right is the gutter the vote button sits in. */
-body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
-  position: relative;
-  /* Room for the vote control, which is absolutely positioned against this
-     box. The number is arithmetic, not taste: .list-vote-count is 56px tall
-     and anchored bottom: 0.9rem, so it needs 70.4px before it starts hanging
-     out of the footer and over the photograph. 76px leaves 6px of clearance.
-     A previous version of this file said 94px and this one briefly said
-     nothing at all, at which point the button overlapped every entry's image
-     by 12px. If the button's height or offset changes, redo the sum. */
-  min-height: 76px;
-  padding: 1rem 5.5rem 1rem 1.15rem !important;
-  box-sizing: border-box;
-}
-
 /* The entry title used to be restyled here — charcoal, 16px, 700. Those
    category-specific declarations remain gone. The shared treatment in
    topic-cards.scss now improves the read/unread colours and gives every
@@ -804,77 +783,18 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-excerpt {
   display: none;
 }
 
-body.category-monthly-challenge .topic-thumbnails-masonry .discourse-tags > li:has(.discourse-tag:not(.list-vote-count)) {
+/* The round tag and Topic Voting's count both stay out of the card footer:
+   the card's one number (spc-card-meta.gjs) shows the votes, and the round
+   chip waits for Phase C's readable round labels. Hidden from first paint,
+   inside a footer whose height is fixed (topic-cards.scss), so no measured
+   box changes size. */
+body.category-monthly-challenge .topic-thumbnails-masonry .discourse-tags {
   display: none;
 }
 
-body.category-monthly-challenge .topic-thumbnails-masonry .list-vote-count {
-  position: absolute;
-  right: 0.9rem;
-  bottom: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 54px;
-  min-height: 46px;
-  padding: 0.25rem 0.45rem;
-  border: 1px solid var(--spc-coral);
-  color: var(--spc-coral) !important;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .list-vote-count::before {
-  margin-right: 0.25rem;
-  content: "▲";
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .posters {
-  position: absolute;
-  z-index: 2;
-  left: 1.15rem;
-  bottom: 0.65rem;
-  display: flex !important;
-  align-items: center;
-  width: auto;
-  height: 24px;
-  padding: 0;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .posters .avatar {
-  width: 22px;
-  height: 22px;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .posters a::after {
-  margin-left: 0.4rem;
-  content: attr(data-user-card);
-  color: var(--spc-gray-400);
-  font-size: 0.75rem;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .activity {
-  position: absolute;
-  z-index: 2;
-  left: 6.5rem;
-  bottom: 0.7rem;
-  display: block !important;
-  width: auto;
-  height: auto;
-  padding: 0;
-  color: var(--spc-gray-400);
-  font-size: 0.75rem;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-}
-
-body.category-monthly-challenge .topic-thumbnails-masonry .posts,
-body.category-monthly-challenge .topic-thumbnails-masonry .views {
+/* The brief is not an entry: no vote count on its card. */
+body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .spc-card-meta__num,
+body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-official-topic-row .spc-card-meta__num {
   display: none;
 }
 
@@ -902,7 +822,8 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
   width: 100% !important;
   min-height: 0;
   margin-top: 0 !important;
-  padding: 1.4rem !important;
+  /* Sized to fit title + guide line inside the fixed 76px card footer. */
+  padding: 0.9rem 1.15rem !important;
   background: var(--spc-indigo);
 }
 
@@ -912,7 +833,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 
 body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .link-top-line .title::after {
   display: block;
-  margin-top: 0.65rem;
+  margin-top: 0.35rem;
   content: "Read the entry and voting guide →";
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.75rem;
@@ -927,14 +848,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinne
 /* No tablet block: the component decides how many columns fit, and it did so
    on categories 7 and 12 long before this category stopped overriding it. */
 
-/* Mobile */
-@media (max-width: 600px) {
-  /* The 260px thumbnail height that used to live here was the mobile twin of
-     the 245px one, and had the same effect: uniform cards, no stagger. */
-  body.category-monthly-challenge .topic-thumbnails-masonry .main-link {
-    min-height: 104px;
-  }
-}
 
 /* ==================================================================
    Challenge ENTRY TOPIC pages

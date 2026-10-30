@@ -105,6 +105,124 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
 }
 
 /* ===================================================================
+   ONE CARD FORMAT (Phase B, recommendation #6).
+
+   Every masonry card, on every page: full-frame photo, then a footer of
+   exactly two lines — the title on one truncated line; the author, one
+   context chip (the first tag, category pages only) and one right-aligned
+   number on the other. Author and number come from spc-card-meta.gjs via
+   core's topic-list-main-link-bottom outlet; the chip is core's own tag list.
+
+   76px IS NOT TASTE. Topic List Thumbnails does not measure the footer: it
+   sizes each row as the photo's height at the column width plus a budget of
+   ~76px (measured on category 7: row − ideal photo height = 75–76px on every
+   card with a one-line title, and the thumbnail lost exactly the overflow on
+   every card with two). A footer of exactly that height, whatever it holds,
+   is what makes the thumbnail box equal the photo and img.top − thumb.top
+   zero. Change the number only together with a new measurement.
+
+   The avatar and age cells leave the footer from first paint. Their boxes
+   are not measured — the row height is the component's arithmetic above —
+   and core's own masonry CSS already hides the posts and views cells the
+   same way. Decoration stays absolutely positioned (the project stack mark
+   below). The .topic-list prefix outranks the component's two-class rules.
+   =================================================================== */
+.topic-list.topic-thumbnails-masonry .topic-list-item {
+  grid-template-areas: "image" "title";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) 76px;
+}
+
+.topic-list.topic-thumbnails-masonry .topic-list-item .main-link {
+  display: flex;
+  height: 76px;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+  padding: 10px 14px;
+}
+
+.topic-list.topic-thumbnails-masonry .topic-list-item .posters,
+.topic-list.topic-thumbnails-masonry .topic-list-item .activity {
+  display: none;
+}
+
+.topic-list.topic-thumbnails-masonry .link-top-line {
+  overflow: hidden;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topic-list.topic-thumbnails-masonry .link-bottom-line {
+  display: flex;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+/* Outside masonry the outlet renders nothing visible. Inside, its two spans
+   become flex items of .link-bottom-line so they can sit either side of the
+   chip. */
+.spc-card-meta {
+  display: none;
+}
+
+.topic-thumbnails-masonry .spc-card-meta {
+  display: contents;
+}
+
+.spc-card-meta__author {
+  order: 1;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  color: var(--spc-gray-600);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topic-thumbnails-masonry .link-bottom-line .discourse-tags {
+  display: flex;
+  order: 2;
+  min-width: 0;
+  flex: 0 1 auto;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.topic-thumbnails-masonry .link-bottom-line .discourse-tags > li:not(:first-child) {
+  display: none;
+}
+
+.spc-card-meta__num {
+  order: 3;
+  flex: none;
+  margin-left: auto;
+  color: var(--spc-indigo);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.spc-card-meta__num.-zero {
+  color: var(--spc-gray-400);
+}
+
+/* The homepage mixes categories, so its cards carry no chip at all. */
+body.navigation-topics .topic-thumbnails-masonry .link-bottom-line .discourse-tags,
+body.navigation-topics .topic-thumbnails-masonry .link-bottom-line .badge-category__wrapper {
+  display: none;
+}
+
+/* ===================================================================
    PROJECT SUBMISSIONS.
 
    A project is a series — several photos, or a link to one — and it

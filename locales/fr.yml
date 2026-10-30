@@ -475,6 +475,19 @@ fr:
     new_introduction: Nouvelle présentation
     ask_question: Poser une question
     sorted_by_created: Triés par date de publication
+  card:
+    votes:
+      one: "%{count} vote"
+      other: "%{count} votes"
+    critiques:
+      one: "%{count} critique"
+      other: "%{count} critiques"
+    welcomes:
+      one: "%{count} bienvenue"
+      other: "%{count} bienvenues"
+    replies:
+      one: "%{count} réponse"
+      other: "%{count} réponses"
   needs_feedback:
     title: En attente de critique
     count:

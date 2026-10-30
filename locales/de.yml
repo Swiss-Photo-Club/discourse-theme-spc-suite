@@ -479,6 +479,19 @@ de:
     new_introduction: Neue Vorstellung
     ask_question: Frage stellen
     sorted_by_created: Sortiert nach Veröffentlichungsdatum
+  card:
+    votes:
+      one: "%{count} Stimme"
+      other: "%{count} Stimmen"
+    critiques:
+      one: "%{count} Kritik"
+      other: "%{count} Kritiken"
+    welcomes:
+      one: "%{count} Willkommen"
+      other: "%{count} Willkommen"
+    replies:
+      one: "%{count} Antwort"
+      other: "%{count} Antworten"
   needs_feedback:
     title: Braucht Feedback
     count:

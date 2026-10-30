@@ -479,6 +479,19 @@ en:
     new_introduction: New introduction
     ask_question: Ask a question
     sorted_by_created: Sorted by date posted
+  card:
+    votes:
+      one: "%{count} vote"
+      other: "%{count} votes"
+    critiques:
+      one: "%{count} critique"
+      other: "%{count} critiques"
+    welcomes:
+      one: "%{count} welcome"
+      other: "%{count} welcomes"
+    replies:
+      one: "%{count} reply"
+      other: "%{count} replies"
   needs_feedback:
     title: Needs feedback
     count:

@@ -19,12 +19,17 @@ function isCategoryUrl(url) {
   return path === "/c" || path.startsWith("/c/");
 }
 
+// Homepage and the Monthly Challenge only. Category paths are
+// /c/<slug…>/<id>[/l/<filter>], so the first all-digit segment is the id.
 function activeForUrl(url) {
   const path = new URL(url || window.location.href, window.location.origin)
     .pathname;
+  const categoryId = isCategoryUrl(url)
+    ? Number(path.split("/").find((segment) => /^\d+$/.test(segment)))
+    : null;
 
   return (
-    isCategoryUrl(url) ||
+    (categoryId && categoryId === Number(settings.challenge_category_id)) ||
     (settings.leaderboard_show_on_homepage && path === "/")
   );
 }

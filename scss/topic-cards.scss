@@ -133,13 +133,20 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
   grid-template-rows: minmax(0, 1fr) 76px;
 }
 
+/* A grid, not a flex column: the outlet renders AFTER .link-bottom-line, as
+   a direct child of this cell, so author and number cannot share a flex line
+   with the tag. display: contents on the outlet's wrapper lets its two spans
+   take grid areas of their own. The author column is sized to its content
+   first, so a long name truncates the chip before it truncates itself. */
 .topic-list.topic-thumbnails-masonry .topic-list-item .main-link {
-  display: flex;
+  display: grid;
   height: 76px;
   box-sizing: border-box;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
+  grid-template-areas: "top top top" "author chip num";
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) max-content;
+  align-content: center;
+  align-items: center;
+  gap: 4px 8px;
   overflow: hidden;
   padding: 10px 14px;
 }
@@ -150,6 +157,8 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
 }
 
 .topic-list.topic-thumbnails-masonry .link-top-line {
+  grid-area: top;
+  min-width: 0;
   overflow: hidden;
   line-height: 1.3;
   text-overflow: ellipsis;
@@ -158,19 +167,15 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
 
 .topic-list.topic-thumbnails-masonry .link-bottom-line {
   display: flex;
+  grid-area: chip;
   min-width: 0;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
   margin: 0;
   overflow: hidden;
-  font-size: 0.8125rem;
-  line-height: 1.4;
 }
 
-/* Outside masonry the outlet renders nothing visible. Inside, its two spans
-   become flex items of .link-bottom-line so they can sit either side of the
-   chip. */
+/* Outside masonry the outlet renders nothing visible. */
 .spc-card-meta {
   display: none;
 }
@@ -179,21 +184,24 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
   display: contents;
 }
 
+.spc-card-meta__author,
+.spc-card-meta__num {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .spc-card-meta__author {
-  order: 1;
+  grid-area: author;
   min-width: 0;
-  flex: 0 1 auto;
   overflow: hidden;
   color: var(--spc-gray-600);
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .topic-thumbnails-masonry .link-bottom-line .discourse-tags {
   display: flex;
-  order: 2;
   min-width: 0;
-  flex: 0 1 auto;
   margin: 0;
   overflow: hidden;
   white-space: nowrap;
@@ -204,12 +212,10 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
 }
 
 .spc-card-meta__num {
-  order: 3;
-  flex: none;
-  margin-left: auto;
+  grid-area: num;
+  justify-self: end;
   color: var(--spc-indigo);
   font-weight: 700;
-  white-space: nowrap;
 }
 
 .spc-card-meta__num.-zero {

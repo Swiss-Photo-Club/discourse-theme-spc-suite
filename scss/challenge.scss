@@ -792,9 +792,10 @@ body.category-monthly-challenge .topic-thumbnails-masonry .discourse-tags {
   display: none;
 }
 
-/* The brief is not an entry: no vote count on its card. */
-body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .spc-card-meta__num,
-body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-official-topic-row .spc-card-meta__num {
+/* The brief is not an entry: no author or vote count on its card, which
+   keeps its own block layout below. */
+body.category-monthly-challenge .topic-thumbnails-masonry .topic-list-item.pinned .spc-card-meta,
+body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-official-topic-row .spc-card-meta {
   display: none;
 }
 

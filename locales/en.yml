@@ -366,6 +366,8 @@ en:
       crown: Crown winner
       uncrown: Remove crown
       crown_confirm: "Crown “%{title}” as this round’s winner?"
+      most_votes: most votes
+      crown_not_leader_confirm: "“%{title}” is not the most-voted entry: “%{leader}” leads with %{count} votes. The rule is most votes wins. Crown “%{title}” anyway?"
       crowned_notice: "“%{title}” is crowned. The winner showcase will show it within a few minutes."
       pinned_notice: "“%{title}” is pinned as the current brief."
       no_entries: No entries found for this round yet.

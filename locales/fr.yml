@@ -362,6 +362,8 @@ fr:
       crown: Couronner
       uncrown: Retirer la couronne
       crown_confirm: "Couronner « %{title} » comme photo gagnante de cette manche ?"
+      most_votes: le plus de votes
+      crown_not_leader_confirm: "« %{title} » n’est pas la participation la plus votée : « %{leader} » mène avec %{count} votes. La règle : le plus de votes l’emporte. Couronner « %{title} » quand même ?"
       crowned_notice: "« %{title} » est couronnée. La vitrine du gagnant l’affichera dans quelques minutes."
       pinned_notice: "« %{title} » est épinglée comme présentation actuelle."
       no_entries: Aucune participation trouvée pour cette manche pour l’instant.

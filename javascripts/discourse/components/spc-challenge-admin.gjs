@@ -217,8 +217,17 @@ export default class SpcChallengeAdmin extends Component {
     );
     // Top five only — enough to judge a tie, without turning the panel into
     // a second gallery. The votes page linked below has the rest.
-    this.entries = (data?.topic_list?.topics || [])
-      .filter((topic) => topic.id !== this.roundBrief?.id)
+    const topics = (data?.topic_list?.topics || []).filter(
+      (topic) => topic.id !== this.roundBrief?.id
+    );
+    // Most votes wins. August 2026 was crowned on the third-placed entry by
+    // mistake, so the leader is marked here and crown() asks before any other
+    // entry gets the tag. Ties share the lead.
+    const topVotes = Math.max(
+      0,
+      ...topics.map((topic) => Number(topic.vote_count) || 0)
+    );
+    this.entries = topics
       .slice(0, 5)
       .map((topic) => {
         // Mutation endpoints need canonical tag values too. Sending the
@@ -232,6 +241,7 @@ export default class SpcChallengeAdmin extends Component {
           url: briefSlugUrl(topic),
           image: topic.image_url || "",
           votes: Number(topic.vote_count) || 0,
+          leading: topVotes > 0 && Number(topic.vote_count) === topVotes,
           tagNames: names,
           crowned: names.includes(WINNER_TAG),
         };
@@ -251,8 +261,16 @@ export default class SpcChallengeAdmin extends Component {
 
   @action
   crown(entry) {
+    const leader = this.entries.find((candidate) => candidate.leading);
     this.dialog.yesNoConfirm({
-      message: t("crown_confirm", { title: entry.title }),
+      message:
+        entry.leading || !leader
+          ? t("crown_confirm", { title: entry.title })
+          : t("crown_not_leader_confirm", {
+              title: entry.title,
+              leader: leader.title,
+              count: leader.votes,
+            }),
       didConfirm: async () => {
         await this.runAction(async () => {
           await ajax(`/t/-/${entry.id}.json`, {
@@ -563,7 +581,11 @@ export default class SpcChallengeAdmin extends Component {
                   <span class="spc-challenge-admin__votes">{{i18n
                       (themePrefix "monthly_challenge.admin.votes")
                       count=entry.votes
-                    }}</span>
+                    }}{{#if entry.leading}}
+                      ·
+                      {{i18n
+                        (themePrefix "monthly_challenge.admin.most_votes")
+                      }}{{/if}}</span>
                   {{#if entry.crowned}}
                     <span class="spc-challenge-admin__crowned">{{i18n
                         (themePrefix "monthly_challenge.admin.crowned")
@@ -576,10 +598,17 @@ export default class SpcChallengeAdmin extends Component {
                     >{{i18n
                         (themePrefix "monthly_challenge.admin.uncrown")
                       }}</button>
-                  {{else}}
+                  {{else if entry.leading}}
                     <button
                       type="button"
                       class="spc-challenge-admin__button spc-challenge-admin__button--primary"
+                      disabled={{this.busy}}
+                      {{on "click" (fn this.crown entry)}}
+                    >{{i18n (themePrefix "monthly_challenge.admin.crown")}}</button>
+                  {{else}}
+                    <button
+                      type="button"
+                      class="spc-challenge-admin__button"
                       disabled={{this.busy}}
                       {{on "click" (fn this.crown entry)}}
                     >{{i18n (themePrefix "monthly_challenge.admin.crown")}}</button>

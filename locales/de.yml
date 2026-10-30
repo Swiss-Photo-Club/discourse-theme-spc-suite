@@ -366,6 +366,8 @@ de:
       crown: Zum Gewinner küren
       uncrown: Kürung entfernen
       crown_confirm: "„%{title}“ zum Gewinnerfoto dieser Runde küren?"
+      most_votes: meiste Stimmen
+      crown_not_leader_confirm: "„%{title}“ hat nicht die meisten Stimmen: „%{leader}“ führt mit %{count} Stimmen. Es gilt: die meisten Stimmen gewinnen. „%{title}“ trotzdem küren?"
       crowned_notice: "„%{title}“ ist gekürt. Die Gewinner-Anzeige zeigt es in wenigen Minuten."
       pinned_notice: "„%{title}“ ist als aktuelles Briefing angeheftet."
       no_entries: Für diese Runde wurden noch keine Beiträge gefunden.

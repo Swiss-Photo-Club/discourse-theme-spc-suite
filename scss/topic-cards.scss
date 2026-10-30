@@ -207,7 +207,8 @@ $spc-card-slugs: "monthly-challenge", "critique-portfolio-reviews",
   white-space: nowrap;
 }
 
-.topic-thumbnails-masonry .link-bottom-line .discourse-tags > li:not(:first-child) {
+.topic-thumbnails-masonry .link-bottom-line .discourse-tags > li:not(:first-child),
+.topic-thumbnails-masonry .link-bottom-line .discourse-tags__tag-separator {
   display: none;
 }
 

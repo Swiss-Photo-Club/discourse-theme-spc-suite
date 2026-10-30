@@ -137,11 +137,12 @@ pattern, rendered by `challenge.scss`.
 and sets `position: absolute`. Any DOM change altering a row's height desynchronises the layout
 and overlaps photos with text. On topic rows, only ever add absolutely-positioned decoration.
 
-**Masonry is 6, 7, 8, 12. Category 10 is list mode. There is no category 11.** Verified
-2026-07-26 by reading `.topic-thumbnails-*` off each rendered category. This note previously said
-`masonry_categories = 6|11|7|12`, which was wrong twice: `11` does not exist and was probably a
-typo for `8`, and category 8 — long assumed to be stock Discourse — is masonry. Anything that
-changes a category's canvas width has to be verified on **8** as well as 6, 7 and 12.
+**Masonry is 6, 7, 12. Category 8 is list mode. There is no category 11.** Read off Topic List
+Thumbnails' own settings (component 1) on 2026-10-30: `masonry_categories = 6|11|7|12`,
+`list_categories = 8|4|1|5|2|3`, and category 8 renders `topic-thumbnails-list`. The `11` is a
+dead entry. An earlier note here (2026-07-26) had 8 as masonry; whatever made that true is gone,
+so re-read the setting before trusting either. Anything that changes a masonry canvas or card
+must be verified on 6, 7 and 12 — and on 8 too if it is ever switched back.
 
 **Topic List Thumbnails absolutely positions the image inside the thumbnail box, so that box must
 keep a real height.** `challenge.scss` styled `.topic-list-thumbnail > a` as a centering flex box,
@@ -173,10 +174,19 @@ fragile — it was downstream of one declaration, `.topic-list-thumbnail { heigh
 every thumbnail to the same height and every card is the same height, and once rows are uniform a
 grid is the honest layout.
 
-Removing the fixed height removed the reason for the rest, and **all four categories now behave
-the same way: 6, 7, 8 and 12 are genuinely JS-positioned masonry, 10 is
-`topic-thumbnails-list`.** The desync failure mode therefore applies to all four, category 6
-included — it is no longer the safe exception it used to be.
+Removing the fixed height removed the reason for the rest, and **every masonry category now
+behaves the same way: 6, 7 and 12 are genuinely JS-positioned masonry** (8 is list mode, see
+above). The desync failure mode therefore applies to all of them, category 6 included — it is
+no longer the safe exception it used to be.
+
+**The card footer is exactly 76px because Topic List Thumbnails budgets 76px.** It does not
+measure the footer: a row is the photo's height at the column width plus ~76px, and any footer
+taller or shorter than that is taken from or given to the photo. `topic-cards.scss` fixes
+`.main-link` at 76px on every card at every width (Phase B, 2026-10-30), which is what makes
+`img.top − thumb.top` zero and the thumbnail box equal the photo. The author and number in that
+footer come from `spc-card-meta.gjs` through core's `topic-list-main-link-bottom` outlet, which
+renders **after** `.link-bottom-line` as a direct child of `.main-link` — hence a grid, not a
+flex line.
 
 **The homepage already has a container.** `#main-outlet-wrapper.wrap` is Discourse's 1110px
 shell, including its responsive side padding, and `#main-outlet` is the usable content column

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Member Settings Page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coral: #ff5b5d;
+  --coral-50: #fff1f1;
+  --navy: #1a2744;
+  --navy-2: #28395e;
+  --indigo-50: #ebefff;
+  --gold: #e9a13e;
+  --tidal: #3a7d7b;
+  --tidal-50: #e6f2f1;
+  --charcoal: #333;
+  --sand: #f4f4f4;
+  --gray-200: #e2e4e9;
+  --gray-300: #c9ccd4;
+  --gray-400: #8a909e;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --page: #fafafa;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--charcoal); font: 16px/1.6 "Open Sans", system-ui, sans-serif; }
+a { color: inherit; }
+
+/* ---------- report chrome (same as the other feedback reports) ---------- */
+.doc { max-width: 1180px; margin: 0 auto; padding: 0 16px 96px; }
+.doc-head { background: var(--navy); color: #fff; border-bottom: 6px solid var(--coral); }
+.doc-head__inner { max-width: 1180px; margin: 0 auto; padding: 56px 16px 48px; }
+.eyebrow { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.doc-head .eyebrow { color: rgba(255,255,255,.7); }
+.doc-head h1 { margin: 8px 0 12px; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800; line-height: 1.15; }
+.doc-head p { max-width: 780px; margin: 0 0 8px; color: rgba(255,255,255,.85); font-size: 1.05rem; }
+h2 { margin: 0 0 8px; font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1.25; }
+h3 { margin: 28px 0 8px; font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.lede { font-size: 1.05rem; color: var(--gray-700); max-width: 820px; }
+p, li { max-width: 820px; }
+code { font-size: 0.85em; background: var(--sand); padding: 1px 5px; }
+
+.rec { margin-top: 72px; scroll-margin-top: 24px; }
+.rec__num { display: inline-block; margin-bottom: 10px; padding: 3px 10px; background: var(--coral); color: #fff; font-size: 0.75rem; font-weight: 800; letter-spacing: .1em; }
+
+.summary { margin: 40px 0 0; width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--gray-200); font-size: 0.92rem; }
+.summary th, .summary td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+.summary th { background: var(--sand); font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); }
+.summary td:first-child { font-weight: 800; color: var(--coral); white-space: nowrap; }
+.summary a { color: var(--navy); font-weight: 700; text-decoration: none; }
+.pill { display: inline-block; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+.p-theme { background: var(--indigo-50); color: var(--navy); }
+.p-server { background: #fff3e0; color: #8a5a00; }
+.p-admin { background: var(--tidal-50); color: var(--tidal); }
+
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0 0; }
+.fact { background: #fff; border: 1px solid var(--gray-200); padding: 16px 18px; font-size: 0.92rem; }
+.fact b { display: block; color: var(--navy); margin-bottom: 4px; }
+.fact--warn { border-left: 4px solid var(--coral); }
+.note { margin-top: 16px; padding: 12px 16px; border-left: 4px solid var(--gold); background: #fff; font-size: 0.9rem; color: var(--gray-700); max-width: 820px; }
+.how { margin-top: 16px; font-size: 0.9rem; color: var(--gray-700); }
+.how li { margin-bottom: 6px; }
+
+/* ---------- inventory of today's tabs ---------- */
+.inv { margin-top: 24px; width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--gray-200); font-size: 0.88rem; }
+.inv th, .inv td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+.inv th { background: var(--sand); font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); }
+.inv td:first-child { font-weight: 700; color: var(--navy); white-space: nowrap; }
+.inv td:nth-child(2) { text-align: center; font-weight: 800; color: var(--gray-700); }
+.inv .verdict { white-space: nowrap; font-weight: 700; font-size: 0.78rem; }
+.v-keep { color: var(--tidal); }
+.v-preset { color: var(--coral); }
+.v-adv { color: var(--gray-400); }
+
+/* ---------- mockup frame ---------- */
+.frame__label { margin: 28px 0 10px; font-size: 0.72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--gray-500); }
+.frame__label b { color: var(--coral); }
+.frame { border: 1px solid var(--gray-300); background: #fff; box-shadow: 0 12px 32px rgba(26,39,68,.12); overflow: hidden; }
+.frame__bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #e9eaee; font-size: 0.75rem; color: var(--gray-500); }
+.frame__bar i { width: 10px; height: 10px; background: var(--gray-300); border-radius: 50%; }
+.frame__bar span { margin-left: 10px; padding: 2px 10px; background: #fff; flex: 1; max-width: 560px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site-head { display: flex; align-items: center; gap: 28px; padding: 0 24px; height: 52px; background: var(--navy); color: #fff; font-size: 0.82rem; }
+.site-head__logo { font-weight: 800; letter-spacing: .04em; font-size: 0.8rem; line-height: 1.1; }
+.site-head__logo small { display: block; font-weight: 400; font-size: 0.62rem; letter-spacing: .14em; opacity: .7; }
+.site-head nav { display: flex; gap: 22px; margin-left: auto; }
+.site-head__av { width: 28px; height: 28px; border-radius: 50%; background: var(--coral); }
+.wrap { max-width: 1110px; margin: 0 auto; padding: 28px 24px 36px; }
+
+.btn { display: inline-block; padding: 11px 18px; font-size: 0.72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+.btn--primary { background: var(--coral); color: #fff; }
+.btn--navy { background: var(--navy); color: #fff; }
+.btn--line { border: 1px solid var(--gray-300); color: var(--navy); background: #fff; }
+.btn--ghost { border: 1px solid rgba(255,255,255,.5); color: #fff; }
+
+/* ---------- today: tab soup ---------- */
+.today-head { display: flex; gap: 16px; align-items: center; margin-bottom: 18px; }
+.today-head .av { width: 56px; height: 56px; background: var(--gray-400); }
+.today-head b { display: block; font-size: 1.4rem; color: var(--charcoal); line-height: 1.2; }
+.tabrow { display: flex; flex-wrap: wrap; gap: 4px 22px; padding: 10px 0; border-bottom: 1px solid var(--gray-200); font-size: 0.85rem; color: var(--gray-700); }
+.tabrow span.on { color: var(--navy); font-weight: 700; box-shadow: 0 2px 0 var(--navy); }
+.tabrow--sub { font-size: 0.8rem; }
+.tabrow .bad { position: relative; }
+.tabrow .bad::after { content: attr(data-n); position: absolute; top: -9px; right: -14px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--coral); color: #fff; font-size: 0.6rem; font-weight: 800; line-height: 16px; text-align: center; }
+.soup { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; margin-top: 22px; }
+.soup > div { font-size: 0.82rem; color: var(--gray-500); }
+.soup b { display: block; color: var(--gray-700); font-size: 0.95rem; }
+.callout { position: relative; margin-top: 16px; padding: 10px 14px; background: var(--coral-50); border-left: 4px solid var(--coral); font-size: 0.82rem; color: var(--gray-700); }
+
+/* ---------- hub ---------- */
+.hub-title { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.hub-title h5 { margin: 0; font-size: 1.9rem; font-weight: 800; color: var(--navy); line-height: 1.1; }
+.hub-title p { margin: 4px 0 0; color: var(--gray-500); font-size: 0.9rem; }
+.hub { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.card { background: #fff; border: 1px solid var(--gray-200); box-shadow: 0 2px 10px rgba(26,39,68,.06); padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+.card--wide { grid-column: 1 / -1; }
+.card__k { font-size: 0.68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gray-500); }
+.card h6 { margin: 0; font-size: 1.15rem; color: var(--navy); font-weight: 800; }
+.card p { margin: 0; font-size: 0.86rem; color: var(--gray-700); }
+.card__foot { margin-top: auto; padding-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.card__foot a.link { font-size: 0.82rem; font-weight: 700; color: var(--coral); text-decoration: none; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 0.85rem; }
+.kv dt { color: var(--gray-500); }
+.kv dd { margin: 0; color: var(--charcoal); font-weight: 600; }
+.kv dd small { font-weight: 400; color: var(--gray-500); }
+.prof { display: flex; gap: 14px; align-items: center; }
+.prof .av { width: 64px; height: 64px; flex: 0 0 64px; background: linear-gradient(135deg, #59647d, #1a2744); }
+.prof b { display: block; font-size: 1rem; color: var(--navy); }
+.prof span { font-size: 0.82rem; color: var(--gray-500); }
+.meter { display: flex; gap: 4px; margin-top: 2px; }
+.meter i { flex: 1; height: 6px; background: var(--gray-200); }
+.meter i.on { background: var(--tidal); }
+
+/* membership card */
+.mem { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; padding: 22px 24px; background: linear-gradient(135deg, var(--navy), var(--navy-2)); color: #fff; }
+.mem__badge { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: var(--coral); font-weight: 800; font-size: 1.5rem; }
+.mem__k { font-size: 0.68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.mem h6 { margin: 2px 0 4px; font-size: 1.45rem; font-weight: 800; line-height: 1.15; }
+.mem p { margin: 0; font-size: 0.86rem; color: rgba(255,255,255,.82); }
+.mem__perks { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,.85); }
+.mem__perks span::before { content: "✓ "; color: var(--gold); font-weight: 800; }
+.mem--trial .mem__badge { background: var(--gold); color: var(--navy); }
+.mem--none { background: #fff; color: var(--charcoal); border: 1px solid var(--gray-200); border-left: 5px solid var(--gray-400); }
+.mem--none .mem__k { color: var(--gray-500); }
+.mem--none h6 { color: var(--navy); }
+.mem--none p { color: var(--gray-700); }
+.mem--none .mem__badge { background: var(--sand); color: var(--gray-400); }
+.mem--none .mem__perks { color: var(--gray-500); }
+.mem--none .mem__perks span::before { content: "🔒 "; }
+.mem__days { display: inline-block; margin-left: 6px; padding: 1px 8px; background: var(--gold); color: var(--navy); font-size: 0.7rem; font-weight: 800; letter-spacing: .06em; vertical-align: 3px; }
+.states { display: grid; gap: 14px; }
+.phase-tag { display: inline-block; margin-left: 8px; padding: 1px 7px; font-size: 0.62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: rgba(255,255,255,.15); color: #fff; vertical-align: 2px; }
+.mem--none .phase-tag { background: var(--sand); color: var(--gray-500); }
+
+/* presets */
+.q { margin: 0 0 10px; font-weight: 800; color: var(--navy); font-size: 1rem; }
+.q small { display: block; font-weight: 400; color: var(--gray-500); font-size: 0.82rem; }
+.choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.choice { position: relative; padding: 16px 16px 14px; border: 2px solid var(--gray-200); background: #fff; font-size: 0.82rem; color: var(--gray-700); }
+.choice b { display: block; font-size: 0.98rem; color: var(--navy); margin-bottom: 4px; }
+.choice ul { margin: 8px 0 0; padding-left: 16px; color: var(--gray-500); font-size: 0.78rem; }
+.choice ul li { margin-bottom: 2px; }
+.choice--on { border-color: var(--coral); background: var(--coral-50); }
+.choice--on::after { content: "✓"; position: absolute; top: 10px; right: 12px; width: 22px; height: 22px; background: var(--coral); color: #fff; font-weight: 800; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+.rec-tag { display: inline-block; margin-left: 6px; padding: 0 6px; background: var(--tidal-50); color: var(--tidal); font-size: 0.62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; vertical-align: 2px; }
+.toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+.tog { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--gray-200); font-size: 0.86rem; }
+.tog b { display: block; color: var(--charcoal); font-size: 0.9rem; }
+.tog span { color: var(--gray-500); font-size: 0.78rem; }
+.sw { flex: 0 0 40px; width: 40px; height: 22px; background: var(--gray-300); position: relative; border-radius: 11px; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; }
+.sw--on { background: var(--tidal); }
+.sw--on::after { left: 21px; }
+.save-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--gray-200); font-size: 0.8rem; color: var(--gray-500); }
+.save-row a { color: var(--navy); font-weight: 700; }
+.lang { display: flex; gap: 8px; }
+.lang span { padding: 8px 14px; border: 2px solid var(--gray-200); font-weight: 700; font-size: 0.82rem; color: var(--gray-700); }
+.lang span.on { border-color: var(--coral); background: var(--coral-50); color: var(--navy); }
+
+.map { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--gray-200); font-size: 0.84rem; margin-top: 16px; }
+.map th, .map td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--gray-200); }
+.map th { background: var(--sand); font-size: 0.7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); }
+.map td code { white-space: nowrap; }
+
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+.phases > div { background: #fff; border: 1px solid var(--gray-200); border-top: 4px solid var(--navy); padding: 16px 18px; font-size: 0.9rem; }
+.phases h4 { margin: 0 0 8px; color: var(--navy); }
+.phases ul { margin: 0; padding-left: 18px; }
+
+@media (max-width: 860px) {
+  .facts, .phases, .hub, .soup, .choices, .toggles { grid-template-columns: 1fr; }
+  .site-head nav { display: none; }
+  .mem { grid-template-columns: auto 1fr; }
+  .mem__cta { grid-column: 1 / -1; }
+  .wrap { padding: 18px 16px 24px; }
+  .summary th:nth-child(3), .summary td:nth-child(3) { display: none; }
+  .inv th:nth-child(3), .inv td:nth-child(3) { display: none; }
+  .map { display: block; overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+<header class="doc-head">
+  <div class="doc-head__inner">
+    <div class="eyebrow">Member feedback · Settings</div>
+    <h1>One "My account" page instead of eighteen tabs</h1>
+    <p>Recommendations for Stefan's point that "the settings page is not very useful and doesn't show the user status". Today, members land on Discourse's default preferences: 8 profile tabs, 10 preference tabs and about 60 controls, mostly forum mechanics, and nothing about their membership.</p>
+    <p>The inventory below was read from the live preferences pages on community.swissphotoclub.com on 25 October 2026.</p>
+  </div>
+</header>
+<main class="doc">
+
+<table class="summary">
+  <thead><tr><th>#</th><th>Recommendation</th><th>Built where</th><th>Size</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><a href="#hub">A "My account" page</a> as the default settings view, with the native tabs kept behind "All settings"</td><td><span class="pill p-theme">Theme</span></td><td>Medium</td></tr>
+    <tr><td>2</td><td><a href="#membership">Membership status card</a>: member, trial or not a member, with the right button</td><td><span class="pill p-theme">Theme</span> then <span class="pill p-server">spc-be</span> for dates</td><td>Small, then small</td></tr>
+    <tr><td>3</td><td><a href="#presets">Emails and notifications as three presets</a>, plus a few "tell me about" switches</td><td><span class="pill p-theme">Theme</span> <span class="pill p-admin">Site setting</span></td><td>Medium</td></tr>
+    <tr><td>4</td><td><a href="#account-fixes">Explain what can't be changed here</a> (email) and say where to change it</td><td><span class="pill p-theme">Theme</span></td><td>Small</td></tr>
+    <tr><td>5</td><td><a href="#defaults">Get the defaults right</a>, because most members never open settings</td><td><span class="pill p-admin">Site setting</span></td><td>Small</td></tr>
+  </tbody>
+</table>
+
+<!-- ================================================================= -->
+<section class="rec" id="findings">
+  <h2>What members see today</h2>
+  <p class="lede">The page isn't broken. It's built for people who run forums, not for photographers who want to post a picture and hear back. Of the ~60 controls, about a dozen matter to a typical member, and the one thing they'd look for (am I a member, until when?) isn't there.</p>
+
+  <div class="frame__label"><b>Today</b> · /u/osan/preferences/account, simplified</div>
+  <div class="frame">
+    <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com/u/osan/preferences/account</span></div>
+    <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Photo Feedback</span><span>Monthly Challenge</span><span>New Members</span><span>Meetups</span></nav><div class="site-head__av"></div></div>
+    <div class="wrap">
+      <div class="today-head"><div class="av"></div><div><b>Osan Altun</b><span style="color:var(--gray-500)">osan</span></div></div>
+      <div class="tabrow"><span>Summary</span><span>Activity</span><span>Notifications</span><span>Messages</span><span>Invites</span><span>Badges</span><span>Images</span><span class="on">Preferences</span></div>
+      <div class="tabrow tabrow--sub"><span class="on bad" data-n="7">Account</span><span class="bad" data-n="1">Security</span><span class="bad" data-n="9">Profile</span><span class="bad" data-n="7">Emails</span><span class="bad" data-n="6">Notifications</span><span class="bad" data-n="11">Tracking</span><span class="bad" data-n="4">Users</span><span class="bad" data-n="15">Interface</span><span class="bad" data-n="2">Navigation menu</span><span class="bad" data-n="1">Calendar</span></div>
+      <div class="soup">
+        <div><b>Username</b>osan ✎</div>
+        <div><b>Profile Picture</b>✎</div>
+        <div><b>Email</b>altun@swissphotoclub.com · primary — no edit button, no explanation</div>
+        <div><b>Name</b>Osan Altun</div>
+        <div><b>Title</b>Leader ▾</div>
+        <div><b>Export your data · Close your community account</b>at the very bottom</div>
+      </div>
+      <div class="callout">Nowhere on any of the 18 tabs: membership status, plan, trial end date, or a link to manage the membership on swissphotoclub.com.</div>
+    </div>
+  </div>
+
+  <table class="inv">
+    <thead><tr><th>Tab</th><th>Controls</th><th>What's in it</th><th>Proposal</th></tr></thead>
+    <tbody>
+      <tr><td>Account</td><td>7</td><td>Username, picture, email (read-only), name, title, export data, close account</td><td class="verdict v-keep">Summarise on My account</td></tr>
+      <tr><td>Profile</td><td>9</td><td>Already redirected to /profile-setup for your own profile (about me, location, website, picture)</td><td class="verdict v-keep">Link to /profile-setup</td></tr>
+      <tr><td>Emails</td><td>7</td><td>Email for messages, for replies/mentions ("only when away"), previous replies, excerpts, weekly summary, new-user content</td><td class="verdict v-preset">Replace with presets</td></tr>
+      <tr><td>Notifications</td><td>6</td><td>Likes, linked posts, push, "Upcoming changes", custom schedule, "Solved"</td><td class="verdict v-preset">Presets + push switch</td></tr>
+      <tr><td>Tracking</td><td>11</td><td>"Consider topics new when…", auto-track after 5 minutes, watched / tracked / first-post / muted lists for categories and tags</td><td class="verdict v-preset">"Tell me about" switches</td></tr>
+      <tr><td>Interface</td><td>15</td><td>Text size, language, content languages, auto-translate, default home page, chat-style composer (chat is off on this site), monospace font, bookmark reminders…</td><td class="verdict v-keep">Language only</td></tr>
+      <tr><td>Users</td><td>4</td><td>Ignored users, muted users, who may message me</td><td class="verdict v-adv">All settings</td></tr>
+      <tr><td>Security</td><td>1</td><td>Recently used devices, "Log out all" (passwords live on swissphotoclub.com)</td><td class="verdict v-adv">All settings</td></tr>
+      <tr><td>Navigation menu</td><td>2</td><td>Where sidebar links go, whether they show counts</td><td class="verdict v-adv">All settings</td></tr>
+      <tr><td>Calendar</td><td>1</td><td>Generate calendar subscription URLs</td><td class="verdict v-adv">All settings</td></tr>
+    </tbody>
+  </table>
+  <p class="how">Nothing is removed. Everything marked "All settings" stays exactly where it is today, one click away. Members just don't have to start there.</p>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="hub">
+  <span class="rec__num">1</span>
+  <h2>A "My account" page as the front door</h2>
+  <p class="lede">One page, five cards, written in the club's words. Each card answers one question a member actually has: am I a member, how do others see me, how much email will I get, which language, and how do I leave or take my data. The full Discourse preferences stay behind a single "All settings" link.</p>
+
+  <div class="frame__label"><b>Mockup</b> · /my-account, signed-in member</div>
+  <div class="frame">
+    <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com/my-account</span></div>
+    <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Photo Feedback</span><span>Monthly Challenge</span><span>New Members</span><span>Meetups</span></nav><div class="site-head__av"></div></div>
+    <div class="wrap">
+      <div class="hub-title">
+        <div><h5>My account</h5><p>Your membership, your profile and how we keep in touch.</p></div>
+        <a class="btn btn--line" href="#hub">All settings</a>
+      </div>
+      <div class="hub">
+        <div class="card--wide">
+          <div class="mem">
+            <div class="mem__badge">★</div>
+            <div>
+              <div class="mem__k">Membership</div>
+              <h6>Member · Annual plan</h6>
+              <p>Active until 31 March 2027. Renews automatically.</p>
+              <div class="mem__perks"><span>Post in Photo Feedback</span><span>Enter the Monthly Challenge</span><span>Meetups &amp; photowalks</span><span>Live webinars</span></div>
+            </div>
+            <div class="mem__cta"><a class="btn btn--ghost" href="#membership">Manage on swissphotoclub.com</a></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__k">Profile</div>
+          <div class="prof"><div class="av"></div><div><b>Osan Altun</b><span>@osan · Geneva · Leader</span></div></div>
+          <p>3 of 4 profile details filled in. Members with a bio and location get more feedback on their photos.</p>
+          <div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+          <div class="card__foot"><a class="btn btn--navy" href="#hub">Edit profile</a><a class="link" href="#hub">View public profile →</a></div>
+        </div>
+        <div class="card">
+          <div class="card__k">Emails &amp; notifications</div>
+          <h6>Balanced</h6>
+          <p>Email for personal messages, and for replies while you're away. A weekly summary of the best new photos.</p>
+          <dl class="kv"><dt>Tell me about</dt><dd>New challenge rounds &amp; results, Club news, Live webinars</dd></dl>
+          <div class="card__foot"><a class="btn btn--navy" href="#presets">Change</a></div>
+        </div>
+        <div class="card">
+          <div class="card__k">Language</div>
+          <div class="lang"><span>Deutsch</span><span class="on">English</span><span>Français</span></div>
+          <p>Menus, buttons and emails use this language. Posts stay in the language they were written in.</p>
+        </div>
+        <div class="card">
+          <div class="card__k">Sign-in &amp; your data</div>
+          <dl class="kv">
+            <dt>Email</dt><dd>altun@swissphotoclub.com <small>· from your Swiss Photo Club account</small></dd>
+            <dt>Password</dt><dd><small>Managed on swissphotoclub.com</small></dd>
+            <dt>Signed in on</dt><dd>4 devices <small>· Mac, iPhone…</small></dd>
+          </dl>
+          <div class="card__foot"><a class="link" href="#account-fixes">Change email or password →</a><a class="link" href="#hub">Download my data</a><a class="link" href="#hub" style="color:var(--gray-500)">Close my account</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>How it's built</h3>
+  <ul class="how">
+    <li><b>Same pattern as /profile-setup</b>, which already works: a theme route at <code>/my-account</code>, a permalink so a hard reload lands there, and an avatar-menu item. The avatar menu's existing "Preferences" entry and your own <code>/u/&lt;you&gt;/preferences</code> index redirect to it, with the same <code>?full=1</code> escape hatch and an on/off setting (<code>my_account_replaces_preferences</code>) so the takeover can be switched off live.</li>
+    <li><b>Every card reads and writes what Discourse already stores.</b> Profile completeness comes from the fields /profile-setup edits. Email presets and language save through <code>PUT /u/&lt;username&gt;.json</code>, the endpoint /profile-setup uses. Export and account closure link to the existing actions (closure is <code>spc-account-closure.gjs</code>, today rendered in the Account tab).</li>
+    <li><b>"All settings"</b> opens the native Account tab with <code>?full=1</code>. Nothing native is hidden or rewritten, which keeps us clear of the "never decorate a DOM element core owns" trap.</li>
+    <li>All copy goes into <code>locales/{en,de,fr}.yml</code> under a new <code>my_account.*</code> namespace.</li>
+  </ul>
+  <div class="note">Profile and "My account" stay separate pages on purpose: Profile is what other members see, My account is private. Merging them would make /profile-setup long again, which is the problem it solved.</div>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="membership">
+  <span class="rec__num">2</span>
+  <h2>Show the membership status</h2>
+  <p class="lede">This is the "user status" Stefan asked for. The card sits at the top of My account and also answers "why can't I post in Photo Feedback?" for non-members, without them having to hit the paywall first.</p>
+
+  <div class="frame__label"><b>Mockup</b> · the three states</div>
+  <div class="states">
+    <div class="mem">
+      <div class="mem__badge">★</div>
+      <div><div class="mem__k">Membership <span class="phase-tag">dates: step 2</span></div><h6>Member · Annual plan</h6><p>Active until 31 March 2027. Renews automatically.</p></div>
+      <div class="mem__cta"><a class="btn btn--ghost" href="#membership">Manage on swissphotoclub.com</a></div>
+    </div>
+    <div class="mem mem--trial">
+      <div class="mem__badge">T</div>
+      <div><div class="mem__k">Membership</div><h6>Trial member <span class="mem__days">12 days left</span></h6><p>Your free trial ends on 6 November 2026. Become a member to keep posting, entering challenges and getting feedback.</p></div>
+      <div class="mem__cta"><a class="btn btn--primary" href="#membership">Become a member</a></div>
+    </div>
+    <div class="mem mem--none">
+      <div class="mem__badge">–</div>
+      <div><div class="mem__k">Membership</div><h6>Not a member yet</h6><p>You can read everything. Members can also:</p><div class="mem__perks"><span>Get feedback on their photos</span><span>Enter the Monthly Challenge</span><span>Join meetups &amp; photowalks</span></div></div>
+      <div class="mem__cta"><a class="btn btn--primary" href="#membership">Become a member</a></div>
+    </div>
+  </div>
+
+  <h3>Step 1 — status only, theme-only, ships immediately</h3>
+  <ul class="how">
+    <li>Discourse already knows the status: group 40 <code>members</code> and group 44 <code>trial</code>. The card resolves it exactly like the non-member banner does (<code>nonmember_member_groups</code>, <code>Object.hasOwn</code> fast path with the <code>currentUser.groups</code> fallback).</li>
+    <li>"Become a member" reuses <code>nonmember_join_url_{de,en,fr}</code>. "Manage on swissphotoclub.com" needs one new URL setting per language, pointing at the account page where plans are already managed.</li>
+    <li>Without dates the member line reads "Active member" and the trial line reads "Trial member", which already answers the question.</li>
+  </ul>
+
+  <h3>Step 2 — plan name and end date, from spc-be</h3>
+  <ul class="how">
+    <li>spc-be already computes all of it: <code>CommunityAccessSummary</code> has <code>label()</code>, <code>endsAt()</code>, <code>isOpenEnded()</code> and <code>isTrialOnly()</code>. Discourse just never receives it.</li>
+    <li>Add two fields to the payload in <code>DiscourseSsoPayloadFactory::payload()</code>: <code>custom.spc_plan</code> and <code>custom.spc_access_until</code>. DiscourseConnect stores <code>custom.*</code> keys as user custom fields. Push them from <code>SyncDiscourseUserJob</code> too, so a renewal shows up without a new login.</li>
+    <li>Decide who may see them. Discourse only sends user custom fields to the browser through <code>public_user_custom_fields</code> (every visitor can read them) or <code>staff_user_custom_fields</code> (staff only). Showing a member their own plan and end date, and nobody else, needs a few lines of server code: a tiny plugin that adds the two fields to the current-user serializer. That's one more entry in <code>containers/app.yml</code> and a rebuild.</li>
+  </ul>
+  <div class="note">The date is only as fresh as the last sync. The reconcile job (<code>DISCOURSE_RECONCILE_ENABLED</code>) was suspected not to be running in production in August; check it before showing dates, or a lapsed trial will keep showing "12 days left".</div>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="presets">
+  <span class="rec__num">3</span>
+  <h2>Emails and notifications as presets</h2>
+  <p class="lede">Today a member has to understand "Email me when I am quoted, replied to, my @username is mentioned… only when away", "Watching First Post" and "Consider topics new when created in the last 2 days" to answer one question: how much will you email me? Ask that question directly.</p>
+
+  <div class="frame__label"><b>Mockup</b> · /my-account → Emails &amp; notifications</div>
+  <div class="frame">
+    <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com/my-account/notifications</span></div>
+    <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Photo Feedback</span><span>Monthly Challenge</span><span>New Members</span><span>Meetups</span></nav><div class="site-head__av"></div></div>
+    <div class="wrap">
+      <div class="hub-title"><div><h5>Emails &amp; notifications</h5><p>You'll always see everything on the site. This only decides what reaches your inbox.</p></div></div>
+      <p class="q">How much email would you like?</p>
+      <div class="choices">
+        <div class="choice"><b>Keep me in the loop</b>Email for every reply and mention, even when I'm on the site.<ul><li>Personal messages: always</li><li>Replies &amp; mentions: always</li><li>Weekly summary: on</li></ul></div>
+        <div class="choice choice--on"><b>Balanced <span class="rec-tag">Recommended</span></b>Email when someone replies and I'm not around.<ul><li>Personal messages: always</li><li>Replies &amp; mentions: only when away</li><li>Weekly summary: on</li></ul></div>
+        <div class="choice"><b>Quiet</b>Only personal messages. I'll check the site myself.<ul><li>Personal messages: always</li><li>Replies &amp; mentions: never</li><li>Weekly summary: off</li></ul></div>
+      </div>
+
+      <p class="q" style="margin-top:26px">Tell me about<small>A notification and, on Balanced or more, an email.</small></p>
+      <div class="toggles">
+        <div class="tog"><div><b>New challenge rounds &amp; results</b><span>Once when a round opens, once when the winner is announced</span></div><div class="sw sw--on"></div></div>
+        <div class="tog"><div><b>Club news</b><span>Announcements from the club</span></div><div class="sw sw--on"></div></div>
+        <div class="tog"><div><b>Live webinars</b><span>When a new webinar is scheduled</span></div><div class="sw sw--on"></div></div>
+        <div class="tog"><div><b>New feedback requests</b><span>Every new photo posted for feedback, so you can help</span></div><div class="sw"></div></div>
+        <div class="tog"><div><b>Likes on my photos</b><span>The first like, then a daily roundup</span></div><div class="sw sw--on"></div></div>
+        <div class="tog"><div><b>Push notifications on this device</b><span>Browser alerts, even when the tab is closed</span></div><div class="sw"></div></div>
+      </div>
+      <div class="save-row"><span>Saved automatically.</span><span>Need something more specific? <a href="#presets">All notification settings</a></span></div>
+    </div>
+  </div>
+
+  <h3>What each control writes</h3>
+  <p class="how">Every switch maps to a field Discourse already has, so the native pages stay accurate and "All settings" shows the same values.</p>
+  <table class="map">
+    <thead><tr><th>Control</th><th>User option</th><th>Keep in the loop</th><th>Balanced</th><th>Quiet</th></tr></thead>
+    <tbody>
+      <tr><td>Personal messages</td><td><code>email_messages_level</code></td><td>0 always</td><td>0 always</td><td>0 always</td></tr>
+      <tr><td>Replies &amp; mentions</td><td><code>email_level</code></td><td>0 always</td><td>1 when away</td><td>2 never</td></tr>
+      <tr><td>Weekly summary</td><td><code>email_digests</code>, <code>digest_after_minutes</code></td><td>on, 10080</td><td>on, 10080</td><td>off</td></tr>
+    </tbody>
+  </table>
+  <table class="map">
+    <thead><tr><th>Switch</th><th>Writes</th></tr></thead>
+    <tbody>
+      <tr><td>New challenge rounds &amp; results</td><td><code>watching_first_post_tags</code> += a tag carried only by the round brief and winner topics (needs that tag; see below)</td></tr>
+      <tr><td>Club news · Live webinars</td><td><code>watching_first_post_category_ids</code> += 5 · 13 (both already on by default)</td></tr>
+      <tr><td>New feedback requests</td><td><code>watching_first_post_category_ids</code> += 7</td></tr>
+      <tr><td>Likes on my photos</td><td><code>like_notification_frequency</code> 1 (first time and daily) or 3 (never)</td></tr>
+      <tr><td>Push notifications</td><td>Core's push-subscription call, same as the native Notifications tab</td></tr>
+    </tbody>
+  </table>
+  <ul class="how">
+    <li>If a member's saved values match no preset (they changed something on the native page), show a fourth, unselected state: "Custom — set in All settings". Never overwrite their values just by opening the page.</li>
+    <li>The card UI already exists: <code>spc-card-choice.gjs</code> is what the feedback form uses for its three cards.</li>
+    <li><b>Why not "watch first post" on Monthly Challenge:</b> that would email every entry, 15 to 38 a month. The switch needs a dedicated tag on the brief and winner topics only (e.g. <code>challenge-news</code>), added by the staff panel when it opens or crowns a round.</li>
+  </ul>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="account-fixes">
+  <span class="rec__num">4</span>
+  <h2>Say what can't be changed here, and where to change it</h2>
+  <p class="lede">The site signs members in through their Swiss Photo Club account (DiscourseConnect). That's why the email has no edit button and there's no password field anywhere. Discourse doesn't say so, and members reasonably think something is broken.</p>
+  <div class="facts">
+    <div class="fact"><b>Email and password</b>Show "From your Swiss Photo Club account" next to the email, with a "Change on swissphotoclub.com" link. Same link in the Security area for password changes.</div>
+    <div class="fact"><b>Name</b>spc-be sends the name with every sign-in, but <code>auth_overrides_name</code> is off, so a change made here sticks. Say "Shown on your posts" so members know what it's for.</div>
+    <div class="fact"><b>Username</b>Changing it renames the @mention handle and breaks old mentions. Keep it on the native page only (All settings), not on My account.</div>
+    <div class="fact"><b>Title</b>Only matters for staff and badge holders. Keep it native too.</div>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="defaults">
+  <span class="rec__num">5</span>
+  <h2>Get the defaults right</h2>
+  <p class="lede">Most members will never open any settings page, however good it is. What they get by default is the real settings experience. Today's site defaults are reasonable, with two gaps.</p>
+  <div class="facts">
+    <div class="fact"><b>Already good</b>Replies and mentions email only when away (<code>default_email_level = 1</code>), a weekly summary (<code>default_email_digest_frequency = 10080</code>), and first-post notifications for Club News (5) and Live Webinars (13).</div>
+    <div class="fact fact--warn"><b>Gap: challenge rounds and results</b>Nothing tells members a new round opened or who won, which is part of Stefan's complaint about results. Once the <code>challenge-news</code> tag exists, add it to <code>default_tags_watching_first_post</code>. That's the default half of the switch in recommendation 3.</div>
+    <div class="fact"><b>Website Feedback is muted for everyone</b><code>default_categories_muted = 2</code>. Fine for keeping the inbox quiet, but members who post feedback won't hear about replies to other people's ideas. Probably intended; worth a deliberate yes.</div>
+    <div class="fact"><b>Apply new defaults to existing members</b>Discourse's "Update existing users" checkbox applies a changed default to everyone. Use it for the challenge tag; don't use it for email levels, which some members have set on purpose.</div>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec" id="order">
+  <h2>Suggested order</h2>
+  <div class="phases">
+    <div><h4>1 · First release</h4><ul><li>/my-account with the membership card (status only), profile, language and sign-in cards</li><li>"From your Swiss Photo Club account" explanation</li><li>Avatar-menu entry and preferences redirect, behind a setting</li></ul></div>
+    <div><h4>2 · Notifications</h4><ul><li>Create the <code>challenge-news</code> tag and have the staff panel apply it</li><li>Presets and "Tell me about" switches</li><li>New default for challenge news</li></ul></div>
+    <div><h4>3 · spc-be</h4><ul><li>Send plan and end date as <code>custom.*</code> fields on sign-in and sync</li><li>Check the reconcile job runs</li><li>Turn on dates in the membership card</li></ul></div>
+  </div>
+  <p class="how">Verification follows the usual loop: push, Update, then click through as a member, a trial user and a non-member. The in-app browser covers the anonymous case; the trial state needs a test account in group 44.</p>
+</section>
+
+</main>
+</body>
+</html>

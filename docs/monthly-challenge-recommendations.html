@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly Challenge Rounds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coral: #ff5b5d;
+  --navy: #1a2744;
+  --navy-2: #28395e;
+  --indigo-50: #ebefff;
+  --gold: #e9a13e;
+  --silver: #b8bfcc;
+  --bronze: #c98a5a;
+  --tidal: #3a7d7b;
+  --charcoal: #333;
+  --sand: #f4f4f4;
+  --gray-200: #e2e4e9;
+  --gray-400: #8a909e;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --page: #fafafa;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--charcoal); font: 16px/1.6 "Open Sans", system-ui, sans-serif; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ---------- report chrome ---------- */
+.doc { max-width: 1180px; margin: 0 auto; padding: 0 16px 96px; }
+.doc-head { background: var(--navy); color: #fff; border-bottom: 6px solid var(--coral); }
+.doc-head__inner { max-width: 1180px; margin: 0 auto; padding: 56px 16px 48px; }
+.eyebrow { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.doc-head .eyebrow { color: rgba(255,255,255,.7); }
+.doc-head h1 { margin: 8px 0 12px; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800; line-height: 1.15; }
+.doc-head p { max-width: 780px; margin: 0 0 8px; color: rgba(255,255,255,.85); font-size: 1.05rem; }
+h2 { margin: 0 0 8px; font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1.25; }
+h3 { margin: 28px 0 8px; font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.lede { font-size: 1.05rem; color: var(--gray-700); max-width: 820px; }
+p, li { max-width: 820px; }
+code { font-size: 0.85em; background: var(--sand); padding: 1px 5px; }
+
+.part { margin-top: 96px; padding-top: 24px; border-top: 2px solid var(--navy); }
+.part > .eyebrow { color: var(--coral); }
+.rec { margin-top: 72px; scroll-margin-top: 24px; }
+.rec__num { display: inline-block; margin-bottom: 10px; padding: 3px 10px; background: var(--coral); color: #fff; font-size: 0.75rem; font-weight: 800; letter-spacing: .1em; }
+
+.summary { margin: 40px 0 0; width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--gray-200); font-size: 0.92rem; }
+.summary th, .summary td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+.summary th { background: var(--sand); font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); }
+.summary td:first-child { font-weight: 800; color: var(--coral); white-space: nowrap; }
+.summary a { color: var(--navy); font-weight: 700; text-decoration: none; }
+.pill { display: inline-block; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+.p-theme { background: var(--indigo-50); color: var(--navy); }
+.p-server { background: #fff3e0; color: #8a5a00; }
+.p-admin { background: #e6f2f1; color: var(--tidal); }
+
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0 0; }
+.fact { background: #fff; border: 1px solid var(--gray-200); padding: 16px 18px; font-size: 0.92rem; }
+.fact b { display: block; color: var(--navy); margin-bottom: 4px; }
+.fact--warn { border-left: 4px solid var(--coral); }
+.note { margin-top: 16px; padding: 12px 16px; border-left: 4px solid var(--gold); background: #fff; font-size: 0.9rem; color: var(--gray-700); max-width: 820px; }
+.how { margin-top: 16px; font-size: 0.9rem; color: var(--gray-700); }
+.how li { margin-bottom: 6px; }
+
+/* ---------- mockup frame ---------- */
+.frame__label { margin: 28px 0 10px; font-size: 0.72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--gray-500); }
+.frame__label b { color: var(--coral); }
+.frame { border: 1px solid #c9ccd4; background: #fff; box-shadow: 0 12px 32px rgba(26,39,68,.12); overflow: hidden; }
+.frame__bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #e9eaee; font-size: 0.75rem; color: var(--gray-500); }
+.frame__bar i { width: 10px; height: 10px; background: #c9ccd4; border-radius: 50%; }
+.frame__bar span { margin-left: 10px; padding: 2px 10px; background: #fff; flex: 1; max-width: 560px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site-head { display: flex; align-items: center; gap: 28px; padding: 0 24px; height: 52px; background: var(--navy); color: #fff; font-size: 0.82rem; }
+.site-head__logo { font-weight: 800; letter-spacing: .04em; font-size: 0.8rem; line-height: 1.1; }
+.site-head__logo small { display: block; font-weight: 400; font-size: 0.62rem; letter-spacing: .14em; opacity: .7; }
+.site-head nav { display: flex; gap: 22px; margin-left: auto; }
+.site-head nav .on { color: var(--coral); font-weight: 700; }
+.site-head__av { width: 28px; height: 28px; border-radius: 50%; background: var(--coral); }
+.wrap { max-width: 1110px; margin: 0 auto; padding: 24px; }
+
+.btn { display: inline-block; padding: 11px 18px; font-size: 0.72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.btn--primary { background: var(--coral); color: #fff; }
+.btn--ghost { border: 1px solid rgba(255,255,255,.5); color: #fff; }
+.chip { display: inline-block; background: var(--coral); color: #fff; padding: 4px 10px; font-size: 0.7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.chip--gold { background: var(--gold); color: var(--navy); }
+.chip--muted { background: rgba(255,255,255,.15); }
+
+/* band (open round) */
+.band { padding: 32px 36px; background: linear-gradient(135deg, var(--navy), var(--navy-2)); color: #fff; }
+.band__kicker { display: flex; gap: 12px; align-items: center; font-weight: 800; letter-spacing: .06em; font-size: 0.9rem; }
+.band h5 { margin: 12px 0 6px; font-size: 2.1rem; font-weight: 800; line-height: 1.1; }
+.band p { margin: 0 0 14px; color: rgba(255,255,255,.85); font-size: 0.95rem; max-width: 560px; }
+.band__deadline { color: var(--gold) !important; font-weight: 700; font-size: 0.85rem !important; }
+.band__row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+.band__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.mine-open { display: flex; gap: 12px; align-items: center; padding: 10px 14px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); font-size: 0.82rem; }
+.mine-open img { width: 44px; height: 33px; object-fit: cover; }
+.mine-open b { color: #fff; }
+.mine-open span { color: rgba(255,255,255,.75); }
+
+/* round switcher */
+.rounds-nav { display: flex; gap: 0; border-bottom: 1px solid var(--gray-200); background: #fff; overflow-x: auto; }
+.rounds-nav a { flex: 0 0 auto; padding: 14px 20px 12px; text-decoration: none; border-bottom: 3px solid transparent; font-size: 0.82rem; color: var(--gray-500); line-height: 1.3; }
+.rounds-nav a b { display: block; font-size: 0.92rem; color: var(--charcoal); }
+.rounds-nav a.on { border-bottom-color: var(--coral); }
+.rounds-nav a.on b { color: var(--navy); }
+.rounds-nav .st { display: inline-block; margin-left: 6px; padding: 1px 6px; font-size: 0.62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; vertical-align: 1px; }
+.st--open { background: var(--coral); color: #fff; }
+.st--res { background: var(--gold); color: var(--navy); }
+.rounds-nav .all { margin-left: auto; color: var(--navy); font-weight: 700; }
+
+.controls { display: flex; gap: 18px; align-items: center; padding: 14px 0; font-size: 0.82rem; color: var(--gray-500); }
+.controls .on { color: var(--navy); font-weight: 700; border-bottom: 2px solid var(--coral); }
+.controls .count { margin-left: auto; }
+
+/* masonry cards */
+.mas { columns: 4; column-gap: 14px; }
+.mas--3 { columns: 3; }
+.cardm { position: relative; break-inside: avoid; margin-bottom: 14px; background: #fff; border: 1px solid var(--gray-200); }
+.cardm img { width: 100%; }
+.cardm__foot { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 8px 10px; font-size: 0.75rem; color: var(--gray-500); }
+.cardm__foot b { display: block; font-size: 0.82rem; color: var(--charcoal); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
+.vote { border: 1px solid var(--coral); color: var(--coral); padding: 3px 7px; font-size: 0.66rem; font-weight: 800; white-space: nowrap; }
+.cardm--mine { outline: 3px solid var(--coral); outline-offset: -3px; }
+.rk { position: absolute; top: 8px; left: 8px; min-width: 34px; height: 34px; padding: 0 8px; display: flex; align-items: center; justify-content: center; background: var(--navy); color: #fff; font-weight: 800; font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+.rk--1 { background: var(--gold); color: var(--navy); }
+.rk--2 { background: var(--silver); color: var(--navy); }
+.rk--3 { background: var(--bronze); color: #fff; }
+.mine-tag { position: absolute; top: 8px; right: 8px; background: var(--coral); color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; }
+
+/* results header */
+.results { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; background: var(--navy); color: #fff; }
+.results__win { position: relative; min-height: 420px; background: #000 center/cover; }
+.results__win::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(0,0,0,.8)); }
+.results__win > * { position: absolute; z-index: 1; }
+.results__win .chip { top: 14px; left: 14px; }
+.results__cap { left: 18px; right: 18px; bottom: 16px; }
+.results__cap b { display: block; font-size: 1.4rem; line-height: 1.2; }
+.results__cap span { opacity: .85; font-size: 0.88rem; }
+.results__side { padding: 28px 30px; display: flex; flex-direction: column; gap: 14px; }
+.results__side h5 { margin: 4px 0 0; font-size: 1.9rem; line-height: 1.1; font-weight: 800; }
+.results__side .k { color: rgba(255,255,255,.7); font-size: 0.78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.stats { display: flex; gap: 22px; font-size: 0.8rem; color: rgba(255,255,255,.75); }
+.stats b { display: block; color: #fff; font-size: 1.3rem; }
+.podium { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.podium a { position: relative; text-decoration: none; }
+.podium img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.podium .rk { top: 6px; left: 6px; min-width: 28px; height: 28px; font-size: 0.75rem; }
+.podium b { display: block; margin-top: 6px; font-size: 0.85rem; }
+.podium span { font-size: 0.75rem; color: rgba(255,255,255,.7); }
+
+/* your result strip */
+.yours { display: grid; grid-template-columns: 96px 1fr auto; gap: 18px; align-items: center; margin: 20px 0 6px; padding: 16px 18px; background: #fff; border: 1px solid var(--gray-200); border-left: 5px solid var(--coral); }
+.yours img { width: 96px; height: 72px; object-fit: cover; }
+.yours .k { font-size: 0.68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--coral); }
+.yours b { display: block; font-size: 1.05rem; color: var(--navy); }
+.yours small { color: var(--gray-500); font-size: 0.82rem; }
+.yours__rank { text-align: right; }
+.yours__rank strong { display: block; font-size: 2rem; line-height: 1; color: var(--navy); }
+.yours__rank span { font-size: 0.78rem; color: var(--gray-500); }
+.yours--none { grid-template-columns: 1fr auto; border-left-color: var(--gray-400); }
+
+/* archive */
+.arch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.round { position: relative; aspect-ratio: 4 / 3; background: #000 center/cover; color: #fff; text-decoration: none; overflow: hidden; }
+.round::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 35%, rgba(0,0,0,.82)); }
+.round > * { position: absolute; z-index: 1; }
+.round .chip { top: 10px; left: 10px; font-size: 0.6rem; }
+.round__body { left: 14px; right: 14px; bottom: 12px; }
+.round__month { font-size: 0.66rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.round__theme { display: block; font-size: 1.25rem; font-weight: 800; line-height: 1.2; }
+.round__meta { font-size: 0.76rem; opacity: .85; }
+.round__you { top: 10px; right: 10px; background: #fff; color: var(--navy); font-size: 0.68rem; font-weight: 800; padding: 3px 8px; }
+
+/* name fix */
+.names { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.names > div { background: #fff; border: 1px solid var(--gray-200); padding: 16px; font-size: 0.88rem; }
+.names .tagraw { display: inline-block; margin: 4px 6px 0 0; padding: 2px 8px; background: var(--sand); border: 1px solid var(--gray-200); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+.names .tagnice { display: inline-block; margin: 4px 6px 0 0; padding: 2px 10px; background: var(--indigo-50); color: var(--navy); font-weight: 700; font-size: 0.82rem; }
+
+/* email */
+.mail { max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid var(--gray-200); }
+.mail__meta { padding: 12px 18px; border-bottom: 1px solid var(--gray-200); font-size: 0.8rem; color: var(--gray-500); }
+.mail__meta b { color: var(--charcoal); }
+.mail__head { background: var(--navy); color: #fff; padding: 22px 26px; border-bottom: 5px solid var(--coral); }
+.mail__head .k { font-size: 0.7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mail__head h5 { margin: 6px 0 0; font-size: 1.5rem; line-height: 1.2; }
+.mail__body { padding: 22px 26px 26px; font-size: 0.92rem; }
+.mail__body p { margin: 0 0 14px; }
+.mail__res { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: center; padding: 14px; background: var(--sand); margin-bottom: 18px; }
+.mail__res img { width: 120px; height: 90px; object-fit: cover; }
+.mail__res strong { display: block; font-size: 1.6rem; line-height: 1.1; color: var(--navy); }
+.mail__res span { font-size: 0.82rem; color: var(--gray-500); }
+.mail__top { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 18px; }
+.mail__top td { padding: 6px 0; border-bottom: 1px solid var(--gray-200); }
+.mail__top td:first-child { width: 36px; font-weight: 800; color: var(--navy); }
+.mail__top td:last-child { text-align: right; color: var(--gray-500); white-space: nowrap; }
+.mail__top tr.me td { background: #fff4f4; font-weight: 700; }
+.mail__foot { padding: 12px 26px; font-size: 0.72rem; color: var(--gray-400); border-top: 1px solid var(--gray-200); }
+
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+.phases > div { background: #fff; border: 1px solid var(--gray-200); border-top: 4px solid var(--navy); padding: 16px 18px; font-size: 0.9rem; }
+.phases h4 { margin: 0 0 8px; color: var(--navy); }
+.phases ul { margin: 0; padding-left: 18px; }
+
+@media (max-width: 860px) {
+  .facts, .names, .phases, .results, .arch { grid-template-columns: 1fr; }
+  .mas, .mas--3 { columns: 2; }
+  .cardm__foot { flex-wrap: wrap; }
+  .cardm__foot > div { min-width: 0; max-width: 100%; }
+  .cardm__foot b { max-width: 100%; }
+  .site-head nav { display: none; }
+  .yours { grid-template-columns: 64px 1fr; }
+  .yours img { width: 64px; height: 48px; }
+  .yours__rank { grid-column: 1 / -1; text-align: left; }
+  .results__win { min-height: 300px; }
+  .band { padding: 24px 20px; }
+  .wrap { padding: 16px; }
+  .summary { font-size: 0.85rem; }
+  .summary th:nth-child(3), .summary td:nth-child(3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <div class="doc-head__inner">
+    <div class="eyebrow">Member feedback · Monthly Challenge</div>
+    <h1>Separate the rounds, show members their own result</h1>
+    <p>Recommendations for two points from Stefan's feedback: <b>(3)</b> the monthly competitions are not separated, and <b>(4)</b> it's hard to see your own result, and nobody is told their rank when a round ends.</p>
+    <p>The mockups use real entries and vote counts from community.swissphotoclub.com, read on 25 October 2026.</p>
+  </div>
+</header>
+
+<main class="doc">
+
+<table class="summary">
+  <thead><tr><th>#</th><th>Recommendation</th><th>Built where</th><th>Size</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td><a href="#valid-votes">Decide what "valid votes" means</a>, so a published rank agrees with the crowned winner</td><td><span class="pill p-admin">Decision</span></td><td>Must happen first</td></tr>
+    <tr><td>3.1</td><td><a href="#round-pages">One page per round</a>, with a round switcher; the current round is the default view</td><td><span class="pill p-theme">Theme</span></td><td>Small</td></tr>
+    <tr><td>3.2</td><td><a href="#results">Results header and rank badges</a> on completed rounds</td><td><span class="pill p-theme">Theme</span></td><td>Medium</td></tr>
+    <tr><td>3.3</td><td><a href="#archive">All-rounds archive</a>, one card per round</td><td><span class="pill p-theme">Theme</span></td><td>Small</td></tr>
+    <tr><td>3.4</td><td><a href="#names">Readable round names</a>, and the brief kept out of the ranking</td><td><span class="pill p-admin">Site setting</span> <span class="pill p-theme">Theme</span></td><td>Small</td></tr>
+    <tr><td>4.1</td><td><a href="#your-result">"Your result" strip</a> on each round page, plus "your entries" in the open round</td><td><span class="pill p-theme">Theme</span></td><td>Medium</td></tr>
+    <tr><td>4.2</td><td><a href="#results-mail">Personal results message</a> to every entrant when the winner is crowned</td><td><span class="pill p-server">Server job</span></td><td>Medium</td></tr>
+  </tbody>
+</table>
+
+<!-- ================================================================= -->
+<section class="rec" id="findings">
+  <h2>What the site does today</h2>
+  <p class="lede">The biggest finding is good news. Discourse already renders a page per round, ranked by votes, in the masonry layout. Nothing links to it, and it shows no title, no winner and no rank.</p>
+  <div class="facts">
+    <div class="fact"><b>All rounds share one list</b>The Monthly Challenge category currently holds 14 October, 38 September and 15 August topics in a single feed, newest first. Only the round tag tells them apart, and you can't see where one month ends and the next begins.</div>
+    <div class="fact"><b>A per-round page already exists</b><code>/tags/c/monthly-challenge/6/2026-09-frame-in-fra/21?order=votes</code> shows only September, sorted by votes, in masonry. The staff "Crown the winner" panel already reads this same listing. Members never reach it.</div>
+    <div class="fact"><b>No rank is shown anywhere</b>A card shows its vote count. To learn your place, you'd have to scroll 37 entries and count. Stefan's September entry has 1 vote, which is a shared 19th of 37. He had no way to see that.</div>
+    <div class="fact"><b>Nothing tells entrants the result</b>When a round closes, Topic Voting tells <i>voters</i> their votes were returned. Entrants get no message about the result, and the winner only appears in the hero.</div>
+    <div class="fact fact--warn" id="valid-votes"><b>0 · The August winner is not the entry with the most votes</b>"Und hopp" was crowned with 4 votes, behind "BnW Crow" (6) and "J'ai raison" (5). The voting guide says "most valid votes" wins. A public ranking built from raw counts would show the winner in 3rd place. Before any rank goes live, decide what counts as valid (self-votes? staff votes? a jury tie-break?) so the ranking and the crown use the same rule.</div>
+    <div class="fact"><b>Round names are cut off</b>Discourse's tag length limit (20 characters) turns "Frame in Frame" into <code>2026-09-frame-in-fra</code> and October's German tag into <code>2026-10-gegenüberste</code>. These cut-off names show in the sidebar and on tag pages. The brief topic also carries the round tag, so it appears in the round's list and collects votes (October's brief has 1).</div>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<div class="part">
+  <div class="eyebrow">Point 3</div>
+  <h2>Separate the rounds</h2>
+</div>
+
+<section class="rec" id="round-pages">
+  <span class="rec__num">3.1</span>
+  <h2>One page per round, with a round switcher</h2>
+  <p class="lede">Every round gets its own page: the existing tag page. A switcher under the hero moves between rounds. "Monthly Challenge" in the header and the homepage card take members straight to the current round, so they see this month's entries only.</p>
+
+  <div class="frame__label"><b>Mockup</b> · current round, signed-in member who has entered twice</div>
+  <div class="frame">
+    <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com/tags/c/monthly-challenge/6/2026-10-juxtapositio/26</span></div>
+    <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Photo Feedback</span><span class="on">Monthly Challenge</span><span>New Members</span><span>Meetups</span></nav><div class="site-head__av"></div></div>
+    <div class="band">
+      <div class="band__kicker"><span class="chip">Monthly Challenge</span><span>OCTOBER 2026</span></div>
+      <h5>Juxtaposition</h5>
+      <p>Put two contrasting things in one frame and let the tension between them tell the story.</p>
+      <p class="band__deadline">6 days left · Submit and vote until October 31, 2026</p>
+      <div class="band__row">
+        <div class="band__actions"><a class="btn btn--primary">Submit a photo</a><a class="btn btn--ghost">How voting works</a></div>
+        <div class="mine-open">
+          <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/c46ab1186e50b23c9b46084dc7282219ff07366f_2_1024x819.jpeg" alt="">
+          <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/d2f823ba0c9639d8290e0c0ca21d7a1b5d314b69_2_1024x671.jpeg" alt="">
+          <div><b>Your entries: 2 of 3</b><br><span>4 votes so far · you can enter 1 more</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" style="padding-top:0">
+      <nav class="rounds-nav">
+        <a class="on"><b>Juxtaposition <span class="st st--open">Open</span></b>October · 13 entries</a>
+        <a><b>Frame in Frame <span class="st st--res">Results</span></b>September · 37 entries</a>
+        <a><b>Animals <span class="st st--res">Results</span></b>August · 14 entries</a>
+        <a class="all">All rounds →</a>
+      </nav>
+      <div class="controls"><span class="on">Latest</span><span>Votes</span><span class="count">13 entries · open until Oct 31</span></div>
+      <div class="mas">
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/d7cceaa9f32914b88c4cb08c962d5c965f41105e_2_1024x682.jpeg" alt=""><div class="cardm__foot"><div><b>De l'obscurité à la lumière</b>Juliette Peri</div><span class="vote">▲ 2</span></div></div>
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/32b7ed6883c3cf739e5362274bfd8599776cf1b4_2_767x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Ombre et lumière</b>Lysiane</div><span class="vote">▲ 5</span></div></div>
+        <div class="cardm cardm--mine"><span class="mine-tag">Yours</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/c46ab1186e50b23c9b46084dc7282219ff07366f_2_1024x819.jpeg" alt=""><div class="cardm__foot"><div><b>Reflected Past</b>You</div><span class="vote">▲ 2</span></div></div>
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/18c732685351d7f3e97ef8a39a2b4d0af4c3ab86_2_682x1023.jpeg" alt=""><div class="cardm__foot"><div><b>Solitude</b>John Kromodimedjo</div><span class="vote">▲ 2</span></div></div>
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/edb8591cadb2bdcd48b7f821d7adfb9765cf2604_2_1024x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Der Fotograf und sein Motiv</b>Barbara Fischer</div><span class="vote">▲ 3</span></div></div>
+        <div class="cardm cardm--mine"><span class="mine-tag">Yours</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/d2f823ba0c9639d8290e0c0ca21d7a1b5d314b69_2_1024x671.jpeg" alt=""><div class="cardm__foot"><div><b>Human // Nature</b>You</div><span class="vote">▲ 2</span></div></div>
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/e9d2386fcaaf5ddb7da06da331f960790450868b_2_1024x731.jpeg" alt=""><div class="cardm__foot"><div><b>Technik im Spiegel der Natur</b>Herbert Trummer</div><span class="vote">▲ 1</span></div></div>
+        <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/688b67929f2569aadc98e8b7df7c4bdc44d70f78_2_767x1023.jpeg" alt=""><div class="cardm__foot"><div><b>Männlich-weiblich_blau-rot</b>Barbara Fischer</div><span class="vote">▲ 0</span></div></div>
+      </div>
+    </div>
+  </div>
+  <p class="how" style="font-size:.8rem">"Yours" is illustrative: two real October entries shown as if they were the viewer's.</p>
+
+  <ul class="how">
+    <li><b>Reuse the tag page.</b> It already filters, sorts by votes and keeps masonry. The work is linking to it and rendering the challenge band there: <code>isChallengeCategoryUrl()</code> in <code>spc-monthly-challenge.js</code> currently matches <code>/c/…</code> paths only.</li>
+    <li><b>The switcher goes in the category surface</b> (<code>[data-spc-category-surface]</code>), above Discourse's list controls, never between the controls and the topic list.</li>
+    <li><b>Keep <code>/c/monthly-challenge/6</code> as "All rounds"</b> rather than redirecting it. A redirect would interfere with the <code>/submit</code> route stack the hero belongs to.</li>
+    <li><b>"Yours" outline and tag</b> are absolutely positioned decoration, so they don't change row heights and don't break the masonry layout.</li>
+  </ul>
+</section>
+
+<section class="rec" id="results">
+  <span class="rec__num">3.2</span>
+  <h2>Results header and rank badges on completed rounds</h2>
+  <p class="lede">When a round has a crowned winner, its page changes from "submit" to "results". The winner fills the hero, 2nd and 3rd sit beside it, and every card shows its rank. Ties share a rank (=5).</p>
+
+  <div class="frame__label"><b>Mockup</b> · September results, seen by the entrant of "Paradies"</div>
+  <div class="frame">
+    <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com/tags/c/monthly-challenge/6/2026-09-frame-in-fra/21?order=votes</span></div>
+    <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Photo Feedback</span><span class="on">Monthly Challenge</span><span>New Members</span><span>Meetups</span></nav><div class="site-head__av"></div></div>
+    <div class="results">
+      <div class="results__win" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg)">
+        <span class="chip chip--gold">Winner</span>
+        <div class="results__cap"><b>Where Time Stood Still</b><span>Katharina Michels · 16 votes</span></div>
+      </div>
+      <div class="results__side">
+        <div><div class="k">September 2026 · Results</div><h5>Frame in Frame</h5></div>
+        <div class="stats"><div><b>37</b>entries</div><div><b>86</b>votes</div></div>
+        <div class="podium">
+          <a><span class="rk rk--2">2</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/017719ca17d3779d5bdf2ea915cafdfc3ef242ed_2_682x1024.jpeg" alt=""><b>Key to Heaven</b><span>Bernard Menettrier de Jollin · 9</span></a>
+          <a><span class="rk rk--3">3</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/57c5dbd7f1c3ba773aa6dc4789a5ccb3637aa562_2_1024x682.jpeg" alt=""><b>Havin' a smoke</b><span>Mario Widmer · 7</span></a>
+        </div>
+        <div><a class="btn btn--ghost">Read the brief</a></div>
+      </div>
+    </div>
+    <div class="wrap" style="padding-top:0">
+      <nav class="rounds-nav">
+        <a><b>Juxtaposition <span class="st st--open">Open</span></b>October · 13 entries</a>
+        <a class="on"><b>Frame in Frame <span class="st st--res">Results</span></b>September · 37 entries</a>
+        <a><b>Animals <span class="st st--res">Results</span></b>August · 14 entries</a>
+        <a class="all">All rounds →</a>
+      </nav>
+
+      <div class="yours" id="your-result">
+        <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
+        <div><div class="k">Your result</div><b>Paradies</b><small>4 votes · shared with 4 other entries · 3 votes behind 3rd place</small></div>
+        <div class="yours__rank"><strong>=5th</strong><span>of 37 entries</span></div>
+      </div>
+
+      <div class="controls"><span>Latest</span><span class="on">Ranking</span><span class="count">Ranked by votes · ties share a place</span></div>
+      <div class="mas">
+        <div class="cardm"><span class="rk rk--1">1</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Where Time Stood Still</b>Katharina Michels</div><span class="vote">16 votes</span></div></div>
+        <div class="cardm"><span class="rk rk--2">2</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/017719ca17d3779d5bdf2ea915cafdfc3ef242ed_2_682x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Key to Heaven</b>Bernard Menettrier de Jollin</div><span class="vote">9 votes</span></div></div>
+        <div class="cardm"><span class="rk rk--3">3</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/57c5dbd7f1c3ba773aa6dc4789a5ccb3637aa562_2_1024x682.jpeg" alt=""><div class="cardm__foot"><div><b>Havin' a smoke</b>Mario Widmer</div><span class="vote">7 votes</span></div></div>
+        <div class="cardm"><span class="rk">4</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/722c0d0d742f6b46c2b763594c5f002da5cdca63_2_768x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Schwerkraftlos</b>Alla Vidovskiy</div><span class="vote">6 votes</span></div></div>
+        <div class="cardm cardm--mine"><span class="rk">=5</span><span class="mine-tag">Yours</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Paradies</b>Renato Würgler</div><span class="vote">4 votes</span></div></div>
+        <div class="cardm"><span class="rk">=5</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/8733196891870366830c229843477d2828ae2386_2_1024x682.jpeg" alt=""><div class="cardm__foot"><div><b>Une petite pause</b>Lysiane</div><span class="vote">4 votes</span></div></div>
+        <div class="cardm"><span class="rk">=5</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/190bc21c5193f2d160a202b271e62221aaa8ac6d_2_1024x682.jpeg" alt=""><div class="cardm__foot"><div><b>La flamme de l'écrivain</b>Meneses Sandro</div><span class="vote">4 votes</span></div></div>
+        <div class="cardm"><span class="rk">=5</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/b721b75e03722284026da521946bcacfe3cfad10_2_682x1024.jpeg" alt=""><div class="cardm__foot"><div><b>Eingerahmte Einsamkeit</b>Michaela</div><span class="vote">4 votes</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="how">
+    <li><b>Data is already there.</b> The <code>?order=votes</code> listing carries <code>vote_count</code> on every topic. That's the same data the staff Crown panel ranks from, so no new endpoint is needed. September has 37 entries and a listing page holds 30, so fetch both pages once per round and cache the promise (the five observer rules apply).</li>
+    <li><b>Rank comes from the same rule as the crown</b>, see <a href="#valid-votes">point 0</a>. If staff can crown someone who isn't first on votes, the page has to say why ("Jury choice", "Tie-break") or the header and the ranking will contradict each other.</li>
+    <li><b>Rank badges</b> are absolutely positioned on the thumbnail, so they're safe for masonry. Badges and the results header appear only once a winner is crowned. An open round shows neither.</li>
+  </ul>
+</section>
+
+<section class="rec" id="archive">
+  <span class="rec__num">3.3</span>
+  <h2>All rounds, one card each</h2>
+  <p class="lede">"All rounds" turns the history into something you can browse. Each card shows the winner's photo, the theme and the entry count. Signed-in entrants also see their own best place on each card. Today there's no way to browse past rounds by month at all.</p>
+
+  <div class="frame__label"><b>Mockup</b> · /c/monthly-challenge/6 "All rounds" section</div>
+  <div class="frame"><div class="wrap">
+    <div class="arch">
+      <a class="round" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/2c428bf876fa4de3e876c0f9ecedbd63ccb8c36e_2_1024x682.jpeg)"><span class="chip">Open · 6 days left</span><span class="round__you">You: 2 entries</span><div class="round__body"><span class="round__month">October 2026</span><span class="round__theme">Juxtaposition</span><span class="round__meta">13 entries so far</span></div></a>
+      <a class="round" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg)"><span class="chip chip--gold">Results</span><span class="round__you">You: =5th</span><div class="round__body"><span class="round__month">September 2026</span><span class="round__theme">Frame in Frame</span><span class="round__meta">Winner: Katharina Michels · 37 entries</span></div></a>
+      <a class="round" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/0254ae357219910d45c6fa4b9eaa76d8237685d9_2_1024x772.jpeg)"><span class="chip chip--gold">Results</span><div class="round__body"><span class="round__month">August 2026</span><span class="round__theme">Animals</span><span class="round__meta">Winner: Andy Fuchs · 14 entries</span></div></a>
+    </div>
+  </div></div>
+  <ul class="how">
+    <li>Winners come from the winner-tag listing the hero already fetches. The theme comes from the pinned brief's title, not the tag. Each card links to its round page from 3.1.</li>
+    <li>"You: =5th" reuses the ranking from 3.2, so it costs one cached listing per round you entered. It can wait for a second pass if that's too many requests.</li>
+  </ul>
+</section>
+
+<section class="rec" id="names">
+  <span class="rec__num">3.4</span>
+  <h2>Readable round names, and the brief kept out of the ranking</h2>
+  <div class="names">
+    <div><b>Today</b><br>Sidebar, tag pages and the tag filter show:<br><span class="tagraw">2026-09-frame-in-fra</span><span class="tagraw">2026-10-gegenüberste</span><span class="tagraw">2026-08-tiere</span></div>
+    <div><b>Proposed</b><br>Everywhere a round is labelled:<br><span class="tagnice">September · Frame in Frame</span><span class="tagnice">Oktober · Gegenüberstellung</span><span class="tagnice">August · Tiere</span></div>
+  </div>
+  <ul class="how">
+    <li><b>Site setting:</b> raise <code>max_tag_length</code> (for example to 40) before the November tag is created. This doesn't rename existing tags. Leave those alone, because renaming a tag changes its URL.</li>
+    <li><b>Theme:</b> label rounds with the month and the brief's title, which is already localised. The tag becomes a key that members never see. This follows the existing <code>tagName()</code> / <code>tagSlug()</code> split.</li>
+    <li><b>The brief is not an entry.</b> Leave it out of ranks and counts (it's the pinned topic of the round), and ideally hide its vote button. October's brief currently has one vote.</li>
+  </ul>
+</section>
+
+<!-- ================================================================= -->
+<div class="part">
+  <div class="eyebrow">Point 4</div>
+  <h2>Show members their own result</h2>
+</div>
+
+<section class="rec">
+  <span class="rec__num">4.1</span>
+  <h2>"Your result" on every round page</h2>
+  <p class="lede">The strip in the September mockup above is the core of this point. It answers "how did I do?" without scrolling. It has three states:</p>
+  <div class="frame__label"><b>Mockup</b> · the three states</div>
+  <div class="frame"><div class="wrap">
+    <div class="yours">
+      <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
+      <div><div class="k">Completed round · you entered</div><b>Paradies</b><small>4 votes · shared with 4 other entries · 3 votes behind 3rd place</small></div>
+      <div class="yours__rank"><strong>=5th</strong><span>of 37 entries</span></div>
+    </div>
+    <div class="yours" style="border-left-color:var(--gold)">
+      <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg" alt="">
+      <div><div class="k" style="color:#8a5a00">Completed round · you won</div><b>Where Time Stood Still</b><small>16 votes · 7 ahead of 2nd place · your photo leads the challenge hero this month</small></div>
+      <div class="yours__rank"><strong style="color:#8a5a00">1st</strong><span>of 37 entries</span></div>
+    </div>
+    <div class="yours yours--none">
+      <div><div class="k" style="color:var(--gray-500)">Completed round · you didn't enter</div><b>37 members entered Frame in Frame</b><small>This month's theme is Juxtaposition. Submissions are open until October 31.</small></div>
+      <div><a class="btn btn--primary">Enter October</a></div>
+    </div>
+  </div></div>
+  <ul class="how">
+    <li><b>Members with more than one entry</b> get one line per entry, best first.</li>
+    <li><b>During an open round</b>, show "Your entries: 2 of 3 · 4 votes so far", as in the 3.1 mockup, but <b>no rank</b>. A live rank invites tactical voting and discourages people who are behind early. The entry count reuses <code>challenge_max_entries_per_round</code>, which the submit form already checks.</li>
+    <li><b>Where:</b> under the round switcher, signed-in members only. It's a block in our own surface, not decoration on a core element.</li>
+    <li><b>Later, only if asked:</b> a "Challenges" history on the member's profile. The results messages in 4.2 already give every entrant a record in their inbox.</li>
+  </ul>
+</section>
+
+<section class="rec" id="results-mail">
+  <span class="rec__num">4.2</span>
+  <h2>A personal results message when the winner is crowned</h2>
+  <p class="lede">Stefan asked for an email that "reaches the competitors and shows them their own rank". Send it as a Discourse personal message from SPC Bot. Discourse then emails it according to each member's own notification settings. It also stays in their inbox on the site, and it respects unsubscribes without extra work.</p>
+
+  <div class="frame__label"><b>Mockup</b> · the message as it arrives by email (sent in the member's language)</div>
+  <div class="mail">
+    <div class="mail__meta"><b>SPC Bot</b> &lt;operator@swissphotoclub.com&gt;<br>Subject: <b>Your result in "Frame in Frame": =5th of 37</b></div>
+    <div class="mail__head"><div class="k">Monthly Challenge · September 2026</div><h5>Frame in Frame: the results are in</h5></div>
+    <div class="mail__body">
+      <p>Hi {first name},</p>
+      <p>Thank you for entering September's challenge. 37 photos were entered and members cast 86 votes. Here's how yours did:</p>
+      <div class="mail__res">
+        <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
+        <div><strong>=5th of 37</strong><span>"Paradies" · 4 votes · shared with 4 other entries</span></div>
+      </div>
+      <table class="mail__top">
+        <tr><td>1</td><td>Where Time Stood Still · Katharina Michels</td><td>16 votes</td></tr>
+        <tr><td>2</td><td>Key to Heaven · Bernard Menettrier de Jollin</td><td>9 votes</td></tr>
+        <tr><td>3</td><td>Havin' a smoke · Mario Widmer</td><td>7 votes</td></tr>
+        <tr class="me"><td>=5</td><td>Paradies · you</td><td>4 votes</td></tr>
+      </table>
+      <p><a class="btn btn--primary" style="color:#fff">See all results</a></p>
+      <p>October's theme is <b>Juxtaposition</b>, open until October 31. We'd love to see your take on it.</p>
+    </div>
+    <div class="mail__foot">You're receiving this because you entered the September Monthly Challenge. Change how SPC Community emails you in your preferences.</div>
+  </div>
+
+  <h3>How it would run</h3>
+  <ul class="how">
+    <li><b>A theme can't send mail</b>, so this is a small Rails runner script in <code>server/</code>, deployed exactly like <code>challenge-vote-reset.rb</code>: a systemd timer on the host, read-only by default, and it only sends with <code>SPC_APPLY=1</code>.</li>
+    <li><b>Trigger:</b> a completed round that has a topic with the winner tag. Crowning in the staff panel is then the only action staff take. The timer sends the messages within the hour, and no new button is needed.</li>
+    <li><b>Sends once:</b> mark the round as sent (a custom field on the brief topic) before sending, so a rerun or an interrupted run never sends twice.</li>
+    <li><b>One message per entrant</b>, with all of their entries in it, in the language they use the site in (de/en/fr). The rank comes from the same rule as the page in 3.2.</li>
+    <li><b>Non-entrants:</b> if everyone should hear about the winner too, as your original note suggested, post one topic in Announcements. Members who watch that category get it by email. That's cheaper and less noisy than a message to everyone.</li>
+  </ul>
+  <p class="note">Discourse Automation can send messages, but not one that's personalised with a computed rank. That's why this is a custom script rather than an Automation rule.</p>
+</section>
+
+<!-- ================================================================= -->
+<section class="rec">
+  <h2>Suggested order</h2>
+  <div class="phases">
+    <div><h4>Step 1 · Decide</h4><ul><li>What counts as a valid vote, and whether staff may crown someone other than #1 (point 0).</li><li>Raise <code>max_tag_length</code> before the November tag is created.</li></ul></div>
+    <div><h4>Step 2 · Theme</h4><ul><li>3.1 Round pages and switcher</li><li>3.4 Round labels, and the brief kept out</li><li>3.2 Results header and rank badges</li><li>4.1 Your result</li><li>3.3 All rounds</li></ul></div>
+    <div><h4>Step 3 · Server</h4><ul><li>4.2 Results message script and timer, dry run first on September's data. Then let it send for real for October's results in early November.</li></ul></div>
+  </div>
+  <h3>Questions for you</h3>
+  <ul class="how">
+    <li>Why was "Und hopp" crowned in August with 4 votes when two entries had more? Was it a jury pick, invalid votes, or votes changing after the crown?</li>
+    <li>Should vote counts stay visible on cards while a round is open? Hiding them until results would reduce bandwagon voting. That's a separate decision, but it's closely related.</li>
+    <li>Should results messages go only to entrants (recommended), with an Announcements post for everyone else?</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

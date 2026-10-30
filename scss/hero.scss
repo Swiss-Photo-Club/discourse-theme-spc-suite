@@ -40,7 +40,7 @@
 
 /* Theme-owned mount rendered through the above-main-container outlet. It is a
    real flex container now because every category has an ordered stack: hero,
-   introduction, optional category-specific sections, shared leaderboard,
+   optional category-specific sections, shared leaderboard,
    then the native list controls and topic list outside this mount. */
 .spc-category-surface {
   display: flex;
@@ -51,38 +51,6 @@
 
 .spc-category-surface > .spc-hero {
   order: 10;
-}
-
-.spc-category-introduction {
-  order: 20;
-  width: 100%;
-  padding: 22px 32px 24px;
-  border-bottom: 1px solid var(--spc-gray-200);
-  background: #ffffff;
-  color: var(--spc-charcoal);
-  box-sizing: border-box;
-}
-
-.spc-category-introduction p {
-  max-width: 78ch;
-  margin: 0 0 10px;
-  color: var(--spc-gray-700);
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.spc-category-introduction a {
-  display: inline-block;
-  border-bottom: 2px solid var(--spc-coral);
-  color: var(--spc-indigo) !important;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.spc-category-introduction a:hover,
-.spc-category-introduction a:focus-visible {
-  color: var(--spc-coral-hover) !important;
 }
 
 /* The core carries only what every hero shares — a full-width, self-clipping
@@ -283,24 +251,74 @@
   .spc-button {
     width: 100%;
   }
-
-  .spc-category-introduction {
-    padding: 20px;
-  }
-
-  .spc-category-introduction p {
-    font-size: 15px;
-  }
 }
 
 /* Keyed to the 650px wrap-padding override in branding.scss, not to this
    file's 600px block: the surface bleeds out of the padding the wrapper
-   keeps, so the whole category stack (hero, introduction, sections,
+   keeps, so the whole category stack (hero, sections,
    leaderboard) runs edge to edge on phones. The 0px fallback means no
    bleed unless the wrapper override is active. */
 @media (max-width: 650px) {
   .spc-category-surface {
     width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
     margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));
+  }
+}
+
+/* Compact category header (Phase B, recommendation #5) ----------------
+   One row: title and one sentence of description on the left, one primary
+   action on the right. It overrides the shared hero shell above rather than
+   editing it, so the challenge band's geometry is untouched. Sits last so
+   these equal-specificity rules also beat the 600px block above. */
+.spc-hero--category {
+  align-items: center;
+  gap: 1rem 2rem;
+  min-height: 0;
+  padding: 1.5rem 2rem;
+  border-bottom-width: 4px;
+}
+
+.spc-hero--category .spc-hero__content {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.spc-hero--category .spc-hero__content h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.spc-hero--category .spc-hero__content > p {
+  max-width: 64ch;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.spc-hero__more {
+  border-bottom: 2px solid var(--spc-coral);
+  color: #ffffff !important;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.spc-hero__more:hover,
+.spc-hero__more:focus-visible {
+  border-bottom-color: #ffffff;
+}
+
+.spc-hero--category .spc-hero__actions {
+  flex: none;
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .spc-hero--category {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding: 1.25rem;
   }
 }

@@ -218,8 +218,10 @@ theme silently kept building URLs from the stale copy.
 Every category renders `.spc-hero` through `lib/spc-hero.js`. The generic path reads the current
 category from `router.currentRoute.params.category_slug_path_with_id`, resolves it with
 Discourse's `Category.findBySlugPathWithID()`, and needs **no registry or setting entry**. Add an
-override in `api-initializers/spc-category-hero.js` only when a category needs actions or an
-eyebrow different from `hero.generic`.
+override in `api-initializers/spc-category-hero.js` only when a category needs a primary action
+different from `hero.generic`. The header is one compact row — title, first sentence of the
+description, "More about this category" link, **one** primary button — and has no eyebrow.
+A second way to post goes through the native New Topic button, never a second hero button.
 
 Category 6 goes through the same renderer but is **not** on the generic path and is **not** gated
 by `enable_category_hero` — its hero is part of the route-map, permalink and `route:new-topic`
@@ -228,8 +230,8 @@ sharing a lifecycle.
 
 **The mount is ours.** `components/spc-category-surface.gjs` renders
 `[data-spc-category-surface]` through the `above-main-container` outlet on every route.
-It is an ordered flex column containing the hero, native category introduction, optional
-category-specific sections and the all-category leaderboard. Discourse's `.list-controls` and topic
+It is an ordered flex column containing the hero, optional category-specific sections and the
+leaderboard (homepage and challenge only). Discourse's `.list-controls` and topic
 list stay outside it as adjacent core-owned siblings, so no custom section may be inserted
 between the controls and `#list-area`. The stable owned element survives category transitions.
 Never go back to inserting relative to `.category-title-header`: that element belongs to the

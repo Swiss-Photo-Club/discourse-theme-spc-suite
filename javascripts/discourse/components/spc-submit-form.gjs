@@ -331,6 +331,15 @@ export default class SpcSubmitForm extends SpcSubmitBase {
             <p>{{i18n (themePrefix "critique_form.intro_exchange")}}</p>
             <p>{{i18n (themePrefix "critique_form.intro_limit")}}</p>
           </div>
+          {{! The series choice used to be a second button in the Photo
+              Feedback header; it lives here now, mirroring the project
+              form's link back to this one. }}
+          <p class="spc-submit-page__notice">
+            {{i18n (themePrefix "critique_form.series_notice")}}
+            <a href="/submit/project">
+              {{i18n (themePrefix "critique_submit.project_button")}}
+            </a>
+          </p>
         {{/if}}
 
         {{#if this.entryLimitReached}}

@@ -129,6 +129,7 @@ en:
     heading: Submit an image for critique
     intro_title: Before you submit
     intro_exchange: "Critique thrives on exchange: for every image you submit, give thoughtful feedback on two other members’ images."
+    series_notice: Several photos that belong together — a series, a book or a portfolio?
     intro_limit: Please submit at most one image per day.
     title_label: Image title
     photo_label: Image
@@ -506,29 +507,20 @@ en:
       login: Log in to start your free trial
   hero:
     generic:
-      eyebrow: Community category
-      read_more: Read more about this category →
+      read_more: More about this category →
       actions:
         create: Start a topic
     post_processing:
-      eyebrow: Technique & workflow
       actions:
         ask: Start a topic
     meetups:
-      eyebrow: Meet in person
       actions:
         upcoming: See upcoming events
         propose: Propose a meetup
     webinars:
-      eyebrow: Learn live
       actions:
         upcoming: See upcoming webinars
         announce: Announce a webinar
-    critique:
-      eyebrow: Feedback & growth
-    introductions:
-      eyebrow: New members
     feedback:
-      eyebrow: Ideas & feedback
       actions:
         share: Share feedback

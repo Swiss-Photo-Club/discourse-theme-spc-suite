@@ -125,6 +125,7 @@ fr:
     heading: Soumettre une image pour critique
     intro_title: Avant de soumettre
     intro_exchange: "La critique vit de l’échange : pour chaque image que tu soumets, donne toi-même un retour réfléchi sur deux images d’autres membres."
+    series_notice: Plusieurs photos qui vont ensemble – une série, un livre ou un portfolio ?
     intro_limit: Merci de soumettre au maximum une image par jour.
     title_label: Titre de l’image
     photo_label: Image
@@ -502,29 +503,20 @@ fr:
       login: Se connecter pour démarrer votre essai gratuit
   hero:
     generic:
-      eyebrow: Catégorie de la communauté
       read_more: En savoir plus sur cette catégorie →
       actions:
         create: Créer un sujet
     post_processing:
-      eyebrow: Technique & flux de travail
       actions:
         ask: Créer un sujet
     meetups:
-      eyebrow: Se retrouver
       actions:
         upcoming: Événements à venir
         propose: Proposer une sortie
     webinars:
-      eyebrow: Apprendre en direct
       actions:
         upcoming: Webinaires à venir
         announce: Annoncer un webinaire
-    critique:
-      eyebrow: Retours & progression
-    introductions:
-      eyebrow: Nouveaux membres
     feedback:
-      eyebrow: Idées & feedback
       actions:
         share: Donner un feedback

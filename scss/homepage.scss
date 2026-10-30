@@ -659,6 +659,13 @@ body:is(.navigation-topics, .navigation-category) .category-breadcrumb > li {
   margin: 0;
 }
 
+/* A category page already says which category it is in its header, so the
+   category dropdown is noise there (Phase B, recommendation #5). The tag
+   dropdown stays. */
+body.navigation-category .category-breadcrumb > li:has(> .category-drop) {
+  display: none;
+}
+
 body:is(.navigation-topics, .navigation-category)
   .category-breadcrumb
   .select-kit.single-select

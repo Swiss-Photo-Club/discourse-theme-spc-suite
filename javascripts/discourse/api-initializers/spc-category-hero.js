@@ -10,41 +10,33 @@ const RENDER_THROTTLE_MS = 200;
  * Category-specific hero overrides.
  *
  * Every category gets the generic hero automatically. Entries here exist only
- * where a category needs a more specific eyebrow or actions. They are keyed by
+ * where a category needs a different primary action. They are keyed by
  * category ID, never by slug: category 10's slug is `support` while it displays
  * as "Post Processing", so slug-looks-like-the-name reasoning is wrong.
  *
- * `key` names the locale block — hero.<key>.eyebrow and, where the action
- * labels are not already written down somewhere better, hero.<key>.actions.*.
+ * The header is one row with ONE primary action (Phase B, recommendation #5).
+ * A second way to post — proposing a meetup, announcing a webinar — is the
+ * native New Topic button in the list controls, which categoryCreateLabel()
+ * already names for that workflow.
  *
  * There is deliberately no headline key. Every category's headline turned out
  * to be its own name, and Discourse already localises that — writing it out a
  * second time only creates a string that can drift out of step with the
  * sidebar and the breadcrumb.
  *
- * `actions` is a function rather than data because the spec's `actions[].href`
- * schema did not survive contact with these categories: two of them build a URL
- * from the category, and the three critique/introduction destinations were
- * settings-switched and locale-suffixed for as long as their wizards existed. A
- * schema field most call sites cannot use is unshipped API. Three of the five
- * are literal paths today; the function stays because it is what let those
- * three become literal without touching a schema.
+ * `action` is a function rather than data because some destinations are
+ * built from the category.
  *
  * Adding a category requires no theme edit. Add an entry here only when the
- * generic "Community category / Start a topic" treatment is not enough.
+ * generic "Start a topic" action is not enough.
  */
 const CATEGORY_HEROES = {
   // 10 — Post Processing (slug `support`). List mode, so no masonry exposure.
   10: {
-    key: "post_processing",
-    variant: "category",
-    actions: (category) => [
-      {
-        label: heroText("post_processing", "actions.ask"),
-        href: `/new-topic?category=${category.slug}`,
-        style: "primary",
-      },
-    ],
+    action: (category) => ({
+      label: heroText("post_processing", "actions.ask"),
+      href: `/new-topic?category=${category.slug}`,
+    }),
   },
 
   // 8 — Meetups & Photowalks. Masonry, but the hero adds no height to any
@@ -58,20 +50,10 @@ const CATEGORY_HEROES = {
   // at it would mean retargeting the webinars card silently moved the meetups
   // hero too.
   8: {
-    key: "meetups",
-    variant: "category",
-    actions: (category) => [
-      {
-        label: heroText("meetups", "actions.upcoming"),
-        href: "/upcoming-events",
-        style: "primary",
-      },
-      {
-        label: heroText("meetups", "actions.propose"),
-        href: `/new-topic?category=${category.slug}`,
-        style: "secondary",
-      },
-    ],
+    action: () => ({
+      label: heroText("meetups", "actions.upcoming"),
+      href: "/upcoming-events",
+    }),
   },
 
   // 7 — Critique / Portfolio Reviews. Masonry with real rows, so this is the
@@ -82,31 +64,21 @@ const CATEGORY_HEROES = {
   // Also the first coverless hero — category 7 has no uploaded_background,
   // which is what the --with-cover split exists for.
   //
-  // Both actions are the ones the floating .spc-critique-submit row used to
-  // carry. Their labels stay on critique_submit.* rather than moving into
-  // hero.*: they are the same two buttons in a new place, and re-keying them
-  // would have thrown away translations that already exist.
+  // One action. The series form used to be a second button here; the choice
+  // now lives inside the image form, which links to /submit/project, and the
+  // project form already links back. The label stays on critique_submit.*
+  // because that is where its translations already exist.
   //
-  // Both destinations are hardwired now. Their wizards have been deleted, so
+  // The destination is hardwired. Their wizards have been deleted, so
   // there is nothing for a setting to fall back to, and a rollback switch
   // pointing at a wizard that no longer exists is worse than no switch at all —
   // it looks like a way out and lands on a 404. Rolling either form back means
   // reverting the commit and running an Update.
   7: {
-    key: "critique",
-    variant: "category",
-    actions: () => [
-      {
-        label: i18n(themePrefix("critique_submit.image_button")),
-        href: "/submit/critique",
-        style: "primary",
-      },
-      {
-        label: i18n(themePrefix("critique_submit.project_button")),
-        href: "/submit/project",
-        style: "secondary",
-      },
-    ],
+    action: () => ({
+      label: i18n(themePrefix("critique_submit.image_button")),
+      href: "/submit/critique",
+    }),
   },
 
   // 12 — New Member Introductions. Masonry, no cover: the second coverless
@@ -121,15 +93,10 @@ const CATEGORY_HEROES = {
   // setting this component has is the challenge's, and inventing a destination
   // is worse than an honest single action.
   12: {
-    key: "introductions",
-    variant: "category",
-    actions: () => [
-      {
-        label: i18n(themePrefix("critique_submit.intro_button")),
-        href: "/submit/introduction",
-        style: "primary",
-      },
-    ],
+    action: () => ({
+      label: i18n(themePrefix("critique_submit.intro_button")),
+      href: "/submit/introduction",
+    }),
   },
 };
 
@@ -141,30 +108,15 @@ const CATEGORY_HEROES = {
 // stock list category: no masonry exposure.
 //
 // Browse before create, like meetups: every member wants to find the next
-// webinar; only instructors and staff announce one, and Category.permission is
-// what says who. The category has no scoped calendar route (the plugin 404s
-// /c/<slug>/<id>/l/calendar), so the browse action goes to the site-wide
-// /upcoming-events like the meetups hero. Recordings need no action of their
-// own — they are the topic list directly under this hero.
+// webinar; instructors and staff announce one through the native New Topic
+// button. The category has no scoped calendar route (the plugin 404s
+// /c/<slug>/<id>/l/calendar), so the action goes to the site-wide
+// /upcoming-events like the meetups hero.
 const WEBINARS_HERO = {
-  key: "webinars",
-  variant: "category",
-  actions: (category, currentUser) => [
-    {
-      label: heroText("webinars", "actions.upcoming"),
-      href: "/upcoming-events",
-      style: "primary",
-    },
-    ...(canOfferCreateTopic(category, currentUser)
-      ? [
-          {
-            label: heroText("webinars", "actions.announce"),
-            href: `/new-topic?category=${category.slug}`,
-            style: "secondary",
-          },
-        ]
-      : []),
-  ],
+  action: () => ({
+    label: heroText("webinars", "actions.upcoming"),
+    href: "/upcoming-events",
+  }),
 };
 
 function isWebinarsCategory(id) {
@@ -180,15 +132,10 @@ function isWebinarsCategory(id) {
 // description under the title already explains voting and status, so no
 // browse action competes with it. List mode, no masonry exposure.
 const FEEDBACK_HERO = {
-  key: "feedback",
-  variant: "category",
-  actions: () => [
-    {
-      label: heroText("feedback", "actions.share"),
-      href: "/submit/feedback",
-      style: "primary",
-    },
-  ],
+  action: () => ({
+    label: heroText("feedback", "actions.share"),
+    href: "/submit/feedback",
+  }),
 };
 
 function isFeedbackCategory(id) {
@@ -197,18 +144,13 @@ function isFeedbackCategory(id) {
 }
 
 const DEFAULT_CATEGORY_HERO = {
-  key: "generic",
-  variant: "category",
-  actions: (category, currentUser) =>
+  action: (category, currentUser) =>
     canOfferCreateTopic(category, currentUser)
-      ? [
-          {
-            label: heroText("generic", "actions.create"),
-            href: `/new-topic?category=${category.slug}`,
-            style: "primary",
-          },
-        ]
-      : [],
+      ? {
+          label: heroText("generic", "actions.create"),
+          href: `/new-topic?category=${category.slug}`,
+        }
+      : null,
 };
 
 /**
@@ -335,9 +277,10 @@ function updateCreateTopicButton(category) {
 }
 
 /**
- * The explanation band reads the native, localised category description. The
- * About topic remains the single admin-owned source; HTML is flattened through
- * textContent rather than trusted as markup in the shared page shell.
+ * The header reads the first sentence of the native, localised category
+ * description; the rest lives in the About topic it links to. HTML is
+ * flattened through textContent rather than trusted as markup in the shared
+ * page shell.
  */
 function categoryDescription(category) {
   const value = category.description || category.description_excerpt;
@@ -346,7 +289,8 @@ function categoryDescription(category) {
   }
   const container = document.createElement("div");
   container.innerHTML = value;
-  return container.textContent.trim();
+  const text = container.textContent.trim();
+  return text.match(/^.*?[.!?](?=\s|$)/s)?.[0] || text;
 }
 
 function categoryTopicUrl(category) {
@@ -409,18 +353,17 @@ export default apiInitializer((api) => {
     // visitors who cannot post — Discourse would only hide the button or 403
     // the composer, and the /submit routes redirect anyway; rewriting here
     // makes the hero honest about where the click ends up. Browse links stay.
-    const actions = entry
-      .actions(category, currentUser)
-      .map((entryAction) => ({
-        ...entryAction,
-        href: gatePostingHref(entryAction.href, currentUser),
-      }));
+    const entryAction = entry.action(category, currentUser);
+    const action = entryAction && {
+      ...entryAction,
+      href: gatePostingHref(entryAction.href, currentUser),
+    };
     const description = categoryDescription(category);
     const topicUrl = categoryTopicUrl(category);
 
     const hero = renderHero({
       marker: String(id),
-      variant: entry.variant,
+      variant: "category",
       // Destinations are part of the signature because some of them are still
       // derived from settings — meetups' primary is /upcoming-events only until
       // someone changes it — and a hero that only kept the category in its
@@ -432,17 +375,13 @@ export default apiInitializer((api) => {
         category.name,
         description,
         topicUrl,
-        actions.map((action) => action.href || action.label).join("|"),
+        action?.href || action?.label || "",
       ].join("-"),
-      eyebrow: heroText(entry.key, "eyebrow"),
       title: category.name,
-      introduction: {
-        body: description,
-        href: topicUrl,
-        label: heroText("generic", "read_more"),
-      },
+      description,
+      more: { href: topicUrl, label: heroText("generic", "read_more") },
       cover,
-      actions,
+      action,
     });
 
     if (hero) {

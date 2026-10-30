@@ -23,7 +23,6 @@
 
 const SURFACE_SELECTOR = "[data-spc-category-surface]";
 const HERO_SELECTOR = "[data-spc-hero]";
-const INTRODUCTION_SELECTOR = "[data-spc-category-introduction]";
 
 function escapeHtml(value) {
   const element = document.createElement("span");
@@ -46,14 +45,6 @@ export function clearHero(marker) {
   const hero = document.querySelector(HERO_SELECTOR);
   if (hero && hero.dataset.spcHero === String(marker)) {
     hero.remove();
-  }
-
-  const introduction = document.querySelector(INTRODUCTION_SELECTOR);
-  if (
-    introduction &&
-    introduction.dataset.spcCategoryIntroduction === String(marker)
-  ) {
-    introduction.remove();
   }
 }
 
@@ -123,8 +114,7 @@ export function ensureHero(marker, variant) {
 
 function actionMarkup(action) {
   const label = escapeHtml(action.label);
-  const style = action.style === "secondary" ? "secondary" : "primary";
-  const className = `spc-button spc-button--${style}`;
+  const className = "spc-button spc-button--primary";
 
   // An <a> when it navigates, a <button> when it opens a dialog or is
   // intercepted — the distinction assistive technology actually acts on.
@@ -136,68 +126,22 @@ function actionMarkup(action) {
   }>${label}</button>`;
 }
 
-function renderIntroduction(marker, introduction) {
-  let element = document.querySelector(INTRODUCTION_SELECTOR);
-
-  if (!introduction?.body) {
-    // There is only one active category surface. Remove a previous route's
-    // introduction even when it had a different marker, otherwise navigating
-    // from a category with prose to one without it leaves stale copy behind.
-    element?.remove();
-    return;
-  }
-
-  if (!element) {
-    element = document.createElement("section");
-    element.className = "spc-category-introduction";
-    categorySurface()?.append(element);
-  }
-
-  element.dataset.spcCategoryIntroduction = String(marker);
-  const signature = [
-    introduction.body,
-    introduction.href || "",
-    introduction.label || "",
-  ].join("|");
-
-  if (element.dataset.spcCategoryIntroductionSignature === signature) {
-    return;
-  }
-
-  element.dataset.spcCategoryIntroductionSignature = signature;
-  element.innerHTML = `
-    <p>${escapeHtml(introduction.body)}</p>
-    ${
-      introduction.href && introduction.label
-        ? `<a href="${escapeHtml(introduction.href)}">${escapeHtml(
-            introduction.label
-          )}</a>`
-        : ""
-    }
-  `;
-}
-
 /**
- * Build or update the hero.
+ * Build or update the compact category header: one row holding the title,
+ * the first sentence of the category description with a link to the About
+ * topic, and at most one primary action. The description used to be a
+ * separate band under a 300px hero, which put Photo Feedback's first photo
+ * at 1,402px on a phone.
  *
  * @param {object} config
- * @param {string} config.marker     identifies which hero this is — a category
- *                                   id, or "challenge"
+ * @param {string} config.marker     identifies which hero this is — a category id
  * @param {string} config.variant    modifier class suffix, e.g. "category"
  * @param {string} config.signature  re-render guard; equal signature = no work
- * @param {string} config.eyebrow    kicker — the category's role, not its name
  * @param {string} config.title      the headline
- * @param {string} [config.lead]     optional banner-specific supporting line
- * @param {string} [config.meta]     status line — the challenge's deadlines
- * @param {object} [config.introduction] { body, href?, label? }, the shared
- *                                   admin-maintained category explanation
+ * @param {string} [config.description] one sentence of category copy
+ * @param {object} [config.more]     { href, label }, the About topic link
  * @param {string} [config.cover]    background image URL
- * @param {boolean} [config.shade]   render the scrim; defaults to "only with a
- *                                   cover". The challenge passes true outright
- *                                   because its variant falls back to a
- *                                   gradient rather than to flat indigo, so it
- *                                   has something to darken even coverless.
- * @param {Array}  [config.actions]  [{ label, href?, style?, attribute? }]
+ * @param {object} [config.action]   { label, href?, attribute? }
  * @returns {Element|null} the hero, or null if the anchor was not ready
  */
 export function renderHero(config) {
@@ -206,38 +150,33 @@ export function renderHero(config) {
     return null;
   }
 
-  renderIntroduction(config.marker, config.introduction);
-
   if (hero.dataset.spcHeroSignature === config.signature) {
     return hero;
   }
   hero.dataset.spcHeroSignature = config.signature;
 
-  const actions = (config.actions || []).filter((action) => action?.label);
+  const more =
+    config.more?.href && config.more?.label
+      ? `<a class="spc-hero__more" href="${escapeHtml(
+          config.more.href
+        )}">${escapeHtml(config.more.label)}</a>`
+      : "";
 
   hero.innerHTML = `
-    ${(config.shade ?? Boolean(config.cover)) ? `<div class="spc-hero__shade"></div>` : ""}
+    ${config.cover ? `<div class="spc-hero__shade"></div>` : ""}
     <div class="spc-hero__content">
-      ${
-        config.eyebrow
-          ? `<span class="spc-eyebrow">${escapeHtml(config.eyebrow)}</span>`
-          : ""
-      }
       <h1 id="spc-hero-title">${escapeHtml(config.title)}</h1>
-      ${config.lead ? `<p>${escapeHtml(config.lead)}</p>` : ""}
       ${
-        config.meta
-          ? `<span class="spc-hero__meta">${escapeHtml(config.meta)}</span>`
-          : ""
-      }
-      ${
-        actions.length
-          ? `<div class="spc-hero__actions">${actions
-              .map(actionMarkup)
-              .join("")}</div>`
+        config.description || more
+          ? `<p>${escapeHtml(config.description || "")} ${more}</p>`
           : ""
       }
     </div>
+    ${
+      config.action?.label
+        ? `<div class="spc-hero__actions">${actionMarkup(config.action)}</div>`
+        : ""
+    }
   `;
 
   if (config.cover) {

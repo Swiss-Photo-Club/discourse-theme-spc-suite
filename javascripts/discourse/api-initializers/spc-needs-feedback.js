@@ -74,11 +74,18 @@ function waitingTopics(data, category) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
+// relativeAge() returns markup (<span class="date" title=…>), and the card is
+// escaped as text, so take its text content.
+function postedAge(topic) {
+  const element = document.createElement("span");
+  element.innerHTML = relativeAge(new Date(topic.created_at), {
+    format: "medium-with-ago",
+  });
+  return element.textContent;
+}
+
 function cardMarkup(topic, usersById) {
-  const by = [
-    authorName(topic, usersById),
-    relativeAge(new Date(topic.created_at), { format: "medium-with-ago" }),
-  ]
+  const by = [authorName(topic, usersById), postedAge(topic)]
     .filter(Boolean)
     .join(" · ");
 

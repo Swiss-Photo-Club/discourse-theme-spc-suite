@@ -405,8 +405,8 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
   <tbody>
     <tr><td class="n">0</td><td><a href="#r0">Most votes wins</a>: correct August's crown, and make the Crown panel warn before it happens again</td><td>3, 4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-theme">Theme</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">1</td><td><a href="#r1">Sort galleries by date posted</a> (categories 6 and 12 now, 7 once "Needs feedback" exists)</td><td>2</td><td><span class="pill p-admin">Admin</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
-    <tr><td class="n">2</td><td><a href="#r2">Unpin the placeholder topics</a>; keep only the round brief pinned</td><td>2</td><td><span class="pill p-admin">Admin</span></td><td>A · this week</td></tr>
-    <tr><td class="n">3</td><td><a href="#r3">One name per category, everywhere</a>; Meetups out of the nav; Challenge first</td><td>1</td><td><span class="pill p-admin">Admin</span></td><td>A · this week</td></tr>
+    <tr><td class="n">2</td><td><a href="#r2">Unpin the placeholder topics</a>; keep only the round brief pinned</td><td>2</td><td><span class="pill p-admin">Admin</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
+    <tr><td class="n">3</td><td><a href="#r3">One name per category, everywhere</a>; Meetups out of the nav; Challenge first</td><td>1</td><td><span class="pill p-admin">Admin</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">4</td><td><a href="#r4">Raise <code>max_tag_length</code></a> before the November tag is created</td><td>3</td><td><span class="pill p-admin">Admin</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">5</td><td><a href="#r5">Compact category header</a>: one row, one button, leaderboard only on the homepage and the Challenge</td><td>1</td><td><span class="pill p-theme">Theme</span></td><td>B</td></tr>
     <tr><td class="n">6</td><td><a href="#r6">One card format</a>: photo, title, author, one number; context chip only on category pages</td><td>2</td><td><span class="pill p-theme">Theme</span></td><td>B</td></tr>
@@ -519,8 +519,8 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 </div>
 
 <div class="rec" id="r2">
-  <h3>2 · Unpin the placeholder topics <span class="pill p-admin">Admin</span></h3>
-  <div class="callout"><b>Held back on 30 October.</b> Oğuzhan chose not to unpin yet. Pinned today, for when it is picked up: topic 8 "Monatliche Foto-Challenge: So funktioniert es" (6), 13 "Über die Kategorie Foto Feedback" (7), 31 "About the Introduce Yourself category" (12), and 5 "Willkommen bei Swiss Photo Club Community!" (pinned globally). Topic 244 "Juxtaposition" is October's brief, pinned until 8 November; it stays. The theme finds the round brief by its round tag among pinned topics, so unpinning 8 does not affect it.</div>
+  <h3>2 · Unpin the placeholder topics <span class="pill p-admin">Admin</span> <span class="pill p-done">Done 30 Oct</span></h3>
+  <div class="callout ok"><b>Shipped 30 October 2026.</b> Unpinned topic 8 "Monatliche Foto-Challenge: So funktioniert es" (6), 13 "Über die Kategorie Foto Feedback" (7), 31 "About the Introduce Yourself category" (12), and 5 "Willkommen bei Swiss Photo Club Community!" (was pinned globally). Previous state: all four pinned with no end date; to undo, pin them again from the topic's wrench menu. Topic 244 "Juxtaposition", October's brief, stays pinned until 8 November. The theme finds the round brief by its round tag among pinned topics, so unpinning 8 does not affect it. Verified signed out: the only pinned topic in the homepage, 6, 7 and 12 listings is 244, and the challenge hero still reads October from it.</div>
   <p class="src">From: galleries report 2.4</p>
   <ul>
     <li>Unpin "About the … category" in 7 and 12, "Here's how it works" in 6, and the "Willkommen" welcome topic on the homepage. Each is already linked from the category header.</li>
@@ -559,8 +559,8 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 </div>
 
 <div class="rec" id="r3">
-  <h3>3 · One name per category, everywhere <span class="pill p-admin">Admin</span></h3>
-  <div class="callout"><b>Held back on 30 October.</b> Oğuzhan chose not to rename yet. State today: the site's base locale is German, so a category's base name is its German name. Category 6 base "Monthly Challenge", EN "Monthly challenge", FR "Défi du Mois"; 7 base "Foto Feedback", EN "Photo Feedback", FR "Critique photo"; 12 base "Stell dich vor", EN "Introduce Yourself", FR "Présente-toi" (already as proposed). Custom Header Links (component 4) has 12 rows in the order 7, 6, 12, 8, three locales each; EN 12 reads "New Members", DE 7 reads "Foto Feedback", 8 is "Meetups"/"Meetups"/"Rencontres". The change is: reorder to 6, 7, 12, drop the four 8 rows, EN 12 to "Introduce Yourself", DE 6 and 7 to "Monatliche Challenge" and "Foto-Feedback", plus the matching category base names and the EN name of 6.</div>
+  <h3>3 · One name per category, everywhere <span class="pill p-admin">Admin</span> <span class="pill p-done">Done 30 Oct</span></h3>
+  <div class="callout ok"><b>Shipped 30 October 2026.</b> The site's base locale is German, so a category's base name is its German name. Category 6 base "Monthly Challenge" → "Monatliche Challenge", its EN name "Monthly challenge" → "Monthly Challenge"; 7 base "Foto Feedback" → "Foto-Feedback"; 12 already matched. Custom Header Links (component 4) went from 12 rows in the order 7, 6, 12, 8 to 9 rows in the order 6, 7, 12: the four Meetups rows (8) removed, EN 12 "New Members" → "Introduce Yourself", DE 6 "Monthly Challenge" → "Monatliche Challenge", DE 7 "Foto Feedback" → "Foto-Feedback"; FR rows and every other field unchanged. To undo, restore those values in category admin and the component setting. <b>Watch out:</b> Discourse AI translation rewrote the FR name of 6 ("Défi mensuel") and of 7 ("Commentaires photo") as soon as the base names changed; both were put back to "Défi du Mois" and "Critique photo", and still held a few minutes later. Descriptions were not touched. Verified signed out in English and in German: the nav reads Monthly Challenge, Photo Feedback, Introduce Yourself and Monatliche Challenge, Foto-Feedback, Stell dich vor, and the page titles and hero headings on 6 and 7 use the same words.</div>
   <p class="src">From: galleries report 1.4</p>
   <div class="tbl"><table>
     <tr><th>Category</th><th>Today</th><th>Use everywhere (EN · DE)</th></tr>
@@ -1041,7 +1041,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 <h2><span class="eyebrow">Sequence</span>At a glance</h2>
 <div class="phases">
   <div class="phase"><h4>0 · Settled</h4><small>Done 30 October</small><ul><li>Move August's winner tag</li><li>Crown-panel guard (in C)</li></ul></div>
-  <div class="phase"><h4>A · Admin</h4><small>Partly done 30 October</small><ul><li>Sort 6 and 12 by Created ✓</li><li>Unpin placeholders (held back)</li><li>One name per place, nav order (held back)</li><li><code>max_tag_length</code> 40 ✓</li><li>Announcements watched by default ✓ (already live)</li></ul></div>
+  <div class="phase"><h4>A · Admin</h4><small>Done 30 October</small><ul><li>Sort 6 and 12 by Created ✓</li><li>Unpin placeholders ✓</li><li>One name per place, nav order ✓</li><li><code>max_tag_length</code> 40 ✓</li><li>Announcements watched by default ✓ (already live)</li></ul></div>
   <div class="phase"><h4>B · Simplify</h4><small>One commit per step</small><ul><li>Compact header, one button</li><li>Needs-feedback strip, then sort 7</li><li>Leaderboard gate</li><li>One card format</li></ul></div>
   <div class="phase"><h4>C · Rounds</h4><small>Builds on A and B</small><ul><li>Round pages and switcher</li><li>Brief as banner, out of ranks</li><li>Results view, Your result</li><li>All-rounds archive</li></ul></div>
   <div class="phase"><h4>D · Server</h4><small>Early November</small><ul><li>Results script: Announcements topic, then entrant messages</li><li>Dry run on September</li><li>Live for October</li></ul></div>

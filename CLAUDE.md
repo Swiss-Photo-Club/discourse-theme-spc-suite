@@ -296,6 +296,12 @@ category 7's required-tag-group check 422'd for every German-locale user (andy.f
 2026-08-20). Any `<option value>` or payload that ends up in `data.tags` must be
 `tagCanonicalName()`; localized names are labels only.
 
+**Renaming a category's base name re-translates its other names.** The base locale is German,
+so the base name is the German one, and Discourse AI translation is on: changing it on
+2026-10-30 rewrote the FR names of 6 and 7 ("Défi du Mois" → "Défi mensuel", "Critique photo"
+→ "Commentaires photo") within seconds. After any base rename, re-read every
+`category_localizations` entry and put back the ones that were set by hand.
+
 **Custom Header Links defaults missing targets to a new tab.** Its renderer sets `_blank` unless
 the saved target is exactly `self`, while the target field itself has no default; migrated and
 newly incomplete rows therefore open new tabs. `repairInternalHeaderLinks()` removes `_blank`

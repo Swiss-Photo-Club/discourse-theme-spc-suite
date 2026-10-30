@@ -478,6 +478,13 @@ en:
     new_topic: New topic
     new_introduction: New introduction
     ask_question: Ask a question
+    sorted_by_created: Sorted by date posted
+  needs_feedback:
+    title: Needs feedback
+    count:
+      one: "%{count} photo with no critique yet"
+      other: "%{count} photos with no critique yet"
+    empty: Every recent photo has a critique.
   onboarding:
     title: Welcome back, %{name} — finish setting up
     subtitle: A complete profile gets more eyes on your photos.

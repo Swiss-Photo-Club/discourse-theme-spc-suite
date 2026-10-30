@@ -320,7 +320,7 @@ locale block uses `allowed:` / `denied:` for exactly this reason.
 
 Several initializers observe `document.body` with `{childList: true, subtree: true}` and mutate
 the DOM in response. That is a feedback loop by construction, and getting it wrong once produced
-a site-wide 429 storm. `spc-leaderboard-strip.js` and `spc-monthly-challenge.js` follow all five;
+a site-wide 429 storm. `spc-leaderboard-strip.js`, `spc-needs-feedback.js` and `spc-monthly-challenge.js` follow all five;
 any new networked renderer must too.
 
 1. Throttle on a timer, never `requestAnimationFrame`. `RENDER_THROTTLE_MS = 200`, leading edge.
@@ -336,7 +336,9 @@ promise from `fetchChallengeCategoryTopics()`. Do not put an independent
 was enough for the panel to intermittently receive a 429 on page load.
 
 Regression baselines: a Meetups or Announcements page makes **zero** challenge requests; the
-critique page requests `/leaderboard/1.json` **exactly once**.
+critique page makes **zero** `/leaderboard/1.json` requests (the strip is homepage and challenge
+only since Phase B) and requests `/c/7/l/latest.json?order=created` — the "Needs feedback"
+strip — **exactly once**.
 
 **Reading a 429:** Discourse's rate limiter returns a **plain-text** body with HTTP 429 and the
 ajax error handler `JSON.parse`s it, so the console shows `SyntaxError: Unexpected token 'S',

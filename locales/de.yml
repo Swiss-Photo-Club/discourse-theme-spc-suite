@@ -478,6 +478,13 @@ de:
     new_topic: Neues Thema
     new_introduction: Neue Vorstellung
     ask_question: Frage stellen
+    sorted_by_created: Sortiert nach Veröffentlichungsdatum
+  needs_feedback:
+    title: Braucht Feedback
+    count:
+      one: "%{count} Foto ohne Kritik"
+      other: "%{count} Fotos ohne Kritik"
+    empty: Jedes neue Foto hat eine Kritik.
   onboarding:
     title: Willkommen zurück, %{name} – vervollständige dein Profil
     subtitle: Ein vollständiges Profil sorgt dafür, dass deine Fotos mehr Aufmerksamkeit erhalten.

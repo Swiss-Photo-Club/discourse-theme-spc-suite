@@ -474,6 +474,13 @@ fr:
     new_topic: Nouveau sujet
     new_introduction: Nouvelle présentation
     ask_question: Poser une question
+    sorted_by_created: Triés par date de publication
+  needs_feedback:
+    title: En attente de critique
+    count:
+      one: "%{count} photo sans critique"
+      other: "%{count} photos sans critique"
+    empty: Chaque photo récente a reçu une critique.
   onboarding:
     title: Bon retour, %{name} — terminez votre configuration
     subtitle: Un profil complet donne plus de visibilité à vos photos.

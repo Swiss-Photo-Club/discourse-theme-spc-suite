@@ -297,6 +297,30 @@ function categoryTopicUrl(category) {
   return category.topic_url || category.topicUrl || "";
 }
 
+/**
+ * "Sorted by date posted" beside the list tabs, so the gallery's order is
+ * stated rather than guessed (Phase B). Shown only when it is true: the
+ * category's default sort is Created and the list is on its default view with
+ * no ?order= override. The label rides in a custom property on <body> and is
+ * drawn by homepage.scss through ::after on core's .navigation-container —
+ * no node is added to, or text written into, anything core renders.
+ */
+function updateSortLabel(category) {
+  const path = window.location.pathname.replace(/\/+$/, "");
+  const sortedByCreated =
+    category?.sort_order === "created" &&
+    !new URLSearchParams(window.location.search).has("order") &&
+    (/\/\d+$/.test(path) || path.endsWith("/l/latest"));
+
+  document.body.classList.toggle("spc-sorted-by-created", sortedByCreated);
+  if (sortedByCreated) {
+    document.body.style.setProperty(
+      "--spc-sort-label",
+      JSON.stringify(i18n(themePrefix("category_actions.sorted_by_created")))
+    );
+  }
+}
+
 export default apiInitializer((api) => {
   const router = api.container.lookup("service:router");
   const currentUser = api.getCurrentUser();
@@ -334,6 +358,7 @@ export default apiInitializer((api) => {
   function render() {
     const routeCategory = categoryForRoute(router);
     updateCreateTopicButton(routeCategory);
+    updateSortLabel(routeCategory);
 
     if (!settings.enable_category_hero) {
       clearOwnHero();

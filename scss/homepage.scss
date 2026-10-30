@@ -734,6 +734,20 @@ body:is(.navigation-topics, .navigation-category)
   content: none;
 }
 
+/* "Sorted by date posted", drawn after the tabs only while it is true —
+   spc-category-hero.js toggles the body class and supplies the localized
+   string in --spc-sort-label (see updateSortLabel). A pseudo-element, so no
+   node is added to core's tab list. */
+body.navigation-category.spc-sorted-by-created #navigation-bar::after {
+  content: var(--spc-sort-label);
+  align-self: center;
+  margin-left: auto;
+  padding: 0 8px;
+  color: var(--spc-gray-600);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 body:is(.navigation-topics, .navigation-category) .navigation-controls {
   display: flex;
   flex: 0 0 auto;

@@ -245,8 +245,16 @@ function formatDate(value) {
   }).format(date);
 }
 
+// A round is a calendar month. Anchor it away from timezone/DST boundaries.
+function roundDate(tag) {
+  const match = /^(\d{4})-(\d{2})/.exec(tag || "");
+  return match
+    ? new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 15, 12))
+    : null;
+}
+
 function monthLabel(challenge) {
-  const date = validDate(challenge?.start_at);
+  const date = roundDate(challenge?.tag) || validDate(challenge?.start_at);
   if (!date) {
     return "";
   }
@@ -504,13 +512,11 @@ function tagListJsonUrl(tag) {
 // which reproduces the design's "JULY WINNER · CITYSCAPES" and has no room
 // for a year that is almost always the current one anyway.
 function roundMonthName(tag) {
-  const match = /^(\d{4})-(\d{2})/.exec(tag || "");
-  if (!match) {
+  const date = roundDate(tag);
+  if (!date) {
     return "";
   }
-  return localizedDateFormat({ month: "long" }).format(
-    new Date(Number(match[1]), Number(match[2]) - 1, 1)
-  );
+  return localizedDateFormat({ month: "long" }).format(date);
 }
 
 function roundThemeLabel(tag, challenge, briefTitle) {
@@ -609,7 +615,7 @@ async function resolveLatestWinner(challenges) {
     return null;
   }
   const hydrated = await hydrateChallenge(previous);
-  const startDate = validDate(previous.start_at);
+  const startDate = roundDate(previous.tag) || validDate(previous.start_at);
   return {
     tag: previous.tag,
     monthName: startDate

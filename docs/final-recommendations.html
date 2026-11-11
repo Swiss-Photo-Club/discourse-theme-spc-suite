@@ -410,7 +410,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <tr><td class="n">4</td><td><a href="#r4">Raise <code>max_tag_length</code></a> before the November tag is created</td><td>3</td><td><span class="pill p-admin">Admin</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">5</td><td><a href="#r5">Compact category header</a>: one row, one button, leaderboard only on the homepage and the Challenge</td><td>1</td><td><span class="pill p-theme">Theme</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">6</td><td><a href="#r6">One card format</a>: photo, title, author, one number; context chip only on category pages</td><td>2</td><td><span class="pill p-theme">Theme</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
-    <tr><td class="n">7</td><td><a href="#r7">One page per round</a> on the existing tag pages, with a round switcher and the brief as a banner</td><td>3</td><td><span class="pill p-theme">Theme</span></td><td>C</td></tr>
+    <tr><td class="n">7</td><td><a href="#r7">One page per round</a> on the existing tag pages, with a round switcher and the brief as a banner</td><td>3</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
     <tr><td class="n">8</td><td><a href="#r8">Results view</a> for closed rounds: winner header, rank badges, "Your result"</td><td>3, 4</td><td><span class="pill p-theme">Theme</span></td><td>C</td></tr>
     <tr><td class="n">9</td><td><a href="#r9">All-rounds archive</a>, one card per round</td><td>2, 3</td><td><span class="pill p-theme">Theme</span></td><td>C</td></tr>
     <tr><td class="n">10</td><td><a href="#r10">Results for everyone</a> as an emailed Announcements topic, plus a personal rank message to entrants</td><td>4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></td><td>A <span class="pill p-done">Done 30 Oct</span>, then D · early November</td></tr>
@@ -711,8 +711,9 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 <p class="lede">The good news from the Challenge report: Discourse already renders a page per round, ranked by votes, in masonry, at <code>/tags/c/monthly-challenge/6/&lt;slug&gt;/&lt;id&gt;?order=votes</code>. The staff Crown panel reads that same listing. Members just never reach it.</p>
 
 <div class="rec" id="r7">
-  <h3>7 · One page per round, with a round switcher <span class="pill p-theme">Theme</span></h3>
+  <h3>7 · One page per round, with a round switcher <span class="pill p-theme">Theme</span> <span class="pill p-done">Done 11 Nov</span></h3>
   <p class="src">From: galleries report 2.2, Challenge report 3.1 and 3.4, fotocommunity report #1 and #2</p>
+  <div class="callout ok"><b>Shipped 11 November 2026.</b> Commit <code>5fd984b</code>, with follow-up <code>1afeab9</code> (no vote button on the brief's own topic page — October's one vote on its brief came from there — and the band's winner and "your entries" fetched together rather than in series). The challenge band now renders on every round page, <code>/tags/c/monthly-challenge/6/&lt;slug&gt;/&lt;id&gt;</code>; a closed round's page shows that round's brief and winner. The switcher sits in the category surface under the band, above the list controls: the newest three rounds plus the one being viewed, then "All rounds" (<code>/c/6</code>, no redirect). Labels are month + <code>roundThemeLabel()</code> of the brief's title; URLs are <code>tagSlug()</code> + tag id, so German users, whose tag names are localized, reach the same pages. The header "Monthly Challenge" link and the homepage door forward to the open round <b>on click</b>, so other pages still make zero challenge requests (checked on Photo Feedback and the homepage); their hrefs stay <code>/c/6</code>. The brief stays out of counts and its card shows no author or number; the open round has the three-step timeline in place of the deadline line, and signed-in entrants see "Your entries: N of 3 · Votes so far: V", no rank. Also fixed on the way: <code>repairLegacyCategoryLinks()</code> was rewriting the round page's own Latest/Votes pills to <code>/c/6</code>. <b>Verified after Update</b>, signed in as osan at 1490px: clicked each switcher link (November, October, September), the Votes pill, "All rounds", Submit (lands on <code>/submit</code> with <code>2026-11-autumn-moods</code>), the header link from Photo Feedback and the homepage door (both land on November); on 6, 7, 12 and the three round pages every card has <code>img.top − thumb.top = 0</code>, a 76px footer and no overlap. Signed out at 375px in German: band, timeline ("1.–30. November · Noch 19 Tage") and switcher render, no horizontal scroll, masonry clean. "Your entries" was checked by setting the in-memory user id to an entrant's (one entry, 2 votes), since osan has none; the brief's page (topic 244) hides the vote and an entry (259) keeps it. <b>Correction:</b> September has <b>36</b> entries, not 37 — the tag count of 37 includes the brief.</div>
   <ul>
     <li><b>Reuse the tag page.</b> The work is linking to it and rendering the challenge band there: <code>isChallengeCategoryUrl()</code> in <code>spc-monthly-challenge.js</code> matches <code>/c/…</code> paths only today.</li>
     <li><b>Switcher</b> under the hero: "Oct · Juxtaposition (open)", "Sep · Frame in Frame (results)", "Aug · Animals (results)", "All rounds". Labels come from month plus the brief's title via <code>roundThemeLabel()</code>; URLs from <code>tagSlug()</code>. It goes in <code>[data-spc-category-surface]</code>, above the list controls, never between the controls and the list.</li>
@@ -744,9 +745,9 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
       </div>
     </div>
     <nav class="rounds-nav">
-      <a class="on"><b>Juxtaposition <span class="st st--open">Open</span></b>October · 13 entries</a>
-      <a><b>Frame in Frame <span class="st st--res">Results</span></b>September · 37 entries</a>
-      <a><b>Animals <span class="st st--res">Results</span></b>August · 14 entries</a>
+      <a class="on"><b>Autumn Moods <span class="st st--open">Open</span></b>November · 8 entries</a>
+      <a><b>Juxtaposition <span class="st st--res">Results</span></b>October · 13 entries</a>
+      <a><b>Frame in Frame <span class="st st--res">Results</span></b>September · 36 entries</a>
       <a class="all">All rounds →</a>
     </nav>
     <div class="ctrl"><span class="on">Newest</span><span>Votes</span><span class="sort">13 entries · open until 31 Oct</span></div>
@@ -761,7 +762,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
       <div class="cardm"><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/688b67929f2569aadc98e8b7df7c4bdc44d70f78_2_767x1023.jpeg" alt=""><div class="cardm__foot"><div><b>Männlich-weiblich_blau-rot</b>Barbara Fischer</div><span class="vote">▲ 0</span></div></div>
     </div>
   </div>
-  <p class="meta">"Yours" is illustrative: two real October entries shown as if they were the viewer's. The brief lives in the band ("Read the brief"), not in the grid.</p>
+  <p class="meta">"Yours" is illustrative: two real October entries shown as if they were the viewer's. The brief lives in the band ("Read the brief"), not in the grid. Drawn while October was open; it shipped on 11 November with <b>November · Autumn Moods</b> open (8 entries) and October and September under Results — the switcher above is corrected to that.</p>
 </div>
 
 <div class="rec" id="r8">
@@ -1047,7 +1048,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
   <div class="phase"><h4>0 · Settled</h4><small>Done 30 October</small><ul><li>Move August's winner tag</li><li>Crown-panel guard (in C)</li></ul></div>
   <div class="phase"><h4>A · Admin</h4><small>Done 30 October</small><ul><li>Sort 6 and 12 by Created ✓</li><li>Unpin placeholders ✓</li><li>One name per place, nav order ✓</li><li><code>max_tag_length</code> 40 ✓</li><li>Announcements watched by default ✓ (already live)</li></ul></div>
   <div class="phase"><h4>B · Simplify</h4><small>Done 30 October</small><ul><li>Compact header, one button ✓</li><li>Needs-feedback strip ✓, then sort 7 ✓</li><li>Leaderboard gate ✓</li><li>One card format ✓</li></ul></div>
-  <div class="phase"><h4>C · Rounds</h4><small>Builds on A and B</small><ul><li>Round pages and switcher</li><li>Brief as banner, out of ranks</li><li>Results view, Your result</li><li>All-rounds archive</li></ul></div>
+  <div class="phase"><h4>C · Rounds</h4><small>In progress · #7 done 11 November</small><ul><li>Round pages and switcher ✓</li><li>Brief as banner, out of ranks ✓</li><li>Results view, Your result</li><li>All-rounds archive</li></ul></div>
   <div class="phase"><h4>D · Server</h4><small>Early November</small><ul><li>Results script: Announcements topic, then entrant messages</li><li>Dry run on September</li><li>Live for October</li></ul></div>
   <div class="phase"><h4>E · Homepage</h4><small>Last</small><ul><li>Visitor hero, trust points</li><li>Three doors</li><li>Named rows</li></ul></div>
 </div>

@@ -411,7 +411,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <tr><td class="n">5</td><td><a href="#r5">Compact category header</a>: one row, one button, leaderboard only on the homepage and the Challenge</td><td>1</td><td><span class="pill p-theme">Theme</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">6</td><td><a href="#r6">One card format</a>: photo, title, author, one number; context chip only on category pages</td><td>2</td><td><span class="pill p-theme">Theme</span></td><td><span class="pill p-done">Done 30 Oct</span></td></tr>
     <tr><td class="n">7</td><td><a href="#r7">One page per round</a> on the existing tag pages, with a round switcher and the brief as a banner</td><td>3</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
-    <tr><td class="n">8</td><td><a href="#r8">Results view</a> for closed rounds: winner header, rank badges, "Your result"</td><td>3, 4</td><td><span class="pill p-theme">Theme</span></td><td>C</td></tr>
+    <tr><td class="n">8</td><td><a href="#r8">Results view</a> for closed rounds: winner header, rank badges, "Your result"</td><td>3, 4</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
     <tr><td class="n">9</td><td><a href="#r9">All-rounds archive</a>, one card per round</td><td>2, 3</td><td><span class="pill p-theme">Theme</span></td><td>C</td></tr>
     <tr><td class="n">10</td><td><a href="#r10">Results for everyone</a> as an emailed Announcements topic, plus a personal rank message to entrants</td><td>4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></td><td>A <span class="pill p-done">Done 30 Oct</span>, then D · early November</td></tr>
     <tr><td class="n">11</td><td><a href="#r11">Homepage</a>: visitor hero with trust points, three doors, named photo rows</td><td>1, 2, 5</td><td><span class="pill p-theme">Theme</span></td><td>E · last</td></tr>
@@ -766,8 +766,9 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 </div>
 
 <div class="rec" id="r8">
-  <h3>8 · Results view for closed rounds <span class="pill p-theme">Theme</span></h3>
+  <h3>8 · Results view for closed rounds <span class="pill p-theme">Theme</span> <span class="pill p-done">Done 11 Nov</span></h3>
   <p class="src">From: Challenge report 3.2 and 4.1, fotocommunity report #3</p>
+  <div class="callout ok"><b>Shipped 11 November 2026.</b> Commit <code>b4fba01</code>, with follow-up <code>aae3a4a</code> (badge painted above the photo: Topic List Thumbnails gives the photo <code>z-index: 2</code>). Before it, <code>3576e1f</code> fixed a bug #7 exposed: <code>spc-photo-submit.js</code> sent every primary button in the challenge band to <code>/submit</code>, including a closed round's "View entries"; it now matches <code>[data-spc-submit-photo]</code> only. A round whose round tag has a <code>winner</code>-tagged topic shows results: the winner-tagged topic in the band's photograph cell with a "Winner" chip, and "September 2026 · Results", the totals, and 2nd and 3rd beside it. Every card carries a rank badge — a <code>data-spc-rank</code> attribute on the thumbnail box drawn by an absolutely positioned <code>::before</code>, so nothing is inserted into a measured row. Rank is raw <code>vote_count</code>, ties share a place. The data is every page of the round's <code>?order=votes</code> listing, fetched once (September: two requests; every challenge request on that page fires exactly once). <b>Verified after Update:</b> September reads 16, 9, 7, 6, then five at =5 — the numbers this mockup was drawn from; October shows Ombre et lumière (6) as winner, 2nd at 4 and three entries at =3; August shows BnW Crow, the corrected crown. On all three, and on 6, 7 and 12, every card has <code>img.top − thumb.top = 0</code>, a 76px footer and no overlap; signed out at 375px in German the header, podium and 30 badges render with no horizontal scroll and no "Your result". "Your result" was checked in its three states by setting the in-memory user id: osan (did not enter), the entrant of Paradies ("4 votes · shared with 4 other entries · 3 votes behind 3rd place · =5th of 36 entries"), Katharina Michels ("you won · 16 votes · 7 votes ahead of 2nd place · 1st of 36"), and a member with three entries (three lines). Totals exclude the brief, which is why September reads 84 votes, not 86.</div>
   <ul>
     <li>Once a round has a <code>winner</code>-tagged topic its page switches from "submit" to "results": winner in the header, 2nd and 3rd beside it, rank badge on every card, ties shared ("=5").</li>
     <li><b>"Your result" strip</b> under the switcher, signed-in only, three states: you entered (rank of N, votes, gap to 3rd), you won, you did not enter (with a link to the open round). More than one entry gives one line per entry, best first.</li>
@@ -784,7 +785,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
       </div>
       <div class="results__side">
         <div><div class="k">September 2026 · Results</div><h5>Frame in Frame</h5></div>
-        <div class="stats"><div><b>37</b>entries</div><div><b>86</b>votes</div></div>
+        <div class="stats"><div><b>36</b>entries</div><div><b>84</b>votes</div></div>
         <div class="podium">
           <a><span class="rk rk--2">2</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/017719ca17d3779d5bdf2ea915cafdfc3ef242ed_2_682x1024.jpeg" alt=""><b>Key to Heaven</b><span>Bernard Menettrier de Jollin · 9</span></a>
           <a><span class="rk rk--3">3</span><img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/57c5dbd7f1c3ba773aa6dc4789a5ccb3637aa562_2_1024x682.jpeg" alt=""><b>Havin' a smoke</b><span>Mario Widmer · 7</span></a>
@@ -793,15 +794,15 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
       </div>
     </div>
     <nav class="rounds-nav">
-      <a><b>Juxtaposition <span class="st st--open">Open</span></b>October · 13 entries</a>
-      <a class="on"><b>Frame in Frame <span class="st st--res">Results</span></b>September · 37 entries</a>
-      <a><b>Animals <span class="st st--res">Results</span></b>August · 14 entries</a>
+      <a><b>Autumn Moods <span class="st st--open">Open</span></b>November · 8 entries</a>
+      <a><b>Juxtaposition <span class="st st--res">Results</span></b>October · 13 entries</a>
+      <a class="on"><b>Frame in Frame <span class="st st--res">Results</span></b>September · 36 entries</a>
       <a class="all">All rounds →</a>
     </nav>
     <div class="yours">
       <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
       <div><div class="k">Your result</div><b>Paradies</b><small>4 votes · shared with 4 other entries · 3 votes behind 3rd place</small></div>
-      <div class="yours__rank"><strong>=5th</strong><span>of 37 entries</span></div>
+      <div class="yours__rank"><strong>=5th</strong><span>of 36 entries</span></div>
     </div>
     <div class="ctrl" style="margin-top:10px"><span>Newest</span><span class="on">Ranking</span><span class="sort">Ranked by votes · ties share a place</span></div>
     <div class="mas">
@@ -820,16 +821,16 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <div class="yours">
       <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
       <div><div class="k">Completed round · you entered</div><b>Paradies</b><small>4 votes · shared with 4 other entries · 3 votes behind 3rd place</small></div>
-      <div class="yours__rank"><strong>=5th</strong><span>of 37 entries</span></div>
+      <div class="yours__rank"><strong>=5th</strong><span>of 36 entries</span></div>
     </div>
     <div class="yours yours--won">
       <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg" alt="">
       <div><div class="k">Completed round · you won</div><b>Where Time Stood Still</b><small>16 votes · 7 ahead of 2nd place · your photo leads the challenge hero this month</small></div>
-      <div class="yours__rank"><strong>1st</strong><span>of 37 entries</span></div>
+      <div class="yours__rank"><strong>1st</strong><span>of 36 entries</span></div>
     </div>
     <div class="yours yours--none">
-      <div><div class="k" style="color:var(--muted)">Completed round · you didn't enter</div><b>37 members entered Frame in Frame</b><small>This month's theme is Juxtaposition. Submissions are open until 31 October.</small></div>
-      <div><a class="btn btn--primary">Enter October</a></div>
+      <div><div class="k" style="color:var(--muted)">Completed round · you didn't enter</div><b>36 entries in Frame in Frame</b><small>This month's theme is Autumn Moods. Submissions are open until 30 November.</small></div>
+      <div><a class="btn btn--primary">Enter November</a></div>
     </div>
   </div>
 </div>
@@ -1048,7 +1049,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
   <div class="phase"><h4>0 · Settled</h4><small>Done 30 October</small><ul><li>Move August's winner tag</li><li>Crown-panel guard (in C)</li></ul></div>
   <div class="phase"><h4>A · Admin</h4><small>Done 30 October</small><ul><li>Sort 6 and 12 by Created ✓</li><li>Unpin placeholders ✓</li><li>One name per place, nav order ✓</li><li><code>max_tag_length</code> 40 ✓</li><li>Announcements watched by default ✓ (already live)</li></ul></div>
   <div class="phase"><h4>B · Simplify</h4><small>Done 30 October</small><ul><li>Compact header, one button ✓</li><li>Needs-feedback strip ✓, then sort 7 ✓</li><li>Leaderboard gate ✓</li><li>One card format ✓</li></ul></div>
-  <div class="phase"><h4>C · Rounds</h4><small>In progress · #7 done 11 November</small><ul><li>Round pages and switcher ✓</li><li>Brief as banner, out of ranks ✓</li><li>Results view, Your result</li><li>All-rounds archive</li></ul></div>
+  <div class="phase"><h4>C · Rounds</h4><small>In progress · #7 and #8 done 11 November</small><ul><li>Round pages and switcher ✓</li><li>Brief as banner, out of ranks ✓</li><li>Results view, Your result ✓</li><li>All-rounds archive</li></ul></div>
   <div class="phase"><h4>D · Server</h4><small>Early November</small><ul><li>Results script: Announcements topic, then entrant messages</li><li>Dry run on September</li><li>Live for October</li></ul></div>
   <div class="phase"><h4>E · Homepage</h4><small>Last</small><ul><li>Visitor hero, trust points</li><li>Three doors</li><li>Named rows</li></ul></div>
 </div>

@@ -403,11 +403,14 @@ export function roundFromUrl(url) {
 let categoryTopicsPromise = null;
 let pinnedBriefPromise = null;
 let roundTagsPromise = null;
+let userRoundsPromise = null;
+let userRoundsFor = "";
 
 export function clearPinnedBriefCache() {
   categoryTopicsPromise = null;
   pinnedBriefPromise = null;
   roundTagsPromise = null;
+  userRoundsPromise = null;
   roundBriefCache.clear();
   roundEntriesCache.clear();
 }
@@ -659,6 +662,7 @@ function fetchRoundBrief(slug) {
           return {
             id: topic.id,
             title: topic.title || "",
+            image: topic.image_url || "",
             excerpt:
               (topic.excerpt || "")
                 .split(/\r?\n/)
@@ -1564,6 +1568,137 @@ function renderYourResult(results, user, theme, active) {
   strip.innerHTML = html;
 }
 
+// Which rounds the viewer entered: one request for their own topics, so the
+// archive ranks only those rounds rather than every round on the site.
+// ponytail: first page only (30 topics); a member with more topics than that
+// loses "You:" on their oldest rounds — follow more_topics_url if it matters.
+function fetchUserRounds(username) {
+  if (userRoundsFor !== username) {
+    userRoundsFor = username;
+    userRoundsPromise = null;
+  }
+  userRoundsPromise ||= ajax(
+    `/topics/created-by/${encodeURIComponent(username)}.json`
+  )
+    .then(
+      (data) =>
+        new Set(
+          (data?.topic_list?.topics || [])
+            .filter(
+              (topic) =>
+                Number(topic.category_id) ===
+                Number(settings.challenge_category_id)
+            )
+            .map((topic) => tagSlug(findRoundTag(topic.tags)))
+            .filter(Boolean)
+        )
+    )
+    .catch(() => new Set());
+  return userRoundsPromise;
+}
+
+// The all-rounds archive (#9): one card per round on /c/<id>. Winners come
+// from the winner listing the band already fetched, the theme from each
+// round's brief, the entry count from the round tag (minus the brief). The
+// viewer's best place costs one request plus each closed round they entered.
+async function archiveRounds(challenges, active, user, mine) {
+  const [tags, winners] = await Promise.all([fetchRoundTags(), fetchWinners()]);
+  const briefs = await Promise.all(tags.map((tag) => fetchRoundBrief(tag.slug)));
+  const current = currentMonthYM();
+  const places = new Map();
+  if (user?.username) {
+    const entered = await fetchUserRounds(user.username);
+    await Promise.all(
+      tags
+        .filter((tag) => entered.has(tag.slug) && tag.slug.slice(0, 7) < current)
+        .map(async (tag) => {
+          const round = await fetchRoundEntries(tag.slug);
+          const best = rankEntries(round?.topics || []).find(
+            (entry) => entry.topic.posters?.[0]?.user_id === user.id
+          );
+          if (best) {
+            places.set(tag.id, best);
+          }
+        })
+    );
+  }
+  return tags.map((tag, index) => {
+    const brief = briefs[index];
+    const winner = winners.find((w) => w.tagId === tag.id);
+    const open = tag.slug.slice(0, 7) >= current;
+    const entries = Math.max(0, tag.count - (brief ? 1 : 0));
+    const isActive = isOpenRoundPage(tag, active);
+    return {
+      id: tag.id,
+      url: roundPageUrl(tag),
+      month: monthLabel({ tag: tag.slug }),
+      theme: roundThemeLabel(
+        tag.slug,
+        challenges.find((c) => c.tag === tag.name || c.tag === tag.slug),
+        brief?.title
+      ),
+      image: winner?.image || brief?.image || "",
+      state: open ? "open" : winner ? "results" : "closed",
+      chip: open
+        ? [translate("round_open"), isActive ? daysLeftText(active) : ""]
+            .filter(Boolean)
+            .join(" · ")
+        : translate(winner ? "round_results" : "round_closed"),
+      meta: open
+        ? translate("archive_entries_so_far", { count: entries })
+        : winner?.author
+          ? translate("archive_winner", { author: winner.author, count: entries })
+          : translate("entries", { count: entries }),
+      you: open
+        ? isActive && mine?.count
+          ? translate("archive_you_entries", { count: mine.count })
+          : ""
+        : places.has(tag.id)
+          ? translate("archive_you_place", { place: ordinalLabel(places.get(tag.id)) })
+          : "",
+    };
+  });
+}
+
+function renderArchive(cards) {
+  const surface = categorySurface();
+  if (!surface || !cards.length) {
+    return;
+  }
+  const signature = JSON.stringify([cards, localeCode()]);
+  let section = surface.querySelector(".spc-rounds-archive");
+  if (section?.dataset.spcChallengeSignature === signature) {
+    return;
+  }
+  if (!section) {
+    section = document.createElement("section");
+    section.className = "spc-rounds-archive";
+    section.dataset.spcMonthlyChallenge = "archive";
+    surface.append(section);
+  }
+  section.dataset.spcChallengeSignature = signature;
+  section.setAttribute("aria-labelledby", "spc-rounds-archive-title");
+  section.innerHTML = `
+    <span class="spc-eyebrow">${escapeHtml(translate("archive_eyebrow"))}</span>
+    <h2 id="spc-rounds-archive-title">${escapeHtml(translate("archive_title"))}</h2>
+    <div class="spc-rounds-archive__grid">${cards
+      .map(
+        (card) => `<a class="spc-rounds-archive__card spc-rounds-archive__card--${card.state}" href="${escapeHtml(
+          card.url
+        )}">
+        ${card.image ? `<img src="${escapeHtml(card.image)}" alt="">` : ""}
+        <span class="spc-rounds-archive__chip">${escapeHtml(card.chip)}</span>
+        ${card.you ? `<span class="spc-rounds-archive__you">${escapeHtml(card.you)}</span>` : ""}
+        <span class="spc-rounds-archive__body">
+          <span class="spc-rounds-archive__month">${escapeHtml(card.month)}</span>
+          <strong>${escapeHtml(card.theme)}</strong>
+          <span class="spc-rounds-archive__meta">${escapeHtml(card.meta)}</span>
+        </span>
+      </a>`
+      )
+      .join("")}</div>`;
+}
+
 async function yourEntries(challenge, user) {
   if (!user) {
     return null;
@@ -1818,7 +1953,7 @@ const spcRun = (api) => {
     clearHero(HERO_MARKER);
     document
       .querySelectorAll(
-        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner, .spc-rounds-nav, .spc-your-result"
+        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner, .spc-rounds-nav, .spc-your-result, .spc-rounds-archive"
       )
       .forEach((element) => element.remove());
     applyRankBadges(null);
@@ -1918,6 +2053,22 @@ const spcRun = (api) => {
       return;
     }
     renderRoundSwitcher(rounds, pageRound);
+
+    // "All rounds" is the category page itself; round pages have none.
+    if (pageRound) {
+      document.querySelector(".spc-rounds-archive")?.remove();
+      return;
+    }
+    const cards = await archiveRounds(
+      challenges,
+      active,
+      api.getCurrentUser(),
+      mine
+    );
+    if (request !== renderRequest) {
+      return;
+    }
+    renderArchive(cards);
   }
 
   // Throttled on a timer rather than requestAnimationFrame. The observer at the

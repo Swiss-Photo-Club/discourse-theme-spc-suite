@@ -380,6 +380,12 @@ en:
     result_entered_count: '%{count} entries in %{theme}'
     result_open_round: "This month’s theme is %{theme}. Submissions are open until %{date}."
     result_enter: 'Enter %{month}'
+    archive_eyebrow: Rounds
+    archive_title: Every challenge, month by month
+    archive_entries_so_far: '%{count} entries so far'
+    archive_winner: 'Winner: %{author} · %{count} entries'
+    archive_you_entries: 'Your entries: %{count}'
+    archive_you_place: 'You: %{place}'
     admin:
       title: Challenge admin
       refresh: Refresh

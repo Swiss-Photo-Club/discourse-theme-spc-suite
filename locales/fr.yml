@@ -376,6 +376,12 @@ fr:
     result_entered_count: '%{count} participations pour %{theme}'
     result_open_round: 'Le thème du mois est %{theme}. Participations ouvertes jusqu’au %{date}.'
     result_enter: 'Participer en %{month}'
+    archive_eyebrow: Éditions
+    archive_title: Chaque défi, mois après mois
+    archive_entries_so_far: '%{count} participations pour l’instant'
+    archive_winner: 'Gagnant : %{author} · %{count} participations'
+    archive_you_entries: 'Vos participations : %{count}'
+    archive_you_place: 'Vous : %{place}'
     admin:
       title: Administration du challenge
       refresh: Actualiser

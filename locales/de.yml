@@ -380,6 +380,12 @@ de:
     result_entered_count: '%{count} Beiträge zu %{theme}'
     result_open_round: 'Das aktuelle Thema ist %{theme}. Einreichen bis %{date}.'
     result_enter: 'Im %{month} mitmachen'
+    archive_eyebrow: Runden
+    archive_title: Jede Challenge, Monat für Monat
+    archive_entries_so_far: 'Bisher %{count} Beiträge'
+    archive_winner: 'Gewinner: %{author} · %{count} Beiträge'
+    archive_you_entries: 'Deine Beiträge: %{count}'
+    archive_you_place: 'Du: %{place}'
     admin:
       title: Challenge-Verwaltung
       refresh: Aktualisieren

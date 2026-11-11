@@ -415,6 +415,198 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   color: var(--spc-gray-700);
 }
 
+/* Results (Phase C, #8) ------------------------------------------------
+   Rank chips share one look: a square place number, gold/silver/bronze for
+   the podium and indigo after that. On cards the chip is the thumbnail
+   box's ::before, positioned absolutely inside a box that is already
+   position: relative — masonry measured that card, so the chip may take
+   no space. The place comes from data-spc-rank, set by applyRankBadges(). */
+.spc-rank,
+.topic-thumbnails-masonry .topic-list-thumbnail[data-spc-rank]::before {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  background: var(--spc-indigo);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.topic-thumbnails-masonry .topic-list-thumbnail[data-spc-rank]::before {
+  content: attr(data-spc-rank);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.spc-rank--1,
+.topic-thumbnails-masonry .topic-list-thumbnail[data-spc-place="1"]::before {
+  background: var(--spc-casablanca);
+  color: var(--spc-indigo);
+}
+
+.spc-rank--2,
+.topic-thumbnails-masonry .topic-list-thumbnail[data-spc-place="2"]::before {
+  background: var(--spc-gray-300);
+  color: var(--spc-indigo);
+}
+
+.spc-rank--3,
+.topic-thumbnails-masonry .topic-list-thumbnail[data-spc-place="3"]::before {
+  background: #b9773c;
+  color: #ffffff;
+}
+
+.spc-hero--challenge .spc-challenge-band__stats {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 17px;
+}
+
+.spc-challenge-band__podium {
+  display: grid;
+  gap: 10px;
+  max-width: 520px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spc-challenge-band__podium a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.spc-challenge-band__podium img {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.spc-challenge-band__podium-text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.spc-challenge-band__podium-text strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spc-challenge-band__podium a:hover strong,
+.spc-challenge-band__podium a:focus-visible strong {
+  text-decoration: underline;
+}
+
+/* "Your result": our own element in the category surface, under the round
+   switcher (20) and above the leaderboard (50). */
+.spc-your-result {
+  order: 25;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.spc-your-result__line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--spc-gray-200);
+  border-left: 4px solid var(--spc-coral);
+  background: #ffffff;
+}
+
+.spc-your-result__line--won {
+  border-left-color: var(--spc-casablanca);
+  background: #fff9ec;
+}
+
+.spc-your-result__line--none {
+  border-left-color: var(--spc-gray-300);
+}
+
+.spc-your-result__line img {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.spc-your-result__text {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--spc-gray-600);
+  font-size: 13px;
+}
+
+.spc-your-result__kicker {
+  color: var(--spc-coral);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spc-your-result__line--won .spc-your-result__kicker {
+  color: #9a6a12;
+}
+
+.spc-your-result__text a,
+.spc-your-result__text strong {
+  color: var(--spc-indigo);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.spc-your-result__rank {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--spc-gray-600);
+  font-size: 12px;
+}
+
+.spc-your-result__rank strong {
+  color: var(--spc-indigo);
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.spc-your-result .spc-button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+  .spc-your-result__line {
+    flex-wrap: wrap;
+  }
+
+  .spc-your-result__line--none .spc-button {
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .spc-challenge-band__timeline {
     grid-template-columns: minmax(0, 1fr);

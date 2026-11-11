@@ -365,6 +365,21 @@ de:
     round_results: Ergebnisse
     round_closed: Abgeschlossen
     all_rounds: Alle Runden
+    results_stats: '%{entries} Beiträge · %{votes} Stimmen'
+    result_label: Dein Ergebnis
+    result_you_won: Abgeschlossene Runde · du hast gewonnen
+    result_you_entered: Abgeschlossene Runde · du hast teilgenommen
+    result_not_entered: Abgeschlossene Runde · du hast nicht teilgenommen
+    result_shared_one: gleichauf mit 1 weiteren Beitrag
+    result_shared: 'gleichauf mit %{count} weiteren Beiträgen'
+    result_ahead_second_one: 1 Stimme vor dem 2. Platz
+    result_ahead_second: '%{count} Stimmen vor dem 2. Platz'
+    result_behind_third_one: 1 Stimme hinter dem 3. Platz
+    result_behind_third: '%{count} Stimmen hinter dem 3. Platz'
+    result_of_entries: 'von %{count} Beiträgen'
+    result_entered_count: '%{count} Beiträge zu %{theme}'
+    result_open_round: 'Das aktuelle Thema ist %{theme}. Einreichen bis %{date}.'
+    result_enter: 'Im %{month} mitmachen'
     admin:
       title: Challenge-Verwaltung
       refresh: Aktualisieren

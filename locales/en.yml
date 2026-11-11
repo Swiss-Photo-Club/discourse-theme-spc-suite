@@ -365,6 +365,21 @@ en:
     round_results: Results
     round_closed: Closed
     all_rounds: All rounds
+    results_stats: '%{entries} entries · %{votes} votes'
+    result_label: Your result
+    result_you_won: Completed round · you won
+    result_you_entered: Completed round · you entered
+    result_not_entered: Completed round · you didn't enter
+    result_shared_one: shared with 1 other entry
+    result_shared: 'shared with %{count} other entries'
+    result_ahead_second_one: 1 vote ahead of 2nd place
+    result_ahead_second: '%{count} votes ahead of 2nd place'
+    result_behind_third_one: 1 vote behind 3rd place
+    result_behind_third: '%{count} votes behind 3rd place'
+    result_of_entries: 'of %{count} entries'
+    result_entered_count: '%{count} entries in %{theme}'
+    result_open_round: "This month’s theme is %{theme}. Submissions are open until %{date}."
+    result_enter: 'Enter %{month}'
     admin:
       title: Challenge admin
       refresh: Refresh

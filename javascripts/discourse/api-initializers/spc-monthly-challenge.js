@@ -1064,7 +1064,44 @@ function mineMarkup(mine) {
 // This category is NOT gated by enable_category_hero and must not be: the
 // band is part of the route-map, permalink and route:new-topic stack behind
 // /submit, and a half-enabled state breaks photo submission.
-function renderChallengeBand(challenge, winner, mine = null) {
+// The results variant (#8): the winner stays in the photograph cell, and the
+// text cell trades the brief's lead for the round's totals and 2nd and 3rd.
+function resultsMarkup(results) {
+  const podium = results.podium
+    .map(
+      (entry) => `<li><a href="${escapeHtml(entryUrl(entry.topic))}">
+        <span class="spc-rank spc-rank--${Math.min(entry.place, 4)}">${escapeHtml(
+          placeLabel(entry)
+        )}</span>
+        ${
+          entry.topic.image_url
+            ? `<img src="${escapeHtml(entry.topic.image_url)}" alt="">`
+            : ""
+        }
+        <span class="spc-challenge-band__podium-text">
+          <strong>${escapeHtml(entry.topic.title)}</strong>
+          <span>${escapeHtml(
+            [
+              entryAuthor(entry.topic, results.users),
+              translate("winner_votes", { count: entry.votes }),
+            ]
+              .filter(Boolean)
+              .join(" · ")
+          )}</span>
+        </span>
+      </a></li>`
+    )
+    .join("");
+  return `<p class="spc-challenge-band__stats">${escapeHtml(
+    translate("results_stats", {
+      entries: results.ranked.length,
+      votes: results.totalVotes,
+    })
+  )}</p>
+  ${podium ? `<ol class="spc-challenge-band__podium">${podium}</ol>` : ""}`;
+}
+
+function renderChallengeBand(challenge, winner, mine = null, results = null) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const title = challengeTitle(challenge);
@@ -1087,6 +1124,7 @@ function renderChallengeBand(challenge, winner, mine = null) {
   hero.style.removeProperty("--spc-hero-cover");
   hero.classList.remove("spc-hero--with-cover");
   hero.classList.toggle("spc-hero--with-winner", hasWinner);
+  hero.classList.toggle("spc-hero--results", Boolean(results));
 
   const signature = [
     challenge.tag,
@@ -1098,6 +1136,13 @@ function renderChallengeBand(challenge, winner, mine = null) {
     deadline,
     challenge.topic?.url,
     mine ? [mine.count, mine.votes, ...mine.images].join("|") : "",
+    results
+      ? [
+          results.ranked.length,
+          results.totalVotes,
+          ...results.podium.map((entry) => `${entry.topic.id}:${entry.votes}`),
+        ].join("|")
+      : "",
     hasWinner
       ? [
           winner.tag,
@@ -1127,7 +1172,9 @@ function renderChallengeBand(challenge, winner, mine = null) {
         translate("view_entries")
       )}</a>`;
 
-  const winnerChip = hasWinner
+  const winnerChip = results
+    ? translate("winner")
+    : hasWinner
     ? winner.theme
       ? translate("winner_chip", {
           month: winner.monthName,
@@ -1159,10 +1206,17 @@ function renderChallengeBand(challenge, winner, mine = null) {
     <div class="spc-hero__content spc-challenge-band__challenge">
       <div class="spc-challenge-band__kicker">
         <span class="spc-challenge-band__chip">${escapeHtml(translate("label"))}</span>
-        ${month ? `<span class="spc-challenge-band__month">${escapeHtml(month)}</span>` : ""}
+        ${month ? `<span class="spc-challenge-band__month">${escapeHtml(
+          results ? `${month} · ${translate("round_results")}` : month
+        )}</span>` : ""}
       </div>
       <h1 id="spc-hero-title">${escapeHtml(title)}</h1>
-      ${summary ? `<p class="spc-challenge-band__summary">${escapeHtml(summary)}</p>` : ""}
+      ${
+        summary && !results
+          ? `<p class="spc-challenge-band__summary">${escapeHtml(summary)}</p>`
+          : ""
+      }
+      ${results ? resultsMarkup(results) : ""}
       ${
         isOpen
           ? timelineMarkup(challenge)
@@ -1279,15 +1333,94 @@ function renderRoundSwitcher(rounds, pageRound) {
     )}"${pageRound ? "" : ' aria-current="page"'}>${escapeHtml(translate("all_rounds"))} →</a>`;
 }
 
+// Rank by raw vote_count, the rule settled in #0. Competition ranking: an
+// entry's place is one more than the number of entries with strictly more
+// votes, so ties share a place ("=5") and the next place is skipped.
+export function rankEntries(topics) {
+  const votes = topics.map((topic) => Number(topic.vote_count) || 0);
+  return topics
+    .map((topic, index) => {
+      const own = votes[index];
+      return {
+        topic,
+        votes: own,
+        place: 1 + votes.filter((other) => other > own).length,
+        tied: votes.filter((other) => other === own).length > 1,
+      };
+    })
+    .sort((a, b) => a.place - b.place);
+}
+
+function placeLabel(entry) {
+  return `${entry.tied ? "=" : ""}${entry.place}`;
+}
+
+// "1st", "=5th"; "1.", "=5."; "1er", "=5e".
+function ordinalLabel(entry) {
+  const n = entry.place;
+  const language = localeCode();
+  let text;
+  if (language === "de") {
+    text = `${n}.`;
+  } else if (language === "fr") {
+    text = n === 1 ? "1er" : `${n}e`;
+  } else {
+    const tens = n % 100;
+    const suffix =
+      tens >= 11 && tens <= 13
+        ? "th"
+        : { 1: "st", 2: "nd", 3: "rd" }[n % 10] || "th";
+    text = `${n}${suffix}`;
+  }
+  return `${entry.tied ? "=" : ""}${text}`;
+}
+
+function entryUrl(topic) {
+  return topic.slug
+    ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
+    : `/t/${topic.id}`;
+}
+
+function entryAuthor(topic, users) {
+  const user = users.find((u) => u.id === topic.posters?.[0]?.user_id);
+  return user?.name || user?.username || "";
+}
+
+// The ranked round behind the results view, the rank badges and "Your
+// result". Every page of the ?order=votes listing, fetched once per round.
+async function roundResults(slug, winnerTopicId) {
+  const round = await fetchRoundEntries(slug);
+  if (!round?.topics?.length) {
+    return null;
+  }
+  const ranked = rankEntries(round.topics);
+  return {
+    ranked,
+    users: round.users,
+    winnerTopicId,
+    totalVotes: ranked.reduce((sum, entry) => sum + entry.votes, 0),
+    // 2nd and 3rd beside the winner: the next two by rank, whatever the
+    // winner tag says about first place.
+    podium: ranked
+      .filter((entry) => entry.topic.id !== winnerTopicId)
+      .slice(0, 2),
+  };
+}
+
 // A closed round shown on its own page: the band carries that round's brief
-// and that round's winner instead of the open round's.
+// and that round's winner instead of the open round's. A round with a
+// winner-tagged topic switches to results (#8).
 async function resolvePastRound(pageRound, challenges) {
   const [brief, winners] = await Promise.all([
     fetchRoundBrief(pageRound.slug),
     fetchWinners(),
   ]);
   const tagged = winners.find((winner) => winner.tagId === pageRound.id);
+  const results = tagged
+    ? await roundResults(pageRound.slug, tagged.topicId)
+    : null;
   return {
+    results,
     challenge: {
       tag: pageRound.slug,
       tag_slug: pageRound.slug,
@@ -1302,6 +1435,133 @@ async function resolvePastRound(pageRound, challenges) {
     },
     winner: tagged ? winnerRecord(tagged, challenges, brief?.title) : null,
   };
+}
+
+// A rank badge on every card of a results page (#8). The card is a row Topic
+// List Thumbnails has measured, so nothing is inserted into it: the place
+// rides in a data- attribute on the thumbnail box (already position:
+// relative) and challenge.scss draws it with an absolutely positioned
+// ::before. No height changes, no element of ours inside a core row.
+function applyRankBadges(results) {
+  const byId = new Map(
+    (results?.ranked || []).map((entry) => [entry.topic.id, entry])
+  );
+  document
+    .querySelectorAll(
+      "tr.topic-list-item[data-topic-id] .topic-list-thumbnail, .topic-list-thumbnail[data-spc-rank]"
+    )
+    .forEach((thumb) => {
+      const row = thumb.closest("tr.topic-list-item[data-topic-id]");
+      const entry = row && byId.get(Number(row.dataset.topicId));
+      if (!entry) {
+        delete thumb.dataset.spcRank;
+        delete thumb.dataset.spcPlace;
+        return;
+      }
+      const label = placeLabel(entry);
+      if (thumb.dataset.spcRank !== label) {
+        thumb.dataset.spcRank = label;
+        thumb.dataset.spcPlace = String(Math.min(entry.place, 4));
+      }
+    });
+}
+
+function countText(key, count) {
+  return count === 1 ? translate(`${key}_one`) : translate(key, { count });
+}
+
+// "Your result" (#8): signed in, under the switcher, in one of three states
+// — you won, you entered (one line per entry, best first), you did not
+// enter (with a way into the open round).
+function renderYourResult(results, user, theme, active) {
+  const surface = categorySurface();
+  let strip = surface?.querySelector(".spc-your-result");
+  if (!surface || !results || !user) {
+    strip?.remove();
+    return;
+  }
+
+  const total = results.ranked.length;
+  const thirdVotes = results.ranked[2]?.votes ?? 0;
+  const mine = results.ranked.filter(
+    (entry) => entry.topic.posters?.[0]?.user_id === user.id
+  );
+
+  const lines = mine.map((entry) => {
+    const won = entry.topic.id === results.winnerTopicId;
+    const shared =
+      results.ranked.filter((other) => other.votes === entry.votes).length - 1;
+    const runnerUp = results.ranked.find(
+      (other) => other.topic.id !== entry.topic.id
+    );
+    const ahead = won && runnerUp ? entry.votes - runnerUp.votes : 0;
+    const behind = !won && entry.place > 3 ? thirdVotes - entry.votes : 0;
+    const details = [
+      translate("winner_votes", { count: entry.votes }),
+      shared > 0 ? countText("result_shared", shared) : "",
+      ahead > 0 ? countText("result_ahead_second", ahead) : "",
+      behind > 0 ? countText("result_behind_third", behind) : "",
+    ].filter(Boolean);
+    return `<div class="spc-your-result__line${won ? " spc-your-result__line--won" : ""}">
+      ${entry.topic.image_url ? `<img src="${escapeHtml(entry.topic.image_url)}" alt="">` : ""}
+      <div class="spc-your-result__text">
+        <span class="spc-your-result__kicker">${escapeHtml(
+          translate(won ? "result_you_won" : "result_you_entered")
+        )}</span>
+        <a href="${escapeHtml(entryUrl(entry.topic))}">${escapeHtml(entry.topic.title)}</a>
+        <small>${escapeHtml(details.join(" · "))}</small>
+      </div>
+      <div class="spc-your-result__rank">
+        <strong>${escapeHtml(ordinalLabel(entry))}</strong>
+        <span>${escapeHtml(translate("result_of_entries", { count: total }))}</span>
+      </div>
+    </div>`;
+  });
+
+  const openRound =
+    active?.status === "active" && challengeState(active) === "submissions-open";
+  const none = `<div class="spc-your-result__line spc-your-result__line--none">
+    <div class="spc-your-result__text">
+      <span class="spc-your-result__kicker">${escapeHtml(translate("result_not_entered"))}</span>
+      <strong>${escapeHtml(translate("result_entered_count", { count: total, theme }))}</strong>
+      ${
+        openRound
+          ? `<small>${escapeHtml(
+              translate("result_open_round", {
+                theme: challengeTitle(active),
+                date: formatDate(active.submission_deadline),
+              })
+            )}</small>`
+          : ""
+      }
+    </div>
+    ${
+      openRound && active.round_page_url
+        ? `<a class="spc-button spc-button--primary" href="${escapeHtml(
+            active.round_page_url
+          )}">${escapeHtml(
+            translate("result_enter", {
+              month: roundMonthName(active.tag_slug || active.tag),
+            })
+          )}</a>`
+        : ""
+    }
+  </div>`;
+
+  const html = lines.length ? lines.join("") : none;
+  const signature = `${localeCode()}|${html}`;
+  if (strip?.dataset.spcChallengeSignature === signature) {
+    return;
+  }
+  if (!strip) {
+    strip = document.createElement("section");
+    strip.className = "spc-your-result";
+    strip.dataset.spcMonthlyChallenge = "your-result";
+    surface.append(strip);
+  }
+  strip.dataset.spcChallengeSignature = signature;
+  strip.setAttribute("aria-label", translate("result_label"));
+  strip.innerHTML = html;
 }
 
 async function yourEntries(challenge, user) {
@@ -1558,9 +1818,10 @@ const spcRun = (api) => {
     clearHero(HERO_MARKER);
     document
       .querySelectorAll(
-        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner, .spc-rounds-nav"
+        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner, .spc-rounds-nav, .spc-your-result"
       )
       .forEach((element) => element.remove());
+    applyRankBadges(null);
   }
 
   // The brief is not an entry (#7), so its own topic page offers no vote.
@@ -1634,7 +1895,7 @@ const spcRun = (api) => {
     // together rather than one after the other.
     const pageRound = roundFromUrl(window.location.href);
     const showsOpenRound = !pageRound || isOpenRoundPage(pageRound, active);
-    const [{ challenge: shown, winner }, mine] = await Promise.all([
+    const [{ challenge: shown, winner, results = null }, mine] = await Promise.all([
       showsOpenRound
         ? resolveLatestWinner(challenges).then((latest) => ({
             challenge: active,
@@ -1647,8 +1908,10 @@ const spcRun = (api) => {
       return;
     }
 
-    renderChallengeBand(shown, winner, mine);
+    renderChallengeBand(shown, winner, mine, results);
     hideOfficialTopicRow(shown);
+    applyRankBadges(results);
+    renderYourResult(results, api.getCurrentUser(), challengeTitle(shown), active);
 
     const rounds = await switcherRounds(challenges, pageRound);
     if (request !== renderRequest) {

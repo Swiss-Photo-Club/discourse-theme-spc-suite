@@ -361,6 +361,21 @@ fr:
     round_results: Résultats
     round_closed: Clôturé
     all_rounds: Toutes les éditions
+    results_stats: '%{entries} participations · %{votes} votes'
+    result_label: Votre résultat
+    result_you_won: Défi terminé · vous avez gagné
+    result_you_entered: Défi terminé · vous avez participé
+    result_not_entered: Défi terminé · vous n’avez pas participé
+    result_shared_one: à égalité avec 1 autre participation
+    result_shared: 'à égalité avec %{count} autres participations'
+    result_ahead_second_one: 1 vote d’avance sur la 2e place
+    result_ahead_second: '%{count} votes d’avance sur la 2e place'
+    result_behind_third_one: 1 vote derrière la 3e place
+    result_behind_third: '%{count} votes derrière la 3e place'
+    result_of_entries: 'sur %{count} participations'
+    result_entered_count: '%{count} participations pour %{theme}'
+    result_open_round: 'Le thème du mois est %{theme}. Participations ouvertes jusqu’au %{date}.'
+    result_enter: 'Participer en %{month}'
     admin:
       title: Administration du challenge
       refresh: Actualiser

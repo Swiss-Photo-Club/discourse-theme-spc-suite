@@ -273,6 +273,167 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   }
 }
 
+/* The open round's timeline (Phase C, #7). Three steps on the band, the
+   current one in Winner Amber with its days-left line. It replaces the
+   single deadline line while a round is open. */
+.spc-challenge-band__timeline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 620px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.18);
+}
+
+.spc-challenge-band__timeline li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: -2px 0 0;
+  padding: 10px 14px 0 0;
+  border-top: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.spc-challenge-band__timeline li.is-now {
+  border-top-color: var(--spc-casablanca);
+}
+
+.spc-challenge-band__timeline strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.spc-challenge-band__timeline em {
+  color: var(--spc-casablanca);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* "Your entries: 2 of 3" — signed-in entrants, open round only. */
+.spc-challenge-band__mine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+}
+
+.spc-challenge-band__mine img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.spc-challenge-band__mine-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.spc-challenge-band__mine-text strong {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+/* Round switcher: our own element in the category surface, right under the
+   band (10) and before the leaderboard (50) — above the list controls,
+   never between them and the list. One scrolling row on narrow screens. */
+.spc-rounds-nav {
+  order: 20;
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+  overflow-x: auto;
+}
+
+.spc-rounds-nav a {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 16px;
+  border: 1px solid var(--spc-gray-200);
+  border-bottom-width: 3px;
+  background: #ffffff;
+  color: var(--spc-gray-600);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.spc-rounds-nav a strong {
+  color: var(--spc-indigo);
+  font-size: 15px;
+}
+
+.spc-rounds-nav a:hover,
+.spc-rounds-nav a:focus-visible {
+  border-color: var(--spc-indigo-300);
+}
+
+.spc-rounds-nav a.is-current {
+  border-bottom-color: var(--spc-coral);
+  background: var(--spc-indigo-50);
+}
+
+.spc-rounds-nav__all {
+  margin-left: auto;
+}
+
+.spc-rounds-nav__all strong,
+.spc-rounds-nav a.spc-rounds-nav__all {
+  color: var(--spc-indigo);
+  font-weight: 700;
+}
+
+.spc-rounds-nav__state {
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+.spc-rounds-nav__state--open {
+  background: var(--spc-coral);
+  color: #ffffff;
+}
+
+.spc-rounds-nav__state--results {
+  background: var(--spc-casablanca);
+  color: var(--spc-indigo);
+}
+
+.spc-rounds-nav__state--closed {
+  background: var(--spc-gray-200);
+  color: var(--spc-gray-700);
+}
+
+@media (max-width: 600px) {
+  .spc-challenge-band__timeline {
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 0;
+    border-left: 2px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .spc-challenge-band__timeline li {
+    margin: 0 0 0 -2px;
+    padding: 4px 0 8px 12px;
+    border-top: 0;
+    border-left: 2px solid transparent;
+  }
+
+  .spc-challenge-band__timeline li.is-now {
+    border-left-color: var(--spc-casablanca);
+  }
+}
+
 .spc-voting-dialog .spc-eyebrow {
   color: var(--spc-coral);
 }

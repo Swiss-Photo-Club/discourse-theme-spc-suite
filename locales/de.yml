@@ -350,6 +350,21 @@ de:
     vote_step_three_body: Das Foto mit den meisten gültigen Stimmen wird als Monatsgewinner präsentiert.
     full_rules: Vollständigen Teilnahme- und Abstimmungsleitfaden lesen
     close: Schliessen
+    read_brief: Zur Aufgabe
+    timeline_submit: Einreichen & abstimmen
+    timeline_now: 'Jetzt · %{left}'
+    timeline_last_day: letzter Tag
+    timeline_closes: Runde endet
+    timeline_announced: Gewinner wird bekannt gegeben
+    timeline_announced_when: 'Anfang %{month}'
+    your_entries: 'Deine Beiträge: %{count} von %{max}'
+    your_entries_plain: 'Deine Beiträge: %{count}'
+    your_votes: 'Bisherige Stimmen: %{count}'
+    rounds_label: Challenge-Runden
+    round_open: Offen
+    round_results: Ergebnisse
+    round_closed: Abgeschlossen
+    all_rounds: Alle Runden
     admin:
       title: Challenge-Verwaltung
       refresh: Aktualisieren

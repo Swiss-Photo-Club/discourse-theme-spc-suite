@@ -350,6 +350,21 @@ en:
     vote_step_three_body: The photograph with the most valid votes is featured as the monthly winner.
     full_rules: Read the full entry and voting guide
     close: Close
+    read_brief: Read the brief
+    timeline_submit: Submit & vote
+    timeline_now: 'Now · %{left}'
+    timeline_last_day: last day
+    timeline_closes: Round closes
+    timeline_announced: Winner announced
+    timeline_announced_when: 'Early %{month}'
+    your_entries: 'Your entries: %{count} of %{max}'
+    your_entries_plain: 'Your entries: %{count}'
+    your_votes: 'Votes so far: %{count}'
+    rounds_label: Challenge rounds
+    round_open: Open
+    round_results: Results
+    round_closed: Closed
+    all_rounds: All rounds
     admin:
       title: Challenge admin
       refresh: Refresh

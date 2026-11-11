@@ -1,8 +1,14 @@
 import { apiInitializer } from "discourse/lib/api";
 import { ajax } from "discourse/lib/ajax";
+import DiscourseURL from "discourse/lib/url";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
-import { clearHero, ensureHero, uploadUrl } from "../lib/spc-hero";
+import {
+  categorySurface,
+  clearHero,
+  ensureHero,
+  uploadUrl,
+} from "../lib/spc-hero";
 import { currentMonthYM } from "../lib/spc-submit-helpers";
 
 const COMPONENT_SELECTOR = "[data-spc-monthly-challenge]";
@@ -11,7 +17,16 @@ const RENDER_THROTTLE_MS = 200;
 // and the two modules' marker-scoped clears stay disjoint.
 const HERO_MARKER = "challenge";
 const CACHE_TTL_MS = 5 * 60 * 1000;
+// The switcher shows the newest rounds (plus the one being viewed); older
+// rounds are one click away under "All rounds". Each shown round costs one
+// per_page=1 listing for its brief title, so this also caps the requests.
+const SWITCHER_ROUNDS = 3;
+// A round listing is 30 topics a page. Ten pages is far beyond any round so
+// far (September, the largest, is two) and stops a runaway loop.
+const MAX_ROUND_PAGES = 10;
 const topicCache = new Map();
+const roundBriefCache = new Map();
+const roundEntriesCache = new Map();
 
 function translate(key, options = {}) {
   return i18n(themePrefix(`monthly_challenge.${key}`), options);
@@ -349,12 +364,52 @@ export function tagPageUrl(tag) {
     : `/tag/${encodeURIComponent(name)}`;
 }
 
+// A round's own page: the category-scoped tag listing,
+// /tags/c/<category-slug>/<category-id>/<tag-slug>/<tag-id>. Discourse already
+// renders it as the round's masonry grid; Phase C (#7) only links to it and
+// renders the challenge band there. Built from the canonical slug and the
+// numeric id, never the localized name, which 404s as a route key.
+export function roundPageUrl(tag) {
+  const id = typeof tag === "object" ? Number(tag?.id) || 0 : 0;
+  const slug = tagSlug(tag);
+  if (!id || !slug) {
+    return tagPageUrl(tag);
+  }
+  const categoryId = Number(settings.challenge_category_id);
+  const categorySlug = challengeCategorySlug();
+  const categoryPath = categorySlug
+    ? `${encodeURIComponent(categorySlug)}/${categoryId}`
+    : `${categoryId}`;
+  return `/tags/c/${categoryPath}/${encodeURIComponent(slug)}/${id}`;
+}
+
+// The round a URL is the page of, or null. Matches the sort filters too
+// (/l/votes), which is how the round page's own Latest/Votes pills link.
+export function roundFromUrl(url) {
+  const path = new URL(url, window.location.origin).pathname.replace(
+    /\/+$/,
+    ""
+  );
+  const categoryId = Number(settings.challenge_category_id);
+  const match = new RegExp(
+    `^/tags/c/(?:[^/]+/)?${categoryId}/([^/]+)/(\\d+)(?:/l/[^/]+)?$`
+  ).exec(path);
+  if (!match || !/^\d{4}-\d{2}/.test(decodeURIComponent(match[1]))) {
+    return null;
+  }
+  return { slug: decodeURIComponent(match[1]), id: Number(match[2]) };
+}
+
 let categoryTopicsPromise = null;
 let pinnedBriefPromise = null;
+let roundTagsPromise = null;
 
 export function clearPinnedBriefCache() {
   categoryTopicsPromise = null;
   pinnedBriefPromise = null;
+  roundTagsPromise = null;
+  roundBriefCache.clear();
+  roundEntriesCache.clear();
 }
 
 // The challenge renderer and the staff panel mount during the same page load
@@ -399,7 +454,10 @@ function fetchPinnedBrief() {
           ? `/t/${encodeURIComponent(brief.slug)}/${brief.id}`
           : `/t/${brief.id}`,
         tag: tagName(roundTag),
+        tag_slug: tagSlug(roundTag),
+        tag_id: Number(roundTag?.id) || 0,
         tag_page_url: tagPageUrl(roundTag),
+        round_page_url: roundPageUrl(roundTag),
         // The category listing is public even where the topics behind it are
         // not, and it already carries everything the hero needs. Taking it
         // here costs nothing: this response was fetched anyway.
@@ -438,7 +496,10 @@ function deriveChallengeFromBrief(brief) {
     topic_id: brief.topic_id,
     topic_url: brief.topic_url,
     tag: brief.tag,
+    tag_slug: brief.tag_slug,
+    tag_id: brief.tag_id,
     tag_page_url: brief.tag_page_url,
+    round_page_url: brief.round_page_url,
     status: "active",
     start_at: `${year}-${pad(month)}-01T00:00:00+02:00`,
     submission_deadline: `${year}-${pad(month)}-${pad(lastDay)}T23:59:00+02:00`,
@@ -463,6 +524,9 @@ async function resolveActiveChallenge(challenges) {
             ...derived,
             ...override,
             listing: derived.listing,
+            tag_slug: derived.tag_slug,
+            tag_id: derived.tag_id,
+            round_page_url: derived.round_page_url,
             topic_id: Number(override.topic_id) || brief.topic_id,
             status: "active",
           }
@@ -483,10 +547,10 @@ async function resolveActiveChallenge(challenges) {
 // below keeps rounds recorded before the tag existed rendering.
 export const WINNER_TAG = "winner";
 
-let winnerPromise = null;
+let winnersPromise = null;
 
 export function clearWinnerCache() {
-  winnerPromise = null;
+  winnersPromise = null;
 }
 
 // The challenge category's slug, derived from the live category so a slug
@@ -532,78 +596,164 @@ function roundThemeLabel(tag, challenge, briefTitle) {
   return suffix ? suffix.charAt(0).toUpperCase() + suffix.slice(1) : "";
 }
 
-function fetchWinnerTopic() {
-  winnerPromise ||= (async () => {
-    try {
-      const data = await ajax(tagListJsonUrl(WINNER_TAG));
+// Every winner-tagged topic, newest round first. One request serves the
+// band's latest winner, the round switcher's "Results" state and the round
+// pages; the promise is cached until the TTL expiry, failures included —
+// clearing on failure would re-arm the fetch on the next observed mutation.
+function fetchWinners() {
+  winnersPromise ||= ajax(tagListJsonUrl(WINNER_TAG))
+    .then((data) => {
       const users = data?.users || [];
-      const candidates = (data?.topic_list?.topics || [])
-        .map((topic) => ({ topic, roundTag: findRoundTag(topic.tags) }))
-        .filter((entry) => entry.roundTag)
-        // Round tags sort chronologically as strings; newest round wins.
-        .sort((a, b) =>
-          tagName(b.roundTag).localeCompare(tagName(a.roundTag))
-        );
-      const latest = candidates[0];
-      if (!latest) {
-        return null;
-      }
-      const { topic, roundTag } = latest;
-      let briefTitle = "";
-      try {
-        // The brief starts the round before entries are submitted. Read its
-        // public listing title even after staff have unpinned the old round.
-        const round = await ajax(
-          `${tagListJsonUrl(tagSlug(roundTag))}?order=created&ascending=true`
-        );
-        briefTitle = round?.topic_list?.topics?.[0]?.title || "";
-      } catch {
-        // Keep the winner visible if the round listing is unavailable.
-      }
-      const authorId =
-        (topic.posters || []).find((poster) =>
-          (poster.description || "").toLowerCase().includes("original")
-        )?.user_id ?? topic.posters?.[0]?.user_id;
-      const author = users.find((user) => user.id === authorId);
-      return {
-        tag: tagName(roundTag),
-        briefTitle,
-        tagPage: tagPageUrl(roundTag),
-        title: topic.title || topic.fancy_title || "",
-        author: author?.name || author?.username || "",
-        // Topic Voting serializes vote_count onto the same listing the rest
-        // of this record comes from — no extra request. The admin panel's
-        // ranked list reads the identical field.
-        votes: Number(topic.vote_count) || 0,
-        image: topic.image_url || "",
-        url: topic.slug
-          ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
-          : `/t/${topic.id}`,
-      };
-    } catch {
-      // Cached until the TTL expiry, same as the pinned brief — clearing on
-      // failure would re-arm the fetch on the next observed mutation.
-      return null;
-    }
-  })();
-  return winnerPromise;
+      return (
+        (data?.topic_list?.topics || [])
+          .map((topic) => ({ topic, roundTag: findRoundTag(topic.tags) }))
+          .filter((entry) => entry.roundTag)
+          // Round tags sort chronologically as strings; newest round first.
+          .sort((a, b) =>
+            tagSlug(b.roundTag).localeCompare(tagSlug(a.roundTag))
+          )
+          .map(({ topic, roundTag }) => {
+            const authorId =
+              (topic.posters || []).find((poster) =>
+                (poster.description || "").toLowerCase().includes("original")
+              )?.user_id ?? topic.posters?.[0]?.user_id;
+            const author = users.find((user) => user.id === authorId);
+            return {
+              tag: tagName(roundTag),
+              slug: tagSlug(roundTag),
+              tagId: Number(roundTag?.id) || 0,
+              tagPage: tagPageUrl(roundTag),
+              topicId: topic.id,
+              title: topic.title || topic.fancy_title || "",
+              author: author?.name || author?.username || "",
+              // Topic Voting serializes vote_count onto the same listing the
+              // rest of this record comes from — no extra request. The admin
+              // panel's ranked list reads the identical field.
+              votes: Number(topic.vote_count) || 0,
+              image: topic.image_url || "",
+              url: topic.slug
+                ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
+                : `/t/${topic.id}`,
+            };
+          })
+      );
+    })
+    .catch(() => []);
+  return winnersPromise;
+}
+
+// A round's brief is its first-created topic: staff post it to start the
+// round, before any entry exists. per_page=1 makes this a one-topic listing,
+// and it is public even after the brief is unpinned. One cached promise per
+// round, shared by the band, the switcher and the round pages.
+function fetchRoundBrief(slug) {
+  if (!roundBriefCache.has(slug)) {
+    roundBriefCache.set(
+      slug,
+      ajax(`${tagListJsonUrl(slug)}?order=created&ascending=true&per_page=1`)
+        .then((data) => {
+          const topic = data?.topic_list?.topics?.[0];
+          if (!topic) {
+            return null;
+          }
+          return {
+            id: topic.id,
+            title: topic.title || "",
+            excerpt:
+              (topic.excerpt || "")
+                .split(/\r?\n/)
+                .map((line) => line.trim())
+                .find(Boolean) || "",
+            url: topic.slug
+              ? `/t/${encodeURIComponent(topic.slug)}/${topic.id}`
+              : `/t/${topic.id}`,
+          };
+        })
+        .catch(() => null)
+    );
+  }
+  return roundBriefCache.get(slug);
+}
+
+// Every round tag that has topics, newest first, with its numeric id (round
+// page URLs need it) and its topic count (entries + the brief). /tags.json is
+// public and one request covers every round.
+function fetchRoundTags() {
+  roundTagsPromise ||= ajax("/tags.json")
+    .then((data) =>
+      (data?.tags || [])
+        .filter(
+          (tag) => /^\d{4}-\d{2}/.test(tagSlug(tag)) && Number(tag.count) > 0
+        )
+        .map((tag) => ({
+          id: Number(tag.id) || 0,
+          slug: tagSlug(tag),
+          name: tagName(tag),
+          count: Number(tag.count) || 0,
+        }))
+        .sort((a, b) => b.slug.localeCompare(a.slug))
+    )
+    .catch(() => []);
+  return roundTagsPromise;
+}
+
+// Every entry in one round, most votes first, the brief excluded. Pages are
+// fetched once, in sequence, and the whole result is one cached promise per
+// round (observer rule 2) — September alone is two pages.
+function fetchRoundEntries(slug) {
+  if (!roundEntriesCache.has(slug)) {
+    roundEntriesCache.set(
+      slug,
+      (async () => {
+        const topics = new Map();
+        const users = new Map();
+        for (let page = 0; page < MAX_ROUND_PAGES; page++) {
+          const data = await ajax(
+            `${tagListJsonUrl(slug)}?order=votes${page ? `&page=${page}` : ""}`
+          );
+          const batch = data?.topic_list?.topics || [];
+          batch.forEach((topic) => topics.set(topic.id, topic));
+          (data?.users || []).forEach((user) => users.set(user.id, user));
+          if (!batch.length || !data?.topic_list?.more_topics_url) {
+            break;
+          }
+        }
+        const brief = await fetchRoundBrief(slug);
+        topics.delete(brief?.id);
+        return {
+          topics: [...topics.values()].sort(
+            (a, b) => (Number(b.vote_count) || 0) - (Number(a.vote_count) || 0)
+          ),
+          users: [...users.values()],
+        };
+      })().catch(() => null)
+    );
+  }
+  return roundEntriesCache.get(slug);
+}
+
+function winnerRecord(tagged, challenges, briefTitle) {
+  const override = challenges.find((c) => c.tag === tagged.tag);
+  return {
+    tag: tagged.tag,
+    monthName: roundMonthName(tagged.slug),
+    theme: roundThemeLabel(tagged.slug, override, briefTitle),
+    title: override?.winner_title || tagged.title,
+    author: override?.winner_author || tagged.author,
+    votes: tagged.votes,
+    image: uploadUrl(override?.winner_image) || tagged.image,
+    href: override?.gallery_url || tagged.url,
+    entryCount: Number(override?.entry_count) || 0,
+  };
 }
 
 async function resolveLatestWinner(challenges) {
-  const tagged = await fetchWinnerTopic();
+  const tagged = (await fetchWinners())[0];
   if (tagged) {
-    const override = challenges.find((c) => c.tag === tagged.tag);
-    return {
-      tag: tagged.tag,
-      monthName: roundMonthName(tagged.tag),
-      theme: roundThemeLabel(tagged.tag, override, tagged.briefTitle),
-      title: override?.winner_title || tagged.title,
-      author: override?.winner_author || tagged.author,
-      votes: tagged.votes,
-      image: uploadUrl(override?.winner_image) || tagged.image,
-      href: override?.gallery_url || tagged.url,
-      entryCount: Number(override?.entry_count) || 0,
-    };
+    // The brief starts the round before entries are submitted. Read its
+    // public listing title even after staff have unpinned the old round.
+    const brief = await fetchRoundBrief(tagged.slug);
+    return winnerRecord(tagged, challenges, brief?.title);
   }
 
   // Registry-only fallback: the newest archived round, rendered only when
@@ -651,7 +801,20 @@ function isChallengeCategoryUrl(url) {
   return (
     path === `/c/${categoryId}` ||
     path === `/c/${categorySlug}/${categoryId}` ||
-    path.startsWith(`/c/${categorySlug}/${categoryId}/`)
+    path.startsWith(`/c/${categorySlug}/${categoryId}/`) ||
+    Boolean(roundFromUrl(url))
+  );
+}
+
+// "All rounds": the bare category page, which the header link and the
+// homepage door used to point at and which now forwards them to the open
+// round. Sort filters (/l/votes) are deliberate choices and are not matched.
+function isChallengeCategoryRoot(url) {
+  const path = new URL(url, window.location.origin).pathname.replace(/\/+$/, "");
+  const categoryId = Number(settings.challenge_category_id);
+  return (
+    path === `/c/${categoryId}` ||
+    path === `/c/${challengeCategorySlug()}/${categoryId}`
   );
 }
 
@@ -784,34 +947,107 @@ function renderHomeCard(challenge) {
   setHomeCardCover(card, challenge);
 }
 
+function daysLeftText(challenge) {
+  const deadline = validDate(challenge.submission_deadline);
+  // floor, not ceil: the deadline is 23:59 on the last day, so flooring
+  // the difference counts calendar days with today as day zero — on
+  // August 7 a deadline of August 31 reads "24 days left". ceil counted
+  // the rest of today as a full day and was one high all month.
+  const daysLeft = deadline
+    ? Math.floor((deadline.getTime() - Date.now()) / 86_400_000)
+    : 0;
+  if (daysLeft <= 0) {
+    return "";
+  }
+  // Two flat keys rather than a pluralized one: Discourse flattens theme
+  // translations, so one:/other: subkeys do not survive to the client.
+  return daysLeft === 1
+    ? translate("days_left_one")
+    : translate("days_left", { count: daysLeft });
+}
+
 function deadlineText(challenge, state) {
   if (state === "submissions-open" && challenge.submission_deadline) {
     const dateText = translate("open_deadlines", {
       date: formatDate(challenge.submission_deadline),
     });
-    const deadline = validDate(challenge.submission_deadline);
-    // floor, not ceil: the deadline is 23:59 on the last day, so flooring
-    // the difference counts calendar days with today as day zero — on
-    // August 7 a deadline of August 31 reads "24 days left". ceil counted
-    // the rest of today as a full day and was one high all month.
-    const daysLeft = deadline
-      ? Math.floor((deadline.getTime() - Date.now()) / 86_400_000)
-      : 0;
-    if (daysLeft <= 0) {
-      return dateText;
-    }
-    // Two flat keys rather than a pluralized one: Discourse flattens theme
-    // translations, so one:/other: subkeys do not survive to the client.
-    const daysText =
-      daysLeft === 1
-        ? translate("days_left_one")
-        : translate("days_left", { count: daysLeft });
-    return `${daysText} · ${dateText}`;
+    const daysText = daysLeftText(challenge);
+    return daysText ? `${daysText} · ${dateText}` : dateText;
   }
   if (state === "closed") {
     return translate("voting_closed");
   }
   return "";
+}
+
+// The open round's three steps (Phase C, #7): submit and vote through the
+// month, the round closes on its last day, the winner is announced early the
+// next month. Dates come from the round's calendar month in the challenge
+// timezone — the start is anchored at noon UTC on the 1st, because the
+// derived start_at carries a fixed +02:00 offset that reads as the 31st of
+// the previous month once Zurich is back on winter time.
+function timelineMarkup(challenge) {
+  const match = /^(\d{4})-(\d{2})/.exec(challenge.tag_slug || challenge.tag || "");
+  const deadline = validDate(challenge.submission_deadline);
+  if (!match || !deadline) {
+    return "";
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const start = new Date(Date.UTC(year, month - 1, 1, 12));
+  const nextMonth = new Date(Date.UTC(year, month, 15, 12));
+  const dayMonth = localizedDateFormat({ day: "numeric", month: "long" });
+  let range;
+  try {
+    range = dayMonth.formatRange(start, deadline);
+  } catch {
+    range = `${dayMonth.format(start)} – ${dayMonth.format(deadline)}`;
+  }
+  const left = daysLeftText(challenge);
+  const steps = [
+    {
+      title: translate("timeline_submit"),
+      when: range,
+      now: translate("timeline_now", { left: left || translate("timeline_last_day") }),
+    },
+    { title: translate("timeline_closes"), when: dayMonth.format(deadline) },
+    {
+      title: translate("timeline_announced"),
+      when: translate("timeline_announced_when", {
+        month: localizedDateFormat({ month: "long" }).format(nextMonth),
+      }),
+    },
+  ];
+  return `<ol class="spc-challenge-band__timeline">${steps
+    .map(
+      (step) => `<li${step.now ? ' class="is-now"' : ""}>
+        <strong>${escapeHtml(step.title)}</strong>
+        <span>${escapeHtml(step.when)}</span>
+        ${step.now ? `<em>${escapeHtml(step.now)}</em>` : ""}
+      </li>`
+    )
+    .join("")}</ol>`;
+}
+
+// "Your entries: 2 of 3 · 4 votes so far" — the open round only, signed-in
+// members with at least one entry, and deliberately no rank while voting runs.
+function mineMarkup(mine) {
+  if (!mine?.count) {
+    return "";
+  }
+  const max = Number(settings.challenge_max_entries_per_round) || 0;
+  const heading = max
+    ? translate("your_entries", { count: mine.count, max })
+    : translate("your_entries_plain", { count: mine.count });
+  return `<div class="spc-challenge-band__mine">
+    ${mine.images
+      .map((image) => `<img src="${escapeHtml(image)}" alt="">`)
+      .join("")}
+    <span class="spc-challenge-band__mine-text">
+      <strong>${escapeHtml(heading)}</strong>
+      <span>${escapeHtml(translate("your_votes", { count: mine.votes }))}</span>
+    </span>
+  </div>`;
 }
 
 // The band: one navy strip holding this month's challenge on the left and
@@ -828,7 +1064,7 @@ function deadlineText(challenge, state) {
 // This category is NOT gated by enable_category_hero and must not be: the
 // band is part of the route-map, permalink and route:new-topic stack behind
 // /submit, and a half-enabled state breaks photo submission.
-function renderChallengeBand(challenge, winner) {
+function renderChallengeBand(challenge, winner, mine = null) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const title = challengeTitle(challenge);
@@ -860,6 +1096,8 @@ function renderChallengeBand(challenge, winner) {
     title,
     summary,
     deadline,
+    challenge.topic?.url,
+    mine ? [mine.count, mine.votes, ...mine.images].join("|") : "",
     hasWinner
       ? [
           winner.tag,
@@ -925,9 +1163,23 @@ function renderChallengeBand(challenge, winner) {
       </div>
       <h1 id="spc-hero-title">${escapeHtml(title)}</h1>
       ${summary ? `<p class="spc-challenge-band__summary">${escapeHtml(summary)}</p>` : ""}
-      ${deadline ? `<p class="spc-challenge-band__deadline">${escapeHtml(deadline)}</p>` : ""}
+      ${
+        isOpen
+          ? timelineMarkup(challenge)
+          : deadline
+            ? `<p class="spc-challenge-band__deadline">${escapeHtml(deadline)}</p>`
+            : ""
+      }
+      ${isOpen ? mineMarkup(mine) : ""}
       <div class="spc-hero__actions">
         ${primaryAction}
+        ${
+          challenge.topic?.url
+            ? `<a class="spc-button spc-button--secondary" href="${escapeHtml(
+                challenge.topic.url
+              )}">${escapeHtml(translate("read_brief"))}</a>`
+            : ""
+        }
         <button class="spc-button spc-button--secondary" type="button" data-spc-open-voting>${escapeHtml(
           translate("how_voting_works")
         )}</button>
@@ -948,6 +1200,140 @@ function renderChallengeBand(challenge, winner) {
         : ""
     }
   `;
+}
+
+// The rounds the switcher lists: the newest SWITCHER_ROUNDS, plus the round
+// being viewed when it is older than those. Labels come from the month and
+// the brief's title through roundThemeLabel(); URLs from the canonical slug
+// and the tag id, never the localized name.
+async function switcherRounds(challenges, pageRound) {
+  const [tags, winners] = await Promise.all([fetchRoundTags(), fetchWinners()]);
+  const shown = tags.slice(0, SWITCHER_ROUNDS);
+  const viewed = pageRound && tags.find((tag) => tag.id === pageRound.id);
+  if (viewed && !shown.includes(viewed)) {
+    shown.push(viewed);
+  }
+  const briefs = await Promise.all(shown.map((tag) => fetchRoundBrief(tag.slug)));
+  const current = currentMonthYM();
+  return shown.map((tag, index) => {
+    const month = tag.slug.slice(0, 7);
+    return {
+      id: tag.id,
+      url: roundPageUrl(tag),
+      theme: roundThemeLabel(
+        tag.slug,
+        challenges.find((c) => c.tag === tag.name || c.tag === tag.slug),
+        briefs[index]?.title
+      ),
+      month: monthLabel({ tag: tag.slug }),
+      // The tag count includes the brief, which is not an entry.
+      entries: Math.max(0, tag.count - (briefs[index] ? 1 : 0)),
+      state:
+        month >= current
+          ? "open"
+          : winners.some((winner) => winner.tagId === tag.id)
+            ? "results"
+            : "closed",
+    };
+  });
+}
+
+// Inside the category surface, under the band and above Discourse's list
+// controls — never between the controls and the list. Our own element,
+// marked with COMPONENT_SELECTOR so repairLegacyCategoryLinks skips it.
+function renderRoundSwitcher(rounds, pageRound) {
+  const surface = categorySurface();
+  if (!surface || !rounds.length) {
+    return;
+  }
+  const signature = JSON.stringify([rounds, pageRound?.id || 0, localeCode()]);
+  let nav = surface.querySelector(".spc-rounds-nav");
+  if (nav?.dataset.spcChallengeSignature === signature) {
+    return;
+  }
+  if (!nav) {
+    nav = document.createElement("nav");
+    nav.className = "spc-rounds-nav";
+    nav.dataset.spcMonthlyChallenge = "rounds";
+    surface.append(nav);
+  }
+  nav.dataset.spcChallengeSignature = signature;
+  nav.setAttribute("aria-label", translate("rounds_label"));
+  nav.innerHTML = `${rounds
+    .map((round) => {
+      const current = pageRound?.id === round.id;
+      return `<a class="spc-rounds-nav__round${current ? " is-current" : ""}" href="${escapeHtml(
+        round.url
+      )}"${current ? ' aria-current="page"' : ""}>
+        <strong>${escapeHtml(round.theme)} <span class="spc-rounds-nav__state spc-rounds-nav__state--${round.state}">${escapeHtml(
+          translate(`round_${round.state}`)
+        )}</span></strong>
+        <span>${escapeHtml(round.month)} · ${escapeHtml(
+          translate("entries", { count: round.entries })
+        )}</span>
+      </a>`;
+    })
+    .join("")}
+    <a class="spc-rounds-nav__all${pageRound ? "" : " is-current"}" href="${escapeHtml(
+      categoryRoute()
+    )}"${pageRound ? "" : ' aria-current="page"'}>${escapeHtml(translate("all_rounds"))} →</a>`;
+}
+
+// A closed round shown on its own page: the band carries that round's brief
+// and that round's winner instead of the open round's.
+async function resolvePastRound(pageRound, challenges) {
+  const [brief, winners] = await Promise.all([
+    fetchRoundBrief(pageRound.slug),
+    fetchWinners(),
+  ]);
+  const tagged = winners.find((winner) => winner.tagId === pageRound.id);
+  return {
+    challenge: {
+      tag: pageRound.slug,
+      tag_slug: pageRound.slug,
+      status: "archived",
+      topic_id: brief?.id || 0,
+      topic: {
+        title: brief?.title || roundThemeLabel(pageRound.slug),
+        summary: brief?.excerpt || "",
+        url: brief?.url || "",
+        updatedAt: "round",
+      },
+    },
+    winner: tagged ? winnerRecord(tagged, challenges, brief?.title) : null,
+  };
+}
+
+async function yourEntries(challenge, user) {
+  if (!user) {
+    return null;
+  }
+  const round = await fetchRoundEntries(challenge.tag_slug || challenge.tag);
+  // posters[0] is the original poster in every Discourse listing; its
+  // description string is localized, so it is not matched.
+  const mine = (round?.topics || []).filter(
+    (topic) => topic.posters?.[0]?.user_id === user.id
+  );
+  if (!mine.length) {
+    return null;
+  }
+  return {
+    count: mine.length,
+    votes: mine.reduce((sum, topic) => sum + (Number(topic.vote_count) || 0), 0),
+    images: mine
+      .map((topic) => topic.image_url)
+      .filter(Boolean)
+      .slice(0, 3),
+  };
+}
+
+function isOpenRoundPage(pageRound, active) {
+  return Boolean(
+    pageRound &&
+      (pageRound.id === active.tag_id ||
+        pageRound.slug === active.tag_slug ||
+        pageRound.slug === active.tag)
+  );
 }
 
 function archivedChallenges(challenges) {
@@ -1122,7 +1508,10 @@ function repairLegacyCategoryLinks() {
       return;
     }
     const pathname = new URL(link.href, window.location.origin).pathname;
-    if (pathname.startsWith(brokenPrefix)) {
+    // A round page carries the tag's numeric id and is a valid route; only
+    // the old name-only form is broken. Without this exclusion the round
+    // page's own Latest/Votes pills were rewritten to the category.
+    if (pathname.startsWith(brokenPrefix) && !roundFromUrl(link.href)) {
       link.href = categoryRoute();
     }
   });
@@ -1169,7 +1558,7 @@ const spcRun = (api) => {
     clearHero(HERO_MARKER);
     document
       .querySelectorAll(
-        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner"
+        ".spc-challenge-brief, .spc-challenge-education, .spc-challenge-archive, .spc-challenge-current, .spc-challenge-winner, .spc-rounds-nav"
       )
       .forEach((element) => element.remove());
   }
@@ -1214,13 +1603,30 @@ const spcRun = (api) => {
     // The band shows only the latest winner. One tag-listing request
     // resolves it (cached, TTL-expired) instead of fetching every
     // historical challenge topic on each visit to the category.
-    const winner = await resolveLatestWinner(challenges);
+    const pageRound = roundFromUrl(window.location.href);
+    let shown = active;
+    let winner;
+    if (pageRound && !isOpenRoundPage(pageRound, active)) {
+      const past = await resolvePastRound(pageRound, challenges);
+      shown = past.challenge;
+      winner = past.winner;
+    } else {
+      winner = await resolveLatestWinner(challenges);
+    }
+    const mine =
+      shown === active ? await yourEntries(active, api.getCurrentUser()) : null;
     if (request !== renderRequest) {
       return;
     }
 
-    renderChallengeBand(active, winner);
-    hideOfficialTopicRow(active);
+    renderChallengeBand(shown, winner, mine);
+    hideOfficialTopicRow(shown);
+
+    const rounds = await switcherRounds(challenges, pageRound);
+    if (request !== renderRequest) {
+      return;
+    }
+    renderRoundSwitcher(rounds, pageRound);
   }
 
   // Throttled on a timer rather than requestAnimationFrame. The observer at the
@@ -1242,6 +1648,45 @@ const spcRun = (api) => {
       });
     }, RENDER_THROTTLE_MS);
   }
+
+  // The header's "Monthly Challenge" link and the homepage door lead to the
+  // open round's page (#7). Intercepted at click time rather than rewritten
+  // on load, so pages that show no challenge content still make zero
+  // challenge requests; the hrefs stay /c/<id>, which is what a middle-click
+  // or a copied link gets: "All rounds". /c/<id> itself never redirects —
+  // the /submit route stack runs through it.
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+      const link = event.target.closest?.("a[href]");
+      if (
+        !link ||
+        !link.closest(
+          ".custom-header-links, .featured-categories__category-container"
+        ) ||
+        !isChallengeCategoryRoot(link.href)
+      ) {
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const fallback = link.getAttribute("href");
+      fetchPinnedBrief()
+        .then((brief) => DiscourseURL.routeTo(brief?.round_page_url || fallback))
+        .catch(() => DiscourseURL.routeTo(fallback));
+    },
+    { capture: true }
+  );
 
   document.addEventListener("click", async (event) => {
     if (event.target.closest("[data-spc-submit-photo]")) {

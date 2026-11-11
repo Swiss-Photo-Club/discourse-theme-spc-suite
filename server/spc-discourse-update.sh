@@ -13,8 +13,15 @@ docker exec --user discourse --env RAILS_ENV=production --workdir /var/www/disco
 python3 -m json.tool /etc/spc-discourse-alert.json.new >/dev/null
 mv /etc/spc-discourse-alert.json.new /etc/spc-discourse-alert.json
 
+# Keep images used by containers; remove unused images before checking free space.
+docker image prune --all --force
+
 # Leave room for the backup, database dump and replacement Docker image.
-[[ $(df --output=avail -B1 /var/discourse | tail -1) -ge 10737418240 ]]
+available_bytes=$(df --output=avail -B1 /var/discourse | tail -1)
+if (( available_bytes < 10737418240 )); then
+  printf 'ERROR: Low disk space on /var/discourse after image cleanup: %s MiB available; 10240 MiB (10 GiB) required. Backup and update aborted.\n' "$((available_bytes / 1048576))" >&2
+  exit 1
+fi
 marker=$(mktemp)
 trap 'rm -f "$marker"' EXIT
 docker exec --user discourse --env RAILS_ENV=production --workdir /var/www/discourse app bundle exec ruby script/discourse backup

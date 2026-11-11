@@ -6,12 +6,16 @@ local database-and-uploads backup using Discourse's CLI, checks that a fresh arc
 and passes `gzip -t`, then runs `/var/discourse/launcher rebuild app`. This rebuild runs
 on each scheduled run, even if no new release exists, and causes downtime. It follows the configured
 Discourse release channel (`latest` at installation), including configured plugins.
-An HTTPS check against the local server must pass afterwards.
+An HTTPS check against the local server must pass afterwards. Before checking disk space,
+the job runs `docker image prune --all --force` to remove unused images, including obsolete
+Discourse base images. Images referenced by any container are retained; backups and uploads
+are untouched. A removed base image is downloaded again if a later rebuild needs it.
 
 The existing Discourse backup retention applies (five backups at installation), so these
 backups shorten the previous weekly history. Backups are on the same
 server; this job does not add offsite storage. A failed backup or less than 10 GiB free disk
-space blocks the rebuild. A failed service triggers a host Python SMTP alert to
+space after cleanup blocks the rebuild, with the available and required space logged.
+A failed service triggers a host Python SMTP alert to
 **altun@swissphotoclub.com**, with up to three delivery attempts. The alert service also
 asks Docker to start the existing container, which can recover from a failed bootstrap.
 It does not restore the database or promise automatic rollback after migrations.

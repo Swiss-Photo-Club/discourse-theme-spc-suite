@@ -74,8 +74,9 @@ both, with de/fr translated — a new setting therefore adds its description in 
 (`settings.yml`, `en.yml`, `de.yml`, `fr.yml`).
 
 **Renaming a CSS class can break behaviour with no visual symptom.**
-`spc-photo-submit.js` matches `.spc-hero__actions .spc-button--primary` to route the hero's
-primary button to `/submit`. Miss that selector in a rename and the page still looks perfect
+`spc-photo-submit.js` matches `.spc-hero--challenge .spc-hero__actions
+.spc-button--primary[data-spc-submit-photo]` to route the challenge band's submit button to
+`/submit` (the attribute keeps a closed round's "View entries" anchor out of it). Miss that selector in a rename and the page still looks perfect
 while the button silently does nothing — a pixel-for-pixel check of category 6 passes. Grep the
 JS for any class you rename, and verify renames by *clicking*, not by looking. This is also why
 a rename should never share a commit with an import-order change: the two failure modes are

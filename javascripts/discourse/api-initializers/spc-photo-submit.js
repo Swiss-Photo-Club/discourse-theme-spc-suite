@@ -141,8 +141,12 @@ const spcRun = (api) => {
   // the button renders, the label is right, the click just goes somewhere
   // else. Verify this by clicking category 6's submit button, never by looking
   // at it.
+  //
+  // And narrowed again to [data-spc-submit-photo]: a closed round's band
+  // carries a primary "View entries" anchor in the same slot, and since every
+  // past round got its own page (Phase C) that anchor was sent to /submit too.
   const CHALLENGE_PRIMARY =
-    ".spc-hero--challenge .spc-hero__actions .spc-button--primary";
+    ".spc-hero--challenge .spc-hero__actions .spc-button--primary[data-spc-submit-photo]";
 
   const clickHandler = (e) => {
     const el = e.target.closest?.(`#create-topic, ${CHALLENGE_PRIMARY}`);

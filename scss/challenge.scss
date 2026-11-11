@@ -1035,6 +1035,14 @@ body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote {
   background: var(--spc-coral);
 }
 
+/* The brief is not an entry (Phase C, #7): no vote on its own page. The
+   body class is set by markBriefTopic() in spc-monthly-challenge.js; one
+   class more than the rule above, so this wins its !important. */
+body.spc-challenge-brief-topic.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote,
+body.spc-challenge-brief-topic.category-monthly-challenge.archetype-regular #topic-title .voting-wrapper {
+  display: none !important;
+}
+
 body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__button,
 body.category-monthly-challenge.archetype-regular #post_1 .spc-mobile-vote .voting-wrapper__count {
   display: inline-flex;

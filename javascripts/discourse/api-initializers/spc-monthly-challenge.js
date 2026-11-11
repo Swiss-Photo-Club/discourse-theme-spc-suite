@@ -1563,12 +1563,39 @@ const spcRun = (api) => {
       .forEach((element) => element.remove());
   }
 
+  // The brief is not an entry (#7), so its own topic page offers no vote.
+  // A brief is its round's first-created topic; the one-topic listing that
+  // says so is fetched only on challenge topic pages, and cached. The class
+  // goes on <body>, which core manages class by class rather than wholesale.
+  async function markBriefTopic() {
+    const onChallengeTopic =
+      document.body.classList.contains("category-monthly-challenge") &&
+      document.body.classList.contains("archetype-regular");
+    const topic = onChallengeTopic
+      ? api.container.lookup("controller:topic")?.model
+      : null;
+    const roundTag = findRoundTag(topic?.tags);
+    const brief = roundTag ? await fetchRoundBrief(tagSlug(roundTag)) : null;
+    const current = api.container.lookup("controller:topic")?.model;
+    document.body.classList.toggle(
+      "spc-challenge-brief-topic",
+      Boolean(
+        brief &&
+          topic &&
+          current === topic &&
+          brief.id === topic.id &&
+          document.body.classList.contains("archetype-regular")
+      )
+    );
+  }
+
   async function render() {
     const request = ++renderRequest;
 
     // Needs no challenge data, so it runs before the gate below.
     repairLegacyCategoryLinks();
     repairInternalHeaderLinks();
+    markBriefTopic().catch(() => {});
 
     if (!needsChallengeData()) {
       clearChallengeSections();
@@ -1603,18 +1630,19 @@ const spcRun = (api) => {
     // The band shows only the latest winner. One tag-listing request
     // resolves it (cached, TTL-expired) instead of fetching every
     // historical challenge topic on each visit to the category.
+    // The band's two remaining inputs are independent, so they are fetched
+    // together rather than one after the other.
     const pageRound = roundFromUrl(window.location.href);
-    let shown = active;
-    let winner;
-    if (pageRound && !isOpenRoundPage(pageRound, active)) {
-      const past = await resolvePastRound(pageRound, challenges);
-      shown = past.challenge;
-      winner = past.winner;
-    } else {
-      winner = await resolveLatestWinner(challenges);
-    }
-    const mine =
-      shown === active ? await yourEntries(active, api.getCurrentUser()) : null;
+    const showsOpenRound = !pageRound || isOpenRoundPage(pageRound, active);
+    const [{ challenge: shown, winner }, mine] = await Promise.all([
+      showsOpenRound
+        ? resolveLatestWinner(challenges).then((latest) => ({
+            challenge: active,
+            winner: latest,
+          }))
+        : resolvePastRound(pageRound, challenges),
+      showsOpenRound ? yourEntries(active, api.getCurrentUser()) : null,
+    ]);
     if (request !== renderRequest) {
       return;
     }

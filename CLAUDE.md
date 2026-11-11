@@ -158,6 +158,15 @@ rounds of diagnosis because every size check passed: the image's height equalled
 `rowHeight − thumbnail − footer` was zero, and the photo metadata matched its files. All true, and
 all blind to an element translated out of view. The check that finds it in one pass is
 `img.getBoundingClientRect().top − thumb.getBoundingClientRect().top`, which should be `0`.
+Select the photo as `img:not(.background-thumbnail)`: the thumbnail box also holds a blurred
+backdrop copy at `top: -8px; height: 150%`, and a bare `querySelector("img")` finds that one
+first and reports −8 on every card of every category.
+
+**Round pages are part of the challenge page set (Phase C, 2026-11-11).**
+`/tags/c/<cat-slug>/6/<tag-slug>/<tag-id>` is each round's page; `roundFromUrl()` recognises
+it and `isChallengeCategoryUrl()` includes it, so the band, the round switcher, the results view
+and the rank badges render there. Rank badges are a `data-spc-rank` attribute on the thumbnail box
+drawn by `::before` at `z-index: 3` (the photo is 2) — never an element inserted into a row.
 
 **Never `display: none` anything the component has measured** — not a row, not a box inside a row.
 Topic List Thumbnails measures and positions once and does not re-run on DOM changes: verified by

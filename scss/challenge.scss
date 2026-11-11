@@ -442,7 +442,9 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  /* Topic List Thumbnails gives the photo z-index 2, and the photo comes
+     after ::before in the box, so an equal value paints the chip under it. */
+  z-index: 3;
 }
 
 .spc-rank--1,

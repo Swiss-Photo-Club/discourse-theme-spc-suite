@@ -26,10 +26,16 @@ module SpcChallengeResults
     raw.to_s.split(/\n\s*\n/).map(&:strip).find { |p| p.match?(/\A[[:alnum:]*_“"«]/) }
   end
 
-  # Wrapped in a link, so a click opens the page, not the full-size file.
+  # Wrapped in a link, so a click opens the page, not the full-size file. A
+  # linked image loses Discourse's lightbox sizing, so cap it ourselves.
   def self.image(topic, href)
-    upload = topic.image_upload
-    upload && "[![#{esc(topic.title)}|#{upload.width}x#{upload.height}](#{upload.short_url})](#{href})"
+    upload = topic.image_upload or return nil
+    "[![#{esc(topic.title)}|#{fit(upload.width, upload.height)}](#{upload.short_url})](#{href})"
+  end
+
+  def self.fit(width, height, max_w = 600, max_h = 500)
+    scale = [max_w.fdiv(width), max_h.fdiv(height), 1].min
+    "#{(width * scale).round}x#{(height * scale).round}"
   end
 
   # No ranking table: a tie at the top would raise "why that one?". Winner,

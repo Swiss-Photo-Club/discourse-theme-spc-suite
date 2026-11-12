@@ -122,7 +122,8 @@ module SpcChallengeResults
   # link to every entry, then the round that is open now.
   def self.announcement(round)
     w = round[:winner]
-    title = "#{month(round[:month], "en")} results: #{round[:theme]}"
+    n = round[:next]
+    title = "#{month(round[:month], "en")} winner announced#{", #{month(n[:month], "en")} Challenge: #{n[:theme]}" if n}"
     raw = [
       "**Monthly Challenge · #{month_year(round[:month], "en")}**",
       "#{round[:ranked].size} photos entered, #{votes(round[:votes], "en")} cast. Thank you to everyone who took part and voted.",

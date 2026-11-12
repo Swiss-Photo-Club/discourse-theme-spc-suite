@@ -30,7 +30,8 @@ round = { month: "2026-09", theme: "Frame in Frame", url: "https://x/tags/c/mont
                   submit_url: "https://x/submit", intro: { "en" => "Show us contrast.", "de" => "Zeig uns Kontraste.", "fr" => "Montrez le contraste." } } }
 
 title, raw = R.announcement(round)
-check "announcement title", title, "September results: Frame in Frame"
+check "announcement title", title, "September winner announced, October Challenge: Juxtaposition"
+check "title without open round", R.announcement(round.merge(next: nil))[0], "September winner announced"
 check "announcement totals", raw.include?("11 photos entered, 60 votes cast."), true
 check "no ranking table", raw.include?("|--"), false
 check "winner and link", raw.include?("**Winner:** [Entry 0](/t/e/100) · Author 0\n\n**[See all 11 entries](https://x/tags/c/monthly-challenge/6/frame/9)**"), true
@@ -55,4 +56,4 @@ check "fr subject", subject, "Votre résultat pour « Frame in Frame » : 4e sur
 check "fr month", body.include?("au défi de septembre."), true
 
 check "no next round", R.announcement(round.merge(next: nil))[1].include?("Now open"), false
-puts "25 challenge results checks passed"
+puts "26 challenge results checks passed"

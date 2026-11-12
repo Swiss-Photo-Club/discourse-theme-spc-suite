@@ -413,7 +413,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <tr><td class="n">7</td><td><a href="#r7">One page per round</a> on the existing tag pages, with a round switcher and the brief as a banner</td><td>3</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
     <tr><td class="n">8</td><td><a href="#r8">Results view</a> for closed rounds: winner header, rank badges, "Your result"</td><td>3, 4</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
     <tr><td class="n">9</td><td><a href="#r9">All-rounds archive</a>, one card per round</td><td>2, 3</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
-    <tr><td class="n">10</td><td><a href="#r10">Results for everyone</a> as an emailed Announcements topic, plus a personal rank message to entrants</td><td>4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></td><td>A <span class="pill p-done">Done 30 Oct</span>, then D · early November</td></tr>
+    <tr><td class="n">10</td><td><a href="#r10">Results for everyone</a> as an emailed Announcements topic, plus a personal rank message to entrants</td><td>4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></td><td>A <span class="pill p-done">Done 30 Oct</span>, D <span class="pill p-done">Done 12 Nov</span></td></tr>
     <tr><td class="n">11</td><td><a href="#r11">Homepage</a>: visitor hero with trust points, three doors, named photo rows</td><td>1, 2, 5</td><td><span class="pill p-theme">Theme</span></td><td>E · last</td></tr>
     <tr><td class="n">12</td><td><a href="#r12">Membership status</a>: badge now, dates when spc-be exposes them</td><td>5</td><td><span class="pill p-theme">Theme</span> <span class="pill p-server">spc-be</span></td><td>Later</td></tr>
   </tbody>
@@ -859,8 +859,9 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 <h2><span class="eyebrow">Phase D</span>Server: tell entrants their result</h2>
 
 <div class="rec" id="r10">
-  <h3>10 · Results for everyone, and a personal rank for entrants <span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></h3>
+  <h3>10 · Results for everyone, and a personal rank for entrants <span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span> <span class="pill p-done">Done 12 Nov</span></h3>
   <div class="callout ok"><b>Step 1 found already live, 30 October 2026; no change made.</b> Announcements (5) is in <code>default categories watching first post</code> (value <code>13|5</code>, with Live-Webinare), and all 24 members sampled have category 5 on that level, so every new Announcements topic already notifies, and emails, every member through their own preferences. Discourse does not allow one category in two default lists, and full "watching" would add an email for every reply, so Oğuzhan decided to keep first-post watching. <code>default categories watching</code> stays empty. Verified by reading <code>/admin/site_settings.json</code> and the users' <code>watched_first_post_category_ids</code>.</div>
+  <div class="callout ok"><b>Shipped 12 November 2026.</b> Script <code>server/challenge-results.rb</code>, final version <code>dc6b066</code> (first cut <code>b83be43</code>), with its test, <code>spc-challenge-results.service</code>/<code>.timer</code> and a section in <code>server/README.md</code>; deployed like the vote reset. Each hour it finds rounds whose month is over, with exactly one <code>winner</code>-tagged entry crowned at least two hours ago and no <code>spc_results_announced</code> field on the brief; it sets that field first, then posts one Announcements topic as <code>spc_admin</code>. <b>Changed from the plan after reviewing test emails with Oğuzhan:</b> no ranking table (a tie at the top would make the crown look arbitrary), the winner and "See all N entries" only, then a "Now open" block for the current round — the brief's photo and opening paragraph, its title linked to the round page, "Enter your photo →" and "See the challenge →"; title "October winner announced, November Challenge: Autumn Moods"; photos link to their pages and use a 600×500 resized copy, because Discourse's email formatter drops the size of any image over 320×480. <b>Step 3 is dropped for now</b>, by decision: no personal message per entrant, who see their rank on the round page (#8). The en/de/fr message code exists in <code>ed5a907</code>. Mockup B below is therefore not sent. Email link colour was set by Oğuzhan in site settings. <b>Run:</b> August and September were marked announced without posting (<code>SPC_MARK_BEFORE=2026-10</code>, briefs 46 and 88); October posted as <a href="https://community.swissphotoclub.com/t/318">topic 318</a>, 13 entries, 23 votes, winner Ombre et lumière. <b>Verified:</b> four rehearsals with <code>SPC_TEST_EMAIL</code> to osan, the last one checked in Gmail; topic 318 read back as category 5, by spc_admin, no tags, both photos linked to the winning entry and the November round page, every link correct; the timer is enabled (hourly), its first run and a second dry run both report nothing to announce.</div>
   <p class="src">From: Challenge report 4.2, fotocommunity report #3. Decided 25 October: everyone hears the results, not only entrants.</p>
   <p><b>How Discourse emails all members.</b> Discourse has no "email everyone" button, but it has the equivalent: every member who <em>watches</em> a category, or watches its first posts, gets an email for each new topic in it. The site setting <code>default categories watching first post</code> makes a category watched that way for everyone, and when you change it Discourse offers to apply it to all existing users as well. Announcements is already set there, so every topic posted there reaches every member's inbox, through their own notification settings, so people who turned emails off stay off. The club newsletter in spc-be stays the channel for non-members.</p>
   <ul>
@@ -874,7 +875,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <div class="mail__meta"><b>SPC Community</b> &lt;noreply@community.swissphotoclub.com&gt;<br>Subject: <b>[SPC Community] [Announcements] September results: Frame in Frame</b></div>
     <div class="mail__head"><div class="k">Monthly Challenge · September 2026</div><h5>Frame in Frame: the results are in</h5></div>
     <div class="mail__body">
-      <p>37 photos entered, 86 votes cast. Thank you to everyone who took part and voted.</p>
+      <p>36 photos entered, 84 votes cast. Thank you to everyone who took part and voted.</p>
       <div class="mail__res">
         <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/2fd3e8b63d40d5fd5dec5c673f8fca8b5dca0b38_2_682x1024.jpeg" alt="">
         <div><strong>Winner</strong><span>"Where Time Stood Still" · Katharina Michels · 16 votes</span></div>
@@ -883,21 +884,21 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
         <tr><td>2</td><td>Key to Heaven · Bernard Menettrier de Jollin</td><td>9 votes</td></tr>
         <tr><td>3</td><td>Havin' a smoke · Mario Widmer</td><td>7 votes</td></tr>
       </table>
-      <p><a class="btn btn--primary">See all 37 entries, ranked</a></p>
+      <p><a class="btn btn--primary">See all 36 entries, ranked</a></p>
       <p>Entered this round? Your own rank is on the results page. October's theme is <b>Juxtaposition</b>, open until 31 October.</p>
     </div>
     <div class="mail__foot">Sent because you watch the Announcements category. Change how SPC Community emails you in your preferences.</div>
   </div>
   <div class="frame__label"><b>Mockup B</b> · the personal message to an entrant, in their language</div>
   <div class="mail">
-    <div class="mail__meta"><b>SPC Bot</b> &lt;operator@swissphotoclub.com&gt;<br>Subject: <b>Your result in "Frame in Frame": =5th of 37</b></div>
+    <div class="mail__meta"><b>SPC Bot</b> &lt;operator@swissphotoclub.com&gt;<br>Subject: <b>Your result in "Frame in Frame": =5th of 36</b></div>
     <div class="mail__head"><div class="k">Monthly Challenge · September 2026</div><h5>Frame in Frame: the results are in</h5></div>
     <div class="mail__body">
       <p>Hi Renato,</p>
-      <p>Thank you for entering September's challenge. 37 photos were entered and members cast 86 votes. Here's how yours did:</p>
+      <p>Thank you for entering September's challenge. 36 photos were entered and members cast 84 votes. Here's how yours did:</p>
       <div class="mail__res">
         <img src="https://community.swissphotoclub.com/uploads/default/optimized/1X/1833e28aa5c619e07291462c17f6db9ce4d100ae_2_768x1024.jpeg" alt="">
-        <div><strong>=5th of 37</strong><span>"Paradies" · 4 votes · shared with 4 other entries</span></div>
+        <div><strong>=5th of 36</strong><span>"Paradies" · 4 votes · shared with 4 other entries</span></div>
       </div>
       <table class="mail__top">
         <tr><td>1</td><td>Where Time Stood Still · Katharina Michels</td><td>16 votes</td></tr>
@@ -1051,7 +1052,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
   <div class="phase"><h4>A · Admin</h4><small>Done 30 October</small><ul><li>Sort 6 and 12 by Created ✓</li><li>Unpin placeholders ✓</li><li>One name per place, nav order ✓</li><li><code>max_tag_length</code> 40 ✓</li><li>Announcements watched by default ✓ (already live)</li></ul></div>
   <div class="phase"><h4>B · Simplify</h4><small>Done 30 October</small><ul><li>Compact header, one button ✓</li><li>Needs-feedback strip ✓, then sort 7 ✓</li><li>Leaderboard gate ✓</li><li>One card format ✓</li></ul></div>
   <div class="phase"><h4>C · Rounds</h4><small>Done 11 November</small><ul><li>Round pages and switcher ✓</li><li>Brief as banner, out of ranks ✓</li><li>Results view, Your result ✓</li><li>All-rounds archive ✓</li></ul></div>
-  <div class="phase"><h4>D · Server</h4><small>Early November</small><ul><li>Results script: Announcements topic, then entrant messages</li><li>Dry run on September</li><li>Live for October</li></ul></div>
+  <div class="phase"><h4>D · Server</h4><small>Done 12 November</small><ul><li>Results script, hourly timer ✓</li><li>August, September marked, not sent ✓</li><li>October announced ✓</li><li>Entrant messages: dropped for now</li></ul></div>
   <div class="phase"><h4>E · Homepage</h4><small>Last</small><ul><li>Visitor hero, trust points</li><li>Three doors</li><li>Named rows</li></ul></div>
 </div>
 

@@ -134,6 +134,14 @@ and the crash surfaces nowhere near the code that caused it. A label on a core b
 relabels in `renderComposer` (`spc-monthly-challenge.js`) use the same `data-spc-label`
 pattern, rendered by `challenge.scss`.
 
+**The sidebar's default state lives in core's `sidebar-hidden` key, not in the controller flag.**
+Crossing from the mobile view to the desktop view (a phone turned sideways) makes core recompute
+`showSidebar` from `calculateShowSidebar()`, which reads only that key-value entry. Setting
+`applicationController.showSidebar = false` alone therefore lasted until the first rotation, then
+the docked sidebar reopened over half the screen. `spc-sidebar-default.js` sets the key at boot;
+a class observer or resize timer loses the race to core's own MediaQueryList handler (traced
+2026-11-12, verified on an iPhone).
+
 **Masonry is fragile.** Topic List Thumbnails (component 1) measures every `tr.topic-list-item`
 and sets `position: absolute`. Any DOM change altering a row's height desynchronises the layout
 and overlaps photos with text. On topic rows, only ever add absolutely-positioned decoration.

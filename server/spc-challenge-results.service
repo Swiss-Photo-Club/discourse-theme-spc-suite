@@ -1,5 +1,5 @@
 [Unit]
-Description=Announce crowned SPC monthly challenge rounds and message entrants
+Description=Announce crowned SPC monthly challenge rounds
 After=docker.service
 Requires=docker.service
 

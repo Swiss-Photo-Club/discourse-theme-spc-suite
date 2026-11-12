@@ -134,6 +134,11 @@ ssh spc-discourse 'docker exec --user discourse --env RAILS_ENV=production --wor
 The dry run prints a JSON summary (`mark`, `skipped`, `announce`) and then the full text of
 every announcement and personal message it would send. Only `SPC_APPLY=1` changes anything.
 
+**Rehearsal.** `--env SPC_TEST_EMAIL=<address>` sends the announcement and one personal
+message per language, as private messages titled `[Test]`, to that address's user only. It
+posts nothing in Announcements and marks nothing. Pass the same `SPC_MARK_BEFORE` as the real
+run, or every older crowned round is rehearsed too.
+
 **One-off backfill.** `SPC_MARK_BEFORE=YYYY-MM` marks every crowned, unannounced round before
 that month announced **without posting**. Add `--env SPC_MARK_BEFORE=2026-10` to the dry run to
 see the list under `mark`, then once with `--env SPC_APPLY=1`. Never put it in the service.

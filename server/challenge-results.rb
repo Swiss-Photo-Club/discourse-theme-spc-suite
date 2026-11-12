@@ -171,7 +171,7 @@ module SpcChallengeResults
     end
   end
 
-  def self.run(apply: false, mark_before: nil, now: Time.current)
+  def self.run(apply: false, mark_before: nil, test_email: nil, now: Time.current)
     raise "Wrong Discourse host" unless Discourse.current_hostname == "community.swissphotoclub.com"
     raise "SPC_MARK_BEFORE must be YYYY-MM" if mark_before && !/\A\d{4}-\d{2}\z/.match?(mark_before)
 
@@ -224,6 +224,25 @@ module SpcChallengeResults
       }
     end
 
+    if test_email
+      # Rehearsal: everything goes to one address as private messages; the
+      # announcement is not posted in Announcements and nothing is marked.
+      tester = User.find_by_email(test_email) or raise "No user with #{test_email}"
+      rounds.each do |r|
+        title, raw = announcement(r)
+        samples = r[:ranked].map { |e| User.find(e[:user_id]) }.uniq.group_by { |u| lang(u.effective_locale) }
+        [["[Test] #{title}", raw], *samples.values.map do |(user, *)|
+          subject, body = message(r, user.id, (user.name.presence || user.username).split.first, lang(user.effective_locale))
+          ["[Test, as #{user.username}] #{subject}", body]
+        end].each do |subject, body|
+          PostCreator.create!(sender, title: subject, raw: body, archetype: Archetype.private_message,
+                                      target_usernames: tester.username, skip_validations: true)
+          puts "sent to #{tester.username}: #{subject}"
+        end
+      end
+      return
+    end
+
     unless apply
       puts JSON.pretty_generate(sender: sender.username, month: current, mark: marks, skipped: skipped,
                                 announce: rounds.map { |r| { tag: r[:tag], entries: r[:ranked].size, votes: r[:votes] } })
@@ -264,4 +283,5 @@ module SpcChallengeResults
   end
 end
 
-SpcChallengeResults.run(apply: ENV["SPC_APPLY"] == "1", mark_before: ENV["SPC_MARK_BEFORE"].presence) if defined?(Rails)
+SpcChallengeResults.run(apply: ENV["SPC_APPLY"] == "1", mark_before: ENV["SPC_MARK_BEFORE"].presence,
+                        test_email: ENV["SPC_TEST_EMAIL"].presence) if defined?(Rails)

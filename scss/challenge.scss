@@ -245,14 +245,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   font-size: 12px;
 }
 
-/* A phone or small tablet held sideways: the band keeps its two columns,
-   the frame just gets shorter so the band never fills the short screen. */
-@media (max-height: 500px) {
-  .spc-challenge-band__winner {
-    height: 170px;
-  }
-}
-
 /* Portrait phones: the winner is dropped, not stacked — under the
    challenge it pushed the entries a screen down. It stays reachable from
    the previous round's tab in the switcher. Hiding it is safe: the band is
@@ -445,6 +437,62 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 .spc-challenge-band__podium a:hover strong,
 .spc-challenge-band__podium a:focus-visible strong {
   text-decoration: underline;
+}
+
+/* A phone held sideways: desktop layout on a ~390px-tall screen. The band
+   keeps its two columns and the winner, but every row tightens so the band
+   stays under about half the screen. Placed after the podium rules so these
+   equal-specificity overrides win on source order. */
+@media (max-height: 500px) {
+  .spc-hero--challenge {
+    gap: 24px;
+    padding: 16px 24px;
+  }
+
+  .spc-hero--challenge .spc-hero__content {
+    gap: 6px;
+  }
+
+  .spc-hero--challenge .spc-hero__content h1 {
+    font-size: 1.6rem;
+  }
+
+  .spc-hero--challenge .spc-challenge-band__status,
+  .spc-hero--challenge .spc-challenge-band__stats {
+    font-size: 13px;
+  }
+
+  .spc-challenge-band__podium {
+    gap: 6px 16px;
+  }
+
+  .spc-challenge-band__podium img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .spc-challenge-band__podium-text strong {
+    font-size: 13px;
+  }
+
+  .spc-challenge-band__podium-text > span {
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .spc-hero--challenge .spc-hero__actions {
+    margin-top: 2px;
+  }
+
+  .spc-hero--challenge .spc-hero__actions .spc-button {
+    min-height: 40px;
+  }
+
+  .spc-challenge-band__winner {
+    height: 150px;
+  }
 }
 
 /* "Your result": our own element in the category surface, under the round

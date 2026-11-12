@@ -99,3 +99,54 @@ these server files. Existing challenge posts are historical content and are not 
 runs. Reopen a mistakenly closed topic through Discourse's topic wrench; native Topic Voting
 reclaims its archived votes, so those votes count against members' allowance again.
 No votes or topics are deleted by this reset.
+
+# Challenge results
+
+`challenge-results.rb` runs in the same Rails environment as the vote reset. For every round
+in the challenge category (theme 61's `challenge_category_id`) whose round tag has exactly one
+`winner`-tagged entry, whose month is over in `challenge_timezone`, whose crown is at least two
+hours old (a crown can still be corrected) and whose brief has no `spc_results_announced`
+custom field, it:
+
+1. sets `spc_results_announced` on the round's brief (the round tag's oldest topic) **before**
+   posting anything, so a rerun never posts twice; an interrupted run can lose messages, never
+   duplicate them;
+2. posts one English topic in Announcements (category 5) with the winner, every entry placed
+   2nd or 3rd (ties included), entry and vote totals and a link to the round page
+   `/tags/c/monthly-challenge/6/<slug>/<id>`. Announcements is in `default categories watching
+   first post`, so this emails every member through their own preferences;
+3. sends each entrant one personal message in their site language (en, de or fr; anything else
+   gets English) with the rank of every entry they made, ties shared ("=5th"), and the top three.
+
+Both come from `Discourse.site_contact_user`. Ranks follow the round page exactly: raw
+`vote_count`, place = 1 + entries with strictly more votes; the brief is not an entry.
+
+## Verify and install
+
+```sh
+ruby server/challenge-results-test.rb
+scp server/challenge-results.rb spc-discourse:/var/discourse/shared/standalone/spc-challenge-results.rb
+ssh spc-discourse 'docker exec --user discourse --env RAILS_ENV=production --workdir /var/www/discourse app bin/rails runner /shared/spc-challenge-results.rb'
+```
+
+The dry run prints a JSON summary (`mark`, `skipped`, `announce`) and then the full text of
+every announcement and personal message it would send. Only `SPC_APPLY=1` changes anything.
+
+**One-off backfill.** `SPC_MARK_BEFORE=YYYY-MM` marks every crowned, unannounced round before
+that month announced **without posting**. Add `--env SPC_MARK_BEFORE=2026-10` to the dry run to
+see the list under `mark`, then once with `--env SPC_APPLY=1`. Never put it in the service.
+
+```sh
+scp server/spc-challenge-results.service server/spc-challenge-results.timer spc-discourse:/etc/systemd/system/
+ssh spc-discourse 'systemd-analyze verify /etc/systemd/system/spc-challenge-results.service /etc/systemd/system/spc-challenge-results.timer'
+ssh spc-discourse 'systemctl daemon-reload && systemctl start spc-challenge-results.service && systemctl enable --now spc-challenge-results.timer'
+ssh spc-discourse 'journalctl -u spc-challenge-results.service -n 40 --no-pager'
+```
+
+The timer runs hourly. A second dry run afterwards must show an empty `announce`.
+
+## Stop or roll back
+
+`systemctl disable --now spc-challenge-results.timer` stops future announcements. A posted
+topic or message is removed through Discourse like any other; emails already sent stay sent.
+To announce a round again, delete `spc_results_announced` from its brief in the Rails console.

@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for newly crowned SPC challenge rounds every hour
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

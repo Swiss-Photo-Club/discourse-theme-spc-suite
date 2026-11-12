@@ -383,6 +383,15 @@ export function roundPageUrl(tag) {
   return `/tags/c/${categoryPath}/${encodeURIComponent(slug)}/${id}`;
 }
 
+// A finished round opens on its Votes list (Topic Voting's /l/votes), so
+// the entries read top to bottom in finishing order next to their rank
+// badges. The open round keeps Latest: ranking it mid-month would turn the
+// grid into a live scoreboard, which the band deliberately avoids.
+function roundListUrl(tag, open) {
+  const url = roundPageUrl(tag);
+  return open || !url.startsWith("/tags/c/") ? url : `${url}/l/votes`;
+}
+
 // The round a URL is the page of, or null. Matches the sort filters too
 // (/l/votes), which is how the round page's own Latest/Votes pills link.
 export function roundFromUrl(url) {
@@ -1220,7 +1229,7 @@ async function switcherRounds(challenges, pageRound) {
     const month = tag.slug.slice(0, 7);
     return {
       id: tag.id,
-      url: roundPageUrl(tag),
+      url: roundListUrl(tag, month >= current),
       theme: roundThemeLabel(
         tag.slug,
         challenges.find((c) => c.tag === tag.name || c.tag === tag.slug),
@@ -1573,7 +1582,7 @@ async function archiveRounds(challenges, active, user, mine) {
     const isActive = isOpenRoundPage(tag, active);
     return {
       id: tag.id,
-      url: roundPageUrl(tag),
+      url: roundListUrl(tag, open),
       month: monthLabel({ tag: tag.slug }),
       theme: roundThemeLabel(
         tag.slug,

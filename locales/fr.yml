@@ -347,12 +347,6 @@ fr:
     full_rules: Lire le guide complet de participation et de vote
     close: Fermer
     read_brief: Lire le thème
-    timeline_submit: Participer et voter
-    timeline_now: 'Maintenant · %{left}'
-    timeline_last_day: dernier jour
-    timeline_closes: Clôture du défi
-    timeline_announced: Annonce du gagnant
-    timeline_announced_when: 'Début %{month}'
     your_entries: 'Vos participations : %{count} sur %{max}'
     your_entries_plain: 'Vos participations : %{count}'
     your_votes: 'Votes reçus : %{count}'

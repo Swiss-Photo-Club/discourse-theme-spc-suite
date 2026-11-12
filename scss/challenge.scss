@@ -68,60 +68,59 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 }
 
 /* The challenge band --------------------------------------------------
-   One navy band replaces the old hero + current-round showcase + winner
-   strip (design handoff 2026-08-07): this month's challenge on the left,
-   last month's winner as a large photograph on the right. It is still the
-   challenge hero ELEMENT — same marker, same .spc-hero--challenge class,
-   same .spc-hero__actions/.spc-button--primary structure that
-   spc-photo-submit.js routes to /submit — so everything here overrides
-   hero.scss and wins by importing later, never by out-specifying it. */
+   One compact navy band (2026-11-12): kicker, title, one status line, one
+   primary button and two text links on the left; a winner photograph on
+   the right. It is still the challenge hero ELEMENT — same marker, same
+   .spc-hero--challenge class, same .spc-hero__actions/.spc-button--primary
+   structure that spc-photo-submit.js routes to /submit — so everything here
+   overrides hero.scss and wins by importing later, never by out-specifying
+   it. The band used to stack description, a three-step timeline, an
+   entries block and three full buttons; on a phone that filled the screen. */
 
 .spc-hero--challenge {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
+  align-items: center;
+  gap: 32px;
   min-height: 0;
-  padding: 36px 40px;
-  /* Flat indigo per the design: the category's uploaded background no
-     longer paints the band. The winner photograph is the band's image. */
+  padding: 28px 32px;
+  border-bottom-width: 4px;
+  /* Flat indigo: the category's uploaded background never paints the band.
+     The winner photograph is the band's image. */
   background-image: none;
 }
 
-/* With a winner, the fixed 465px right column; without one (first month),
-   the challenge cell spans the full band — no placeholder frame. */
+/* The winner column takes the photograph's own width (see below); without
+   a winner the challenge cell spans the band. */
 .spc-hero--challenge.spc-hero--with-winner {
-  grid-template-columns: minmax(0, 1fr) 465px;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
-/* The left cell: a flex column on a 16px rhythm. The CTA row bottom-aligns
-   via margin-top:auto so its bottom edge lines up exactly with the winner
-   frame's (align-self: end) — that alignment is deliberate and load-bearing
-   in the design. */
 .spc-hero--challenge .spc-hero__content {
   width: auto;
-  gap: 16px;
-  justify-content: flex-start;
+  min-width: 0;
+  gap: 10px;
+  justify-content: center;
 }
 
 .spc-hero--challenge .spc-hero__content h1 {
   margin: 0;
-  /* 3.25rem = the design's 52px cap. */
-  font-size: clamp(2.4rem, 4.5vw, 3.25rem);
-  line-height: 1.05;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.1;
 }
 
 .spc-challenge-band__kicker {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .spc-challenge-band__chip {
-  padding: 8px 14px;
+  padding: 4px 8px;
   background: var(--spc-coral);
   color: #ffffff;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -129,79 +128,80 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 
 .spc-challenge-band__month {
   color: #ffffff;
-  font-size: 20px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.spc-hero--challenge .spc-challenge-band__summary {
-  max-width: 520px;
+.spc-hero--challenge .spc-challenge-band__status {
   margin: 0;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 17px;
-  line-height: 1.6;
-  text-wrap: pretty;
-}
-
-.spc-hero--challenge .spc-challenge-band__deadline {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  color: var(--spc-casablanca);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.spc-hero--challenge .spc-challenge-band__deadline::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 8px;
-  height: 8px;
-  background: var(--spc-casablanca);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .spc-hero--challenge .spc-hero__actions {
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 12px;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 6px;
 }
 
-/* The winner cell is one link to the winning post. 465×310 is a true 3:2
-   frame; the photograph hangs uncropped (contain, never cover) on the
-   #101a2e mat, so portrait entries letterbox on it — intended behaviour.
-   The amber border-top is the system's winner mark (Winner Amber,
-   edge-not-corner, same move as the onboarding panel's coral top). */
+/* Brief and How voting works: text links, so the primary is the band's
+   only button. */
+.spc-challenge-band__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+
+.spc-challenge-band__links a,
+.spc-challenge-band__links button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.spc-challenge-band__links a:hover,
+.spc-challenge-band__links button:hover,
+.spc-challenge-band__links a:focus-visible,
+.spc-challenge-band__links button:focus-visible {
+  color: var(--spc-casablanca);
+}
+
+/* The winner frame: a fixed height, and the photograph's own aspect ratio
+   decides the width — a portrait is narrow, a landscape wide — so nothing is
+   ever cropped. Only a panorama wider than the cap is letterboxed (contain,
+   never cover) on the #101a2e mat. min-width keeps the caption legible over
+   a narrow portrait. The amber border-top is the system's winner mark. */
 .spc-challenge-band__winner {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 310px;
-  align-self: end;
+  display: block;
+  height: 240px;
+  min-width: 200px;
   border-top: 4px solid var(--spc-casablanca);
   background: #101a2e;
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* The hover affordance is the SPC card lift — no scale transforms. */
 .spc-challenge-band__winner:hover,
 .spc-challenge-band__winner:focus-visible {
   transform: translateY(-2px);
 }
 
-/* Absolutely filled, not flex-sized: iOS Safari resolves a flex item's
-   max-width/max-height percentages against the aspect-ratio frame's
-   indefinite height and shoves the photo out of the frame (seen live
-   2026-08-07 on iPhone — image clipped at the right screen edge). With
-   inset: 0 against the frame's definite box, object-fit does the
-   letterboxing and no flex sizing is involved in any browser. */
-.spc-challenge-band__winner img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
+.spc-hero--challenge .spc-challenge-band__winner img {
+  display: block;
+  width: auto;
   height: 100%;
+  max-width: min(440px, 38vw);
+  margin: 0 auto;
   object-fit: contain;
 }
 
@@ -209,7 +209,7 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   position: absolute;
   top: 0;
   left: 0;
-  padding: 6px 11px;
+  padding: 4px 8px;
   background: var(--spc-casablanca);
   color: var(--spc-indigo);
   font-size: 11px;
@@ -218,9 +218,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   text-transform: uppercase;
 }
 
-/* Translucent by design. A near-white photo bottom reduces caption
-   contrast — reviewed and accepted in the handoff; the hardening options
-   (solid plate / caption on the mat) were explored and not adopted. */
 .spc-challenge-band__winner-caption {
   position: absolute;
   right: 0;
@@ -229,114 +226,45 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 30px 14px 12px;
+  padding: 24px 10px 8px;
   background: linear-gradient(to top, rgba(16, 26, 46, 0.94), rgba(16, 26, 46, 0));
 }
 
 .spc-challenge-band__winner-title {
+  overflow: hidden;
   color: #ffffff;
-  font-size: 21px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .spc-challenge-band__winner-meta {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
+  font-size: 12px;
 }
 
-/* Below ~900px the band collapses to one column, winner under the
-   challenge. The frame stays a real 3:2, photograph still contained.
+/* A phone or small tablet held sideways: the band keeps its two columns,
+   the frame just gets shorter so the band never fills the short screen. */
+@media (max-height: 500px) {
+  .spc-challenge-band__winner {
+    height: 170px;
+  }
+}
 
-   NOT aspect-ratio: with the photograph absolutely positioned, the frame
-   has no in-flow content, and iOS Safari then resolves aspect-ratio from
-   the empty height first — collapsing the frame to 0×0 (seen live
-   2026-08-07: zero-width caption wrapping one word per line over the CTA
-   buttons; Chromium renders the same CSS correctly). A padding-ratio
-   strut resolves against the frame's width in every engine. */
-@media (max-width: 900px) {
-  .spc-hero--challenge,
+/* Portrait phones: the winner is dropped, not stacked — under the
+   challenge it pushed the entries a screen down. It stays reachable from
+   the previous round's tab in the switcher. Hiding it is safe: the band is
+   not part of Topic List Thumbnails' measured layout. */
+@media (max-width: 700px) {
   .spc-hero--challenge.spc-hero--with-winner {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .spc-challenge-band__winner {
-    height: auto;
-    align-self: stretch;
+    display: none;
   }
-
-  .spc-challenge-band__winner::before {
-    content: "";
-    display: block;
-    width: 100%;
-    padding-top: 66.6667%;
-  }
-}
-
-/* The open round's timeline (Phase C, #7). Three steps on the band, the
-   current one in Winner Amber with its days-left line. It replaces the
-   single deadline line while a round is open. */
-.spc-challenge-band__timeline {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 620px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 2px solid rgba(255, 255, 255, 0.18);
-}
-
-.spc-challenge-band__timeline li {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: -2px 0 0;
-  padding: 10px 14px 0 0;
-  border-top: 2px solid transparent;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.spc-challenge-band__timeline li.is-now {
-  border-top-color: var(--spc-casablanca);
-}
-
-.spc-challenge-band__timeline strong {
-  color: #ffffff;
-  font-size: 14px;
-}
-
-.spc-challenge-band__timeline em {
-  color: var(--spc-casablanca);
-  font-style: normal;
-  font-weight: 700;
-}
-
-/* "Your entries: 2 of 3" — signed-in entrants, open round only. */
-.spc-challenge-band__mine {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
-}
-
-.spc-challenge-band__mine img {
-  width: 44px;
-  height: 44px;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-}
-
-.spc-challenge-band__mine-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.spc-challenge-band__mine-text strong {
-  color: #ffffff;
-  font-size: 15px;
 }
 
 /* Round switcher: our own element in the category surface, right under the
@@ -467,14 +395,17 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 
 .spc-hero--challenge .spc-challenge-band__stats {
   margin: 0;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 17px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
 }
 
+/* 2nd and 3rd side by side, so the results band is as short as the open
+   one; stacked again on a phone. */
 .spc-challenge-band__podium {
   display: grid;
-  gap: 10px;
-  max-width: 520px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 20px;
+  max-width: 600px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -483,15 +414,15 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 .spc-challenge-band__podium a {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   color: #ffffff;
   text-decoration: none;
 }
 
 .spc-challenge-band__podium img {
   flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
 }
 
@@ -727,25 +658,6 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
 
   .spc-your-result__line--none .spc-button {
     width: 100%;
-  }
-}
-
-@media (max-width: 600px) {
-  .spc-challenge-band__timeline {
-    grid-template-columns: minmax(0, 1fr);
-    border-top: 0;
-    border-left: 2px solid rgba(255, 255, 255, 0.18);
-  }
-
-  .spc-challenge-band__timeline li {
-    margin: 0 0 0 -2px;
-    padding: 4px 0 8px 12px;
-    border-top: 0;
-    border-left: 2px solid transparent;
-  }
-
-  .spc-challenge-band__timeline li.is-now {
-    border-left-color: var(--spc-casablanca);
   }
 }
 
@@ -1133,7 +1045,11 @@ body.category-monthly-challenge .topic-thumbnails-masonry .spc-challenge-officia
      come from hero.scss's narrow-viewport rules unchanged. */
   .spc-hero--challenge {
     gap: 24px;
-    padding: 28px 20px;
+    padding: 20px;
+  }
+
+  .spc-challenge-band__podium {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .spc-voting-dialog__panel {

@@ -984,74 +984,23 @@ function deadlineText(challenge, state) {
   return "";
 }
 
-// The open round's three steps (Phase C, #7): submit and vote through the
-// month, the round closes on its last day, the winner is announced early the
-// next month. Dates come from the round's calendar month in the challenge
-// timezone — the start is anchored at noon UTC on the 1st, because the
-// derived start_at carries a fixed +02:00 offset that reads as the 31st of
-// the previous month once Zurich is back on winter time.
-function timelineMarkup(challenge) {
-  const match = /^(\d{4})-(\d{2})/.exec(challenge.tag_slug || challenge.tag || "");
-  const deadline = validDate(challenge.submission_deadline);
-  if (!match || !deadline) {
-    return "";
-  }
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const start = new Date(Date.UTC(year, month - 1, 1, 12));
-  const nextMonth = new Date(Date.UTC(year, month, 15, 12));
-  const dayMonth = localizedDateFormat({ day: "numeric", month: "long" });
-  let range;
-  try {
-    range = dayMonth.formatRange(start, deadline);
-  } catch {
-    range = `${dayMonth.format(start)} – ${dayMonth.format(deadline)}`;
-  }
-  const left = daysLeftText(challenge);
-  const steps = [
-    {
-      title: translate("timeline_submit"),
-      when: range,
-      now: translate("timeline_now", { left: left || translate("timeline_last_day") }),
-    },
-    { title: translate("timeline_closes"), when: dayMonth.format(deadline) },
-    {
-      title: translate("timeline_announced"),
-      when: translate("timeline_announced_when", {
-        month: localizedDateFormat({ month: "long" }).format(nextMonth),
-      }),
-    },
-  ];
-  return `<ol class="spc-challenge-band__timeline">${steps
-    .map(
-      (step) => `<li${step.now ? ' class="is-now"' : ""}>
-        <strong>${escapeHtml(step.title)}</strong>
-        <span>${escapeHtml(step.when)}</span>
-        ${step.now ? `<em>${escapeHtml(step.now)}</em>` : ""}
-      </li>`
-    )
-    .join("")}</ol>`;
-}
-
-// "Your entries: 2 of 3 · 4 votes so far" — the open round only, signed-in
-// members with at least one entry, and deliberately no rank while voting runs.
-function mineMarkup(mine) {
+// The open round's status line: deadline and days left, then the signed-in
+// entrant's "Your entries: 2 of 3 · Votes so far: 4". It replaced the
+// three-step timeline and the thumbnail block when the band went compact.
+function statusText(deadline, mine) {
   if (!mine?.count) {
-    return "";
+    return deadline;
   }
   const max = Number(settings.challenge_max_entries_per_round) || 0;
-  const heading = max
-    ? translate("your_entries", { count: mine.count, max })
-    : translate("your_entries_plain", { count: mine.count });
-  return `<div class="spc-challenge-band__mine">
-    ${mine.images
-      .map((image) => `<img src="${escapeHtml(image)}" alt="">`)
-      .join("")}
-    <span class="spc-challenge-band__mine-text">
-      <strong>${escapeHtml(heading)}</strong>
-      <span>${escapeHtml(translate("your_votes", { count: mine.votes }))}</span>
-    </span>
-  </div>`;
+  return [
+    deadline,
+    max
+      ? translate("your_entries", { count: mine.count, max })
+      : translate("your_entries_plain", { count: mine.count }),
+    translate("your_votes", { count: mine.votes }),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 // The band: one navy strip holding this month's challenge on the left and
@@ -1109,7 +1058,6 @@ function renderChallengeBand(challenge, winner, mine = null, results = null) {
   const state = challengeState(challenge);
   const isOpen = challenge.status === "active" && state === "submissions-open";
   const title = challengeTitle(challenge);
-  const summary = challengeSummary(challenge);
   const month = monthLabel(challenge);
   const deadline = deadlineText(challenge, state);
   // Incomplete data shows nothing rather than something wrong: the winner
@@ -1136,7 +1084,6 @@ function renderChallengeBand(challenge, winner, mine = null, results = null) {
     state,
     localeCode(),
     title,
-    summary,
     deadline,
     challenge.topic?.url,
     mine ? [mine.count, mine.votes, ...mine.images].join("|") : "",
@@ -1215,32 +1162,28 @@ function renderChallengeBand(challenge, winner, mine = null, results = null) {
         )}</span>` : ""}
       </div>
       <h1 id="spc-hero-title">${escapeHtml(title)}</h1>
-      ${
-        summary && !results
-          ? `<p class="spc-challenge-band__summary">${escapeHtml(summary)}</p>`
-          : ""
-      }
       ${results ? resultsMarkup(results) : ""}
       ${
-        isOpen
-          ? timelineMarkup(challenge)
-          : deadline
-            ? `<p class="spc-challenge-band__deadline">${escapeHtml(deadline)}</p>`
-            : ""
+        !results && (deadline || mine?.count)
+          ? `<p class="spc-challenge-band__status">${escapeHtml(
+              isOpen ? statusText(deadline, mine) : deadline
+            )}</p>`
+          : ""
       }
-      ${isOpen ? mineMarkup(mine) : ""}
       <div class="spc-hero__actions">
         ${primaryAction}
-        ${
-          challenge.topic?.url
-            ? `<a class="spc-button spc-button--secondary" href="${escapeHtml(
-                challenge.topic.url
-              )}">${escapeHtml(translate("read_brief"))}</a>`
-            : ""
-        }
-        <button class="spc-button spc-button--secondary" type="button" data-spc-open-voting>${escapeHtml(
-          translate("how_voting_works")
-        )}</button>
+        <span class="spc-challenge-band__links">
+          ${
+            challenge.topic?.url
+              ? `<a href="${escapeHtml(challenge.topic.url)}">${escapeHtml(
+                  translate("read_brief")
+                )}</a>`
+              : ""
+          }
+          <button type="button" data-spc-open-voting>${escapeHtml(
+            translate("how_voting_works")
+          )}</button>
+        </span>
       </div>
     </div>
     ${

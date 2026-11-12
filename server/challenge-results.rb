@@ -29,7 +29,7 @@ module SpcChallengeResults
       of: "of %{count}",
       vote: "vote", votes: "votes",
       see: "See all results",
-      next: "Now open: %{theme}", open: "Open until %{date}. We'd love to see your take on it.", enter: "Enter your photo",
+      next: "Now open: %{theme}", open: "Open until %{date}. We'd love to see your take on it.", enter: "Enter your photo", view: "See the challenge",
       foot: "You're receiving this because you entered the %{month} Monthly Challenge.",
     },
     "de" => {
@@ -41,7 +41,7 @@ module SpcChallengeResults
       of: "von %{count}",
       vote: "Stimme", votes: "Stimmen",
       see: "Alle Ergebnisse ansehen",
-      next: "Jetzt offen: %{theme}", open: "Offen bis %{date}. Wir freuen uns auf deinen Beitrag.", enter: "Foto einreichen",
+      next: "Jetzt offen: %{theme}", open: "Offen bis %{date}. Wir freuen uns auf deinen Beitrag.", enter: "Foto einreichen", view: "Zur Challenge",
       foot: "Du erhältst diese Nachricht, weil du bei der Monatlichen Challenge im %{month} mitgemacht hast.",
     },
     "fr" => {
@@ -53,7 +53,7 @@ module SpcChallengeResults
       of: "sur %{count}",
       vote: "vote", votes: "votes",
       see: "Voir tous les résultats",
-      next: "Nouveau défi : %{theme}", open: "Ouvert jusqu’au %{date}. Nous serions ravis de voir votre interprétation.", enter: "Proposer une photo",
+      next: "Nouveau défi : %{theme}", open: "Ouvert jusqu’au %{date}. Nous serions ravis de voir votre interprétation.", enter: "Proposer une photo", view: "Voir le défi",
       foot: "Vous recevez ce message parce que vous avez participé au Défi du Mois %{month}.",
     },
   }.freeze
@@ -104,8 +104,9 @@ module SpcChallengeResults
     n = round[:next] or return nil
     t = TEXT[lang]
     date = "#{n[:last_day]}#{lang == "de" ? "." : ""} #{month(n[:month], lang)}"
-    ["### #{format(t[:next], theme: esc(n[:theme]))}", n[:image], n[:intro][lang],
-     format(t[:open], date: date), "**[#{t[:enter]} →](#{n[:submit_url]})**"].compact.join("\n\n")
+    ["### #{format(t[:next], theme: "[#{esc(n[:theme])}](#{n[:url]})")}", n[:image], n[:intro][lang],
+     format(t[:open], date: date),
+     "**[#{t[:enter]} →](#{n[:submit_url]})** · **[#{t[:view]} →](#{n[:url]})**"].compact.join("\n\n")
   end
 
   # The brief's opening paragraph: skip headings, images, quotes and tables.
@@ -113,9 +114,10 @@ module SpcChallengeResults
     raw.to_s.split(/\n\s*\n/).map(&:strip).find { |p| p.match?(/\A[[:alnum:]*_“"«]/) }
   end
 
-  def self.image(topic)
+  # Wrapped in a link, so a click opens the page, not the full-size file.
+  def self.image(topic, href)
     upload = topic.image_upload
-    upload && "![#{esc(topic.title)}|#{upload.width}x#{upload.height}](#{upload.short_url})"
+    upload && "[![#{esc(topic.title)}|#{upload.width}x#{upload.height}](#{upload.short_url})](#{href})"
   end
 
   # No ranking table: a tie at the top would raise "why that one?". Winner,
@@ -188,6 +190,10 @@ module SpcChallengeResults
     by_round = topics.group_by { |t| t.tags.find { |tag| ROUND_TAG.match?(tag.name) } }.except(nil)
     current_round = by_round.keys.select { |tag| tag.name[0, 7] == current }.max_by(&:name)
 
+    round_url = ->(tag) do
+      slug = tag.respond_to?(:slug_for_url) ? tag.slug_for_url : tag.name
+      "#{Discourse.base_url}/tags/c/#{category.slug_path.join("/")}/#{category.id}/#{slug}/#{tag.id}"
+    end
     marks = []
     rounds = []
     skipped = []
@@ -210,17 +216,16 @@ module SpcChallengeResults
 
       ranked = rank(entries.map do |t|
         { id: t.id, title: t.title, url: t.relative_url, user_id: t.user_id,
-          author: t.user&.name.presence || t.user&.username, votes: t.vote_count.to_i, image: image(t) }
+          author: t.user&.name.presence || t.user&.username, votes: t.vote_count.to_i, image: image(t, "#{Discourse.base_url}#{t.relative_url}") }
       end)
-      slug = tag.respond_to?(:slug_for_url) ? tag.slug_for_url : tag.name
       nxt = current_round && current_round != tag && by_round[current_round].min_by { |t| [t.created_at, t.id] }
       rounds << {
         tag: tag.name, brief: brief, month: ym, theme: brief.title,
-        url: "#{Discourse.base_url}/tags/c/#{category.slug_path.join("/")}/#{category.id}/#{slug}/#{tag.id}",
+        url: round_url[tag],
         ranked: ranked, votes: ranked.sum { |e| e[:votes] },
         winner: ranked.find { |e| e[:id] == winners.first.id },
         next: nxt && { month: current, theme: nxt.title, last_day: now.in_time_zone(tz).end_of_month.day,
-                       image: image(nxt), submit_url: "#{Discourse.base_url}/submit", intro: brief_intros(nxt) },
+                       url: round_url[current_round], image: image(nxt, round_url[current_round]), submit_url: "#{Discourse.base_url}/submit", intro: brief_intros(nxt) },
       }
     end
 

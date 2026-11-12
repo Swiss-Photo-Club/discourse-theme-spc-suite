@@ -129,7 +129,8 @@ ssh spc-discourse 'docker exec --user discourse --env RAILS_ENV=production --wor
 ```
 
 The dry run prints a JSON summary (`mark`, `skipped`, `announce`) and then the full text of
-every announcement it would post. Only `SPC_APPLY=1` changes anything.
+every announcement it would post. Only `SPC_APPLY=1` changes anything; the dry run may create
+Discourse's resized copies of the photos (600x500 at most), as any page view would.
 
 **Rehearsal.** `--env SPC_TEST_EMAIL=<address>` sends the announcement, titled `[Test]`, as a
 private message to that address's user only. It posts nothing in Announcements and marks

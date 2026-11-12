@@ -31,7 +31,7 @@ check "title without open round", title, "September winner announced"
 check "no open round block", raw.include?("Now open"), false
 check "first paragraph", R.first_paragraph("![b|1x1](upload://x)\n\n## The task\n\nCapture autumn.\nNot just leaves.\n\nMore."),
       "Capture autumn.\nNot just leaves."
-check "fit portrait", R.fit(2216, 2955), "375x500"
-check "fit landscape", R.fit(3840, 2160), "600x338"
-check "small stays", R.fit(400, 300), "400x300"
+check "fit portrait", R.fit(2216, 2955), [375, 500]
+check "fit landscape", R.fit(3840, 2160), [600, 338]
+check "small stays", R.fit(400, 300), [400, 300]
 puts "13 challenge results checks passed"

@@ -27,15 +27,20 @@ module SpcChallengeResults
   end
 
   # Wrapped in a link, so a click opens the page, not the full-size file. A
-  # linked image loses Discourse's lightbox sizing, so cap it ourselves.
+  # linked image gets no lightbox thumbnail, and the email formatter drops the
+  # width/height of anything over 320x480, so the file itself must be small:
+  # link Discourse's own resized copy (the same kind it makes for any page view).
   def self.image(topic, href)
     upload = topic.image_upload or return nil
-    "[![#{esc(topic.title)}|#{fit(upload.width, upload.height)}](#{upload.short_url})](#{href})"
+    width, height = fit(upload.width, upload.height)
+    resized = OptimizedImage.create_for(upload, width, height)
+    url = resized ? UrlHelper.absolute(resized.url) : upload.short_url
+    "[![#{esc(topic.title)}](#{url})](#{href})"
   end
 
   def self.fit(width, height, max_w = 600, max_h = 500)
     scale = [max_w.fdiv(width), max_h.fdiv(height), 1].min
-    "#{(width * scale).round}x#{(height * scale).round}"
+    [(width * scale).round, (height * scale).round]
   end
 
   # No ranking table: a tie at the top would raise "why that one?". Winner,

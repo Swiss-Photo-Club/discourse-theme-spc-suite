@@ -111,12 +111,14 @@ custom field, it:
 1. sets `spc_results_announced` on the round's brief (the round tag's oldest topic) **before**
    posting anything, so a rerun never posts twice; an interrupted run can lose messages, never
    duplicate them;
-2. posts one English topic in Announcements (category 5) with the winner, every entry placed
-   2nd or 3rd (ties included), entry and vote totals and a link to the round page
-   `/tags/c/monthly-challenge/6/<slug>/<id>`. Announcements is in `default categories watching
+2. posts one English topic in Announcements (category 5) with the winner, entry and vote
+   totals, a link to the round page `/tags/c/monthly-challenge/6/<slug>/<id>` and the round
+   open now (its brief's photo and opening paragraph, a link to `/submit`). No ranking table:
+   a tie at the top would make the crown look arbitrary. Announcements is in `default categories watching
    first post`, so this emails every member through their own preferences;
 3. sends each entrant one personal message in their site language (en, de or fr; anything else
-   gets English) with the rank of every entry they made, ties shared ("=5th"), and the top three.
+   gets English) with the rank of every entry they made, ties shared ("=5th"), and the same
+   open-round block, using Discourse's translation of the brief where one exists.
 
 Both come from `Discourse.site_contact_user`. Ranks follow the round page exactly: raw
 `vote_count`, place = 1 + entries with strictly more votes; the brief is not an entry.

@@ -26,10 +26,10 @@ module SpcChallengeResults
       intro: "Thank you for entering %{month}'s challenge. %{entries} photos were entered and members cast %{votes}. Here's how yours did:",
       won: "Congratulations, you won!",
       shared_one: "shared with 1 other entry", shared: "shared with %{count} other entries",
-      of: "of %{count}", you: "you", entry: "Entry", votes_head: "Votes",
+      of: "of %{count}",
       vote: "vote", votes: "votes",
       see: "See all results",
-      next: "%{month}'s theme is **%{theme}**, open until %{date}. We'd love to see your take on it.",
+      next: "Now open: %{theme}", open: "Open until %{date}. We'd love to see your take on it.", enter: "Enter your photo",
       foot: "You're receiving this because you entered the %{month} Monthly Challenge.",
     },
     "de" => {
@@ -38,10 +38,10 @@ module SpcChallengeResults
       intro: "Danke, dass du bei der Challenge im %{month} mitgemacht hast. Es wurden %{entries} Fotos eingereicht und %{votes} vergeben. So hat deines abgeschnitten:",
       won: "Herzlichen Glückwunsch, du hast gewonnen!",
       shared_one: "gleichauf mit 1 weiteren Beitrag", shared: "gleichauf mit %{count} weiteren Beiträgen",
-      of: "von %{count}", you: "du", entry: "Beitrag", votes_head: "Stimmen",
+      of: "von %{count}",
       vote: "Stimme", votes: "Stimmen",
       see: "Alle Ergebnisse ansehen",
-      next: "Das Thema im %{month} ist **%{theme}**, offen bis %{date}. Wir freuen uns auf deinen Beitrag.",
+      next: "Jetzt offen: %{theme}", open: "Offen bis %{date}. Wir freuen uns auf deinen Beitrag.", enter: "Foto einreichen",
       foot: "Du erhältst diese Nachricht, weil du bei der Monatlichen Challenge im %{month} mitgemacht hast.",
     },
     "fr" => {
@@ -50,10 +50,10 @@ module SpcChallengeResults
       intro: "Merci d’avoir participé au défi %{month}. %{entries} photos ont été proposées et les membres ont donné %{votes}. Voici le résultat de la vôtre :",
       won: "Félicitations, vous avez gagné !",
       shared_one: "à égalité avec 1 autre participation", shared: "à égalité avec %{count} autres participations",
-      of: "sur %{count}", you: "vous", entry: "Participation", votes_head: "Votes",
+      of: "sur %{count}",
       vote: "vote", votes: "votes",
       see: "Voir tous les résultats",
-      next: "Le thème %{month} est **%{theme}**, ouvert jusqu’au %{date}. Nous serions ravis de voir votre interprétation.",
+      next: "Nouveau défi : %{theme}", open: "Ouvert jusqu’au %{date}. Nous serions ravis de voir votre interprétation.", enter: "Proposer une photo",
       foot: "Vous recevez ce message parce que vous avez participé au Défi du Mois %{month}.",
     },
   }.freeze
@@ -86,7 +86,6 @@ module SpcChallengeResults
     "#{entry[:tied] ? "=" : ""}#{text}"
   end
 
-  def self.place(entry) = "#{entry[:tied] ? "=" : ""}#{entry[:place]}"
   def self.votes(count, lang) = "#{count} #{count == 1 ? TEXT[lang][:vote] : TEXT[lang][:votes]}"
   def self.esc(text) = text.to_s.gsub(/([\[\]|*_\\])/) { "\\#{$1}" }
   def self.month(ym, lang) = MONTHS[lang][ym[5, 2].to_i - 1]
@@ -101,28 +100,37 @@ module SpcChallengeResults
   def self.month_year(ym, lang) = "#{month(ym, lang)} #{ym[0, 4]}"
   def self.link(e) = "[#{esc(e[:title])}](#{e[:url]})"
 
-  # Every entry within the top three places, ties included, after the winner.
-  def self.podium(round) = round[:ranked].reject { |e| e[:id] == round[:winner][:id] || e[:place] > 3 }
-
-  def self.next_line(round, lang)
+  def self.next_block(round, lang)
     n = round[:next] or return nil
+    t = TEXT[lang]
     date = "#{n[:last_day]}#{lang == "de" ? "." : ""} #{month(n[:month], lang)}"
-    format(TEXT[lang][:next], month: month_of(n[:month], lang), theme: esc(n[:theme]), date: date)
+    ["### #{format(t[:next], theme: esc(n[:theme]))}", n[:image], n[:intro][lang],
+     format(t[:open], date: date), "**[#{t[:enter]} →](#{n[:submit_url]})**"].compact.join("\n\n")
   end
 
+  # The brief's opening paragraph: skip headings, images, quotes and tables.
+  def self.first_paragraph(raw)
+    raw.to_s.split(/\n\s*\n/).map(&:strip).find { |p| p.match?(/\A[[:alnum:]*_“"«]/) }
+  end
+
+  def self.image(topic)
+    upload = topic.image_upload
+    upload && "![#{esc(topic.title)}|#{upload.width}x#{upload.height}](#{upload.short_url})"
+  end
+
+  # No ranking table: a tie at the top would raise "why that one?". Winner,
+  # link to every entry, then the round that is open now.
   def self.announcement(round)
     w = round[:winner]
-    rows = podium(round).map { |e| "| #{place(e)} | #{link(e)} · #{esc(e[:author])} | #{votes(e[:votes], "en")} |" }
     title = "#{month(round[:month], "en")} results: #{round[:theme]}"
     raw = [
       "**Monthly Challenge · #{month_year(round[:month], "en")}**",
       "#{round[:ranked].size} photos entered, #{votes(round[:votes], "en")} cast. Thank you to everyone who took part and voted.",
       w[:image],
-      "**Winner:** #{link(w)} · #{esc(w[:author])} · #{votes(w[:votes], "en")}",
-      (["| | Entry | Votes |", "|--:|---|--:|", *rows].join("\n") if rows.any?),
-      "**[See all #{round[:ranked].size} entries, ranked](#{round[:url]})**",
-      ["Entered this round? Your own rank is on the results page, and we've sent it to you in a personal message.",
-       next_line(round, "en")].compact.join(" "),
+      "**Winner:** #{link(w)} · #{esc(w[:author])}",
+      "**[See all #{round[:ranked].size} entries](#{round[:url]})**",
+      "Entered this round? We've sent you your own result in a personal message.",
+      next_block(round, "en"),
     ].compact.join("\n\n")
     [title, raw]
   end
@@ -137,25 +145,29 @@ module SpcChallengeResults
       shared = others.zero? ? nil : (others == 1 ? t[:shared_one] : format(t[:shared], count: others))
       [e[:image], ["**#{ordinal(e, lang)} #{format(t[:of], count: count)}**", "“#{esc(e[:title])}”", votes(e[:votes], lang), shared].compact.join(" · ")].compact.join("\n\n")
     end
-    top = round[:ranked].select { |e| e[:place] <= 3 }
-    rows = (top | mine).sort_by { |e| [e[:place], e[:id]] }.map do |e|
-      me = e[:user_id] == user_id
-      cell = "#{link(e)} · #{me ? t[:you] : esc(e[:author])}"
-      r = [place(e), cell, votes(e[:votes], lang)]
-      "| #{(me ? r.map { |c| "**#{c}**" } : r).join(" | ")} |"
-    end
     subject = format(t[:subject], theme: round[:theme], rank: ordinal(best, lang), count: count)
     raw = [
       format(t[:hi], name: name),
       format(t[:intro], month: month_of(round[:month], lang), entries: count, votes: votes(round[:votes], lang)),
-      (t[:won] if best[:place] == 1),
+      (t[:won] if best[:id] == round[:winner][:id]),
       *lines,
-      ["| | #{t[:entry]} | #{t[:votes_head]} |", "|--:|---|--:|", *rows].join("\n"),
       "**[#{t[:see]}](#{round[:url]})**",
-      next_line(round, lang),
+      next_block(round, lang),
       "<small>#{format(t[:foot], month: month_of(round[:month], lang))}</small>",
     ].compact.join("\n\n")
     [subject, raw]
+  end
+
+  # The brief in each language: Discourse's translation of its first post when
+  # one exists, else the original.
+  def self.brief_intros(topic)
+    post = topic.first_post
+    TEXT.keys.to_h do |lang|
+      raw = unless post.try(:locale).to_s.start_with?(lang)
+        defined?(PostLocalization) && PostLocalization.where(post_id: post.id).where("locale LIKE ?", "#{lang}%").pick(:raw)
+      end
+      [lang, first_paragraph(raw.presence || post.raw)]
+    end
   end
 
   def self.run(apply: false, mark_before: nil, now: Time.current)
@@ -196,10 +208,8 @@ module SpcChallengeResults
       next skipped << { tag: tag.name, reason: reason } if reason
 
       ranked = rank(entries.map do |t|
-        upload = t.image_upload
         { id: t.id, title: t.title, url: t.relative_url, user_id: t.user_id,
-          author: t.user&.name.presence || t.user&.username, votes: t.vote_count.to_i,
-          image: upload && "![#{esc(t.title)}|#{upload.width}x#{upload.height}](#{upload.short_url})" }
+          author: t.user&.name.presence || t.user&.username, votes: t.vote_count.to_i, image: image(t) }
       end)
       slug = tag.respond_to?(:slug_for_url) ? tag.slug_for_url : tag.name
       nxt = current_round && current_round != tag && by_round[current_round].min_by { |t| [t.created_at, t.id] }
@@ -208,7 +218,8 @@ module SpcChallengeResults
         url: "#{Discourse.base_url}/tags/c/#{category.slug_path.join("/")}/#{category.id}/#{slug}/#{tag.id}",
         ranked: ranked, votes: ranked.sum { |e| e[:votes] },
         winner: ranked.find { |e| e[:id] == winners.first.id },
-        next: nxt && { month: current, theme: nxt.title, last_day: now.in_time_zone(tz).end_of_month.day },
+        next: nxt && { month: current, theme: nxt.title, last_day: now.in_time_zone(tz).end_of_month.day,
+                       image: image(nxt), submit_url: "#{Discourse.base_url}/submit", intro: brief_intros(nxt) },
       }
     end
 

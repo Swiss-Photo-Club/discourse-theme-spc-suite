@@ -14,7 +14,7 @@ ranked = R.rank(votes.each_with_index.map do |v, i|
     author: "Author #{i}", votes: v, image: nil }
 end + [{ id: 200, title: "Second | entry", url: "/t/e/200", user_id: 1, author: "Me", votes: 1, image: nil }])
 
-check "places", ranked.map { |e| R.place(e) }, %w[1 2 3 4 =5 =5 =5 =5 =5 =10 =10]
+check "places", ranked.map { |e| R.ordinal(e, "de") }, %w[1. 2. 3. 4. =5. =5. =5. =5. =5. =10. =10.]
 check "en ordinals", [1, 2, 3, 11, 12, 13, 21, 22, 103, 111].map { |n| R.ordinal({ place: n }, "en") },
       %w[1st 2nd 3rd 11th 12th 13th 21st 22nd 103rd 111th]
 check "tied ordinal", R.ordinal(ranked[5], "en"), "=5th"
@@ -26,30 +26,33 @@ check "fr elision", [R.month_of("2026-10", "fr"), R.month_of("2026-11", "fr"), R
 
 round = { month: "2026-09", theme: "Frame in Frame", url: "https://x/tags/c/monthly-challenge/6/frame/9",
           ranked: ranked, votes: ranked.sum { |e| e[:votes] }, winner: ranked[0],
-          next: { month: "2026-10", theme: "Juxtaposition", last_day: 31 } }
+          next: { month: "2026-10", theme: "Juxtaposition", last_day: 31, image: "![brief](upload://b.jpeg)",
+                  submit_url: "https://x/submit", intro: { "en" => "Show us contrast.", "de" => "Zeig uns Kontraste.", "fr" => "Montrez le contraste." } } }
 
 title, raw = R.announcement(round)
 check "announcement title", title, "September results: Frame in Frame"
 check "announcement totals", raw.include?("11 photos entered, 60 votes cast."), true
-check "podium excludes winner", raw.scan(/^\| (\S+) \|/).flatten, %w[2 3]
-check "announcement next round", raw.include?("October's theme is **Juxtaposition**, open until 31 October."), true
+check "no ranking table", raw.include?("|--"), false
+check "winner and link", raw.include?("**Winner:** [Entry 0](/t/e/100) · Author 0\n\n**[See all 11 entries](https://x/tags/c/monthly-challenge/6/frame/9)**"), true
+check "announcement next round", raw.end_with?("### Now open: Juxtaposition\n\n![brief](upload://b.jpeg)\n\nShow us contrast.\n\nOpen until 31 October. We'd love to see your take on it.\n\n**[Enter your photo →](https://x/submit)**"), true
 
 subject, body = R.message(round, 1, "Renato", "en")
 check "subject uses best rank", subject, 'Your result in "Frame in Frame": =5th of 11'
 check "shared count", body.include?("**=5th of 11** · “Entry 6” · 4 votes · shared with 4 other entries"), true
 check "every entry listed", body.include?("**=10th of 11** · “Second \\| entry” · 1 vote · shared with 1 other entry"), true
-check "table: top three plus own rows", body.scan(/^\| \**(=?\d+)/).flatten, %w[1 2 3 =5 =10]
-check "own row bold", body.include?("| **=5** | **[Entry 6](/t/e/106) · you** | **4 votes** |"), true
+check "no table in message", body.include?("|--"), false
 check "no congrats unless won", body.include?("you won"), false
 
 subject, body = R.message(round, 10, "Ana", "de")
 check "de subject", subject, "Dein Ergebnis bei «Frame in Frame»: 1. von 11"
 check "de congrats", body.include?("Herzlichen Glückwunsch"), true
-check "de next round", body.include?("Das Thema im Oktober ist **Juxtaposition**, offen bis 31. Oktober."), true
+check "de next round", body.include?("### Jetzt offen: Juxtaposition\n\n![brief](upload://b.jpeg)\n\nZeig uns Kontraste.\n\nOffen bis 31. Oktober."), true
+check "tied first is not told it won", R.message(round.merge(winner: ranked[1]), 10, "Ana", "de")[1].include?("gewonnen"), false
+check "first paragraph", R.first_paragraph("![b|1x1](upload://x)\n\n## The task\n\nCapture autumn.\nNot just leaves.\n\nMore."), "Capture autumn.\nNot just leaves."
 
 subject, body = R.message(round, 13, "Luc", "fr")
 check "fr subject", subject, "Votre résultat pour « Frame in Frame » : 4e sur 11"
 check "fr month", body.include?("au défi de septembre."), true
 
-check "no next round", R.announcement(round.merge(next: nil))[1].include?("theme is"), false
-puts "23 challenge results checks passed"
+check "no next round", R.announcement(round.merge(next: nil))[1].include?("Now open"), false
+puts "25 challenge results checks passed"

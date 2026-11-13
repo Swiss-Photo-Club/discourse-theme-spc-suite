@@ -33,9 +33,7 @@ body:is(.navigation-topics, .navigation-category) #main-outlet :where(
   border-radius: var(--radius) !important;
 }
 
-body.navigation-topics:has(#main-outlet > .spc-home-surface)
-  #main-outlet
-  > .welcome-banner {
+body.navigation-topics #main-outlet > .welcome-banner {
   display: none;
 }
 
@@ -43,116 +41,8 @@ body.navigation-topics #main-outlet > .spc-member-onboarding {
   order: -40;
 }
 
-body.navigation-topics #main-outlet > .spc-home-surface {
-  order: -20;
-}
-
 body.navigation-topics #main-outlet > .featured-categories {
   order: -10;
-}
-
-/* Member identity banner and editable introduction ------------------- */
-body.navigation-topics .spc-home-surface {
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-}
-
-/* The invitation banner replaces only the photo-backed identity banner for
-   guests and non-members. The separate community introduction stays visible
-   immediately below it. */
-body.navigation-topics:has(.spc-non-member-banner) .spc-home-identity {
-  display: none;
-}
-
-body.navigation-topics .spc-home-identity {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  box-sizing: border-box;
-  align-items: center;
-  padding: 24px 32px;
-  overflow: hidden;
-  border-bottom: 4px solid var(--spc-coral);
-  background: linear-gradient(120deg, var(--spc-indigo), #35466a);
-  color: #ffffff;
-}
-
-body.navigation-topics .spc-home-identity__image,
-body.navigation-topics .spc-home-identity__overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-body.navigation-topics .spc-home-identity__image {
-  z-index: -2;
-  object-fit: cover;
-}
-
-body.navigation-topics .spc-home-identity__overlay {
-  z-index: -1;
-  background: linear-gradient(
-    90deg,
-    rgba(18, 28, 52, 0.88) 0%,
-    rgba(18, 28, 52, 0.66) 52%,
-    rgba(18, 28, 52, 0.28) 100%
-  );
-}
-
-body.navigation-topics .spc-home-identity__content {
-  max-width: 680px;
-}
-
-body.navigation-topics .spc-home-identity__eyebrow {
-  margin: 0 0 10px;
-  color: var(--spc-primary-200);
-  line-height: 1.4;
-}
-
-body.navigation-topics .spc-home-identity__title {
-  margin: 0;
-  color: #ffffff !important;
-  font-size: clamp(2.35rem, 5vw, 44px);
-  font-weight: var(--fw-xbold);
-  letter-spacing: -0.015em;
-  line-height: 1.08;
-  text-transform: none;
-}
-
-body.navigation-topics .spc-home-identity__tagline {
-  margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-body.navigation-topics .spc-home-introduction {
-  box-sizing: border-box;
-  padding: 16px 32px;
-  border-bottom: 1px solid var(--stroke-1);
-  background: #ffffff;
-}
-
-body.navigation-topics .spc-home-introduction p {
-  margin: 0;
-  color: var(--spc-gray-700);
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-body.navigation-topics .spc-home-introduction a {
-  border-bottom: 2px solid var(--spc-coral);
-  color: var(--spc-indigo);
-  font-weight: var(--fw-bold);
-  white-space: nowrap;
-}
-
-body.navigation-topics .spc-home-introduction a:hover,
-body.navigation-topics .spc-home-introduction a:focus-visible {
-  color: var(--spc-coral-hover);
 }
 
 /* Popular categories ------------------------------------------------- */
@@ -906,26 +796,6 @@ body.navigation-topics .spc-home-pinned-badge {
     width: 100%;
   }
 
-  body.navigation-topics .spc-home-identity {
-    padding: 24px 20px;
-  }
-
-  body.navigation-topics .spc-home-identity__overlay {
-    background: rgba(18, 28, 52, 0.74);
-  }
-
-  body.navigation-topics .spc-home-identity__tagline {
-    font-size: 16px;
-  }
-
-  body.navigation-topics .spc-home-introduction {
-    padding: 16px 20px;
-  }
-
-  body.navigation-topics .spc-home-introduction p {
-    font-size: 15px;
-  }
-
   body.navigation-topics .featured-categories {
     margin-top: 18px;
   }
@@ -1069,7 +939,6 @@ body.navigation-topics .spc-home-pinned-badge {
      the padding back so its text keeps the page inset. */
   body.navigation-topics #main-outlet > .spc-member-onboarding,
   body.navigation-topics #main-outlet > .spc-non-member-banner,
-  body.navigation-topics #main-outlet > .spc-home-surface,
   body.navigation-topics #main-outlet > .featured-categories {
     width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
     margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));

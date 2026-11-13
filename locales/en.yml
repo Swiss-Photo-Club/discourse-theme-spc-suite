@@ -61,10 +61,6 @@ en:
               label: Final entry count
       webinars_category_id: "Live Webinars: ID of the webinar category (Admin > Categories, the number in the URL). The homepage Monthly Live Webinars card links to it, and it gets the webinar hero. 0 falls back to webinars_url."
       webinars_url: "Homepage: fallback destination for the Monthly Live Webinars card when webinars_category_id is 0 or does not resolve to a category."
-      homepage_banner_image: "Homepage: member-homepage banner image. A landscape image around 2:1 works best."
-      homepage_about_url_de: "Homepage: destination of the community information link for the German interface."
-      homepage_about_url_en: "Homepage: destination of the community information link for the English interface."
-      homepage_about_url_fr: "Homepage: destination of the community information link for the French interface."
       onboarding_member_groups: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ and ‘trial’ groups."
       onboarding_profile_url: "Member Onboarding: destination for the Profile step."
       onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
@@ -74,8 +70,6 @@ en:
       nonmember_join_url_de: "Non-Member Banner: membership-button destination for the German interface."
       nonmember_join_url_en: "Non-Member Banner: membership-button destination for the English interface."
       nonmember_join_url_fr: "Non-Member Banner: membership-button destination for the French interface."
-      nonmember_categories_url: "Non-Member Banner: destination for the browse-categories button."
-      nonmember_show_categories_button: "Non-Member Banner: show the browse-categories button."
       nonmember_trial_mode: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
       nonmember_trial_days: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
       members_only_url: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."
@@ -425,14 +419,6 @@ en:
       rules_body: Submit one self-photographed image that fits the task, using the Submit a photo button. Submissions close on %{date}. Vote by opening an entry and pressing the vote button. Voting ends when the next challenge starts or at month end; completed entries are closed and your voting allowance is returned, while results remain visible.
       manage_tags: Manage round tags
   homepage:
-    identity:
-      eyebrow: Swiss Photo Club
-      title: Community
-      tagline: Connect. Share. Improve.
-    introduction:
-      label: About the Swiss Photo Club Community
-      body: Share your photos, get honest and constructive feedback, take part in the monthly challenge, and meet photographers near you. Run by Swiss Photo Club and open to photographers of every level.
-      read_more: Read more →
     popular_categories: Popular Categories
     all_categories: All categories
     latest: Latest
@@ -546,8 +532,8 @@ en:
     eyebrow: Swiss Photo Club · Community
     title: Connect, Share, Improve
     description: Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.
-    join: Join the community
-    browse_categories: Browse categories
+    join: Start your membership
+    photo_credit: 'Winning photo: “%{title}” · %{author}'
     trial:
       eyebrow: Swiss Photo Club · Community · Free trial
       description: "Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with. Log in with your Swiss Photo Club account — or create one — and your free trial starts automatically."

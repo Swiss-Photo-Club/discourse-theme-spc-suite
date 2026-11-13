@@ -142,20 +142,20 @@ body.navigation-topics:has(.spc-non-member-banner)
   color: #ffffff !important;
 }
 
-.spc-non-member-banner__button--secondary {
-  border-color: #ffffff;
-  background: transparent;
-  color: #ffffff !important;
-}
-
-.spc-non-member-banner__button--secondary:visited {
-  color: #ffffff !important;
-}
-
-.spc-non-member-banner__button--secondary:hover,
-.spc-non-member-banner__button--secondary:focus-visible {
-  background: #ffffff;
-  color: var(--spc-indigo) !important;
+/* Credit for the winning photo behind the banner. Top-right, one line, out of
+   the text column's way at every width. */
+.spc-non-member-banner__credit {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  max-width: calc(100% - 28px);
+  margin: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 600px) {

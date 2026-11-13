@@ -612,7 +612,7 @@ function roundThemeLabel(tag, challenge, briefTitle) {
 // band's latest winner, the round switcher's "Results" state and the round
 // pages; the promise is cached until the TTL expiry, failures included —
 // clearing on failure would re-arm the fetch on the next observed mutation.
-function fetchWinners() {
+export function fetchWinners() {
   winnersPromise ||= ajax(tagListJsonUrl(WINNER_TAG))
     .then((data) => {
       const users = data?.users || [];

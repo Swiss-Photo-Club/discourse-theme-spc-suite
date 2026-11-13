@@ -1,7 +1,11 @@
 import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { action } from "@ember/object";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { service } from "@ember/service";
 import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
+import { fetchWinners } from "../api-initializers/spc-monthly-challenge";
 import { isSpcMember } from "../lib/spc-membership";
 
 // With DiscourseConnect on, /login hands straight over to the SSO provider
@@ -14,14 +18,30 @@ export default class SpcNonMemberBanner extends Component {
   @service currentUser;
   @service router;
 
+  // The newest winner-tagged challenge entry (Phase E). Fetched only once the
+  // banner is in the DOM, through the challenge module's cached promise, so a
+  // non-homepage route never asks and the challenge band shares the request.
+  @tracked winner = null;
+
   get isHomepage() {
     const path = this.router.currentURL?.split("?")[0];
 
     return path === "/" || path === "/latest";
   }
 
-  get bannerImage() {
-    return settings.homepage_banner_image || null;
+  @action
+  async loadWinner() {
+    const winner = (await fetchWinners())[0];
+    if (winner?.image && !this.isDestroying) {
+      this.winner = winner;
+    }
+  }
+
+  get photoCredit() {
+    return i18n(themePrefix("nonmember_banner.photo_credit"), {
+      title: this.winner.title,
+      author: this.winner.author,
+    });
   }
 
   get isMember() {
@@ -76,6 +96,12 @@ export default class SpcNonMemberBanner extends Component {
     return this.isTrialInvitation ? LOGIN_PATH : this.joinUrl;
   }
 
+  // The join page lives on swissphotoclub.com; the visitor keeps the
+  // community open behind it. /login stays in the same tab.
+  get primaryTarget() {
+    return this.isTrialInvitation ? null : "_blank";
+  }
+
   get joinUrl() {
     const locale = document.documentElement.lang?.toLowerCase() || "de";
 
@@ -95,13 +121,15 @@ export default class SpcNonMemberBanner extends Component {
       <section
         class="spc-hero spc-hero--invitation spc-non-member-banner"
         aria-labelledby="spc-non-member-banner-title"
+        {{didInsert this.loadWinner}}
       >
-        {{#if this.bannerImage}}
+        {{#if this.winner}}
           <img
             class="spc-non-member-banner__image"
-            src={{this.bannerImage}}
+            src={{this.winner.image}}
             alt=""
           />
+          <p class="spc-non-member-banner__credit">{{this.photoCredit}}</p>
         {{/if}}
 
         <div class="spc-non-member-banner__overlay" aria-hidden="true"></div>
@@ -126,18 +154,11 @@ export default class SpcNonMemberBanner extends Component {
             <a
               class="spc-non-member-banner__button spc-non-member-banner__button--primary"
               href={{this.primaryUrl}}
+              target={{this.primaryTarget}}
+              rel={{if this.primaryTarget "noopener"}}
             >
               {{this.primaryLabel}}
             </a>
-
-            {{#if settings.nonmember_show_categories_button}}
-              <a
-                class="spc-non-member-banner__button spc-non-member-banner__button--secondary"
-                href={{settings.nonmember_categories_url}}
-              >
-                {{i18n (themePrefix "nonmember_banner.browse_categories")}}
-              </a>
-            {{/if}}
           </div>
         </div>
       </section>

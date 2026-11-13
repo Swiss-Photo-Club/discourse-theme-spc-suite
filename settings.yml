@@ -66,26 +66,6 @@ homepage_secondary_categories:
   default: "12|8|4|2"
   description: "Homepage: compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
 
-homepage_banner_image:
-  type: upload
-  default: ""
-  description: "Homepage: member-homepage banner image. A landscape image around 2:1 works best."
-
-homepage_about_url_de:
-  type: string
-  default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Homepage: destination of the community information link for the German interface."
-
-homepage_about_url_en:
-  type: string
-  default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Homepage: destination of the community information link for the English interface."
-
-homepage_about_url_fr:
-  type: string
-  default: "/t/willkommen-bei-swiss-photo-club-community/5"
-  description: "Homepage: destination of the community information link for the French interface."
-
 challenge_category_id:
   type: integer
   default: 6
@@ -300,16 +280,6 @@ nonmember_join_url_fr:
   type: string
   default: "https://swissphotoclub.com/fr-ch/devenir-membre"
   description: "Non-Member Banner: membership-button destination for the French interface."
-
-nonmember_categories_url:
-  type: string
-  default: "/categories"
-  description: "Non-Member Banner: destination for the browse-categories button."
-
-nonmember_show_categories_button:
-  type: bool
-  default: true
-  description: "Non-Member Banner: show the browse-categories button."
 
 nonmember_trial_mode:
   type: bool

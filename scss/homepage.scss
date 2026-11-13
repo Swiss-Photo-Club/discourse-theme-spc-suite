@@ -939,6 +939,7 @@ body.navigation-topics .spc-home-pinned-badge {
      the padding back so its text keeps the page inset. */
   body.navigation-topics #main-outlet > .spc-member-onboarding,
   body.navigation-topics #main-outlet > .spc-non-member-banner,
+  body.navigation-topics #main-outlet > .spc-home-advantages,
   body.navigation-topics #main-outlet > .featured-categories {
     width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
     margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));

@@ -534,6 +534,20 @@ en:
     description: Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.
     join: Start your membership
     photo_credit: 'Winning photo: “%{title}” · %{author}'
+    advantages_label: "Why join"
+    advantages:
+      critique:
+        title: "Real critique"
+        body: "Structured feedback on composition, light and editing, not just \"nice shot\"."
+      meetups:
+        title: "Meetups in your region"
+        body: "Photowalks and meetups wherever the club is active."
+      languages:
+        title: "DE · FR · EN"
+        body: "One community across languages and borders."
+      rights:
+        title: "Your photos stay yours"
+        body: "Your rights, your data, no ads."
     trial:
       eyebrow: Swiss Photo Club · Community · Free trial
       description: "Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with. Log in with your Swiss Photo Club account — or create one — and your free trial starts automatically."

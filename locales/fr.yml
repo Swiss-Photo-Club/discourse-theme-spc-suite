@@ -530,6 +530,20 @@ fr:
     description: Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous.
     join: Devenir membre
     photo_credit: 'Photo gagnante : « %{title} » · %{author}'
+    advantages_label: "Pourquoi devenir membre"
+    advantages:
+      critique:
+        title: "De vraies critiques"
+        body: "Des retours argumentés sur la composition, la lumière et le traitement, pas juste « belle photo »."
+      meetups:
+        title: "Des rencontres près de chez vous"
+        body: "Balades photo et rencontres partout où le club est actif."
+      languages:
+        title: "DE · FR · EN"
+        body: "Une seule communauté, par-delà les langues et les frontières."
+      rights:
+        title: "Vos photos restent les vôtres"
+        body: "Vos droits, vos données, aucune publicité."
     trial:
       eyebrow: Swiss Photo Club · Community · Essai gratuit
       description: "Partagez vos photos, donnez et recevez des critiques constructives, participez au challenge mensuel et rencontrez des photographes près de chez vous. Connectez-vous avec votre compte Swiss Photo Club — ou créez-en un — et votre essai gratuit démarre automatiquement."

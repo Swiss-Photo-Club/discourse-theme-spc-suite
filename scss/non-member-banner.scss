@@ -1,4 +1,4 @@
-body.navigation-topics #main-outlet > .spc-non-member-banner {
+body.navigation-topics #main-outlet > :is(.spc-non-member-banner, .spc-home-advantages) {
   order: -30;
 }
 
@@ -158,6 +158,52 @@ body.navigation-topics:has(.spc-non-member-banner)
   white-space: nowrap;
 }
 
+/* Advantages row: same audience as the banner, rendered right after it by
+   the same component. Four columns on desktop, two on a phone so the first
+   photos still reach the first screen. */
+.spc-home-advantages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--stroke-1);
+  background: #ffffff;
+  list-style: none;
+}
+
+.spc-home-advantages__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 20px;
+  border-right: 1px solid var(--stroke-1);
+  color: var(--fg-2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.spc-home-advantages__item:last-child {
+  border-right: 0;
+}
+
+.spc-home-advantages__item strong {
+  color: var(--spc-indigo);
+  font-size: 15px;
+}
+
+.spc-home-advantages__icon {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 6px;
+  fill: none;
+  stroke: var(--spc-coral);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
 @media (max-width: 600px) {
   .spc-hero--invitation {
     min-height: 0;
@@ -192,5 +238,26 @@ body.navigation-topics:has(.spc-non-member-banner)
 
   .spc-non-member-banner__button {
     width: 100%;
+  }
+
+  .spc-home-advantages {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .spc-home-advantages__item {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .spc-home-advantages__item:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .spc-home-advantages__item:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--stroke-1);
+  }
+
+  .spc-home-advantages__item strong {
+    font-size: 14px;
   }
 }

@@ -983,6 +983,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     </div>
   </div>
   <div class="callout"><code>#main-outlet-wrapper.wrap</code> already owns the 1110px geometry. Homepage bands use <code>width: 100%</code> and nothing else. Members see the same page without the banner and the advantages row; the onboarding panel stays for members who have not finished it. The banner, advantages row, doors and leaderboard show on both the Categories and Latest tabs; only the three rows are specific to Categories.</div>
+  <div class="callout ok"><b>Shipped, step 1 of 4 · 13 November · <code>3c32c47</code>.</b> The visitor banner now says "Start your membership" ("Mitglied werden", "Devenir membre") and opens the join page in a new tab. The browse-categories button is gone, and the banner sits on the newest winner-tagged photo with a one-line credit. The member identity banner and the About paragraph are removed, along with the five settings that only fed them. Verified live: signed out in DE, FR and EN at 1280px and 375px (label, join URL per language, <code>target=_blank</code> with <code>rel=noopener</code>, photo loaded, credit text). Signed in as a member: no banner, no identity block. An Announcements page makes zero <code>winner.json</code> requests.</div>
   <div class="callout warn"><b>Before it goes live:</b> "Your rights, your data, no ads" needs your confirmation (where the data is hosted, and that the no-ads promise holds). "Meetups in your region" is worded for Switzerland, Germany and Austria.</div>
 </div>
 

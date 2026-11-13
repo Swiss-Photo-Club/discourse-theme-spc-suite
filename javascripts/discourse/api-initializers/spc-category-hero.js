@@ -44,11 +44,9 @@ const CATEGORY_HEROES = {
   //
   // Browse before create, which inverts the other heroes on purpose: far more
   // members want to find a meetup than to organise one. /upcoming-events is
-  // hardcoded rather than read from webinars_url as the spec suggested —
-  // that setting is the homepage Monthly Live Webinars card's fallback
-  // destination and only happens to share this default, so pointing the hero
-  // at it would mean retargeting the webinars card silently moved the meetups
-  // hero too.
+  // hardcoded on purpose: it once shared a default with the homepage
+  // webinars card's fallback setting (deleted with that card in Phase E),
+  // and borrowing an unrelated setting would have tied the two together.
   8: {
     action: () => ({
       label: heroText("meetups", "actions.upcoming"),

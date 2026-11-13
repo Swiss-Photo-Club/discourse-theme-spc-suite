@@ -8,8 +8,7 @@ fr:
       enable_nonmember_banner: "Bannière non-membres : appel à l’adhésion sur la page d’accueil pour les visiteurs qui ne sont pas membres."
       enable_category_hero: "Hero de catégorie : en-tête hero partagé sur chaque page de catégorie. Le désactiver rétablit l’en-tête et l’arrière-plan natifs de la catégorie. Les commandes natives de la liste restent disponibles dans les deux états. Le hero du Challenge mensuel reste actif, car il fait partie du flux d’envoi de photos."
       enable_locale_cookie: "Cookie de langue : reflète la langue de l’interface du forum dans un cookie sur swissphotoclub.com afin que le site principal puisse s’y aligner."
-      enable_local_featured_categories: "Page d’accueil : interrupteur de migration — afficher les catégories de la page d’accueil localement. Les catégories du menu de navigation par défaut sont les cartes mises en avant. À activer uniquement lorsque le composant externe Featured Categories est détaché."
-      homepage_secondary_categories: "Page d’accueil : cartes de catégories compactes affichées après les catégories mises en avant du menu de navigation par défaut. Une catégorie sélectionnée dans les deux réglages apparaît une seule fois comme carte mise en avant."
+      homepage_secondary_categories: "Page d’accueil : catégories affichées en simples liens sous les trois accès (Critique photo, Défi du mois, Présentez-vous). Une catégorie déjà présente comme accès est ignorée."
       challenge_category_id: "Challenge mensuel : ID de la catégorie du challenge (Admin > Catégories, le numéro dans l’URL)."
       round_tag: "Challenge mensuel : tag de manche fixe appliqué aux participations (p. ex. 2026-07-cityscapes). Laisser vide pour le mode automatique : le tag de la catégorie commençant par le mois en cours est utilisé."
       show_banner: "Challenge mensuel : afficher une bannière « Envoyer une photo » supplémentaire en haut de la liste des sujets de la catégorie du challenge (désactivée par défaut, car le hero du challenge a déjà un bouton d’envoi)."
@@ -58,8 +57,7 @@ fr:
       leaderboard_id: "Classement : le classement de gamification à afficher."
       leaderboard_leader_count: "Classement : nombre de membres classés à afficher dans la bande compacte."
       leaderboard_show_on_homepage: "Classement : afficher la bande sur la page d’accueil de la communauté."
-      webinars_category_id: "Webinaires en direct : ID de la catégorie des webinaires (Admin > Catégories, le numéro dans l’URL). La carte Webinaires mensuels en direct de la page d’accueil pointe dessus, et la catégorie reçoit le hero des webinaires. 0 revient à webinars_url."
-      webinars_url: "Page d’accueil : destination de repli de la carte Webinaires mensuels en direct lorsque webinars_category_id vaut 0 ou ne correspond à aucune catégorie."
+      webinars_category_id: "Webinaires en direct : ID de la catégorie des webinaires (Admin > Catégories, le numéro dans l’URL). La catégorie reçoit le hero des webinaires."
       challenge_max_entries_per_round: "Challenge mensuel : combien de photos un membre peut envoyer par manche. Une fois la limite atteinte, le formulaire affiche un message amical et désactive le bouton d’envoi. 0 désactive la vérification. Simple rappel dans le formulaire, sans blocage côté serveur."
       onboarding_member_groups: "Onboarding : groupes dont les membres voient le panneau d’onboarding. Par défaut, il s’agit des groupes SPC « members » et « trial »."
       onboarding_profile_url: "Onboarding : destination de l’étape Profil."
@@ -415,19 +413,16 @@ fr:
       rules_body: Envoyez une photo prise par vous-même correspondant à la mission via le bouton d’envoi de photo. Clôture des envois le %{date}. Votez en ouvrant une participation et en utilisant le bouton de vote. Le vote se termine au début du prochain challenge ou à la fin du mois ; les participations terminées sont fermées et votre quota de votes est restitué. Les résultats restent visibles.
       manage_tags: Gérer les tags de manche
   homepage:
-    popular_categories: Catégories populaires
-    all_categories: Toutes les catégories
     latest: Derniers sujets
     login_to_post: Se connecter pour publier
     monthly_prompt: Le thème du mois
-    pinned: Épinglé
-    open_current_challenge: Ouvrir le défi en cours
-    actions:
-      challenge: Soumettre une photo
-      critique: Donner et recevoir des critiques
-    webinars:
-      title: Webinaires mensuels en direct
-      description: Formations photo en direct avec nos instructeurs – ou en replay.
+    doors:
+      aria: "Par où commencer"
+      feedback: "Donnez deux critiques, recevez-en une"
+      challenge: "Un nouveau thème chaque mois"
+      challenge_round: "%{month} : %{theme}"
+      intro: "Dites bonjour et faites connaissance"
+      more: "Et aussi :"
   critique_workspace:
     banner_title: Espace de critique
     banner_text: Ouvre un espace dédié à ta critique – avec l'image, la demande et les notes du photographe juste à côté.

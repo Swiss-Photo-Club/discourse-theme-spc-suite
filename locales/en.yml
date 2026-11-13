@@ -8,8 +8,7 @@ en:
       enable_nonmember_banner: "Non-Member Banner: join call-to-action on the homepage for visitors who are not members."
       enable_category_hero: "Category Hero: shared hero header on every category page. Turning it off restores the native category header and background. Native list controls remain available in either state. The Monthly Challenge hero remains enabled because it is part of the photo-submission workflow."
       enable_locale_cookie: "Locale Cookie: mirrors the forum interface language into a cookie on swissphotoclub.com so the main site can match it."
-      enable_local_featured_categories: "Homepage: migration switch — render homepage categories locally. Default navigation menu categories are the highlighted cards. Enable only when the external Featured Categories component is detached."
-      homepage_secondary_categories: "Homepage: compact category cards shown after the highlighted Default navigation menu categories. A category selected in both settings appears once as a highlighted card."
+      homepage_secondary_categories: "Homepage: categories listed as plain links under the three doors (Photo Feedback, Monthly Challenge, Introduce Yourself). A door category listed here is skipped."
       challenge_category_id: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL)."
       round_tag: "Monthly Challenge: fixed round tag applied to submissions (e.g. 2026-07-cityscapes). Leave empty for automatic mode: the category tag starting with the current month is used."
       show_banner: "Monthly Challenge: show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)."
@@ -59,8 +58,7 @@ en:
               label: Winning image
             entry_count:
               label: Final entry count
-      webinars_category_id: "Live Webinars: ID of the webinar category (Admin > Categories, the number in the URL). The homepage Monthly Live Webinars card links to it, and it gets the webinar hero. 0 falls back to webinars_url."
-      webinars_url: "Homepage: fallback destination for the Monthly Live Webinars card when webinars_category_id is 0 or does not resolve to a category."
+      webinars_category_id: "Live Webinars: ID of the webinar category (Admin > Categories, the number in the URL). It gets the webinar hero."
       onboarding_member_groups: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ and ‘trial’ groups."
       onboarding_profile_url: "Member Onboarding: destination for the Profile step."
       onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
@@ -419,19 +417,16 @@ en:
       rules_body: Submit one self-photographed image that fits the task, using the Submit a photo button. Submissions close on %{date}. Vote by opening an entry and pressing the vote button. Voting ends when the next challenge starts or at month end; completed entries are closed and your voting allowance is returned, while results remain visible.
       manage_tags: Manage round tags
   homepage:
-    popular_categories: Popular Categories
-    all_categories: All categories
     latest: Latest
     login_to_post: Log in to post
     monthly_prompt: This month's prompt
-    pinned: Pinned
-    open_current_challenge: Open current challenge
-    actions:
-      challenge: Submit your photo
-      critique: Give & get critiques
-    webinars:
-      title: Monthly Live Webinars
-      description: Live photo trainings with our instructors — or catch the recording.
+    doors:
+      aria: "Where to start"
+      feedback: "Give two critiques, get one"
+      challenge: "A new theme every month"
+      challenge_round: "%{month}: %{theme}"
+      intro: "Say hello and meet the others"
+      more: "Also:"
   critique_workspace:
     banner_title: Critique Workspace
     banner_text: Open a dedicated space for your critique — with the image, the request and the photographer's notes right beside you.

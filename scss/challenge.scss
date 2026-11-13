@@ -1396,13 +1396,3 @@ body.category-monthly-challenge.archetype-regular .d-header .header-title-voting
 }
 
 
-/* Legacy migration fallback: when the external Featured Categories component
-   is active, the challenge initializer owns its Monthly Challenge slot. The
-   local renderer must always show every admin-selected category verbatim. */
-body.navigation-topics
-  .featured-categories:not([data-spc-featured-categories="local"])
-  .featured-categories__category-container:not(
-    [data-spc-monthly-challenge-slot]
-  ):has(> a[href*="/c/monthly-challenge"]) {
-  display: none;
-}

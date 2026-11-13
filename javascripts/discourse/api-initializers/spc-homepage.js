@@ -1,20 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
-import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
-import { categoryUrlFor } from "../lib/spc-submit-helpers";
-
-const MONTHLY_SELECTOR =
-  '.featured-categories__category-link[data-spc-monthly-challenge="home"], .featured-categories__category-link[href="/c/monthly-challenge/6"]';
-const CRITIQUE_CATEGORY_ID = 7;
-const CRITIQUE_SELECTOR = [
-  `.featured-categories__category-container[data-spc-category-id="${CRITIQUE_CATEGORY_ID}"] > .featured-categories__category-link`,
-  '.featured-categories__category-link[href="/c/photo-feedback/7"]',
-  '.featured-categories__category-link[href="/c/critique-portfolio-reviews/7"]',
-].join(", ");
-const FEEDBACK_SELECTOR = [
-  '.featured-categories__category-container[data-spc-category-id="2"] > .featured-categories__category-link',
-  '.featured-categories__category-link[href="/c/feedback/2"]',
-].join(", ");
+import SpcHomeDoors from "../components/spc-home-doors";
 
 function translated(key, options) {
   return i18n(themePrefix(`homepage.${key}`), options);
@@ -33,136 +19,6 @@ function makeElement(tagName, className, text) {
     element.textContent = text;
   }
   return element;
-}
-
-function ensureFeatureDecoration(link, actionKey) {
-  if (!link) {
-    return;
-  }
-
-  link.dataset.spcHomeFeature = actionKey;
-
-  let cta = link.querySelector(":scope > .spc-home-feature-cta");
-  if (!cta) {
-    cta = makeElement("span", "spc-home-feature-cta");
-    link.append(cta);
-  }
-  setText(cta, translated(`actions.${actionKey}`));
-}
-
-function syncCritiqueCategory(link, site) {
-  if (!link) {
-    return;
-  }
-
-  const category = site?.categories?.find(
-    ({ id }) => id === CRITIQUE_CATEGORY_ID
-  );
-  if (!category) {
-    return;
-  }
-
-  setText(link.querySelector(".badge-category__name"), category.name);
-  setText(
-    link.querySelector(".category-description"),
-    category.description_text || ""
-  );
-
-  const backgroundUrl = category.uploaded_background?.url;
-  if (backgroundUrl) {
-    link.style.setProperty(
-      "--spc-critique-cover",
-      `url(${JSON.stringify(backgroundUrl)})`
-    );
-  } else {
-    link.style.removeProperty("--spc-critique-cover");
-  }
-}
-
-// The card links to the webinar category when webinars_category_id resolves to
-// one — slug taken from the live category, never from a setting, so a slug
-// rename in category admin is followed automatically. webinars_url is only the
-// fallback for an unset or deleted category, which is what it was before the
-// category existed.
-function webinarsUrl() {
-  const categoryId = Number(settings.webinars_category_id);
-  if (categoryId > 0 && Category.findById(categoryId)) {
-    return categoryUrlFor(categoryId);
-  }
-  return settings.webinars_url || "/upcoming-events";
-}
-
-function ensureWebinarCard(list, feedbackContainer) {
-  let container = list.querySelector('[data-spc-home-card="webinars"]');
-  if (!container) {
-    container = makeElement(
-      "div",
-      "featured-categories__category-container spc-home-webinar-card"
-    );
-    container.dataset.spcHomeCard = "webinars";
-
-    const link = makeElement(
-      "a",
-      "featured-categories__category-link spc-home-webinar-link"
-    );
-    const title = makeElement("h3", "category-name");
-    const description = makeElement("span", "category-description");
-    link.append(title, description);
-    container.append(link);
-
-    if (feedbackContainer) {
-      list.insertBefore(container, feedbackContainer);
-    } else {
-      list.append(container);
-    }
-  }
-
-  const link = container.querySelector("a");
-  const targetUrl = webinarsUrl();
-  if (link.getAttribute("href") !== targetUrl) {
-    link.setAttribute("href", targetUrl);
-  }
-  setText(link.querySelector(".category-name"), translated("webinars.title"));
-  setText(
-    link.querySelector(".category-description"),
-    translated("webinars.description")
-  );
-}
-
-function enhanceCategories(site) {
-  const root = document.querySelector(
-    settings.enable_local_featured_categories
-      ? '[data-spc-featured-categories="local"]'
-      : ".featured-categories"
-  );
-  const list = root?.querySelector(".featured-categories__list-container");
-  if (!root || !list) {
-    return;
-  }
-
-  setText(
-    root.querySelector(".featured-categories__title"),
-    translated("popular_categories")
-  );
-  setText(
-    root.querySelector(".featured-categories__link"),
-    translated("all_categories")
-  );
-
-  const monthly = root.querySelector(MONTHLY_SELECTOR);
-  const critique = root.querySelector(CRITIQUE_SELECTOR);
-  syncCritiqueCategory(critique, site);
-  ensureFeatureDecoration(monthly, "challenge");
-  ensureFeatureDecoration(critique, "critique");
-
-  // The feedback card keeps the category's own localised name and
-  // description, like every other compact card. It used to be relabelled
-  // "Site Feedback / Help shape the community." from the locale files, a
-  // leftover from before the category carried real copy — the card only
-  // matters here as the anchor the webinars card is inserted before.
-  const feedback = root.querySelector(FEEDBACK_SELECTOR);
-
-  ensureWebinarCard(list, feedback?.closest(".featured-categories__category-container"));
 }
 
 // The brief row is a real topic card with a real photo. Only ever add
@@ -188,32 +44,20 @@ function ensurePromptBadge(row) {
 function enhanceTopicFeed() {
   const contents = document.querySelector("#list-area > .contents");
   const tbody = contents?.querySelector(".topic-list > tbody");
-  const monthlyCard = document.querySelector(MONTHLY_SELECTOR);
-  const promptTitle = monthlyCard
-    ?.querySelector(".spc-monthly-card__title")
-    ?.textContent?.trim();
 
-  if (!contents || !tbody || !monthlyCard) {
+  if (!contents || !tbody) {
     return;
   }
 
   contents.dataset.spcLatestLabel = translated("latest");
 
-  // Find the official challenge brief row. Match by title first, with a
-  // structural fallback (the brief is the pinned topic in the challenge
-  // category) so async hydration or localized titles can't mis-match.
+  // Find the official challenge brief row: the pinned topic in the challenge
+  // category. It used to be matched by the title on the homepage's monthly
+  // card first; that card went with the category grid in Phase E.
   const rows = Array.from(
     tbody.querySelectorAll("tr.topic-list-item:not(.spc-home-monthly-prompt--synthetic)")
   );
   const promptRow =
-    (promptTitle &&
-      rows.find(
-        (row) =>
-          row
-            .querySelector(".topic-list-thumbnail a[aria-label]")
-            ?.getAttribute("aria-label")
-            ?.trim() === promptTitle
-      )) ||
     rows.find(
       (row) =>
         row.matches(".category-monthly-challenge") &&
@@ -271,7 +115,7 @@ function ensureGuestAction(currentUser) {
 
 const spcRun = (api) => {
   const currentUser = api.getCurrentUser();
-  const site = api.container.lookup("service:site");
+  api.renderInOutlet("above-main-container", SpcHomeDoors);
   let queued = false;
 
   function render() {
@@ -280,7 +124,6 @@ const spcRun = (api) => {
       return;
     }
 
-    enhanceCategories(site);
     enhanceTopicFeed();
     ensureGuestAction(currentUser);
   }

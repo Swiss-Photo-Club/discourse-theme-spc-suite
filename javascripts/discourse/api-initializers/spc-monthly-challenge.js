@@ -798,6 +798,22 @@ async function resolveLatestWinner(challenges) {
   };
 }
 
+// The homepage's Monthly Challenge door (Phase E): month, theme, days left and
+// the round page, read from the same cached category listing the band uses.
+// Only the homepage calls this, and only once the door is in the DOM.
+export async function openRoundSummary() {
+  const challenge = await resolveActiveChallenge(parseChallenges());
+  if (!challenge) {
+    return null;
+  }
+  return {
+    month: roundMonthName(challenge.tag_slug || challenge.tag),
+    theme: challenge.listing?.title || localized(challenge, "title"),
+    daysLeft: daysLeftText(challenge),
+    url: challenge.round_page_url || categoryRoute(),
+  };
+}
+
 // The URL, not the body class: Discourse stamps category-<slug> on the
 // category listing AND on every topic inside it, so a class check rendered
 // the hero, current-round card and winner section under each entry's post
@@ -829,135 +845,6 @@ function isChallengeCategoryRoot(url) {
     path === `/c/${categoryId}` ||
     path === `/c/${challengeCategorySlug()}/${categoryId}`
   );
-}
-
-function findHomeCard() {
-  // Legacy slot used only while the external Featured Categories component
-  // remains active during migration.
-  return document.querySelector(
-    '[data-spc-monthly-challenge-slot="home"] > a'
-  );
-}
-
-function ensureHomeCard() {
-  if (!document.body.classList.contains("navigation-topics")) {
-    return null;
-  }
-
-  // The local renderer outputs the administrator's category selection
-  // verbatim. Homepage challenge content must not add or replace a category.
-  if (settings.enable_local_featured_categories) {
-    return null;
-  }
-
-  const existing = findHomeCard();
-  if (existing) {
-    return existing;
-  }
-
-  // Migration fallback for the external Featured Categories component. It
-  // cannot reserve a special card, so retain the old prepended slot until the
-  // local renderer is enabled and the external component is detached.
-  const list = document.querySelector(".featured-categories__list-container");
-  if (!list) {
-    return null;
-  }
-
-  const container = document.createElement("div");
-  container.className = "featured-categories__category-container";
-  container.dataset.spcMonthlyChallengeSlot = "home";
-
-  const card = document.createElement("a");
-  card.className = "featured-categories__category-link";
-  card.href = categoryRoute();
-  container.append(card);
-  list.prepend(container);
-
-  return card;
-}
-
-function setHomeCardCover(card, challenge) {
-  const cover = uploadUrl(challenge.cover_image) || challenge.topic?.coverImage;
-
-  if (cover) {
-    card.style.setProperty("--spc-challenge-cover", `url("${cover.replaceAll('"', "%22")}")`);
-    card.classList.add("spc-monthly-card--with-cover");
-  } else {
-    card.style.removeProperty("--spc-challenge-cover");
-    card.classList.remove("spc-monthly-card--with-cover");
-  }
-}
-
-function prepareHomeCard(challenge) {
-  const card = ensureHomeCard();
-  if (!card || card.dataset.spcMonthlyChallenge === "home") {
-    return;
-  }
-
-  const fallbackSummary = card.querySelector(".category-description")?.textContent?.trim() || "";
-  const title = challengeTitle(challenge);
-  const month = monthLabel(challenge);
-
-  card.dataset.spcMonthlyChallenge = "loading";
-  card.classList.add("spc-monthly-card", "spc-monthly-card--loading");
-  card.href = categoryRoute();
-  card.setAttribute("aria-busy", "true");
-  card.setAttribute("aria-label", `${translate("current")}: ${title}`);
-  card.innerHTML = `
-    <span class="spc-monthly-card__content">
-      <span class="spc-eyebrow">${escapeHtml(translate("current"))}${
-        month ? ` · ${escapeHtml(month)}` : ""
-      }</span>
-      <strong class="spc-monthly-card__title">${escapeHtml(title)}</strong>
-      ${
-        fallbackSummary
-          ? `<span class="spc-monthly-card__summary">${escapeHtml(fallbackSummary)}</span>`
-          : ""
-      }
-    </span>
-    <span class="spc-monthly-card__cta" aria-hidden="true">${escapeHtml(
-      translate("label")
-    )}</span>
-  `;
-  setHomeCardCover(card, challenge);
-}
-
-function renderHomeCard(challenge) {
-  const card = ensureHomeCard();
-
-  if (!card) {
-    return;
-  }
-
-  const signature = `${challenge.tag}-${challenge.topic?.updatedAt}-${localeCode()}`;
-  if (card.dataset.spcChallengeSignature === signature) {
-    return;
-  }
-
-  const title = challengeTitle(challenge);
-  const summary = challengeSummary(challenge);
-
-  card.dataset.spcChallengeSignature = signature;
-  card.dataset.spcMonthlyChallenge = "home";
-  card.classList.add("spc-monthly-card");
-  card.classList.remove("spc-monthly-card--loading");
-  card.href = categoryRoute();
-  card.removeAttribute("aria-busy");
-  card.setAttribute("aria-label", `${translate("current")}: ${title}`);
-  card.innerHTML = `
-    <span class="spc-monthly-card__content">
-      <span class="spc-eyebrow">${escapeHtml(translate("current"))} · ${escapeHtml(
-        monthLabel(challenge)
-      )}</span>
-      <strong class="spc-monthly-card__title">${escapeHtml(title)}</strong>
-      <span class="spc-monthly-card__summary">${escapeHtml(summary)}</span>
-    </span>
-    <span class="spc-monthly-card__cta" aria-hidden="true">${escapeHtml(
-      translate("label")
-    )}</span>
-  `;
-
-  setHomeCardCover(card, challenge);
 }
 
 function daysLeftText(challenge) {
@@ -1893,9 +1780,6 @@ const spcRun = (api) => {
   function needsChallengeData() {
     return (
       isChallengePage() ||
-      // The legacy external component still needs its injected homepage card.
-      (!settings.enable_local_featured_categories &&
-        document.body.classList.contains("navigation-topics")) ||
       // renderComposer() prefills the round tag, but only while it is open.
       Boolean(document.querySelector("#reply-control.open"))
     );
@@ -1956,17 +1840,12 @@ const spcRun = (api) => {
       return;
     }
 
-    if (!settings.enable_local_featured_categories) {
-      prepareHomeCard(activeRecord);
-    }
-
     const active = await hydrateChallenge(activeRecord);
     if (request !== renderRequest) {
       return;
     }
     currentActive = active;
 
-    renderHomeCard(active);
     renderComposer(active, composerService);
     ensureVotingDialog();
 
@@ -2065,9 +1944,7 @@ const spcRun = (api) => {
       const link = event.target.closest?.("a[href]");
       if (
         !link ||
-        !link.closest(
-          ".custom-header-links, .featured-categories__category-container"
-        ) ||
+        !link.closest(".custom-header-links") ||
         !isChallengeCategoryRoot(link.href)
       ) {
         return;

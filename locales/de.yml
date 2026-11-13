@@ -8,8 +8,7 @@ de:
       enable_nonmember_banner: "Nichtmitglieder-Banner: Beitritts-Aufruf auf der Startseite für Besucher, die keine Mitglieder sind."
       enable_category_hero: "Kategorie-Hero: gemeinsamer Hero-Header auf jeder Kategorieseite. Ausschalten stellt den nativen Kategorie-Header und -Hintergrund wieder her. Die nativen Listen-Bedienelemente bleiben in beiden Zuständen verfügbar. Der Hero der Monats-Challenge bleibt aktiv, weil er Teil des Foto-Einreichungs-Workflows ist."
       enable_locale_cookie: "Sprach-Cookie: spiegelt die Forumssprache in ein Cookie auf swissphotoclub.com, damit die Hauptseite sie übernehmen kann."
-      enable_local_featured_categories: "Startseite: Migrationsschalter — Startseiten-Kategorien lokal rendern. Die Kategorien des Standard-Navigationsmenüs sind die hervorgehobenen Karten. Nur aktivieren, wenn die externe Featured-Categories-Komponente entfernt ist."
-      homepage_secondary_categories: "Startseite: kompakte Kategorie-Karten nach den hervorgehobenen Kategorien des Standard-Navigationsmenüs. Eine in beiden Einstellungen gewählte Kategorie erscheint einmal als hervorgehobene Karte."
+      homepage_secondary_categories: "Startseite: Kategorien, die unter den drei Einstiegen (Foto-Feedback, Monats-Challenge, Stell dich vor) als einfache Links erscheinen. Eine Einstiegs-Kategorie wird hier übersprungen."
       challenge_category_id: "Monats-Challenge: ID der Challenge-Kategorie (Admin > Kategorien, die Nummer in der URL)."
       round_tag: "Monats-Challenge: fester Runden-Tag für Einreichungen (z. B. 2026-07-cityscapes). Leer lassen für den Automatikmodus: Der Kategorie-Tag, der mit dem aktuellen Monat beginnt, wird verwendet."
       show_banner: "Monats-Challenge: zusätzliches «Foto einreichen»-Banner oben in der Themenliste der Challenge-Kategorie anzeigen (standardmässig aus, weil der Challenge-Hero bereits einen Einreichen-Button hat)."
@@ -58,8 +57,7 @@ de:
       leaderboard_id: "Bestenliste: die anzuzeigende Gamification-Bestenliste."
       leaderboard_leader_count: "Bestenliste: Anzahl der platzierten Mitglieder in der kompakten Leiste."
       leaderboard_show_on_homepage: "Bestenliste: die Leiste auf der Community-Startseite anzeigen."
-      webinars_category_id: "Live-Webinare: ID der Webinar-Kategorie (Admin > Kategorien, die Nummer in der URL). Die Startseiten-Karte «Monatliche Live-Webinare» verlinkt darauf, und die Kategorie erhält den Webinar-Hero. 0 fällt auf webinars_url zurück."
-      webinars_url: "Startseite: Ersatzziel der Karte «Monatliche Live-Webinare», wenn webinars_category_id 0 ist oder keine Kategorie ergibt."
+      webinars_category_id: "Live-Webinare: ID der Webinar-Kategorie (Admin > Kategorien, die Nummer in der URL). Die Kategorie erhält den Webinar-Hero."
       challenge_max_entries_per_round: "Monats-Challenge: Wie viele Fotos ein Mitglied pro Runde einreichen kann. Ist das Limit erreicht, zeigt das Formular einen freundlichen Hinweis und deaktiviert den Absenden-Button. 0 schaltet die Prüfung ab. Nur ein Hinweis im Formular, keine serverseitige Durchsetzung."
       onboarding_member_groups: "Onboarding: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig sind dies die SPC-Gruppen ‚members‘ und ‚trial‘."
       onboarding_profile_url: "Onboarding: Ziel des Schritts ‚Profil‘."
@@ -419,19 +417,16 @@ de:
       rules_body: Reiche über den Foto-einreichen-Button ein selbst fotografiertes Bild passend zur Aufgabe ein. Einsendeschluss ist der %{date}. Stimme ab, indem du einen Beitrag öffnest und den Abstimmungsbutton nutzt. Die Abstimmung endet mit der nächsten Challenge oder zum Monatsende; abgeschlossene Beiträge werden geschlossen und dein Stimmenkontingent wird zurückgegeben. Die Ergebnisse bleiben sichtbar.
       manage_tags: Runden-Tags verwalten
   homepage:
-    popular_categories: Beliebte Kategorien
-    all_categories: Alle Kategorien
     latest: Neueste Beiträge
     login_to_post: Zum Posten anmelden
     monthly_prompt: Das Thema dieses Monats
-    pinned: Angeheftet
-    open_current_challenge: Aktuelle Challenge öffnen
-    actions:
-      challenge: Foto einreichen
-      critique: Kritik geben & erhalten
-    webinars:
-      title: Monatliche Live-Webinare
-      description: Live-Fototrainings mit unseren Instruktoren – oder die Aufzeichnung ansehen.
+    doors:
+      aria: "Wo anfangen"
+      feedback: "Zwei Kritiken geben, eine bekommen"
+      challenge: "Jeden Monat ein neues Thema"
+      challenge_round: "%{month}: %{theme}"
+      intro: "Sag Hallo und lerne die anderen kennen"
+      more: "Ausserdem:"
   critique_workspace:
     banner_title: Kritik-Arbeitsplatz
     banner_text: Öffne einen eigenen Arbeitsbereich für deine Kritik – mit Bild, Anfrage und den Notizen der fotografierenden Person direkt daneben.

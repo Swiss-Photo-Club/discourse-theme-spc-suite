@@ -7,6 +7,7 @@ import { ajax } from "discourse/lib/ajax";
 import { userPath } from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
+import { isHomeRoute } from "../lib/spc-home";
 
 const STEP_IDS = ["profile", "introduce", "first_photo"];
 
@@ -131,12 +132,7 @@ export default class SpcMemberOnboarding extends Component {
   }
 
   get isHomepage() {
-    const path = this.router.currentURL?.split("?")[0];
-
-    // Discourse sends signed-in users to /latest for the topics homepage,
-    // while guests commonly remain on /. Both routes render the same home
-    // surface and should share the onboarding panel.
-    return path === "/" || path === "/latest";
+    return isHomeRoute(this.router);
   }
 
   get isMember() {

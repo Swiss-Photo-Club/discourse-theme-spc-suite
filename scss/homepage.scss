@@ -8,13 +8,13 @@
    ===================================================================== */
 
 
-body.navigation-topics {
+body:is(.navigation-topics, .navigation-categories) {
   background: var(--spc-wild-sand);
   color: var(--fg-1);
   font-family: var(--font-body);
 }
 
-body.navigation-topics #main-outlet {
+body:is(.navigation-topics, .navigation-categories) #main-outlet {
   display: flex;
   width: 100%;
   min-width: 0;
@@ -23,7 +23,7 @@ body.navigation-topics #main-outlet {
   background: var(--spc-wild-sand);
 }
 
-body:is(.navigation-topics, .navigation-category) #main-outlet :where(
+body:is(.navigation-topics, .navigation-categories, .navigation-category) #main-outlet :where(
     .btn,
     .select-kit-header,
     .topic-list-item
@@ -31,20 +31,20 @@ body:is(.navigation-topics, .navigation-category) #main-outlet :where(
   border-radius: var(--radius) !important;
 }
 
-body.navigation-topics #main-outlet > .welcome-banner {
+body:is(.navigation-topics, .navigation-categories) #main-outlet > .welcome-banner {
   display: none;
 }
 
-body.navigation-topics #main-outlet > .spc-member-onboarding {
+body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-member-onboarding {
   order: -40;
 }
 
-body.navigation-topics #main-outlet > .spc-home-doors {
+body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-home-doors {
   order: -10;
 }
 
 /* Three doors and the plain-links line (Phase E) ---------------------- */
-body.navigation-topics .spc-home-doors {
+body:is(.navigation-topics, .navigation-categories) .spc-home-doors {
   width: 100%;
   margin: 20px 0 0;
 }
@@ -104,21 +104,77 @@ body.navigation-topics .spc-home-doors {
   color: var(--spc-coral-hover);
 }
 
+/* Category rows on the Categories tab (Phase E) ----------------------
+   After Discourse's controls (order 1), in place of its category list,
+   which is hidden while the rows are mounted. The cards are the "Needs
+   feedback" strip's (category-hero.scss); only the row becomes five equal
+   columns here instead of a scrolling strip. */
+body.navigation-categories #main-outlet > .spc-home-rows {
+  order: 1;
+  width: 100%;
+}
+
+body.navigation-categories:has(#main-outlet > .spc-home-rows)
+  #main-outlet
+  > .list-container.--categories {
+  display: none;
+}
+
+.spc-home-row {
+  margin: 24px 0 0;
+}
+
+.spc-home-row__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spc-home-row__eyebrow {
+  display: block;
+  color: var(--spc-coral);
+  font-size: 12px;
+  font-weight: var(--fw-xbold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spc-home-row__title {
+  margin: 2px 0 0;
+  color: var(--spc-indigo);
+  font-size: 20px;
+  font-weight: var(--fw-xbold);
+  line-height: 1.25;
+}
+
+.spc-home-row__all {
+  color: var(--spc-coral) !important;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.spc-home-row__cards.spc-needs-feedback__row {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-flow: row;
+}
+
 /* Raised native topic toolbar — shared by homepage and categories. */
-body:is(.navigation-topics, .navigation-category) .list-controls {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .list-controls {
   width: 100%;
   max-width: none;
   margin: 0 auto;
   padding: 0;
 }
 
-body:is(.navigation-topics, .navigation-category) .list-controls > .container {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .list-controls > .container {
   width: 100%;
   max-width: none;
   padding: 0;
 }
 
-body:is(.navigation-topics, .navigation-category) .navigation-container {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-container {
   display: flex;
   min-height: 64px;
   box-sizing: border-box;
@@ -130,14 +186,14 @@ body:is(.navigation-topics, .navigation-category) .navigation-container {
   box-shadow: var(--shadow-filters);
 }
 
-body:is(.navigation-topics, .navigation-category) .category-breadcrumb {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .category-breadcrumb {
   display: flex;
   flex: 0 1 auto;
   gap: 8px;
   margin: 0;
 }
 
-body:is(.navigation-topics, .navigation-category) .category-breadcrumb > li {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .category-breadcrumb > li {
   margin: 0;
 }
 
@@ -148,7 +204,7 @@ body.navigation-category .category-breadcrumb > li:has(> .category-drop) {
   display: none;
 }
 
-body:is(.navigation-topics, .navigation-category)
+body:is(.navigation-topics, .navigation-categories, .navigation-category)
   .category-breadcrumb
   .select-kit.single-select
   .select-kit-header {
@@ -160,7 +216,7 @@ body:is(.navigation-topics, .navigation-category)
   font-size: 13px;
 }
 
-body:is(.navigation-topics, .navigation-category) #navigation-bar {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar {
   display: flex;
   flex: 1 1 auto;
   align-items: stretch;
@@ -169,13 +225,13 @@ body:is(.navigation-topics, .navigation-category) #navigation-bar {
   margin: 0;
 }
 
-body:is(.navigation-topics, .navigation-category) #navigation-bar > li {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar > li {
   display: flex;
   align-items: stretch;
 }
 
-body:is(.navigation-topics, .navigation-category) #navigation-bar > li > a,
-body:is(.navigation-topics, .navigation-category) #navigation-bar > li > button {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar > li > a,
+body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar > li > button {
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
@@ -188,11 +244,11 @@ body:is(.navigation-topics, .navigation-category) #navigation-bar > li > button 
   line-height: 1.35;
 }
 
-body:is(.navigation-topics, .navigation-category)
+body:is(.navigation-topics, .navigation-categories, .navigation-category)
   #navigation-bar
   > li.active
   > a,
-body:is(.navigation-topics, .navigation-category)
+body:is(.navigation-topics, .navigation-categories, .navigation-category)
   #navigation-bar
   > li
   > a.active {
@@ -204,11 +260,11 @@ body:is(.navigation-topics, .navigation-category)
 
 /* Core adds its own navy ::after indicator. The coral border above is the
    single selected-state mark in the SPC toolbar. */
-body:is(.navigation-topics, .navigation-category)
+body:is(.navigation-topics, .navigation-categories, .navigation-category)
   #navigation-bar
   > li.active
   > a::after,
-body:is(.navigation-topics, .navigation-category)
+body:is(.navigation-topics, .navigation-categories, .navigation-category)
   #navigation-bar
   > li
   > a.active::after {
@@ -230,7 +286,7 @@ body.navigation-category.spc-sorted-by-created #navigation-bar::after {
   white-space: nowrap;
 }
 
-body:is(.navigation-topics, .navigation-category) .navigation-controls {
+body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-controls {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -287,7 +343,7 @@ body.navigation-category .navigation-controls #create-topic:focus-visible {
   color: #ffffff;
 }
 
-body.navigation-topics .spc-home-login-cta {
+body:is(.navigation-topics, .navigation-categories) .spc-home-login-cta {
   display: inline-flex;
   min-height: 40px;
   box-sizing: border-box;
@@ -306,17 +362,17 @@ body.navigation-topics .spc-home-login-cta {
 
 /* Topic creation belongs to category pages, where the destination and any
    category-specific workflow are unambiguous. */
-body.navigation-topics #create-topic {
+body:is(.navigation-topics, .navigation-categories) #create-topic {
   display: none !important;
 }
 
-body.navigation-topics .spc-home-login-cta {
+body:is(.navigation-topics, .navigation-categories) .spc-home-login-cta {
   background: transparent !important;
   color: var(--spc-coral) !important;
 }
 
-body.navigation-topics .spc-home-login-cta:hover,
-body.navigation-topics .spc-home-login-cta:focus-visible {
+body:is(.navigation-topics, .navigation-categories) .spc-home-login-cta:hover,
+body:is(.navigation-topics, .navigation-categories) .spc-home-login-cta:focus-visible {
   background: var(--spc-coral) !important;
   color: #ffffff !important;
 }
@@ -324,12 +380,12 @@ body.navigation-topics .spc-home-login-cta:focus-visible {
 /* Topic list rendering is handled by Topic List Thumbnails native masonry mode. */
 
 /* Current monthly prompt: enabled when Monthly Challenge is selected above. */
-body.navigation-topics .topic-list .spc-home-monthly-prompt
+body:is(.navigation-topics, .navigation-categories) .topic-list .spc-home-monthly-prompt
   .topic-list-thumbnail {
   position: relative;
 }
 
-body.navigation-topics .spc-home-pinned-badge {
+body:is(.navigation-topics, .navigation-categories) .spc-home-pinned-badge {
   position: absolute;
   z-index: 2;
   top: 12px;
@@ -350,36 +406,36 @@ body.navigation-topics .spc-home-pinned-badge {
 
 /* Tablet ------------------------------------------------------------- */
 @media (max-width: 1050px) {
-  body:is(.navigation-topics, .navigation-category) .navigation-container {
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-container {
     gap: 10px;
   }
 }
 
 @media (max-width: 850px) {
-  body:is(.navigation-topics, .navigation-category) .navigation-container {
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-container {
     align-items: stretch;
     flex-wrap: wrap;
   }
 
-  body:is(.navigation-topics, .navigation-category) .category-breadcrumb {
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) .category-breadcrumb {
     order: 1;
   }
 
-  body:is(.navigation-topics, .navigation-category) #navigation-bar {
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar {
     order: 3;
     width: 100%;
     overflow-x: auto;
   }
 
-  body:is(.navigation-topics, .navigation-category) .navigation-controls {
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-controls {
     order: 2;
   }
 }
 
 /* Mobile ------------------------------------------------------------- */
 @media (max-width: 650px) {
-  body.navigation-topics .list-controls,
-  body.navigation-topics .container.list-container.--topic-list {
+  body:is(.navigation-topics, .navigation-categories) .list-controls,
+  body:is(.navigation-topics, .navigation-categories) .container.list-container.--topic-list {
     width: 100%;
   }
 
@@ -392,12 +448,22 @@ body.navigation-topics .spc-home-pinned-badge {
     padding: 12px 14px;
   }
 
-  body:is(.navigation-topics, .navigation-category) .navigation-container {
+  /* Back to the strip's own scrolling row on a phone. */
+  .spc-home-row__cards.spc-needs-feedback__row {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+  }
+
+  .spc-home-row__title {
+    font-size: 18px;
+  }
+
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) .navigation-container {
     padding: 10px;
   }
 
-  body:is(.navigation-topics, .navigation-category) #navigation-bar > li > a,
-  body:is(.navigation-topics, .navigation-category)
+  body:is(.navigation-topics, .navigation-categories, .navigation-category) #navigation-bar > li > a,
+  body:is(.navigation-topics, .navigation-categories, .navigation-category)
     #navigation-bar
     > li
     > button {
@@ -405,7 +471,7 @@ body.navigation-topics .spc-home-pinned-badge {
     white-space: nowrap;
   }
 
-  body.navigation-topics .topic-list-thumbnail .main-thumbnail {
+  body:is(.navigation-topics, .navigation-categories) .topic-list-thumbnail .main-thumbnail {
     max-height: 380px;
   }
 
@@ -413,9 +479,9 @@ body.navigation-topics .spc-home-pinned-badge {
      this width. Explicit width because these boxes carry width: 100%, which
      a negative margin alone would shift rather than widen. The doors stay
      inside the inset. */
-  body.navigation-topics #main-outlet > .spc-member-onboarding,
-  body.navigation-topics #main-outlet > .spc-non-member-banner,
-  body.navigation-topics #main-outlet > .spc-home-advantages {
+  body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-member-onboarding,
+  body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-non-member-banner,
+  body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-home-advantages {
     width: calc(100% + 2 * var(--spc-wrap-pad, 0px));
     margin-inline: calc(-1 * var(--spc-wrap-pad, 0px));
   }

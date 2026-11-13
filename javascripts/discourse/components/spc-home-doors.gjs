@@ -7,6 +7,7 @@ import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
 import { openRoundSummary } from "../api-initializers/spc-monthly-challenge";
+import { isHomeRoute } from "../lib/spc-home";
 
 function t(key, options) {
   return i18n(themePrefix(`homepage.doors.${key}`), options);
@@ -31,9 +32,7 @@ export default class SpcHomeDoors extends Component {
   @tracked round = null;
 
   get isHomepage() {
-    const path = this.router.currentURL?.split("?")[0];
-
-    return path === "/" || path === "/latest";
+    return isHomeRoute(this.router);
   }
 
   get doorIds() {

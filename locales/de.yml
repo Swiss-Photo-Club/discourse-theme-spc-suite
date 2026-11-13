@@ -427,6 +427,11 @@ de:
       challenge_round: "%{month}: %{theme}"
       intro: "Sag Hallo und lerne die anderen kennen"
       more: "Ausserdem:"
+    rows:
+      feedback: "Konstruktives Feedback geben und erhalten"
+      challenge: "Diesen Monat: %{theme}"
+      introductions: "Neue Mitglieder"
+      see_all: "Alle ansehen →"
   critique_workspace:
     banner_title: Kritik-Arbeitsplatz
     banner_text: Öffne einen eigenen Arbeitsbereich für deine Kritik – mit Bild, Anfrage und den Notizen der fotografierenden Person direkt daneben.

@@ -6,6 +6,9 @@ const STRIP_SELECTOR = "[data-spc-leaderboard-strip]";
 const MAX_LEADERS = 5;
 const RENDER_THROTTLE_MS = 200;
 const FAILURE_COOL_OFF_MS = 60000;
+// The homepage tabs (lib/spc-home.js): "/" is whichever tab top_menu puts
+// first, Categories since Phase E.
+const HOME_PATHS = ["/", "/categories", "/latest"];
 
 function escapeHtml(value) {
   const element = document.createElement("span");
@@ -30,7 +33,7 @@ function activeForUrl(url) {
 
   return (
     (categoryId && categoryId === Number(settings.challenge_category_id)) ||
-    (settings.leaderboard_show_on_homepage && path === "/")
+    (settings.leaderboard_show_on_homepage && HOME_PATHS.includes(path))
   );
 }
 
@@ -154,13 +157,12 @@ export default apiInitializer("1.8.0", (api) => {
       return;
     }
 
-    const listArea = document.querySelector("#list-area");
-    const row = listArea?.closest(".row.full-width");
+    // Always inside the category surface, on the homepage too (Phase E): the
+    // order there is our bands, the leaderboard, then Discourse's controls.
     const categorySurface = document.querySelector(
       "[data-spc-category-surface]"
     );
-    const useCategorySurface = isCategoryUrl(currentUrl);
-    if (!listArea || !row || (useCategorySurface && !categorySurface)) {
+    if (!categorySurface) {
       removeStrip();
       return;
     }
@@ -175,22 +177,15 @@ export default apiInitializer("1.8.0", (api) => {
       strip.setAttribute("aria-label", "Leaderboard");
     }
 
-    if (useCategorySurface) {
-      // Challenge data arrives asynchronously and can append its current and
-      // winner sections after this strip first renders. Re-append the existing
-      // node when necessary so the shared order stays: category content,
-      // leaderboard, native controls.
-      if (
-        strip.parentElement !== categorySurface ||
-        strip !== categorySurface.lastElementChild
-      ) {
-        categorySurface.append(strip);
-      }
-    } else if (
-      strip.parentElement !== row ||
-      strip.nextElementSibling !== listArea
+    // Challenge data arrives asynchronously and can append its current and
+    // winner sections after this strip first renders. Re-append the existing
+    // node when necessary so the shared order stays: category content,
+    // leaderboard, native controls.
+    if (
+      strip.parentElement !== categorySurface ||
+      strip !== categorySurface.lastElementChild
     ) {
-      row.insertBefore(strip, listArea);
+      categorySurface.append(strip);
     }
 
     strip.style.setProperty("--spc-leader-count", leaderCount());

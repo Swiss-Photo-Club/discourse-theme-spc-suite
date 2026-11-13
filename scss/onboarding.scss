@@ -1,4 +1,4 @@
-body.navigation-topics #main-outlet > .spc-member-onboarding {
+body:is(.navigation-topics, .navigation-categories) #main-outlet > .spc-member-onboarding {
   order: -40;
 }
 

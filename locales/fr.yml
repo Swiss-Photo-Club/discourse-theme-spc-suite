@@ -423,6 +423,11 @@ fr:
       challenge_round: "%{month} : %{theme}"
       intro: "Dites bonjour et faites connaissance"
       more: "Et aussi :"
+    rows:
+      feedback: "Donner et recevoir des critiques constructives"
+      challenge: "Ce mois-ci : %{theme}"
+      introductions: "Nouveaux membres"
+      see_all: "Tout voir →"
   critique_workspace:
     banner_title: Espace de critique
     banner_text: Ouvre un espace dédié à ta critique – avec l'image, la demande et les notes du photographe juste à côté.

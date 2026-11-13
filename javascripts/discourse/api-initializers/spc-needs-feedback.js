@@ -1,9 +1,13 @@
 import { apiInitializer } from "discourse/lib/api";
-import { ajax } from "discourse/lib/ajax";
-import { relativeAge } from "discourse/lib/formatter";
 import Category from "discourse/models/category";
 import { i18n } from "discourse-i18n";
 import { categorySurface } from "../lib/spc-hero";
+import {
+  categoryListing,
+  categoryListingCoolingOff,
+  photoCard,
+  usersById as usersByIdFrom,
+} from "../lib/spc-photo-cards";
 
 /**
  * "Needs feedback" — the Photo Feedback photos nobody has critiqued yet,
@@ -22,8 +26,6 @@ import { categorySurface } from "../lib/spc-hero";
 const STRIP_SELECTOR = "[data-spc-needs-feedback]";
 const MAX_CARDS = 8;
 const RENDER_THROTTLE_MS = 200;
-const FAILURE_COOL_OFF_MS = 60000;
-const CACHE_TTL_MS = 5 * 60 * 1000;
 
 function escapeHtml(value) {
   const element = document.createElement("span");
@@ -46,20 +48,6 @@ function activeForUrl(url) {
   return id > 0 && id === Number(settings.critique_category_id);
 }
 
-// The smallest generated thumbnail that still fills a ~200px card on a 2x
-// screen; the original upload is the fallback.
-function thumbnailUrl(topic) {
-  const thumbnail = (topic.thumbnails || [])
-    .filter((entry) => entry.width >= 400)
-    .sort((a, b) => a.width - b.width)[0];
-  return thumbnail?.url || topic.image_url;
-}
-
-function authorName(topic, usersById) {
-  const user = usersById.get(topic.posters?.[0]?.user_id);
-  return user?.name || user?.username || "";
-}
-
 function waitingTopics(data, category) {
   const aboutPath = category?.topic_url || "";
   return (data?.topic_list?.topics || [])
@@ -74,36 +62,21 @@ function waitingTopics(data, category) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
-// relativeAge() returns markup (<span class="date" title=…>), and the card is
-// escaped as text, so take its text content.
-function postedAge(topic) {
-  const element = document.createElement("span");
-  element.innerHTML = relativeAge(new Date(topic.created_at), {
-    format: "medium-with-ago",
-  });
-  return element.textContent;
-}
-
+// The card itself (photo, title, "author · age") is shared with the homepage
+// rows; see lib/spc-photo-cards.js.
 function cardMarkup(topic, usersById) {
-  const by = [authorName(topic, usersById), postedAge(topic)]
-    .filter(Boolean)
-    .join(" · ");
-
+  const card = photoCard(topic, usersById);
   return `
-    <a class="spc-needs-feedback__card" href="/t/${escapeHtml(
-      topic.slug
-    )}/${Number(topic.id)}">
-      <img src="${escapeHtml(thumbnailUrl(topic))}" alt="" loading="lazy">
-      <span class="spc-needs-feedback__title">${escapeHtml(topic.title)}</span>
-      <span class="spc-needs-feedback__by">${escapeHtml(by)}</span>
+    <a class="spc-needs-feedback__card" href="${escapeHtml(card.href)}">
+      <img src="${escapeHtml(card.image)}" alt="" loading="lazy">
+      <span class="spc-needs-feedback__title">${escapeHtml(card.title)}</span>
+      <span class="spc-needs-feedback__by">${escapeHtml(card.by)}</span>
     </a>`;
 }
 
 function stripMarkup(data, category) {
   const topics = waitingTopics(data, category);
-  const usersById = new Map(
-    (data?.users || []).map((user) => [user.id, user])
-  );
+  const usersById = usersByIdFrom(data);
 
   return `
     <div class="spc-needs-feedback__head">
@@ -127,43 +100,15 @@ function stripMarkup(data, category) {
 export default apiInitializer((api) => {
   let currentUrl = window.location.href;
   let renderQueued = false;
-  let cachedRequest = null;
-  let cachedAt = 0;
-  let coolOffUntil = 0;
   let renderedMarkup = null;
-
-  // Rule 2: cache the promise. Rule 5: expire it on a TTL, not per page.
-  // Rule 3: a failure clears it only behind a cool-off.
-  function listing(categoryId) {
-    if (cachedRequest && Date.now() - cachedAt > CACHE_TTL_MS) {
-      cachedRequest = null;
-    }
-    if (!cachedRequest) {
-      if (Date.now() < coolOffUntil) {
-        return Promise.reject(new Error("needs-feedback fetch is cooling off"));
-      }
-      cachedAt = Date.now();
-      // One page of the category, newest first: it holds the recent
-      // unanswered photos whatever the category's own default sort is.
-      cachedRequest = ajax(`/c/${categoryId}/l/latest.json`, {
-        data: { order: "created" },
-      }).catch((error) => {
-        cachedRequest = null;
-        coolOffUntil = Date.now() + FAILURE_COOL_OFF_MS;
-        // eslint-disable-next-line no-console
-        console.error("SPC Needs Feedback: unable to load listing", error);
-        throw error;
-      });
-    }
-    return cachedRequest;
-  }
 
   async function render() {
     // Cooling off counts as inactive, so a failed fetch does not keep
     // re-creating and removing the strip on every mutation it causes.
+    const categoryId = Number(settings.critique_category_id);
     if (
       !activeForUrl(currentUrl) ||
-      (!cachedRequest && Date.now() < coolOffUntil)
+      categoryListingCoolingOff(categoryId)
     ) {
       document.querySelector(STRIP_SELECTOR)?.remove();
       return;
@@ -185,9 +130,8 @@ export default apiInitializer((api) => {
       surface.append(strip);
     }
 
-    const categoryId = Number(settings.critique_category_id);
     try {
-      const data = await listing(categoryId);
+      const data = await categoryListing(categoryId);
       if (!strip.isConnected) {
         return;
       }

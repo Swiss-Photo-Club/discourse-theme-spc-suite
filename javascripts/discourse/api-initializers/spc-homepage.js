@@ -1,6 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
 import SpcHomeDoors from "../components/spc-home-doors";
+import SpcHomeRows from "../components/spc-home-rows";
 
 function translated(key, options) {
   return i18n(themePrefix(`homepage.${key}`), options);
@@ -116,6 +117,7 @@ function ensureGuestAction(currentUser) {
 const spcRun = (api) => {
   const currentUser = api.getCurrentUser();
   api.renderInOutlet("above-main-container", SpcHomeDoors);
+  api.renderInOutlet("above-main-container", SpcHomeRows);
   let queued = false;
 
   function render() {

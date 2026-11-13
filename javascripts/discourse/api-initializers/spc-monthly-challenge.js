@@ -409,14 +409,14 @@ export function roundFromUrl(url) {
   return { slug: decodeURIComponent(match[1]), id: Number(match[2]) };
 }
 
-let categoryTopicsPromise = null;
+let categoryListingPromise = null;
 let pinnedBriefPromise = null;
 let roundTagsPromise = null;
 let userRoundsPromise = null;
 let userRoundsFor = "";
 
 export function clearPinnedBriefCache() {
-  categoryTopicsPromise = null;
+  categoryListingPromise = null;
   pinnedBriefPromise = null;
   roundTagsPromise = null;
   userRoundsPromise = null;
@@ -427,11 +427,17 @@ export function clearPinnedBriefCache() {
 // The challenge renderer and the staff panel mount during the same page load
 // and both need this listing. Sharing the in-flight promise prevents two
 // identical requests from racing each other into Discourse's rate limiter.
+// The homepage's challenge row (Phase E) needs the users the response carries
+// as well, for the authors' names, so the whole response is what is cached.
+export function fetchChallengeCategoryListing() {
+  categoryListingPromise ||= ajax(`${categoryRoute()}/l/latest.json`);
+  return categoryListingPromise;
+}
+
 export function fetchChallengeCategoryTopics() {
-  categoryTopicsPromise ||= ajax(`${categoryRoute()}/l/latest.json`).then(
+  return fetchChallengeCategoryListing().then(
     (data) => data?.topic_list?.topics || []
   );
-  return categoryTopicsPromise;
 }
 
 function fetchPinnedBrief() {
@@ -798,8 +804,8 @@ async function resolveLatestWinner(challenges) {
   };
 }
 
-// The homepage's Monthly Challenge door (Phase E): month, theme, days left and
-// the round page, read from the same cached category listing the band uses.
+// The homepage's Monthly Challenge door and row (Phase E): month, theme, days
+// left, the round page and the round's tag slug, read from the same cached category listing the band uses.
 // Only the homepage calls this, and only once the door is in the DOM.
 export async function openRoundSummary() {
   const challenge = await resolveActiveChallenge(parseChallenges());
@@ -811,6 +817,7 @@ export async function openRoundSummary() {
     theme: challenge.listing?.title || localized(challenge, "title"),
     daysLeft: daysLeftText(challenge),
     url: challenge.round_page_url || categoryRoute(),
+    tagSlug: challenge.tag_slug || challenge.tag,
   };
 }
 

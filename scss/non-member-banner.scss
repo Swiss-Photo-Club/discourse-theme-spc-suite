@@ -1,8 +1,8 @@
-body.navigation-topics #main-outlet > :is(.spc-non-member-banner, .spc-home-advantages) {
+body:is(.navigation-topics, .navigation-categories) #main-outlet > :is(.spc-non-member-banner, .spc-home-advantages) {
   order: -30;
 }
 
-body.navigation-topics:has(.spc-non-member-banner)
+body:is(.navigation-topics, .navigation-categories):has(.spc-non-member-banner)
   #main-outlet
   > .welcome-banner {
   display: none;

@@ -7,6 +7,7 @@ import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
 import { fetchWinners } from "../api-initializers/spc-monthly-challenge";
 import { isSpcMember } from "../lib/spc-membership";
+import { isHomeRoute } from "../lib/spc-home";
 
 // With DiscourseConnect on, /login hands straight over to the SSO provider
 // (api.swissphotoclub.com/login), which is where the trial actually starts:
@@ -40,9 +41,7 @@ export default class SpcNonMemberBanner extends Component {
   @tracked winner = null;
 
   get isHomepage() {
-    const path = this.router.currentURL?.split("?")[0];
-
-    return path === "/" || path === "/latest";
+    return isHomeRoute(this.router);
   }
 
   @action

@@ -427,6 +427,11 @@ en:
       challenge_round: "%{month}: %{theme}"
       intro: "Say hello and meet the others"
       more: "Also:"
+    rows:
+      feedback: "Give and get constructive feedback"
+      challenge: "This month: %{theme}"
+      introductions: "New members"
+      see_all: "See all →"
   critique_workspace:
     banner_title: Critique Workspace
     banner_text: Open a dedicated space for your critique — with the image, the request and the photographer's notes right beside you.

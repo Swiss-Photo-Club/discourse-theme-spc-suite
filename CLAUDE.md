@@ -213,6 +213,21 @@ controls or onboarding: live measurement showed that combination shrinking those
 1024.6px while the banner and topic list remained 1088.6px. Homepage bands use `width: 100%`
 and let the core wrapper own the page geometry.
 
+**The homepage is two tabs, and `/` is Categories (Phase E, 2026-11-13).** The `top_menu` site
+setting is `categories|latest|new|hot`, so `/` renders `discovery.categories`. Every homepage band
+(visitor banner, advantages row, doors, onboarding) decides "am I on the homepage" from the
+**route**, through `lib/spc-home.js`, never from the URL: `/` changes meaning whenever someone
+reorders `top_menu`. The homepage SCSS is scoped to `body:is(.navigation-topics,
+.navigation-categories)` for the same reason. On the Categories tab, `spc-home-rows.gjs` hides
+core's category list while it is mounted and draws its own rows, so there is no masonry there.
+The leaderboard strip mounts in the category surface on every page it shows, the homepage
+included. Do not add `unread` back to `top_menu`: Discourse rejects it while unified New is on.
+
+**Photo cards in our own markup share one card and one cache.** The "Needs feedback" strip and
+the homepage rows both draw `.spc-needs-feedback__card` from `lib/spc-photo-cards.js`. That lib also
+holds the TTL'd, cool-off'd category listing both read. A new photo row reuses it rather than
+fetching `/c/<id>/l/latest.json` itself.
+
 That conversion took five attempts on the live site, and every wrong turn is written up in the
 three notes above. Read them before touching this layout again.
 

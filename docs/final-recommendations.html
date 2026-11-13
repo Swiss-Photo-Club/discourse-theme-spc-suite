@@ -313,10 +313,10 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 .mail__foot { padding: 10px 24px; font-size: .7rem; color: var(--quiet); border-top: 1px solid var(--hair); }
 
 /* homepage */
-.vhero { position: relative; min-height: 380px; display: flex; align-items: flex-end; background: #000 center/cover; color: #fff; }
-.vhero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(26,39,68,.92) 0%, rgba(26,39,68,.55) 55%, rgba(26,39,68,.1)); }
+.vhero { position: relative; display: flex; align-items: center; background: var(--navy) center/cover; color: #fff; border-bottom: 6px solid var(--coral); }
+.vhero::after { content: ""; position: absolute; inset: 0; background: rgba(18,29,53,.82); }
 .vhero > * { position: relative; z-index: 1; }
-.vhero__body { padding: 40px; max-width: 600px; }
+.vhero__body { padding: 40px 40px 44px; }
 .vhero .eyebrow { color: var(--coral); }
 .vhero h5 { margin: 8px 0 10px; font-size: 2.1rem; font-weight: 800; line-height: 1.1; }
 .vhero p { font-size: .95rem; color: rgba(255,255,255,.88); margin: 0 0 18px; }
@@ -327,7 +327,8 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 .trust b { display: block; margin-bottom: 2px; color: var(--navy); font-size: .88rem; }
 .trust svg { width: 20px; height: 20px; margin-bottom: 6px; stroke: var(--coral); fill: none; stroke-width: 2; }
 .doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.door { background: var(--navy); color: #fff; padding: 16px; min-height: 96px; display: flex; flex-direction: column; }
+.door { background: var(--navy); color: #fff; padding: 14px 16px; display: flex; flex-direction: column; text-decoration: none; border-bottom: 3px solid transparent; }
+.door:hover { border-bottom-color: var(--coral); }
 .door b { font-size: 1rem; }
 .door span { font-size: .78rem; color: #c9cfdc; flex: 1; margin-top: 2px; }
 .door i { font-style: normal; font-size: .7rem; font-weight: 800; color: var(--coral); margin-top: 8px; letter-spacing: .06em; }
@@ -917,69 +918,72 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 <h2><span class="eyebrow">Phase E</span>Theme: the homepage</h2>
 
 <div class="rec" id="r11">
-  <h3>11 · Visitor hero, three doors, named photo rows <span class="pill p-theme">Theme</span></h3>
-  <p class="src">From: galleries report 1.3, fotocommunity report #4 and #8</p>
+  <h3>11 · Visitor banner, three doors, category rows <span class="pill p-theme">Theme</span> <span class="pill p-admin">Admin</span></h3>
+  <p class="src">From: galleries report 1.3, fotocommunity report #4 and #8 · revised with Oğuzhan on 13 November</p>
   <p>Last, because it reuses the card from #6 and the round from #7.</p>
   <ul>
-    <li><b>Hero (signed out):</b> a member photo as background, one call to action ("Start your membership"), and four trust points underneath: real critique, Swiss and local, DE · FR · EN, your photos stay yours. Cut the paragraph that repeats the hero. Check each trust claim before it goes live (data location, no-ads promise, whether meetups run in every region).</li>
-    <li><b>Hero (signed in):</b> shrink to "Welcome back" plus the current round.</li>
-    <li><b>Three doors:</b> Monthly Challenge (with "October: Juxtaposition · 6 days left"), Photo Feedback ("give two critiques, get one"), Introduce Yourself. Other categories go in one line of plain links.</li>
-    <li><b>Three named rows</b> replacing the mixed feed: "This month: Juxtaposition", "Waiting for feedback", "New members". Each with "See all →". These rows are our own markup, so they do not touch the masonry component.</li>
+    <li><b>Banner (signed out, or signed in without membership):</b> the current navy banner at its current height, with its text at full width. Two changes: the button becomes "Start your membership" and opens the join page in a new tab, and the background is the previous round's winning photo, darkened so the text stays readable, with a small credit. No secondary button: non-members cannot open topic pages, so "See real critiques" would lead nowhere. The repeated "About this community" paragraph goes.</li>
+    <li><b>Advantages row (same audience as the banner):</b> real critique, meetups in your region, DE · FR · EN, your photos stay yours. The community runs wherever SPC operates (today Switzerland, Germany and Austria), so the claim is regional, not Swiss.</li>
+    <li><b>Three doors (everyone):</b> Photo Feedback, Monthly Challenge (with the open round and days left), Introduce Yourself. Each door is one clickable box with no button inside it. Other categories go in one line of plain links. The doors replace the "Popular categories" grid, including its webinars card; Live Webinars moves to the plain links.</li>
+    <li><b>Points leaderboard:</b> unchanged.</li>
+    <li><b>Category rows on Discourse's Categories tab, which becomes the default.</b> Admin moves Categories to the front of the top menu, so <code>/</code> opens it. On that tab the core category list is replaced by three rows of our own markup: "Give and get constructive feedback" (latest Photo Feedback photos), "This month: Autumn Moods" (current round entries) and "New members". Each has "See all →". Latest stays one click away and keeps the normal feed. The rows do not touch the masonry component.</li>
   </ul>
-  <div class="frame__label"><b>Mockup</b> · homepage for a signed-out visitor</div>
+  <div class="frame__label"><b>Mockup</b> · homepage (Categories tab, now the default) for a visitor who is signed out or not a member</div>
   <div class="frame">
     <div class="frame__bar"><i></i><i></i><i></i><span>community.swissphotoclub.com</span></div>
     <div class="site-head"><div class="site-head__logo">SWISS PHOTO CLUB<small>COMMUNITY</small></div><nav><span>Monthly Challenge</span><span>Photo Feedback</span><span>Introduce Yourself</span></nav><span class="site-head__btn">LOG IN</span></div>
-    <div class="vhero" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/989630ed3b8853bb5c1c8375f631cbf47c556c1e_2_1024x682.jpeg)">
-      <span class="vhero__credit">Photo: Quim Vilar, "Marmot in the Alps" (August challenge)</span>
+    <div class="vhero" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/32b7ed6883c3cf739e5362274bfd8599776cf1b4_2_767x1024.jpeg)">
+      <span class="vhero__credit">Photo: Lysiane, "Ombre et lumière" · October winner</span>
       <div class="vhero__body">
         <span class="eyebrow">Swiss Photo Club · Community</span>
-        <h5>Get honest critique.<br>Become a better photographer.</h5>
-        <p>Every member gives two thoughtful critiques for each one they ask for. That exchange is the club. Plus a monthly challenge, live webinars and meetups across Switzerland.</p>
-        <a class="btn btn--primary">Start your membership</a> <a class="btn btn--ghost">See real critiques</a>
+        <h5>Connect, Share, Improve</h5>
+        <p>Share your photos, give and receive constructive feedback, join the monthly challenge, and find people near you to photograph with.</p>
+        <a class="btn btn--primary">Start your membership ↗</a>
       </div>
     </div>
     <div class="trust">
       <div><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><b>Real critique</b>Structured feedback on composition, light and editing, not just "nice shot".</div>
-      <div><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg><b>Swiss and local</b>Photowalks and meetups in your region.</div>
-      <div><svg viewBox="0 0 24 24"><path d="M3 5h12M9 3v2m-4 0c1 4 4 7 8 8M5 13c3-1 6-4 7-8"/><path d="M13 21l4-9 4 9m-7-3h6"/></svg><b>DE · FR · EN</b>One community across the language regions.</div>
+      <div><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/></svg><b>Meetups in your region</b>Photowalks and meetups wherever the club is active.</div>
+      <div><svg viewBox="0 0 24 24"><path d="M3 5h12M9 3v2m-4 0c1 4 4 7 8 8M5 13c3-1 6-4 7-8"/><path d="M13 21l4-9 4 9m-7-3h6"/></svg><b>DE · FR · EN</b>One community across languages and borders.</div>
       <div><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><b>Your photos stay yours</b>Your rights, your data, no ads.</div>
     </div>
     <div class="wrap wrap--pad">
       <div class="doors">
-        <div class="door"><b>Monthly Challenge</b><span>October: Juxtaposition · 6 days left</span><i>ENTER A PHOTO →</i></div>
-        <div class="door"><b>Photo Feedback</b><span>Give two critiques, get one</span><i>ASK FOR FEEDBACK →</i></div>
-        <div class="door"><b>Introduce Yourself</b><span>Say hello to the club</span><i>INTRODUCE YOURSELF →</i></div>
+        <a class="door"><b>Photo Feedback</b><span>Give two critiques, get one</span></a>
+        <a class="door"><b>Monthly Challenge</b><span>November: Autumn Moods · 17 days left</span></a>
+        <a class="door"><b>Introduce Yourself</b><span>Say hello to the club</span></a>
       </div>
-      <div class="more-row">Also: <a href="#">Live Webinars</a><a href="#">General</a><a href="#">Website Feedback &amp; Ideas</a></div>
+      <div class="more-row">Also: <a href="#">Live Webinars</a><a href="#">General</a><a href="#">Announcements</a><a href="#">Website Feedback &amp; Ideas</a></div>
       <div class="band-lb" style="padding:10px 0;border-bottom:0"><b>Points Leaderboard →</b><span>1 Barbara F. 281</span><span>2 Andy F. 91</span><span>3 Martine V. 77</span></div>
-      <div class="sec-title"><div><span class="eyebrow">Monthly Challenge · open</span><h4>This month: Juxtaposition</h4></div><a href="#">All 13 entries →</a></div>
+      <div class="ctrl" style="margin:6px -20px 0;padding-left:20px"><span class="dd">categories ›</span><span class="dd">tags ›</span><span>Latest</span><span class="on">Categories</span><span>New</span><span>Hot</span></div>
+      <div class="sec-title"><div><span class="eyebrow">Photo Feedback</span><h4>Give and get constructive feedback</h4></div><a href="#">See all →</a></div>
       <div class="gcards">
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/32b7ed6883c3cf739e5362274bfd8599776cf1b4_2_767x1024.jpeg)"></div><div class="gc__t">Ombre et lumière</div><div class="gc__by">Lysiane</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/edb8591cadb2bdcd48b7f821d7adfb9765cf2604_2_1024x1024.jpeg)"></div><div class="gc__t">Der Fotograf und sein Motiv</div><div class="gc__by">Barbara Fischer</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/d7cceaa9f32914b88c4cb08c962d5c965f41105e_2_1024x682.jpeg)"></div><div class="gc__t">De l'obscurité à la lumière</div><div class="gc__by">Juliette Peri</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/18c732685351d7f3e97ef8a39a2b4d0af4c3ab86_2_682x1023.jpeg)"></div><div class="gc__t">Solitude</div><div class="gc__by">John Kromodimedjo</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/c46ab1186e50b23c9b46084dc7282219ff07366f_2_1024x819.jpeg)"></div><div class="gc__t">Reflected Past</div><div class="gc__by">Lorenz Nepomuk Schmidt</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/95cda9d1fc39187cc61d7d667916aea20b8ce5c7_2_1024x711.jpeg)"></div><div class="gc__t">Das Jahr geht - die Farben bleiben</div><div class="gc__by">Barbara Fischer</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/8b27cc47b3633859d6b8c93fae87531c322224ea_2_1024x698.jpeg)"></div><div class="gc__t">Geduld</div><div class="gc__by">Robert Baur</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/2f4e2155c04d9a0a5c2281d366a1516898c395b2_2_1024x682.jpeg)"></div><div class="gc__t">Head in the water</div><div class="gc__by">Maria Rossen</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/fb2f7af9490db755f0d60069f42fef494ce1e14a_2_1024x508.jpeg)"></div><div class="gc__t">Das letzte Licht des Tages</div><div class="gc__by">Peter Kanbach</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/a56ff0eb51cc9b6fd63cf788444dde0c28e2c031_2_1024x576.jpeg)"></div><div class="gc__t">Looking at me looking at you</div><div class="gc__by">Navin Parasram</div></a>
       </div>
-      <div class="sec-title"><div><span class="eyebrow">Photo Feedback</span><h4>Waiting for feedback</h4></div><a href="#">All feedback requests →</a></div>
+      <div class="sec-title"><div><span class="eyebrow">Monthly Challenge · open</span><h4>This month: Autumn Moods</h4></div><a href="#">All 30 entries →</a></div>
       <div class="gcards">
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/ae1824a1709883181e4854a7ce0e0c40afac9f29_2_1024x682.jpeg)"></div><div class="gc__t">Cambodian End of Day</div><div class="gc__by">Juliette Peri</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/0c83727769a17176030c1bfcc7f344a3f71a510e_2_671x1024.jpeg)"></div><div class="gc__t">Kopflos</div><div class="gc__by">Robert Baur</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/8619950a74fd332e0c16cbbee5f0003bc82d4b12_2_731x1024.jpeg)"></div><div class="gc__t">Evenings in the Wilderness</div><div class="gc__by">Barbara Fischer</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/a8715323b8622a004edbc73ee4bfc1c71916e782_2_1024x1024.jpeg)"></div><div class="gc__t">Urban mountaineering</div><div class="gc__by">Emmanuel Chaze</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/80f33a2494f4c38c46e1f3aeaf0071c20cc3bad5_2_1024x682.jpeg)"></div><div class="gc__t">Alassio by night</div><div class="gc__by">Martine Voisard</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/6bf2210b12eb5e32de2bef0311a301e84367c9f3_2_1024x1024.jpeg)"></div><div class="gc__t">Impressionist Autumn</div><div class="gc__by">Pascal Tritten</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/3a390ae32b3555da154ff5e0ab139e437f56dec8_2_1024x708.jpeg)"></div><div class="gc__t">Auf dem Weg</div><div class="gc__by">Barbara Fischer</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/ea133fb9d199fc6acbba0eb38e41874f271887b9_2_1024x683.jpeg)"></div><div class="gc__t">Tricolored heron</div><div class="gc__by">Joan Berns</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/1b6f6ca556f054479310edbedcfae5fa01ba45fa_2_1024x768.jpeg)"></div><div class="gc__t">Vogtlandsee</div><div class="gc__by">Peter Kanbach</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/45f34a726c701f68888986d946e34fd4ae1a1f59_2_1024x731.jpeg)"></div><div class="gc__t">Gestrandet im Herbstwald</div><div class="gc__by">Herbert Trummer</div></a>
       </div>
-      <div class="sec-title"><div><span class="eyebrow">Introduce Yourself</span><h4>New members</h4></div><a href="#">Say hello →</a></div>
+      <div class="sec-title"><div><span class="eyebrow">Introduce Yourself</span><h4>New members</h4></div><a href="#">See all →</a></div>
       <div class="gcards">
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/original/1X/2c62af5d62a7066202283c06769637b5c24b798d.jpeg)"></div><div class="gc__t">Hi! Freiburg i. Br. is beautiful</div><div class="gc__by">Eveline Schindler</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/0044e83adf8ad1ee0843f67d1b9a35b859465064_2_1022x1024.jpeg)"></div><div class="gc__t">Hi from Freienbach, glad to be part of this group</div><div class="gc__by">Jean-Maurice Imbert</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/18e873ef902dbf1a994fb32abc1ea89f5ade20f0_2_1024x768.jpeg)"></div><div class="gc__t">Hi from Tolochenaz</div><div class="gc__by">Enza Carofano</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/885263bf0c571887ef6309078a7f20baee10d98b_2_1024x1019.jpeg)"></div><div class="gc__t">Nouvelle dans la communauté</div><div class="gc__by">Maria Rossen</div></a>
+        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/f3d70812ff82c584109ce26623fc2fc8b48e46ac_2_1024x682.jpeg)"></div><div class="gc__t">Hallo aus Nettetal</div><div class="gc__by">Thorsten Rölleke</div></a>
         <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/18c828d419fbbe972124929b217f14cbe0368e8b_2_1024x681.jpeg)"></div><div class="gc__t">Hello from Montreux</div><div class="gc__by">James Groo</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/45c92cace7b5f3bb345190ad50fe1ec538149962_2_682x1024.jpeg)"></div><div class="gc__t">Passionate Photographer</div><div class="gc__by">Niels Menko</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/8d826520c32d746be4bcaddc945799147d52f374_2_1024x768.jpeg)"></div><div class="gc__t">Greetings from Vienna</div><div class="gc__by">Funda Sel</div></a>
-        <a class="gc"><div class="ph" style="background-image:url(https://community.swissphotoclub.com/uploads/default/optimized/1X/151dd95afcf32e4e048ba08d5b638337b80f26b9_2_1024x903.jpeg)"></div><div class="gc__t">Grüsse aus Adliswil</div><div class="gc__by">Gabriela Evrova</div></a>
       </div>
     </div>
   </div>
-  <div class="callout"><code>#main-outlet-wrapper.wrap</code> already owns the 1110px geometry. Homepage bands use <code>width: 100%</code> and nothing else. Signed-in members get a short "Welcome back" band in place of the visitor hero and trust row; the doors and rows stay.</div>
+  <div class="callout"><code>#main-outlet-wrapper.wrap</code> already owns the 1110px geometry. Homepage bands use <code>width: 100%</code> and nothing else. Members see the same page without the banner and the advantages row; the onboarding panel stays for members who have not finished it. The banner, advantages row, doors and leaderboard show on both the Categories and Latest tabs; only the three rows are specific to Categories.</div>
+  <div class="callout warn"><b>Before it goes live:</b> "Your rights, your data, no ads" needs your confirmation (where the data is hosted, and that the no-ads promise holds). "Meetups in your region" is worded for Switzerland, Germany and Austria.</div>
 </div>
 
 <!-- ============================================================ -->
@@ -1053,7 +1057,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
   <div class="phase"><h4>B · Simplify</h4><small>Done 30 October</small><ul><li>Compact header, one button ✓</li><li>Needs-feedback strip ✓, then sort 7 ✓</li><li>Leaderboard gate ✓</li><li>One card format ✓</li></ul></div>
   <div class="phase"><h4>C · Rounds</h4><small>Done 11 November</small><ul><li>Round pages and switcher ✓</li><li>Brief as banner, out of ranks ✓</li><li>Results view, Your result ✓</li><li>All-rounds archive ✓</li></ul></div>
   <div class="phase"><h4>D · Server</h4><small>Done 12 November</small><ul><li>Results script, hourly timer ✓</li><li>August, September marked, not sent ✓</li><li>October announced ✓</li><li>Entrant messages: dropped for now</li></ul></div>
-  <div class="phase"><h4>E · Homepage</h4><small>Last</small><ul><li>Visitor hero, trust points</li><li>Three doors</li><li>Named rows</li></ul></div>
+  <div class="phase"><h4>E · Homepage</h4><small>Last</small><ul><li>Visitor banner, advantages row</li><li>Three doors</li><li>Category rows on the Categories tab</li></ul></div>
 </div>
 
 <h3>Verification that applies to every theme step</h3>

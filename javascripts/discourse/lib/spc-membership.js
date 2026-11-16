@@ -89,8 +89,27 @@ export function membershipStatus(currentUser, userFields) {
   return { status, rows };
 }
 
+// The setting holds the German page on swissphotoclub.com. The website keeps
+// French and English under /fr-ch and /en-ch and redirects the German path
+// below those prefixes to its own localized slug (checked 2026-11-16:
+// /fr-ch/konto/meine-mitgliedschaft → /fr-ch/profil/abonnement). It ignores
+// the spc_community_locale cookie, so the prefix is the only way to land a
+// French reader on the French page. Any other host is used as written.
+const WEBSITE_LOCALE_PREFIXES = { fr: "/fr-ch", en: "/en-ch" };
+
 export function manageMembershipUrl() {
-  return String(settings.membership_manage_url || "").trim();
+  const raw = String(settings.membership_manage_url || "").trim();
+  const prefix =
+    WEBSITE_LOCALE_PREFIXES[I18n.currentLocale().split(/[-_]/)[0]];
+  try {
+    const url = new URL(raw);
+    if (prefix && /(^|\.)swissphotoclub\.com$/.test(url.hostname)) {
+      url.pathname = prefix + url.pathname;
+    }
+    return url.toString();
+  } catch {
+    return raw;
+  }
 }
 
 // One definition of "is this visitor a community member" for the whole theme.

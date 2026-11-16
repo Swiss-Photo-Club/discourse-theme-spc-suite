@@ -62,6 +62,10 @@ export default class SpcProfileSetup extends Component {
   @tracked location = "";
   @tracked bio = "";
   @tracked geoLocation = null;
+  // Whether the member used the place picker this visit. A location typed
+  // before the Locations plugin existed has no geo_location, so the picker
+  // opens empty; saving must not read that emptiness as "clear it".
+  geoTouched = false;
   @tracked avatarTemplate = null;
   @tracked saving = false;
   @tracked saved = false;
@@ -163,6 +167,7 @@ export default class SpcProfileSetup extends Component {
   // provider-only display row is filtered out by the selector itself.
   @action
   updateGeoLocation(location) {
+    this.geoTouched = true;
     this.geoLocation =
       location && Object.keys(location).length ? location : null;
   }
@@ -229,7 +234,10 @@ export default class SpcProfileSetup extends Component {
       // geo_location as a JSON string (the shape the plugin's own preferences
       // save uses, empty string to clear), mirrored into core `location` so
       // the profile header and user card keep their plain-text line.
-      if (this.hasLocationSelector) {
+      // Only when the picker holds a place or was used: otherwise the empty
+      // picker would wipe a plain-text location (it did, 2026-11-16, for
+      // every member whose location predates the plugin).
+      if (this.hasLocationSelector && (this.geoLocation || this.geoTouched)) {
         data.custom_fields = {
           geo_location: this.geoLocation
             ? JSON.stringify(this.geoLocation)

@@ -71,6 +71,7 @@ en:
       nonmember_trial_mode: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
       nonmember_trial_days: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
       members_only_url: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."
+      membership_manage_url: "Profile Setup: link behind “Manage membership” in the status block at the top of /profile-setup — the spc-be page where members see and change their membership. Empty hides the link."
   account_closure:
     title: "Close your community account"
     description: "Ask the admins to close your community account. Your SPC website account and membership will remain unchanged."
@@ -276,6 +277,21 @@ en:
     error_no_title: Please give your feedback a title.
     error_no_details: Please add a few details.
   membership:
+    types:
+      trial: "Trial"
+      manual: "Complimentary membership"
+      staff: "Team"
+      community: "Community membership"
+      active: "Active membership"
+    heading: "Your membership"
+    status: "Status"
+    since: "Member since"
+    renews: "Renews on"
+    trial_ends: "Trial ends"
+    manage: "Manage membership"
+    status_member: "SPC Member"
+    status_trial: "Trial"
+    status_none: "Not a member"
     badge: SPC Member
   profile_setup:
     menu_item: Edit your profile

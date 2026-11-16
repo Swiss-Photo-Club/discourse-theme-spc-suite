@@ -14,6 +14,10 @@ import { extractError } from "discourse/lib/ajax-error";
 import DiscourseURL, { userPath } from "discourse/lib/url";
 import UppyUpload from "discourse/lib/uppy/uppy-upload";
 import { i18n } from "discourse-i18n";
+import {
+  manageMembershipUrl,
+  membershipStatus,
+} from "../lib/spc-membership";
 
 // The Locations plugin's geocoded place picker. Resolved lazily — at
 // component construction, i.e. when /profile-setup first renders — and NOT
@@ -63,6 +67,7 @@ export default class SpcProfileSetup extends Component {
   @tracked bio = "";
   @tracked geoLocation = null;
   @tracked avatarTemplate = null;
+  @tracked userFields = null;
   @tracked saving = false;
   @tracked saved = false;
   @tracked error = null;
@@ -100,6 +105,7 @@ export default class SpcProfileSetup extends Component {
       this.bio = user.bio_raw ?? "";
       this.geoLocation = this.parseGeoLocation(user.geo_location);
       this.avatarTemplate = user.avatar_template;
+      this.userFields = user.user_fields ?? {};
     } catch (e) {
       this.error = extractError(e);
     } finally {
@@ -128,6 +134,16 @@ export default class SpcProfileSetup extends Component {
   get avatarUrl() {
     const template = this.avatarTemplate ?? this.currentUser?.avatar_template;
     return template?.replace("{size}", "240");
+  }
+
+  // Status block (#12). Rows exist only for fields spc-be has filled, so the
+  // block shipped before spc-be wrote anything and showed status alone.
+  get membership() {
+    return membershipStatus(this.currentUser, this.userFields);
+  }
+
+  get manageUrl() {
+    return manageMembershipUrl();
   }
 
   get uploadLabel() {
@@ -262,6 +278,29 @@ export default class SpcProfileSetup extends Component {
 
         {{#if this.currentUser}}
           <ConditionalLoadingSpinner @condition={{this.loading}}>
+            <section class="spc-membership-status">
+              <h2 class="spc-membership-status__heading">
+                {{i18n (themePrefix "membership.heading")}}
+              </h2>
+              <dl class="spc-membership-status__rows">
+                <div>
+                  <dt>{{i18n (themePrefix "membership.status")}}</dt>
+                  <dd>{{this.membership.status}}</dd>
+                </div>
+                {{#each this.membership.rows as |row|}}
+                  <div>
+                    <dt>{{row.label}}</dt>
+                    <dd>{{row.value}}</dd>
+                  </div>
+                {{/each}}
+              </dl>
+              {{#if this.manageUrl}}
+                <a class="spc-membership-status__manage" href={{this.manageUrl}}>
+                  {{i18n (themePrefix "membership.manage")}}
+                </a>
+              {{/if}}
+            </section>
+
             <div class="spc-profile-setup__field">
               <label for="spc-profile-avatar-input">
                 {{i18n (themePrefix "profile_setup.photo_label")}}

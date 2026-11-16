@@ -286,6 +286,10 @@ nonmember_trial_days:
 # Members-only access
 # -----------------------------------------------------------------------------
 
+membership_manage_url:
+  type: string
+  default: ""
+  description: "Profile Setup: link behind “Manage membership” in the status block at the top of /profile-setup — the spc-be page where members see and change their membership. Empty hides the link."
 members_only_url:
   type: string
   default: "https://api.swissphotoclub.com/community/members-only"

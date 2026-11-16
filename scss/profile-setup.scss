@@ -236,3 +236,44 @@
     background: var(--tertiary);
   }
 }
+
+// ---------- Membership status block (top of /profile-setup) -----------------
+.spc-membership-status {
+  margin-bottom: 2em;
+  padding: 1em 1.25em;
+  border: 1px solid var(--primary-low);
+  background: var(--primary-very-low);
+
+  &__heading {
+    margin: 0 0 0.75em;
+    font-size: var(--font-up-1);
+  }
+
+  &__rows {
+    margin: 0;
+
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25em 1em;
+      padding: 0.35em 0;
+      border-top: 1px solid var(--primary-low);
+    }
+
+    dt {
+      flex: 0 0 10em;
+      color: var(--primary-high);
+    }
+
+    dd {
+      margin: 0;
+      font-weight: 700;
+    }
+  }
+
+  &__manage {
+    display: inline-block;
+    margin-top: 0.75em;
+    font-weight: 700;
+  }
+}

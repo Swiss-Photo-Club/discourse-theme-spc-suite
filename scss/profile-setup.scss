@@ -226,6 +226,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
+  width: fit-content;
+  align-self: flex-start;
 
   &::before {
     content: "";

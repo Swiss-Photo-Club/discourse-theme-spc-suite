@@ -58,7 +58,7 @@ enable_locale_cookie:
 homepage_secondary_categories:
   type: list
   list_type: category
-  default: "13|4|5|2"
+  default: "8|13|4|5|2"
   description: "Homepage: categories listed as plain links under the three doors (Photo Feedback, Monthly Challenge, Introduce Yourself). A door category listed here is skipped."
 
 challenge_category_id:

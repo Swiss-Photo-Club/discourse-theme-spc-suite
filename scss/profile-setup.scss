@@ -313,8 +313,11 @@
     font-weight: 700;
   }
 
+  // Cards are spaced by margin, not the column gap: ConditionalLoadingSpinner
+  // wraps them in a container of its own, so they are not flex children.
   &__card {
     box-sizing: border-box;
+    margin-bottom: 1.25em;
     padding: 1.5em 2em;
     background: var(--secondary);
     border: 1px solid var(--primary-low);
@@ -328,7 +331,7 @@
     // Override the status block's own spacing and tint-only frame: here it
     // is one card in the stack.
     &.spc-membership-status {
-      margin: 0;
+      margin: 0 0 1.25em;
       background: var(--primary-very-low);
     }
 

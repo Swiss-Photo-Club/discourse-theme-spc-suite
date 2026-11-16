@@ -296,7 +296,6 @@ en:
     status_none: "Not a member"
     badge: SPC Member
   my_account:
-    menu_item: My account
     menu_profile: My profile
     heading: My account
     lead: Your membership, your profile and how you sign in.

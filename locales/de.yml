@@ -296,7 +296,6 @@ de:
     status_none: "Kein Mitglied"
     badge: SPC-Mitglied
   my_account:
-    menu_item: Mein Konto
     menu_profile: Mein Profil
     heading: Mein Konto
     lead: Deine Mitgliedschaft, dein Profil und wie du dich anmeldest.

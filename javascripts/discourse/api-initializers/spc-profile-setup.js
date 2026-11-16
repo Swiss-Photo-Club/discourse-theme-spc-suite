@@ -1,6 +1,5 @@
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
-import { userPath } from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
 import SpcMemberBadge from "../components/spc-member-badge";
 
@@ -16,28 +15,17 @@ const spcRun = (api) => {
   api.renderInOutlet("user-card-after-username", SpcMemberBadge);
   api.renderInOutlet("user-post-names", SpcMemberBadge);
 
-  // The avatar menu's person tab, trimmed to four plain entries (Oğuzhan,
-  // 16 Nov): My profile, My account, Drafts, Log out. Core's Summary,
-  // Activity, Invites and Preferences are hidden in profile-setup.scss — CSS
-  // only, the core list itself is never touched — so "My profile" stands in
-  // for Summary, and Preferences is one "All settings" link away on
-  // /my-account. Edit profile lives on /my-account too. Both icons must be
-  // declared in about.json's svg_icons.
-  const user = api.getCurrentUser();
-  if (user) {
-    api.addQuickAccessProfileItem({
-      icon: "user",
-      href: userPath(`${user.username_lower}/summary`),
-      content: i18n(themePrefix("my_account.menu_profile")),
-      className: "spc-menu-profile",
-    });
-  }
-
+  // The avatar menu's person tab, trimmed to three plain entries (Oğuzhan,
+  // 16 Nov): My profile, Drafts, Log out. "My profile" opens /my-account —
+  // people click it expecting their settings, and that page carries View
+  // public profile and Edit profile. Core's Summary, Activity, Invites and
+  // Preferences are hidden in profile-setup.scss (CSS only, the core list is
+  // never touched). The icon must be declared in about.json's svg_icons.
   api.addQuickAccessProfileItem({
-    icon: "gear",
+    icon: "user",
     href: MY_ACCOUNT_PATH,
-    content: i18n(themePrefix("my_account.menu_item")),
-    className: "spc-menu-account",
+    content: i18n(themePrefix("my_account.menu_profile")),
+    className: "spc-menu-profile",
   });
 
   // Your own /u/<you>/preferences/profile lands on /profile-setup instead —

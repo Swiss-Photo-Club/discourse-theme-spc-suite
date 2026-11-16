@@ -416,7 +416,7 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     <tr><td class="n">9</td><td><a href="#r9">All-rounds archive</a>, one card per round</td><td>2, 3</td><td><span class="pill p-theme">Theme</span></td><td>C <span class="pill p-done">Done 11 Nov</span></td></tr>
     <tr><td class="n">10</td><td><a href="#r10">Results for everyone</a> as an emailed Announcements topic, plus a personal rank message to entrants</td><td>4</td><td><span class="pill p-admin">Admin</span> <span class="pill p-server">Server</span></td><td>A <span class="pill p-done">Done 30 Oct</span>, D <span class="pill p-done">Done 12 Nov</span></td></tr>
     <tr><td class="n">11</td><td><a href="#r11">Homepage</a>: visitor banner with advantages, three doors, category rows on the default Categories tab</td><td>1, 2, 5</td><td><span class="pill p-theme">Theme</span> <span class="pill p-admin">Admin</span></td><td>E <span class="pill p-done">Done 13 Nov</span></td></tr>
-    <tr><td class="n">12</td><td><a href="#r12">Membership status</a>: badge now, dates when spc-be exposes them</td><td>5</td><td><span class="pill p-theme">Theme</span> <span class="pill p-server">spc-be</span></td><td>Later</td></tr>
+    <tr><td class="n">12</td><td><a href="#r12">Membership status</a>: badge now, dates when spc-be exposes them</td><td>5</td><td><span class="pill p-theme">Theme</span> <span class="pill p-server">spc-be</span></td><td><span class="pill p-done">Done 16 Nov</span></td></tr>
   </tbody>
 </table></div>
 
@@ -993,7 +993,8 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
 <h2><span class="eyebrow">Later</span>Parked, with the condition that unparks it</h2>
 
 <div class="rec" id="r12">
-  <h3>12 · Membership status on profile and settings <span class="pill p-theme">Theme</span> <span class="pill p-server">spc-be</span></h3>
+  <h3>12 · Membership status on profile and settings <span class="pill p-theme">Theme</span> <span class="pill p-server">spc-be</span> <span class="pill p-done">Done 16 Nov</span></h3>
+  <div class="callout ok"><b>Shipped 16 November 2026.</b> <b>Badge</b>, commits <code>bad3974</code>, <code>847bfe4</code>, <code>f67c3c1</code>: "SPC Member" / "SPC-Mitglied" / "Membre SPC" next to the name on the profile header (core outlet <code>user-post-names</code>) and the user card (<code>user-card-after-username</code>), for members of group 40. The profile reads the user's serialized groups; <code>card.json</code> carries none, so the card asks group 40's member list for that one username, cached per page load. Group 40's member list is visible to members and staff only, so anonymous visitors and signed-in non-members see no badge; that privacy setting was left as it is. Trial users are in group 40 too, so they get the badge. Verified signed in as osan: barbara.fischer (member) shows the badge on card and profile, ayu.studer (non-member) shows none on either, at desktop and at 606px (Chrome's narrowest window); the de/fr strings were read back from the served theme translations, not looked at on screen. <b>User fields</b>, created in Admin → Customize → User Fields with Oğuzhan's OK: <b>1</b> Member since, <b>2</b> Renews on, <b>3</b> Trial ends, <b>4</b> Membership type, all text, optional, not editable by the user, not on profile or card, not searchable. <b>Status block</b>, commits <code>369b506</code> and <code>679d1b1</code>: top of <code>/profile-setup</code>, status from field 4 with a fallback to group 44, then 40; one row per filled date; "Manage membership" behind the new <code>membership_manage_url</code> setting (empty, so hidden, until the spc-be URL is known). Verified by setting osan's own fields through the admin API: empty fields showed "SPC Member" alone; <code>community</code> with three dates showed "Community membership" and July 1, 2026 / July 1, 2027 / August 15, 2026; an unknown key <code>gold_plus</code> showed "Gold Plus" with only the filled row; the same date formats as "1. Juli 2027" and "1 juillet 2027" in de and fr. All four fields were cleared afterwards. The type labels are drafts until Oğuzhan confirms the plan list.</div>
   <p class="src">From: fotocommunity report #6</p>
   <p><b>What Discourse knows today, and why that is not enough.</b> Discourse only knows what spc-be tells it, and today that is one fact: the user is in group 40, or not. "Member" is therefore showable now. "Member since July 2026, renews 1 July 2027" is not, because those dates live only in spc-be. Three ways to get them across, in plain terms:</p>
   <ul>
@@ -1031,6 +1032,14 @@ td.n { font-weight: 800; color: var(--coral); white-space: nowrap; }
     </div>
   </div></div>
   <p class="meta">Status comes from group 40 today. The two greyed fields are the user fields spc-be would fill; the block can ship without them and fill in later.</p>
+  <div class="callout"><b>spc-be contract.</b> spc-be writes four admin-only Discourse user fields on its existing sync (DiscourseConnect login and <code>SyncDiscourseUserJob</code>), by id: <code>user_fields[1]</code> Member since, <code>user_fields[2]</code> Renews on, <code>user_fields[3]</code> Trial ends, <code>user_fields[4]</code> Membership type. Dates are ISO <code>YYYY-MM-DD</code> with no time; the theme formats them per locale. An empty string means "not known" and hides the row, so spc-be clears a field rather than leaving a stale value.
+    <ul>
+      <li><b>1 Member since:</b> start of the current paid membership (an active plan with <code>discourse_access</code>) or of a manual grant. Empty for trial-only access.</li>
+      <li><b>2 Renews on:</b> next renewal date of that plan. Empty for manual grants, staff, trials, and cancelled plans running out.</li>
+      <li><b>3 Trial ends:</b> end of the current trial grant (reason <code>trial</code>, group 44). Empty otherwise, including once the person converts.</li>
+      <li><b>4 Membership type:</b> a stable lowercase key, never a display name. <code>trial</code> means access rests on a trial alone, <code>manual</code> is a manual grant, <code>staff</code> is an administrator or moderator grant, and each membership plan with Discourse access gets one key, drafted as <code>community</code> and <code>active</code>. The theme has en/de/fr labels for these five under <code>membership.types</code> in <code>locales/*.yml</code>. An unknown key shows title-cased (<code>gold_plus</code> → "Gold Plus"), so a new plan needs no theme release, though it should get labels. Empty falls back to group 44 ("Trial"), then group 40 ("SPC Member"), then "Not a member"; 44 comes first because trial users are in 40 as well.</li>
+    </ul>
+  </div>
 </div>
 
 <div class="tbl"><table>

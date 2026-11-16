@@ -293,6 +293,7 @@ fr:
     badge: Membre SPC
   my_account:
     menu_item: Mon compte
+    menu_profile: Mon profil
     heading: Mon compte
     lead: Ton adhésion, ton profil et ta connexion.
     all_settings: Tous les réglages
@@ -317,7 +318,6 @@ fr:
     change_on_website: Changer l’e-mail ou le mot de passe →
     download_data: Télécharger mes données
   profile_setup:
-    menu_item: Modifier ton profil
     heading: Configure ton profil
     lead: Aide les autres à faire ta connaissance. Tout est facultatif – remplis ce que tu veux maintenant et complète le reste quand tu veux.
     login_required: Merci de te connecter pour configurer ton profil.

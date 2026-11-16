@@ -1,32 +1,43 @@
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
+import { userPath } from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
 import SpcMemberBadge from "../components/spc-member-badge";
 
 const PROFILE_SETUP_PATH = "/profile-setup";
 const MY_ACCOUNT_PATH = "/my-account";
 
-// Entry points for the friendly profile page. The page itself lives in
-// components/spc-profile-setup.gjs; this initializer makes it reachable and
-// makes it the default: a quick-access item in the avatar menu's profile tab,
-// and a takeover of the native Preferences → Profile route. The icon must be
-// one `about.json` declares in svg_icons — "pencil" already is; a name
-// missing from that list renders an empty box, not an error.
+// Entry points for /profile-setup and /my-account: the avatar menu's person
+// tab, and takeovers of the native Preferences → Profile and Preferences
+// index routes. Icons must be ones `about.json` declares in svg_icons; a
+// name missing from that list renders an empty box, not an error.
 const spcRun = (api) => {
   // Membership badge (#12): the card passes @user, the profile @model.
   api.renderInOutlet("user-card-after-username", SpcMemberBadge);
   api.renderInOutlet("user-post-names", SpcMemberBadge);
 
-  api.addQuickAccessProfileItem({
-    icon: "user",
-    href: MY_ACCOUNT_PATH,
-    content: i18n(themePrefix("my_account.menu_item")),
-  });
+  // The avatar menu's person tab, trimmed to four plain entries (Oğuzhan,
+  // 16 Nov): My profile, My account, Drafts, Log out. Core's Summary,
+  // Activity, Invites and Preferences are hidden in profile-setup.scss — CSS
+  // only, the core list itself is never touched — so "My profile" stands in
+  // for Summary, and Preferences is one "All settings" link away on
+  // /my-account. Edit profile lives on /my-account too. Both icons must be
+  // declared in about.json's svg_icons.
+  const user = api.getCurrentUser();
+  if (user) {
+    api.addQuickAccessProfileItem({
+      icon: "user",
+      href: userPath(`${user.username_lower}/summary`),
+      content: i18n(themePrefix("my_account.menu_profile")),
+      className: "spc-menu-profile",
+    });
+  }
 
   api.addQuickAccessProfileItem({
-    icon: "pencil",
-    href: PROFILE_SETUP_PATH,
-    content: i18n(themePrefix("profile_setup.menu_item")),
+    icon: "gear",
+    href: MY_ACCOUNT_PATH,
+    content: i18n(themePrefix("my_account.menu_item")),
+    className: "spc-menu-account",
   });
 
   // Your own /u/<you>/preferences/profile lands on /profile-setup instead —

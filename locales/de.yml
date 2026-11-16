@@ -297,6 +297,7 @@ de:
     badge: SPC-Mitglied
   my_account:
     menu_item: Mein Konto
+    menu_profile: Mein Profil
     heading: Mein Konto
     lead: Deine Mitgliedschaft, dein Profil und wie du dich anmeldest.
     all_settings: Alle Einstellungen
@@ -321,7 +322,6 @@ de:
     change_on_website: E-Mail oder Passwort ändern →
     download_data: Meine Daten herunterladen
   profile_setup:
-    menu_item: Dein Profil bearbeiten
     heading: Richte dein Profil ein
     lead: Hilf den anderen, dich kennenzulernen. Alles ist optional – füll jetzt aus, was du magst, und ergänze den Rest jederzeit.
     login_required: Bitte melde dich an, um dein Profil einzurichten.

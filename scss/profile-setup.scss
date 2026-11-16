@@ -392,3 +392,26 @@
     padding: 1.25em;
   }
 }
+
+// ---------- Avatar menu, person tab ------------------------------------------
+// Trimmed to My profile, My account, Drafts, Log out (see
+// api-initializers/spc-profile-setup.js). Core's entries are hidden, never
+// removed, and the list is already a flex column, so `order` moves Drafts and
+// Log out below the theme's two items without touching core's markup.
+// Specificity beats core's `.user-menu.revamped #quick-access-profile li`.
+.user-menu.revamped #quick-access-profile {
+  li.summary,
+  li.activity,
+  li.invites,
+  li.preferences {
+    display: none;
+  }
+
+  li.drafts {
+    order: 1;
+  }
+
+  li.logout {
+    order: 2;
+  }
+}

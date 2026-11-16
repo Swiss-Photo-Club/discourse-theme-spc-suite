@@ -11,10 +11,10 @@ export const SPC_TRIAL_GROUP_ID = 44;
 
 // Admin-only user fields spc-be writes on every sync (#12, the "spc-be
 // contract" in docs/final-recommendations.html). Created 2026-11-16; the ids
-// are what spc-be posts to, so they never change. Dates are ISO YYYY-MM-DD,
+// are what spc-be posts to, so they never change. Field 1 ("Member since")
+// was dropped from the contract the same day and is not read. Dates are ISO YYYY-MM-DD,
 // the type is a stable lowercase key, and an empty field means "not known".
 export const MEMBERSHIP_FIELDS = {
-  since: 1,
   renews: 2,
   trialEnds: 3,
   type: 4,
@@ -75,7 +75,6 @@ export function membershipStatus(currentUser, userFields) {
   }
 
   const rows = [
-    ["since", MEMBERSHIP_FIELDS.since],
     ["renews", MEMBERSHIP_FIELDS.renews],
     ["trial_ends", MEMBERSHIP_FIELDS.trialEnds],
   ]

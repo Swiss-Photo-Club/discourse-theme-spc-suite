@@ -275,6 +275,8 @@ de:
     error_no_type: Bitte wähle, was für Feedback es ist.
     error_no_title: Bitte gib deinem Feedback einen Titel.
     error_no_details: Bitte ergänze ein paar Details.
+  membership:
+    badge: SPC-Mitglied
   profile_setup:
     menu_item: Dein Profil bearbeiten
     heading: Richte dein Profil ein

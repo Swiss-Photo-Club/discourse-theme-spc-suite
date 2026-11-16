@@ -271,6 +271,8 @@ fr:
     error_no_type: Merci de choisir le type de feedback.
     error_no_title: Merci de donner un titre à ton feedback.
     error_no_details: Merci d'ajouter quelques détails.
+  membership:
+    badge: Membre SPC
   profile_setup:
     menu_item: Modifier ton profil
     heading: Configure ton profil

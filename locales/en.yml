@@ -275,6 +275,8 @@ en:
     error_no_type: Please choose what kind of feedback this is.
     error_no_title: Please give your feedback a title.
     error_no_details: Please add a few details.
+  membership:
+    badge: SPC Member
   profile_setup:
     menu_item: Edit your profile
     heading: Set up your profile

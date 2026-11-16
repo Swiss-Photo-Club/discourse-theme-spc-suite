@@ -209,3 +209,28 @@
   .d-multi-select__result:has(.location-provider) {
   display: none;
 }
+
+// ---------- "SPC Member" badge (user card + profile header) -----------------
+// Core palette tokens like the rest of this file: header colours give the
+// brand navy today and follow a dark scheme tomorrow.
+.spc-member-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0.25em 0;
+  padding: 0.2em 0.6em;
+  background: var(--header_background);
+  color: var(--header_primary);
+  font-size: var(--font-down-2);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    width: 0.55em;
+    height: 0.55em;
+    background: var(--tertiary);
+  }
+}

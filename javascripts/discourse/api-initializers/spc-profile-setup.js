@@ -1,6 +1,7 @@
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
+import SpcMemberBadge from "../components/spc-member-badge";
 
 const PROFILE_SETUP_PATH = "/profile-setup";
 
@@ -11,6 +12,10 @@ const PROFILE_SETUP_PATH = "/profile-setup";
 // one `about.json` declares in svg_icons — "pencil" already is; a name
 // missing from that list renders an empty box, not an error.
 const spcRun = (api) => {
+  // Membership badge (#12): the card passes @user, the profile @model.
+  api.renderInOutlet("user-card-after-username", SpcMemberBadge);
+  api.renderInOutlet("user-post-names", SpcMemberBadge);
+
   api.addQuickAccessProfileItem({
     icon: "pencil",
     href: PROFILE_SETUP_PATH,

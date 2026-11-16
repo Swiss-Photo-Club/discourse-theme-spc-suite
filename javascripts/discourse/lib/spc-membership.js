@@ -1,5 +1,11 @@
 import DiscourseURL from "discourse/lib/url";
 
+// spc-be's `members` group. The one fact Discourse has about paid
+// membership; spc-be adds and removes people through DiscourseConnect and
+// SyncDiscourseUserJob. Distinct from nonmember_member_groups, which also
+// counts trial users and staff as "not to be pitched at".
+export const SPC_MEMBERS_GROUP_ID = 40;
+
 // One definition of "is this visitor a community member" for the whole theme.
 //
 // Membership is the `nonmember_member_groups` setting (SPC `members`, `trial`,

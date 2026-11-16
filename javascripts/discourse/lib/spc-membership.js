@@ -55,7 +55,7 @@ function typeLabel(key) {
 // The signed-in user's own membership, for the /profile-setup status block.
 // `userFields` is the user_fields map from /u/<self>.json — a user always
 // sees their own fields, even admin-only ones. Status prefers spc-be's type
-// key and falls back to groups 40 and 44 while the field is empty.
+// key and falls back to groups 44, then 40, while the field is empty.
 export function membershipStatus(currentUser, userFields) {
   const groupIds = (currentUser?.groups || []).map((group) => group.id);
   const type = fieldValue(userFields, MEMBERSHIP_FIELDS.type).toLowerCase();
@@ -63,10 +63,13 @@ export function membershipStatus(currentUser, userFields) {
   let status;
   if (type) {
     status = typeLabel(type);
+  } else if (groupIds.includes(SPC_TRIAL_GROUP_ID)) {
+    // Trial first: spc-be puts trial users in group 40 as well (verified
+    // 2026-11-12, all 16 trial users were members), so 44 is the
+    // distinguishing fact and 40 alone cannot tell the two apart.
+    status = I18n.t(themePrefix("membership.status_trial"));
   } else if (groupIds.includes(SPC_MEMBERS_GROUP_ID)) {
     status = I18n.t(themePrefix("membership.status_member"));
-  } else if (groupIds.includes(SPC_TRIAL_GROUP_ID)) {
-    status = I18n.t(themePrefix("membership.status_trial"));
   } else {
     status = I18n.t(themePrefix("membership.status_none"));
   }

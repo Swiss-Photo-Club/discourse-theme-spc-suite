@@ -297,19 +297,15 @@ en:
     badge: SPC Member
   my_account:
     menu_profile: My profile
-    heading: My account
+    heading: My profile
     lead: Your membership, your profile and how you sign in.
     all_settings: All settings
     login_required: Please log in to see your account.
     trial_body: You are trying out the community. Become a member to keep posting, entering challenges and getting feedback.
     none_body: You can read everything in the community. As a member you can also share your photos, give and receive feedback and enter the Monthly Challenge.
     become_member: Become a member
-    profile_heading: Profile
-    profile_filled:
-      one: "%{count} of 4 profile details filled in."
-      other: "%{count} of 4 profile details filled in."
+    profile_heading: Public profile
     profile_nudge: Members with a photo, a bio and a location get more feedback on their pictures.
-    edit_profile: Edit profile
     view_profile: View public profile →
     language_heading: Language
     language_hint: Menus, buttons and emails use this language. Posts stay in the language they were written in.

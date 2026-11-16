@@ -259,14 +259,29 @@ export default class SpcProfileSetup extends Component {
   }
 
   <template>
-    <div class="spc-profile-setup">
+    {{! @embedded: rendered as one card on /my-account, under that page's h1. }}
+    <div
+      class="spc-profile-setup {{if @embedded 'spc-profile-setup--embedded'}}"
+    >
       <div class="spc-profile-setup__card">
-        <header class="spc-profile-setup__header">
-          <h1>{{i18n (themePrefix "profile_setup.heading")}}</h1>
-          <p class="spc-profile-setup__lead">
-            {{i18n (themePrefix "profile_setup.lead")}}
-          </p>
-        </header>
+        {{#if @embedded}}
+          <header class="spc-profile-setup__header">
+            <h2>{{i18n (themePrefix "my_account.profile_heading")}}</h2>
+            <a href={{this.profileUrl}} {{on "click" this.viewProfile}}>
+              {{i18n (themePrefix "my_account.view_profile")}}
+            </a>
+            <p class="spc-profile-setup__lead">
+              {{i18n (themePrefix "my_account.profile_nudge")}}
+            </p>
+          </header>
+        {{else}}
+          <header class="spc-profile-setup__header">
+            <h1>{{i18n (themePrefix "profile_setup.heading")}}</h1>
+            <p class="spc-profile-setup__lead">
+              {{i18n (themePrefix "profile_setup.lead")}}
+            </p>
+          </header>
+        {{/if}}
 
         {{#if this.currentUser}}
           <ConditionalLoadingSpinner @condition={{this.loading}}>

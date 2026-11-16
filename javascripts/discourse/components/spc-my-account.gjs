@@ -1,9 +1,7 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { fn, hash } from "@ember/helper";
-import { on } from "@ember/modifier";
 import { action } from "@ember/object";
-import { getOwner } from "@ember/owner";
 import { service } from "@ember/service";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DButton from "discourse/components/d-button";
@@ -19,6 +17,7 @@ import {
   websiteAccountUrl,
 } from "../lib/spc-membership";
 import SpcAccountClosure from "./spc-account-closure";
+import SpcProfileSetup from "./spc-profile-setup";
 
 // The three interface languages the club speaks. Saved as the user's own
 // `locale`; spc-be's DiscourseConnect payload carries no locale, so a choice
@@ -33,8 +32,9 @@ const LANGUAGES = [
 // .html): the private front door to the member's settings. Every card reads
 // and writes what Discourse already stores; the native preferences stay one
 // "All settings" link away (?full=1 gets past the takeover in
-// api-initializers/spc-profile-setup.js). Public-profile fields are edited on
-// /profile-setup, never here — that page is what others see, this one is not.
+// api-initializers/spc-profile-setup.js). The public-profile card is the
+// /profile-setup form itself, embedded; /profile-setup stays as the focused
+// page onboarding links to.
 export default class SpcMyAccount extends Component {
   @service currentUser;
   @service dialog;
@@ -91,33 +91,6 @@ export default class SpcMyAccount extends Component {
     return websiteAccountUrl();
   }
 
-  // The four fields /profile-setup edits. The photo counts once it is an
-  // uploaded one; the generated letter avatar has no uploaded_avatar_id.
-  get profileFilled() {
-    const u = this.user || {};
-    return [
-      u.uploaded_avatar_id,
-      u.website,
-      u.location,
-      u.bio_raw?.trim(),
-    ].filter(Boolean).length;
-  }
-
-  get profileComplete() {
-    return this.profileFilled === 4;
-  }
-
-  get avatarUrl() {
-    return (this.user?.avatar_template ?? this.currentUser.avatar_template)?.replace(
-      "{size}",
-      "120"
-    );
-  }
-
-  get profileUrl() {
-    return userPath(`${this.currentUser.username_lower}/summary`);
-  }
-
   get allSettingsUrl() {
     return userPath(
       `${this.currentUser.username_lower}/preferences/account?full=1`
@@ -140,15 +113,6 @@ export default class SpcMyAccount extends Component {
   @action
   goToLogin() {
     DiscourseURL.routeTo("/login");
-  }
-
-  // Same flag /profile-setup's "View your profile" sets: the own summary
-  // arrives collapsed unless the user controller's forceExpand is on.
-  @action
-  viewProfile(event) {
-    event.preventDefault();
-    getOwner(this).lookup("controller:user")?.set("forceExpand", true);
-    DiscourseURL.routeTo(this.profileUrl);
   }
 
   // Core's interface page reloads after a locale change too: every string
@@ -243,40 +207,7 @@ export default class SpcMyAccount extends Component {
             {{/if}}
           </section>
 
-          <section class="spc-my-account__card">
-            <h2>{{i18n (themePrefix "my_account.profile_heading")}}</h2>
-            <div class="spc-my-account__profile">
-              <img class="spc-my-account__avatar" src={{this.avatarUrl}} alt="" />
-              <div>
-                <strong>{{if
-                    this.user.name
-                    this.user.name
-                    this.currentUser.username
-                  }}</strong>
-                <span class="spc-my-account__muted">
-                  @{{this.currentUser.username}}
-                  {{#if this.user.location}}· {{this.user.location}}{{/if}}
-                </span>
-              </div>
-            </div>
-            <p class="spc-my-account__text">
-              {{i18n
-                (themePrefix "my_account.profile_filled")
-                count=this.profileFilled
-              }}
-              {{#unless this.profileComplete}}
-                {{i18n (themePrefix "my_account.profile_nudge")}}
-              {{/unless}}
-            </p>
-            <div class="spc-my-account__actions">
-              <a class="btn btn-default" href="/profile-setup">
-                {{i18n (themePrefix "my_account.edit_profile")}}
-              </a>
-              <a href={{this.profileUrl}} {{on "click" this.viewProfile}}>
-                {{i18n (themePrefix "my_account.view_profile")}}
-              </a>
-            </div>
-          </section>
+          <SpcProfileSetup @embedded={{true}} />
 
           <section class="spc-my-account__card">
             <h2>{{i18n (themePrefix "my_account.language_heading")}}</h2>

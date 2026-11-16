@@ -293,19 +293,15 @@ fr:
     badge: Membre SPC
   my_account:
     menu_profile: Mon profil
-    heading: Mon compte
+    heading: Mon profil
     lead: Ton adhésion, ton profil et ta connexion.
     all_settings: Tous les réglages
     login_required: Connecte-toi pour voir ton compte.
     trial_body: Tu découvres la communauté à l’essai. Deviens membre pour continuer à publier, participer aux challenges et recevoir des retours.
     none_body: Tu peux tout lire dans la communauté. En tant que membre, tu peux aussi partager tes photos, donner et recevoir des retours et participer au Défi du mois.
     become_member: Devenir membre
-    profile_heading: Profil
-    profile_filled:
-      one: "%{count} information de profil sur 4 remplie."
-      other: "%{count} informations de profil sur 4 remplies."
+    profile_heading: Profil public
     profile_nudge: Les membres avec une photo, une bio et un lieu reçoivent plus de retours sur leurs images.
-    edit_profile: Modifier le profil
     view_profile: Voir le profil public →
     language_heading: Langue
     language_hint: Les menus, boutons et e-mails utilisent cette langue. Les publications restent dans la langue dans laquelle elles ont été écrites.

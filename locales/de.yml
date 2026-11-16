@@ -297,19 +297,15 @@ de:
     badge: SPC-Mitglied
   my_account:
     menu_profile: Mein Profil
-    heading: Mein Konto
+    heading: Mein Profil
     lead: Deine Mitgliedschaft, dein Profil und wie du dich anmeldest.
     all_settings: Alle Einstellungen
     login_required: Bitte melde dich an, um dein Konto zu sehen.
     trial_body: Du testest gerade die Community. Werde Mitglied, um weiterhin Fotos zu posten, an Challenges teilzunehmen und Feedback zu erhalten.
     none_body: Du kannst in der Community alles lesen. Als Mitglied kannst du ausserdem deine Fotos zeigen, Feedback geben und erhalten und an der Monthly Challenge teilnehmen.
     become_member: Mitglied werden
-    profile_heading: Profil
-    profile_filled:
-      one: "%{count} von 4 Profilangaben ausgefüllt."
-      other: "%{count} von 4 Profilangaben ausgefüllt."
+    profile_heading: Öffentliches Profil
     profile_nudge: Mitglieder mit Foto, Bio und Ort bekommen mehr Feedback auf ihre Bilder.
-    edit_profile: Profil bearbeiten
     view_profile: Öffentliches Profil ansehen →
     language_heading: Sprache
     language_hint: Menüs, Schaltflächen und E-Mails erscheinen in dieser Sprache. Beiträge bleiben in der Sprache, in der sie geschrieben wurden.

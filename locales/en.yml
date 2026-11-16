@@ -63,6 +63,8 @@ en:
       onboarding_profile_url: "Member Onboarding: destination for the Profile step."
       onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
       profile_setup_replaces_preferences: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
+      my_account_replaces_preferences: "My Account: opening your own Preferences (the avatar menu's Preferences entry, /my/preferences) lands on the private /my-account page instead. The individual settings tabs stay reachable from its “All settings” link."
+      my_account_website_url: "My Account: the account page on swissphotoclub.com where members change their email and password — the German page; French and English readers get the website’s /fr-ch or /en-ch version automatically. Empty hides the link."
       account_closure_request_group: "Account Closure: group name receiving community-only closure requests. The group must allow messages from members; receiving admins should watch its inbox."
       nonmember_member_groups: "Non-Member Banner: groups whose members should not see the banner. This defaults to the SPC ‘members’ and ‘trial’ groups, plus administrators and moderators."
       nonmember_join_url_de: "Non-Member Banner: membership-button destination for the German interface."
@@ -71,7 +73,7 @@ en:
       nonmember_trial_mode: "Non-Member Banner: open-trial launch mode. While on, logged-out visitors see the free-trial invitation and a ‘Log in to start your free trial’ button leading to /login (the trial starts automatically at first login); signed-in non-members keep the membership call-to-action. Switch on only while spc-be grants the open trial; off restores the standard join copy."
       nonmember_trial_days: "Non-Member Banner: trial length in days quoted in the free-trial invitation. Keep it in step with trial_days in spc-be (Nova → Community Trial Settings). 0 leaves the length out of the copy, e.g. while it differs per country."
       members_only_url: "Members-only page: where non-members are sent when they open a /submit form or a posting button in a category they cannot post in — the same spc-be page the Category Lockdown plugin redirects locked topics to. Empty falls back to Discourse’s /login."
-      membership_manage_url: "Profile Setup: link behind “Manage membership” in the status block at the top of /profile-setup — the German membership page on swissphotoclub.com. French and English readers get the website’s /fr-ch or /en-ch version of it automatically. Empty hides the link."
+      membership_manage_url: "My Account: link behind “Manage membership” in the membership card on /my-account — the German membership page on swissphotoclub.com. French and English readers get the website’s /fr-ch or /en-ch version of it automatically. Empty hides the link."
   account_closure:
     title: "Close your community account"
     description: "Ask the admins to close your community account. Your SPC website account and membership will remain unchanged."
@@ -293,6 +295,31 @@ en:
     status_trial: "Trial"
     status_none: "Not a member"
     badge: SPC Member
+  my_account:
+    menu_item: My account
+    heading: My account
+    lead: Your membership, your profile and how you sign in.
+    all_settings: All settings
+    login_required: Please log in to see your account.
+    trial_body: You are trying out the community. Become a member to keep posting, entering challenges and getting feedback.
+    none_body: You can read everything in the community. As a member you can also share your photos, give and receive feedback and enter the Monthly Challenge.
+    become_member: Become a member
+    profile_heading: Profile
+    profile_filled:
+      one: "%{count} of 4 profile details filled in."
+      other: "%{count} of 4 profile details filled in."
+    profile_nudge: Members with a photo, a bio and a location get more feedback on their pictures.
+    edit_profile: Edit profile
+    view_profile: View public profile →
+    language_heading: Language
+    language_hint: Menus, buttons and emails use this language. Posts stay in the language they were written in.
+    signin_heading: Sign-in & your data
+    email: Email
+    password: Password
+    password_value: Managed on swissphotoclub.com
+    signin_body: You sign in here with your Swiss Photo Club account, so your email address and password are changed on the website, not in the community.
+    change_on_website: Change email or password →
+    download_data: Download my data
   profile_setup:
     menu_item: Edit your profile
     heading: Set up your profile

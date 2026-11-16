@@ -240,6 +240,16 @@ profile_setup_replaces_preferences:
   default: true
   description: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
 
+my_account_replaces_preferences:
+  type: bool
+  default: true
+  description: "My Account: opening your own Preferences (the avatar menu's Preferences entry, /my/preferences) lands on the private /my-account page instead. The individual settings tabs stay reachable from its “All settings” link."
+
+my_account_website_url:
+  type: string
+  default: "https://swissphotoclub.com/konto"
+  description: "My Account: the account page on swissphotoclub.com where members change their email and password — the German page; French and English readers get the website’s /fr-ch or /en-ch version automatically. Empty hides the link."
+
 account_closure_request_group:
   type: string
   default: "admins"
@@ -289,7 +299,7 @@ nonmember_trial_days:
 membership_manage_url:
   type: string
   default: ""
-  description: "Profile Setup: link behind “Manage membership” in the status block at the top of /profile-setup — the German membership page on swissphotoclub.com. French and English readers get the website’s /fr-ch or /en-ch version of it automatically. Empty hides the link."
+  description: "My Account: link behind “Manage membership” in the membership card on /my-account — the German membership page on swissphotoclub.com. French and English readers get the website’s /fr-ch or /en-ch version of it automatically. Empty hides the link."
 members_only_url:
   type: string
   default: "https://api.swissphotoclub.com/community/members-only"

@@ -6,7 +6,7 @@ import { service } from "@ember/service";
 import { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
 import { fetchWinners } from "../api-initializers/spc-monthly-challenge";
-import { isSpcMember } from "../lib/spc-membership";
+import { isSpcMember, membershipJoinUrl } from "../lib/spc-membership";
 import { isHomeRoute } from "../lib/spc-home";
 
 // With DiscourseConnect on, /login hands straight over to the SSO provider
@@ -126,17 +126,7 @@ export default class SpcNonMemberBanner extends Component {
   }
 
   get joinUrl() {
-    const locale = document.documentElement.lang?.toLowerCase() || "de";
-
-    if (locale.startsWith("fr")) {
-      return settings.nonmember_join_url_fr;
-    }
-
-    if (locale.startsWith("en")) {
-      return settings.nonmember_join_url_en;
-    }
-
-    return settings.nonmember_join_url_de;
+    return membershipJoinUrl();
   }
 
   <template>

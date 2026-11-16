@@ -63,6 +63,8 @@ fr:
       onboarding_profile_url: "Onboarding : destination de l’étape Profil."
       onboarding_dismissal_version: "Onboarding : modifiez cette valeur pour réinitialiser la progression et le masquage de tous les membres."
       profile_setup_replaces_preferences: "Configuration du profil : ouvrir ses propres Préférences → Profil mène à la page conviviale /profile-setup. L'éditeur complet reste accessible via un lien sur cette page."
+      my_account_replaces_preferences: "Mon compte : ouvrir ses propres Préférences (entrée « Préférences » du menu de l’avatar, /my/preferences) mène à la page privée /my-account. Les onglets de réglages restent accessibles via son lien « Tous les réglages »."
+      my_account_website_url: "Mon compte : la page de compte sur swissphotoclub.com où les membres changent leur e-mail et leur mot de passe — la page allemande ; les lecteurs francophones et anglophones reçoivent automatiquement la version /fr-ch ou /en-ch du site. Vide masque le lien."
       account_closure_request_group: "Fermeture de compte : nom du groupe recevant les demandes concernant uniquement le compte communautaire. Le groupe doit autoriser les messages des membres ; les admins responsables doivent surveiller sa boîte de réception."
       nonmember_member_groups: "Bannière non-membres : groupes dont les membres ne doivent pas voir la bannière. Les groupes SPC « members » et « trial », ainsi que les administrateurs et modérateurs, sont sélectionnés par défaut."
       nonmember_join_url_de: "Bannière non-membres : destination du bouton d’adhésion pour l’interface allemande."
@@ -71,7 +73,7 @@ fr:
       nonmember_trial_mode: "Bannière non-membres : mode lancement de l’essai ouvert. Tant qu’il est activé, les visiteurs non connectés voient l’invitation à l’essai gratuit et un bouton « Se connecter pour démarrer votre essai gratuit » menant à /login (l’essai démarre automatiquement à la première connexion) ; les non-membres connectés gardent l’appel à l’adhésion. À activer seulement pendant que spc-be accorde l’essai ouvert ; désactivé, le texte d’adhésion habituel revient."
       nonmember_trial_days: "Bannière non-membres : durée de l’essai en jours mentionnée dans l’invitation. À garder en accord avec trial_days dans spc-be (Nova → Community Trial Settings). 0 omet la durée dans le texte, p. ex. tant qu’elle varie selon le pays."
       members_only_url: "Page réservée aux membres : destination des non-membres qui ouvrent un formulaire /submit ou un bouton de publication dans une catégorie où ils ne peuvent pas publier — la même page spc-be vers laquelle le plugin Category Lockdown redirige les sujets verrouillés. Vide : retour au /login de Discourse."
-      membership_manage_url: "Configuration du profil : lien « Gérer mon adhésion » du bloc de statut en haut de /profile-setup — la page d’adhésion allemande sur swissphotoclub.com. Les lecteurs francophones et anglophones reçoivent automatiquement la version /fr-ch ou /en-ch du site. Vide masque le lien."
+      membership_manage_url: "Mon compte : lien « Gérer mon adhésion » de la carte d’adhésion sur /my-account — la page d’adhésion allemande sur swissphotoclub.com. Les lecteurs francophones et anglophones reçoivent automatiquement la version /fr-ch ou /en-ch du site. Vide masque le lien."
   account_closure:
     title: "Fermer votre compte communautaire"
     description: "Demandez aux admins de fermer votre compte communautaire. Votre compte sur le site SPC et votre adhésion resteront inchangés."
@@ -289,6 +291,31 @@ fr:
     status_trial: "Essai"
     status_none: "Pas membre"
     badge: Membre SPC
+  my_account:
+    menu_item: Mon compte
+    heading: Mon compte
+    lead: Ton adhésion, ton profil et ta connexion.
+    all_settings: Tous les réglages
+    login_required: Connecte-toi pour voir ton compte.
+    trial_body: Tu découvres la communauté à l’essai. Deviens membre pour continuer à publier, participer aux challenges et recevoir des retours.
+    none_body: Tu peux tout lire dans la communauté. En tant que membre, tu peux aussi partager tes photos, donner et recevoir des retours et participer au Défi du mois.
+    become_member: Devenir membre
+    profile_heading: Profil
+    profile_filled:
+      one: "%{count} information de profil sur 4 remplie."
+      other: "%{count} informations de profil sur 4 remplies."
+    profile_nudge: Les membres avec une photo, une bio et un lieu reçoivent plus de retours sur leurs images.
+    edit_profile: Modifier le profil
+    view_profile: Voir le profil public →
+    language_heading: Langue
+    language_hint: Les menus, boutons et e-mails utilisent cette langue. Les publications restent dans la langue dans laquelle elles ont été écrites.
+    signin_heading: Connexion et données
+    email: E-mail
+    password: Mot de passe
+    password_value: Géré sur swissphotoclub.com
+    signin_body: "Tu te connectes ici avec ton compte Swiss Photo Club : ton adresse e-mail et ton mot de passe se changent donc sur le site, pas dans la communauté."
+    change_on_website: Changer l’e-mail ou le mot de passe →
+    download_data: Télécharger mes données
   profile_setup:
     menu_item: Modifier ton profil
     heading: Configure ton profil

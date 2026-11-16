@@ -52,7 +52,7 @@ function typeLabel(key) {
   });
 }
 
-// The signed-in user's own membership, for the /profile-setup status block.
+// The signed-in user's own membership, for the /my-account membership card.
 // `userFields` is the user_fields map from /u/<self>.json — a user always
 // sees their own fields, even admin-only ones. Status prefers spc-be's type
 // key and falls back to groups 44, then 40, while the field is empty.
@@ -60,19 +60,24 @@ export function membershipStatus(currentUser, userFields) {
   const groupIds = (currentUser?.groups || []).map((group) => group.id);
   const type = fieldValue(userFields, MEMBERSHIP_FIELDS.type).toLowerCase();
 
-  let status;
+  // state drives which card /my-account shows: "member", "trial" or "none".
+  let state;
   if (type) {
-    status = typeLabel(type);
+    state = type === "trial" ? "trial" : "member";
   } else if (groupIds.includes(SPC_TRIAL_GROUP_ID)) {
     // Trial first: spc-be puts trial users in group 40 as well (verified
     // 2026-11-12, all 16 trial users were members), so 44 is the
     // distinguishing fact and 40 alone cannot tell the two apart.
-    status = I18n.t(themePrefix("membership.status_trial"));
+    state = "trial";
   } else if (groupIds.includes(SPC_MEMBERS_GROUP_ID)) {
-    status = I18n.t(themePrefix("membership.status_member"));
+    state = "member";
   } else {
-    status = I18n.t(themePrefix("membership.status_none"));
+    state = "none";
   }
+
+  const status = type
+    ? typeLabel(type)
+    : I18n.t(themePrefix(`membership.status_${state}`));
 
   const rows = [
     ["renews", MEMBERSHIP_FIELDS.renews],
@@ -85,7 +90,7 @@ export function membershipStatus(currentUser, userFields) {
       value: formatMembershipDate(value),
     }));
 
-  return { status, rows };
+  return { state, status, rows };
 }
 
 // The setting holds the German page on swissphotoclub.com. The website keeps
@@ -97,7 +102,17 @@ export function membershipStatus(currentUser, userFields) {
 const WEBSITE_LOCALE_PREFIXES = { fr: "/fr-ch", en: "/en-ch" };
 
 export function manageMembershipUrl() {
-  const raw = String(settings.membership_manage_url || "").trim();
+  return websiteUrl(settings.membership_manage_url);
+}
+
+// Same treatment for the website's account page, where email and password
+// are changed (/konto → /fr-ch/profil, /en-ch/profile).
+export function websiteAccountUrl() {
+  return websiteUrl(settings.my_account_website_url);
+}
+
+function websiteUrl(setting) {
+  const raw = String(setting || "").trim();
   const prefix =
     WEBSITE_LOCALE_PREFIXES[I18n.currentLocale().split(/[-_]/)[0]];
   try {
@@ -109,6 +124,19 @@ export function manageMembershipUrl() {
   } catch {
     return raw;
   }
+}
+
+// The "Become a member" page on swissphotoclub.com for the interface
+// language; the non-member banner and the /my-account card share it.
+export function membershipJoinUrl() {
+  const locale = document.documentElement.lang?.toLowerCase() || "de";
+  if (locale.startsWith("fr")) {
+    return settings.nonmember_join_url_fr;
+  }
+  if (locale.startsWith("en")) {
+    return settings.nonmember_join_url_en;
+  }
+  return settings.nonmember_join_url_de;
 }
 
 // One definition of "is this visitor a community member" for the whole theme.

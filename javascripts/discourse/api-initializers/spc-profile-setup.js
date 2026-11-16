@@ -4,6 +4,7 @@ import { i18n } from "discourse-i18n";
 import SpcMemberBadge from "../components/spc-member-badge";
 
 const PROFILE_SETUP_PATH = "/profile-setup";
+const MY_ACCOUNT_PATH = "/my-account";
 
 // Entry points for the friendly profile page. The page itself lives in
 // components/spc-profile-setup.gjs; this initializer makes it reachable and
@@ -15,6 +16,12 @@ const spcRun = (api) => {
   // Membership badge (#12): the card passes @user, the profile @model.
   api.renderInOutlet("user-card-after-username", SpcMemberBadge);
   api.renderInOutlet("user-post-names", SpcMemberBadge);
+
+  api.addQuickAccessProfileItem({
+    icon: "user",
+    href: MY_ACCOUNT_PATH,
+    content: i18n(themePrefix("my_account.menu_item")),
+  });
 
   api.addQuickAccessProfileItem({
     icon: "pencil",
@@ -58,6 +65,37 @@ const spcRun = (api) => {
             !transition.to?.queryParams?.full
           ) {
             this.router.replaceWith(PROFILE_SETUP_PATH);
+            return;
+          }
+
+          return super.beforeModel(...arguments);
+        }
+      }
+  );
+
+  // /my-account takes over your own preferences index the same way, with the
+  // same three holes (other users, ?full=1, my_account_replaces_preferences).
+  // Only the index: it is where the avatar menu's Preferences entry and
+  // /my/preferences land, and core's own index just redirects on to the
+  // Account tab. Every tab stays reachable by its own URL, which is how the
+  // page's "All settings" link (account?full=1) gets through.
+  api.modifyClass(
+    "route:preferences.index",
+    (Superclass) =>
+      class extends Superclass {
+        @service router;
+
+        beforeModel(transition) {
+          const user = api.getCurrentUser();
+          const username = this.paramsFor("user")?.username;
+
+          if (
+            settings.my_account_replaces_preferences &&
+            user &&
+            username?.toLowerCase() === user.username_lower &&
+            !transition.to?.queryParams?.full
+          ) {
+            this.router.replaceWith(MY_ACCOUNT_PATH);
             return;
           }
 

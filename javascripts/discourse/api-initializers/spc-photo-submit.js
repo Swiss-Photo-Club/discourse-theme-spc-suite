@@ -9,6 +9,7 @@ const PROJECT_PATH = "/submit/project";
 const INTRODUCTION_PATH = "/submit/introduction";
 const FEEDBACK_PATH = "/submit/feedback";
 const PROFILE_SETUP_PATH = "/profile-setup";
+const MY_ACCOUNT_PATH = "/my-account";
 
 function isCategoryParam(params, id) {
   const categoryId = String(parseInt(id, 10));
@@ -55,6 +56,7 @@ const spcRun = (api) => {
   //   submit/introduction    → /new-topic?category=introductions
   //   submit/feedback        → /new-topic?category=feedback
   //   profile-setup          → /new-topic?spc_form=profile
+  //   my-account             → /new-topic?spc_form=account
   //
   // The third only keeps links shared before July 2026 alive; they land on
   // /submit/critique like everything else. The fifth needs no mark: category 12
@@ -89,6 +91,11 @@ const spcRun = (api) => {
           // topic, /new-topic is only the bootable path its permalink borrows.
           if (params?.spc_form === "profile") {
             this.router.replaceWith(PROFILE_SETUP_PATH);
+            return;
+          }
+
+          if (params?.spc_form === "account") {
+            this.router.replaceWith(MY_ACCOUNT_PATH);
             return;
           }
 

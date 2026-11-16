@@ -15,4 +15,7 @@ export default function () {
   // Not a /submit form — the friendly profile page. It rides in this file so
   // the theme keeps a single route map; the file's name predates it.
   this.route("spc-profile-setup", { path: "/profile-setup" });
+
+  // The private account page; same arrangement as /profile-setup.
+  this.route("spc-my-account", { path: "/my-account" });
 }

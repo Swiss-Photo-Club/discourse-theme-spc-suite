@@ -235,11 +235,6 @@ onboarding_dismissal_version:
 # Profile setup page
 # -----------------------------------------------------------------------------
 
-my_account_replaces_preferences:
-  type: bool
-  default: true
-  description: "My Account: opening your own Preferences (the avatar menu's Preferences entry, /my/preferences) lands on the private /my-account page instead. The individual settings tabs stay reachable from its “All settings” link."
-
 my_account_website_url:
   type: string
   default: "https://swissphotoclub.com/konto"

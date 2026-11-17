@@ -31,8 +31,7 @@ const LANGUAGES = [
 // /my-account (recommendations 1, 2 and 4 of docs/settings-recommendations
 // .html): the private front door to the member's settings. Every card reads
 // and writes what Discourse already stores; the native preferences stay one
-// "All settings" link away (?full=1 gets past the takeover in
-// api-initializers/spc-profile-setup.js). The public-profile card is the
+// "All settings" link away. The public-profile card is the
 // /profile-setup form itself, embedded; /profile-setup stays as the focused
 // page onboarding links to.
 export default class SpcMyAccount extends Component {
@@ -92,9 +91,7 @@ export default class SpcMyAccount extends Component {
   }
 
   get allSettingsUrl() {
-    return userPath(
-      `${this.currentUser.username_lower}/preferences/account?full=1`
-    );
+    return userPath(`${this.currentUser.username_lower}/preferences/account`);
   }
 
   get currentLocale() {

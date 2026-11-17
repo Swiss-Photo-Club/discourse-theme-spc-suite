@@ -1,13 +1,12 @@
-import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
 import SpcMemberBadge from "../components/spc-member-badge";
 
 const MY_ACCOUNT_PATH = "/my-account";
 
-// Entry points for /profile-setup and /my-account: the avatar menu's person
-// tab, and takeovers of the native Preferences → Profile and Preferences
-// index routes. Icons must be ones `about.json` declares in svg_icons; a
+// The avatar menu's entry point for /my-account. No native preferences route
+// is taken over: clicking a tab inside the native pages must not jump to
+// another page (Oğuzhan, 17 Nov). Icons must be ones `about.json` declares in svg_icons; a
 // name missing from that list renders an empty box, not an error.
 const spcRun = (api) => {
   // Membership badge (#12): the card passes @user, the profile @model.
@@ -26,41 +25,6 @@ const spcRun = (api) => {
     content: i18n(themePrefix("my_account.menu_profile")),
     className: "spc-menu-profile",
   });
-
-  // /my-account takes over your own preferences index, with three deliberate
-  // holes: another user's page (admins editing a member) stays native, ?full=1
-  // stays native (the route declares no query params, so Ember passes it
-  // through in transition.to.queryParams), and my_account_replaces_preferences
-  // turns it off live. The tabs themselves (Profile included) are never taken
-  // over: clicking one inside the native page must not jump to another page.
-  // Only the index: it is where the avatar menu's Preferences entry and
-  // /my/preferences land, and core's own index just redirects on to the
-  // Account tab. Every tab stays reachable by its own URL, which is how the
-  // page's "All settings" link (account?full=1) gets through.
-  api.modifyClass(
-    "route:preferences.index",
-    (Superclass) =>
-      class extends Superclass {
-        @service router;
-
-        beforeModel(transition) {
-          const user = api.getCurrentUser();
-          const username = this.paramsFor("user")?.username;
-
-          if (
-            settings.my_account_replaces_preferences &&
-            user &&
-            username?.toLowerCase() === user.username_lower &&
-            !transition.to?.queryParams?.full
-          ) {
-            this.router.replaceWith(MY_ACCOUNT_PATH);
-            return;
-          }
-
-          return super.beforeModel(...arguments);
-        }
-      }
-  );
 };
 
 export default apiInitializer(spcRun);

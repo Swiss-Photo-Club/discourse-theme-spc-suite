@@ -62,7 +62,6 @@ de:
       onboarding_member_groups: "Onboarding: Gruppen, deren Mitglieder das Onboarding sehen. Standardmässig sind dies die SPC-Gruppen ‚members‘ und ‚trial‘."
       onboarding_profile_url: "Onboarding: Ziel des Schritts ‚Profil‘."
       onboarding_dismissal_version: "Onboarding: Ändere diesen Wert, um Fortschritt und Ausblendung für alle Mitglieder zurückzusetzen."
-      my_account_replaces_preferences: "Mein Konto: Die eigenen Einstellungen (Eintrag „Einstellungen“ im Avatar-Menü, /my/preferences) führen stattdessen zur privaten Seite /my-account. Die einzelnen Einstellungs-Reiter bleiben über deren Link „Alle Einstellungen“ erreichbar."
       my_account_website_url: "Mein Konto: die Kontoseite auf swissphotoclub.com, auf der Mitglieder E-Mail-Adresse und Passwort ändern — die deutsche Seite; Französisch- und englischsprachige Leser erhalten automatisch die /fr-ch- bzw. /en-ch-Version der Website. Leer blendet den Link aus."
       account_closure_request_group: "Kontoschließung: Gruppenname für Anträge zur Schließung ausschließlich des Community-Kontos. Die Gruppe muss Nachrichten von Mitgliedern erlauben; zuständige Admins sollten ihren Posteingang beobachten."
       nonmember_member_groups: "Nichtmitglieder-Banner: Gruppen, deren Mitglieder das Banner nicht sehen. Standardmässig sind dies die SPC-Gruppen ‚members‘ und ‚trial‘ sowie Administratoren und Moderatoren."

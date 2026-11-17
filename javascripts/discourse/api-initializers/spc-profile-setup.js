@@ -3,7 +3,6 @@ import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
 import SpcMemberBadge from "../components/spc-member-badge";
 
-const PROFILE_SETUP_PATH = "/profile-setup";
 const MY_ACCOUNT_PATH = "/my-account";
 
 // Entry points for /profile-setup and /my-account: the avatar menu's person
@@ -28,52 +27,12 @@ const spcRun = (api) => {
     className: "spc-menu-profile",
   });
 
-  // Your own /u/<you>/preferences/profile lands on /profile-setup instead —
-  // same beforeModel/replaceWith pattern route:new-topic uses in
-  // spc-photo-submit.js. Three deliberate holes in the takeover:
-  //
-  //   - Another user's page (admins editing a member's profile) stays native:
-  //     the username segment is compared against the signed-in user.
-  //   - ?full=1 stays native. The route declares no query params, so Ember
-  //     hands unknowns through in transition.to.queryParams untouched — the
-  //     property route:new-topic already relies on for spc_form. The page's
-  //     "all profile settings" link carries it; it is the way to the native
-  //     fields /profile-setup does not cover (featured topic, card images,
-  //     birthday, hide-profile).
-  //   - The profile_setup_replaces_preferences setting turns the whole
-  //     redirect off live, no commit needed. The fallback target is core's
-  //     own page, which cannot go away — the property the deleted wizard
-  //     switches lacked.
-  //
-  // "route:preferences.profile" is the canonical container key; core's
-  // resolver-shims.js maps the legacy dashed form onto it.
-  api.modifyClass(
-    "route:preferences.profile",
-    (Superclass) =>
-      class extends Superclass {
-        @service router;
-
-        beforeModel(transition) {
-          const user = api.getCurrentUser();
-          const username = this.paramsFor("user")?.username;
-
-          if (
-            settings.profile_setup_replaces_preferences &&
-            user &&
-            username?.toLowerCase() === user.username_lower &&
-            !transition.to?.queryParams?.full
-          ) {
-            this.router.replaceWith(PROFILE_SETUP_PATH);
-            return;
-          }
-
-          return super.beforeModel(...arguments);
-        }
-      }
-  );
-
-  // /my-account takes over your own preferences index the same way, with the
-  // same three holes (other users, ?full=1, my_account_replaces_preferences).
+  // /my-account takes over your own preferences index, with three deliberate
+  // holes: another user's page (admins editing a member) stays native, ?full=1
+  // stays native (the route declares no query params, so Ember passes it
+  // through in transition.to.queryParams), and my_account_replaces_preferences
+  // turns it off live. The tabs themselves (Profile included) are never taken
+  // over: clicking one inside the native page must not jump to another page.
   // Only the index: it is where the avatar menu's Preferences entry and
   // /my/preferences land, and core's own index just redirects on to the
   // Account tab. Every tab stays reachable by its own URL, which is how the

@@ -62,7 +62,6 @@ en:
       onboarding_member_groups: "Member Onboarding: groups whose members see the onboarding panel. This defaults to the SPC ‘members’ and ‘trial’ groups."
       onboarding_profile_url: "Member Onboarding: destination for the Profile step."
       onboarding_dismissal_version: "Member Onboarding: change this value to reset progress and dismissal for every member."
-      profile_setup_replaces_preferences: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
       my_account_replaces_preferences: "My Account: opening your own Preferences (the avatar menu's Preferences entry, /my/preferences) lands on the private /my-account page instead. The individual settings tabs stay reachable from its “All settings” link."
       my_account_website_url: "My Account: the account page on swissphotoclub.com where members change their email and password — the German page; French and English readers get the website’s /fr-ch or /en-ch version automatically. Empty hides the link."
       account_closure_request_group: "Account Closure: group name receiving community-only closure requests. The group must allow messages from members; receiving admins should watch its inbox."

@@ -148,13 +148,8 @@ export default class SpcProfileSetup extends Component {
   }
 
   get fullEditorUrl() {
-    // ?full=1 is the escape hatch through the takeover in
-    // api-initializers/spc-profile-setup.js: without it this link would
-    // bounce straight back here. It matters even with the takeover off —
-    // the native page owns the fields this form deliberately skips.
-    return userPath(
-      `${this.currentUser.username_lower}/preferences/profile?full=1`
-    );
+    // The native page owns the fields this form deliberately skips.
+    return userPath(`${this.currentUser.username_lower}/preferences/profile`);
   }
 
   @action

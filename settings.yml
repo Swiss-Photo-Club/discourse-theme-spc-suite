@@ -235,11 +235,6 @@ onboarding_dismissal_version:
 # Profile setup page
 # -----------------------------------------------------------------------------
 
-profile_setup_replaces_preferences:
-  type: bool
-  default: true
-  description: "Profile Setup: opening your own Preferences → Profile lands on the friendly /profile-setup page instead. The full editor stays reachable from a link on that page."
-
 my_account_replaces_preferences:
   type: bool
   default: true

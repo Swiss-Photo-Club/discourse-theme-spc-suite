@@ -100,6 +100,7 @@ export default class SpcHomeRows extends Component {
     return {
       key: categoryId,
       eyebrow: category.name,
+      categoryHref: category.url,
       title,
       ...items,
       href: href || category.url,
@@ -184,7 +185,10 @@ export default class SpcHomeRows extends Component {
           <section class="spc-home-row" aria-label={{row.title}}>
             <div class="spc-home-row__head">
               <div>
-                <span class="spc-home-row__eyebrow">{{row.eyebrow}}</span>
+                <a
+                  class="spc-home-row__eyebrow"
+                  href={{row.categoryHref}}
+                >{{row.eyebrow}}</a>
                 <h2 class="spc-home-row__title">{{row.title}}</h2>
               </div>
               <a class="spc-home-row__all" href={{row.href}}>

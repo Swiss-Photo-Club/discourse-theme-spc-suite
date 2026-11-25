@@ -133,7 +133,8 @@ body.navigation-categories:has(#main-outlet > .spc-home-rows)
 
 .spc-home-row__eyebrow {
   display: block;
-  color: var(--spc-coral);
+  width: fit-content;
+  color: var(--spc-coral) !important;
   font-size: 12px;
   font-weight: var(--fw-xbold);
   letter-spacing: 0.1em;

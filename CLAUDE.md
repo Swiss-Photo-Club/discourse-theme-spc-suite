@@ -233,8 +233,9 @@ three notes above. Read them before touching this layout again.
 
 The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
 8 `meetups-photowalks` (**hidden on purpose since 2026-08-18**, to be re-enabled later),
-5 `announcements-club-news`, 2 `feedback`, 12 `introductions`, 13 `live-webinare`, 4 `general`,
-1 `uncategorized`. **Category 10 (`support`, displayed "Post Processing") was deleted on
+5 `announcements-club-news`, 2 `feedback`, 12 `introductions`, 13 `live-webinare`, 4 `general`
+(**displayed "Photo Talk" / "Foto-Talk" / "Parlons photo" since 2026-11-25**; the slug was kept
+on purpose, so slug and name disagree again), 1 `uncategorized`. **Category 10 (`support`, displayed "Post Processing") was deleted on
 2026-08-18**; a replacement may be created later under a new id. The `10:` entry in
 `CATEGORY_HEROES` and the `id === 10` label branch are therefore dead until then — harmless,
 left in place so a re-created category can be pointed at them by id. When 10 existed, its slug
@@ -341,16 +342,30 @@ category 7's required-tag-group check 422'd for every German-locale user (andy.f
 2026-08-20). Any `<option value>` or payload that ends up in `data.tags` must be
 `tagCanonicalName()`; localized names are labels only.
 
-**Renaming a category's base name re-translates its other names.** The base locale is German,
-so the base name is the German one, and Discourse AI translation is on: changing it on
-2026-10-30 rewrote the FR names of 6 and 7 ("Défi du Mois" → "Défi mensuel", "Critique photo"
-→ "Commentaires photo") within seconds. After any base rename, re-read every
-`category_localizations` entry and put back the ones that were set by hand.
+**Renaming a category's base name re-translates its other names.** Discourse AI translation is
+on: changing the base name on 2026-10-30 rewrote the FR names of 6 and 7 ("Défi du Mois" →
+"Défi mensuel", "Critique photo" → "Commentaires photo") within seconds, and renaming 4 on
+2026-11-25 did the same ("Fotodiskussion", "Discussion photo") — names only, the localized
+descriptions were left alone. After any base rename, re-read every `category_localizations`
+entry and put back the ones that were set by hand.
+
+**The base language is per category, not site-wide.** The site default is German, and 2, 6, 7,
+8, 12 and 13 have a German base name, but **4 and 5 have an English base** with German and
+French as localizations (read off `category_localizations` on 2026-11-25). Check the category's
+"Category language" before deciding which name is the base. Its description is the first
+paragraph of the About topic in that base language; the other languages are separate: the
+category's localized descriptions, plus post and topic localizations on the About topic itself.
 
 **Custom Header Links defaults missing targets to a new tab.** Its renderer sets `_blank` unless
 the saved target is exactly `self`, while the target field itself has no default; migrated and
 newly incomplete rows therefore open new tabs. `repairInternalHeaderLinks()` removes `_blank`
 from every same-origin link in that component and deliberately leaves external links alone.
+
+**Header link labels are not category names.** Custom Header Links (component 4) holds one row
+per link **per locale** — Challenge, Feedback, Photo Talk and Introductions × de/en/fr, twelve
+rows — and nothing ties their text to the category: rename a category and its header label
+stays as it was until those rows are edited too. All four point at `/c/<id>`. On phone widths
+the header hides every custom link, so a header link adds no visibility on mobile.
 
 **Permalinks match the full request path, query string included.** `submit` matches `/submit`
 and nothing else. Every query-param variant of a theme-owned route needs its own permalink row,

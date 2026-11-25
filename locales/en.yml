@@ -9,7 +9,7 @@ en:
       enable_category_hero: "Category Hero: shared hero header on every category page. Turning it off restores the native category header and background. Native list controls remain available in either state. The Monthly Challenge hero remains enabled because it is part of the photo-submission workflow."
       enable_locale_cookie: "Locale Cookie: mirrors the forum interface language into a cookie on swissphotoclub.com so the main site can match it."
       homepage_secondary_categories: "Homepage: categories listed as plain links under the three doors (Photo Feedback, Monthly Challenge, Introduce Yourself). A door category listed here is skipped."
-      meetups_category_id: "Homepage: ID of the Meetups & Photowalks category. Its next three events that have not ended show as a line on the Categories tab. 0 hides the line."
+      meetups_category_id: "Homepage: ID of the Meetups & Photowalks category. Its next three events that have not ended show as a line on the Categories tab, and events that have ended are left out of its topic list. 0 turns both off."
       challenge_category_id: "Monthly Challenge: ID of the challenge category (Admin > Categories, the number in the URL)."
       round_tag: "Monthly Challenge: fixed round tag applied to submissions (e.g. 2026-07-cityscapes). Leave empty for automatic mode: the category tag starting with the current month is used."
       show_banner: "Monthly Challenge: show an extra 'Submit a photo' banner at the top of the challenge category topic list (off by default because the challenge hero already has a submit button)."

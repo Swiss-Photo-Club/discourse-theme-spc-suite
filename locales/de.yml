@@ -9,7 +9,7 @@ de:
       enable_category_hero: "Kategorie-Hero: gemeinsamer Hero-Header auf jeder Kategorieseite. Ausschalten stellt den nativen Kategorie-Header und -Hintergrund wieder her. Die nativen Listen-Bedienelemente bleiben in beiden Zuständen verfügbar. Der Hero der Monats-Challenge bleibt aktiv, weil er Teil des Foto-Einreichungs-Workflows ist."
       enable_locale_cookie: "Sprach-Cookie: spiegelt die Forumssprache in ein Cookie auf swissphotoclub.com, damit die Hauptseite sie übernehmen kann."
       homepage_secondary_categories: "Startseite: Kategorien, die unter den drei Einstiegen (Foto-Feedback, Monats-Challenge, Stell dich vor) als einfache Links erscheinen. Eine Einstiegs-Kategorie wird hier übersprungen."
-      meetups_category_id: "Startseite: ID der Kategorie Meetups & Fotowalks. Ihre nächsten drei noch nicht beendeten Anlässe erscheinen als Zeile im Tab Kategorien. 0 blendet die Zeile aus."
+      meetups_category_id: "Startseite: ID der Kategorie Meetups & Fotowalks. Ihre nächsten drei noch nicht beendeten Anlässe erscheinen als Zeile im Tab Kategorien, und beendete Anlässe werden in ihrer Themenliste ausgeblendet. 0 schaltet beides ab."
       challenge_category_id: "Monats-Challenge: ID der Challenge-Kategorie (Admin > Kategorien, die Nummer in der URL)."
       round_tag: "Monats-Challenge: fester Runden-Tag für Einreichungen (z. B. 2026-07-cityscapes). Leer lassen für den Automatikmodus: Der Kategorie-Tag, der mit dem aktuellen Monat beginnt, wird verwendet."
       show_banner: "Monats-Challenge: zusätzliches «Foto einreichen»-Banner oben in der Themenliste der Challenge-Kategorie anzeigen (standardmässig aus, weil der Challenge-Hero bereits einen Einreichen-Button hat)."

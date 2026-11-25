@@ -232,7 +232,8 @@ That conversion took five attempts on the live site, and every wrong turn is wri
 three notes above. Read them before touching this layout again.
 
 The real category set is 6 `monthly-challenge`, 7 `photo-feedback`,
-8 `meetups-photowalks` (**hidden on purpose since 2026-08-18**, to be re-enabled later),
+8 `meetups-photowalks` (an events calendar; ended events are dropped from its list by a row
+class, which is safe only while 8 stays in list mode),
 5 `announcements-club-news`, 2 `feedback`, 12 `introductions`, 13 `live-webinare`, 4 `general`
 (**displayed "Photo Talk" / "Foto-Talk" / "Parlons photo" since 2026-11-25**; the slug was kept
 on purpose, so slug and name disagree again), 1 `uncategorized`. **Category 10 (`support`, displayed "Post Processing") was deleted on

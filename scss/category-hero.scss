@@ -53,6 +53,12 @@ body.navigation-category {
   box-sizing: border-box;
 }
 
+/* Meetups & Photowalks events that have ended (class from
+   spc-category-hero.js). List mode only; never on a masonry category. */
+.topic-list-item.spc-event-ended {
+  display: none;
+}
+
 .spc-needs-feedback__head {
   display: flex;
   flex-wrap: wrap;

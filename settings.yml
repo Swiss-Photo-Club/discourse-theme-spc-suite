@@ -64,7 +64,7 @@ homepage_secondary_categories:
 meetups_category_id:
   type: integer
   default: 8
-  description: "Homepage: ID of the Meetups & Photowalks category. Its next three events that have not ended show as a line on the Categories tab. 0 hides the line."
+  description: "Homepage: ID of the Meetups & Photowalks category. Its next three events that have not ended show as a line on the Categories tab, and events that have ended are left out of its topic list. 0 turns both off."
 
 challenge_category_id:
   type: integer

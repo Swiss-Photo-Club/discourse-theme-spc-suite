@@ -339,6 +339,23 @@ export default apiInitializer((api) => {
     ({ value, context }) => (context?.createTopicDisabled ? false : value)
   );
 
+  // Meetups & Photowalks is a calendar: an event that has ended is noise in
+  // its list. The class is rendered with the row (no DOM decoration), and
+  // category-hero.scss hides it. Safe only because Topic List Thumbnails
+  // shows category 8 in list mode, not masonry; re-check before moving it.
+  api.registerValueTransformer("topic-list-item-class", ({ value, context }) => {
+    const topic = context?.topic;
+    const end = topic?.event_ends_at || topic?.event_starts_at;
+    if (
+      end &&
+      topic.category_id === Number(settings.meetups_category_id) &&
+      new Date(end) < Date.now()
+    ) {
+      value.push("spc-event-ended");
+    }
+    return value;
+  });
+
   /**
    * Clear only the category hero this initializer last rendered.
    *

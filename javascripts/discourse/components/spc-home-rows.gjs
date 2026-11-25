@@ -4,7 +4,7 @@ import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { service } from "@ember/service";
 import Category from "discourse/models/category";
-import { i18n } from "discourse-i18n";
+import I18n, { i18n } from "discourse-i18n";
 import { settings, themePrefix } from "virtual:theme";
 import {
   fetchChallengeCategoryListing,
@@ -32,16 +32,55 @@ function newestWithPhoto(topics) {
     .slice(0, CARDS_PER_ROW);
 }
 
+const EVENTS_PER_ROW = 3;
+
+// An all-day event is stored as a UTC calendar date (00:00 to 23:59:59Z), so
+// it is formatted in UTC; in local time its last day reads as the next one.
+function eventDate(value, allDay) {
+  return new Intl.DateTimeFormat(I18n.currentLocale().replace("_", "-"), {
+    day: "numeric",
+    month: "short",
+    ...(allDay && { timeZone: "UTC" }),
+  }).format(new Date(value));
+}
+
+// Events that have not ended, soonest first. A running exhibition shows
+// "until <end>" rather than a start date already in the past.
+// ponytail: reads one page (30 newest topics); an event announced long
+// before newer ones falls off it, so fetch with an event filter if that bites.
+function upcomingEvents(topics) {
+  const now = Date.now();
+  return topics
+    .filter((topic) => topic.event_starts_at)
+    .filter(
+      (topic) =>
+        new Date(topic.event_ends_at || topic.event_starts_at) >= now
+    )
+    .sort((a, b) => new Date(a.event_starts_at) - new Date(b.event_starts_at))
+    .slice(0, EVENTS_PER_ROW)
+    .map((topic) => ({
+      href: `/t/${topic.slug}/${Number(topic.id)}`,
+      title: topic.title,
+      date:
+        new Date(topic.event_starts_at) < now && topic.event_ends_at
+          ? t("until", {
+              date: eventDate(topic.event_ends_at, topic.event_all_day),
+            })
+          : eventDate(topic.event_starts_at, topic.event_all_day),
+    }));
+}
+
 /**
  * The Categories tab's rows (Phase E): newest Photo Feedback photos, the open
- * round's newest entries, newest introductions. Each row is the "Needs
+ * round's newest entries, the next Meetups & Photowalks events (a text line,
+ * not cards: the category is a calendar), newest introductions. Each row is the "Needs
  * feedback" strip's card markup (lib/spc-photo-cards.js), and Discourse's own
  * category list is hidden while the rows are present. Our own markup only:
  * this page has no masonry list to disturb.
  *
  * Requests: the challenge listing is the one the Monthly Challenge door
- * already fetched; the other two go through the shared category-listing
- * cache. All three only once the rows are in the DOM.
+ * already fetched; the other three go through the shared category-listing
+ * cache. All four only once the rows are in the DOM.
  */
 export default class SpcHomeRows extends Component {
   @service router;
@@ -52,16 +91,17 @@ export default class SpcHomeRows extends Component {
     return isCategoriesHome(this.router);
   }
 
-  row(categoryId, title, cards, href) {
+  // items is { cards } for a photo row, { events } for the events line.
+  row(categoryId, title, items, href) {
     const category = Category.findById(categoryId);
-    if (!category || !cards.length) {
+    if (!category || !(items.cards || items.events).length) {
       return null;
     }
     return {
       key: categoryId,
       eyebrow: category.name,
       title,
-      cards,
+      ...items,
       href: href || category.url,
     };
   }
@@ -73,7 +113,7 @@ export default class SpcHomeRows extends Component {
     const cards = newestWithPhoto(data?.topic_list?.topics || []).map(
       (topic) => photoCard(topic, users)
     );
-    return this.row(id, t("feedback"), cards);
+    return this.row(id, t("feedback"), { cards });
   }
 
   async challengeRow() {
@@ -95,7 +135,7 @@ export default class SpcHomeRows extends Component {
     return this.row(
       id,
       t("challenge", { theme: round.theme }),
-      cards,
+      { cards },
       round.url
     );
   }
@@ -107,13 +147,28 @@ export default class SpcHomeRows extends Component {
     const cards = newestWithPhoto(data?.topic_list?.topics || []).map(
       (topic) => photoCard(topic, users)
     );
-    return this.row(id, t("introductions"), cards);
+    return this.row(id, t("introductions"), { cards });
+  }
+
+  async eventsRow() {
+    const id = Number(settings.meetups_category_id);
+    if (!Category.findById(id)) {
+      return null;
+    }
+    const data = await categoryListing(id);
+    const events = upcomingEvents(data?.topic_list?.topics || []);
+    return this.row(id, t("upcoming"), { events });
   }
 
   @action
   async loadRows() {
     const rows = await Promise.all(
-      [this.feedbackRow(), this.challengeRow(), this.introductionsRow()].map(
+      [
+        this.feedbackRow(),
+        this.challengeRow(),
+        this.eventsRow(),
+        this.introductionsRow(),
+      ].map(
         (promise) => promise.catch(() => null)
       )
     );
@@ -136,15 +191,28 @@ export default class SpcHomeRows extends Component {
                 {{t "see_all"}}
               </a>
             </div>
-            <div class="spc-needs-feedback__row spc-home-row__cards">
-              {{#each row.cards as |card|}}
-                <a class="spc-needs-feedback__card" href={{card.href}}>
-                  <img src={{card.image}} alt="" loading="lazy" />
-                  <span class="spc-needs-feedback__title">{{card.title}}</span>
-                  <span class="spc-needs-feedback__by">{{card.by}}</span>
-                </a>
-              {{/each}}
-            </div>
+            {{#if row.events}}
+              <ul class="spc-home-events">
+                {{#each row.events as |event|}}
+                  <li>
+                    <a class="spc-home-events__event" href={{event.href}}>
+                      <span class="spc-home-events__date">{{event.date}}</span>
+                      <span class="spc-home-events__title">{{event.title}}</span>
+                    </a>
+                  </li>
+                {{/each}}
+              </ul>
+            {{else}}
+              <div class="spc-needs-feedback__row spc-home-row__cards">
+                {{#each row.cards as |card|}}
+                  <a class="spc-needs-feedback__card" href={{card.href}}>
+                    <img src={{card.image}} alt="" loading="lazy" />
+                    <span class="spc-needs-feedback__title">{{card.title}}</span>
+                    <span class="spc-needs-feedback__by">{{card.by}}</span>
+                  </a>
+                {{/each}}
+              </div>
+            {{/if}}
           </section>
         {{/each}}
       </div>

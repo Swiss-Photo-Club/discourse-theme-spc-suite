@@ -160,6 +160,42 @@ body.navigation-categories:has(#main-outlet > .spc-home-rows)
   grid-auto-flow: row;
 }
 
+/* Meetups & Photowalks: the next events as a text line, not photo cards. */
+.spc-home-events {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spc-home-events__event {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  background: var(--bg-page);
+  border: 1px solid var(--stroke-1);
+}
+
+.spc-home-events__date {
+  flex: none;
+  color: var(--spc-coral);
+  font-size: 14px;
+  font-weight: var(--fw-xbold);
+  white-space: nowrap;
+}
+
+.spc-home-events__title {
+  color: var(--spc-indigo);
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  line-height: 1.3;
+}
+
 /* Raised native topic toolbar — shared by homepage and categories. */
 body:is(.navigation-topics, .navigation-categories, .navigation-category) .list-controls {
   width: 100%;
@@ -446,6 +482,11 @@ body:is(.navigation-topics, .navigation-categories) .spc-home-pinned-badge {
 
   .spc-home-doors__door {
     padding: 12px 14px;
+  }
+
+  .spc-home-events {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   /* Back to the strip's own scrolling row on a phone. */

@@ -61,6 +61,11 @@ homepage_secondary_categories:
   default: "8|13|4|5|2"
   description: "Homepage: categories listed as plain links under the three doors (Photo Feedback, Monthly Challenge, Introduce Yourself). A door category listed here is skipped."
 
+meetups_category_id:
+  type: integer
+  default: 8
+  description: "Homepage: ID of the Meetups & Photowalks category. Its next three events that have not ended show as a line on the Categories tab. 0 hides the line."
+
 challenge_category_id:
   type: integer
   default: 6

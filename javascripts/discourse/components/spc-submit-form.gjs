@@ -409,7 +409,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
                   that killed the root render, and Ember re-appended the
                   top-level outlet, which is why the entire app shell used to
                   appear three times over on the critique form. }}
-              {{#each this.subjectOptions as |choice|}}
+              {{#each this.subjectOptions key="value" as |choice|}}
                 <option value={{choice.value}} selected={{choice.selected}}>
                   {{choice.label}}
                 </option>
@@ -422,7 +422,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
               {{i18n (themePrefix "critique_form.style_label")}}
             </label>
             <select id="spc-critique-style" {{on "change" this.updateStyle}}>
-              {{#each this.styleOptions as |choice|}}
+              {{#each this.styleOptions key="value" as |choice|}}
                 <option value={{choice.value}} selected={{choice.selected}}>
                   {{choice.label}}
                 </option>
@@ -435,7 +435,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
               {{i18n (themePrefix "critique_form.focus_label")}}
             </label>
             <select id="spc-critique-focus" {{on "change" this.updateFocus}}>
-              {{#each this.focusOptions as |choice|}}
+              {{#each this.focusOptions key="value" as |choice|}}
                 <option value={{choice.value}} selected={{choice.selected}}>
                   {{choice.label}}
                 </option>
@@ -451,7 +451,7 @@ export default class SpcSubmitForm extends SpcSubmitBase {
               id="spc-critique-examples"
               {{on "change" this.updateExamples}}
             >
-              {{#each this.examplesOptions as |choice|}}
+              {{#each this.examplesOptions key="value" as |choice|}}
                 <option value={{choice.value}} selected={{choice.selected}}>
                   {{choice.label}}
                 </option>
